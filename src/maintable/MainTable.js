@@ -14,15 +14,70 @@ import { EditableCell } from '../helpers/EditableCell';
 
 
 class DataListWrapper {
-    constrcutor(indexMap, data) {
+    constructor(dataset, indexMap) {
         this._indexMap = indexMap;
-        this._data = data;
+        this._dataset = dataset;
+        this.getSize = this.getSize.bind(this);
+        this.getObjectAt = this.getObjectAt.bind(this);
+        this.getRowType = this.getRowType.bind(this);
+        this.getRowKey = this.getRowKey.bind(this);
+        this.getRowHeight = this.getRowHeight.bind(this);
+        this.getRowMap = this.getRowMap.bind(this);
     }
     getSize() {
         return this._indexMap.length;
     }
     getObjectAt(index) {
-        return this._data.getObjectAt(this._indexMap[index]);
+        if (index > this._indexMap.length - 1 && index < 0 ) {
+            return null;
+        }
+        let rowkey = this._indexMap[index].rowKey;
+        return rowkey ? this._dataset.getObjectAt(rowkey) : null;
+    }
+    getRowType(index) {
+        if (index === undefined || index > this._indexMap.length - 1 || index < 0 ) {
+            return null;
+        }
+        return this._indexMap[index].rowType;
+    }
+
+    getRowKey(index) {
+        if (index > this._indexMap.length - 1 && index < 0 ) {
+            return null;
+        }
+        return this._indexMap[index].rowKey;
+    }
+
+    addNewRow(index, groupKey, newItem) {
+        let rowKey = this._dataset.addNewRow(groupKey, newItem);
+        for (let row = this._indexMap.length - 1; row > index; -- row ) {
+            this._indexMap[row] = this._indexMap[row-1]; 
+        }
+        this._indexMap[index] = {rowType:RowType.ROW, groupKey:groupKey, rowKey:rowKey};
+    }
+
+    addNewColumn(newItem) {
+        this._dataset.addNewColumn(newItem);
+    }
+
+    getRowHeight(index) {
+        let rowtype = this.getRowType(index);
+        if (rowtype) {
+            switch (rowtype) {
+                case RowType.ADDROW: 
+                    return 35;
+                case RowType.HEADER:
+                    return 40;
+                case RowType.FOOTER:
+                    return 140;
+                case RowType.ROW:
+                    return 40;
+            }
+        }
+        return 40;
+    }
+    getRowMap() {
+        return this._indexMap;
     }
 }
 
@@ -36,16 +91,16 @@ class MainTable extends React.Component {
         super(props);
         this._dataset = props.dataset;
         this._defaultSortIndexes = [];
+        this._refresh = this._refresh.bind(this);
 
         let groups = []; //{groupkey, startIndex} // group -> name, key, rows[rowkey]
         let rows = []; //{type, rowkey, groupKey}
 
-        this.getRowHeight = this.getRowHeight.bind(this);
-        this.getRowType = this.getRowType.bind(this);
-        this.getRowKey = this.getRowKey.bind(this);
-        this.getObjectAt = this.getObjectAt.bind(this);
-        this.onRowReorderEndCallback = this.onColumnReorderEndCallback.bind(this);
-        this.onColumnResizeEndCallback = this.onColumnResizeEndCallback.bind(this);
+        this._onRowReorderEndCallback = this._onRowReorderEndCallback.bind(this);
+        this._onColumnResizeEndCallback = this._onColumnResizeEndCallback.bind(this);
+        this._onAddNewRowCallback = this._onAddNewRowCallback.bind(this);
+        this._onColumnAddCallback = this._onColumnAddCallback.bind(this);
+
 
         var index = 0;
         for(let i = 0; i < this._dataset.getGroups().length; i ++) {
@@ -69,33 +124,13 @@ class MainTable extends React.Component {
         }
 
         this.state = {
-            sortedRowList: rows,
+            sortedRowList: new DataListWrapper(this._dataset, rows),
             groups: groups,
             columns: this._dataset.getColumns(),
+            version: 0,
         };
     }
 
-    getObjectAt(index) {
-        if (index > this.state.sortedRowList.length - 1 && index < 0 ) {
-            return null;
-        }
-        let rowkey = this.state.sortedRowList[index].rowKey;
-        return rowkey ? this._dataset.getObjectAt(rowkey) : null;
-    }
-
-    getRowType(index) {
-        if (index === undefined || index > this.state.sortedRowList.length - 1 || index < 0 ) {
-            return null;
-        }
-        return this.state.sortedRowList[index].rowType;
-    }
-
-    getRowKey(index) {
-        if (index > this.state.sortedRowList.length - 1 && index < 0 ) {
-            return null;
-        }
-        return this.state.sortedRowList[index].rowKey;
-    }
 
     getColumnWidth(columnKey) {
         let columns = this.state.columns;
@@ -119,34 +154,31 @@ class MainTable extends React.Component {
         this.setState({columns: columns})
     }
 
-    getRowHeight(index) {
-        let rowtype = this.getRowType(index);
-        if (rowtype) {
-            switch (rowtype) {
-                case RowType.ADDROW: 
-                    return 35;
-                case RowType.HEADER:
-                    return 40;
-                case RowType.FOOTER:
-                    return 140;
-                case RowType.ROW:
-                    return 40;
-            }
+    _onAddNewRowCallback(rowIndex, newItem){
+        if (newItem !== '') {
+            let row = this.state.sortedRowList.getRowMap()[rowIndex];
+            this.state.sortedRowList.addNewRow(rowIndex, row.groupKey, newItem);
+            this._refresh();
         }
-        return 40;
     }
 
-    onColumnReorderEndCallback(event) {
-        const {rowKey, oldRowIndex, newRowIndex} = event;
-        let rows = this.state.sortedRowList;
-        if (oldRowIndex !== newRowIndex) {            
-            // move row
-            let oldRow = rows[oldRowIndex];
-            let newRow = rows[newRowIndex];
+    _onColumnAddCallback() {
+        this.state.sortedRowList.addNewColumn('New Column');
+        this._refresh();
+    }
 
-            if (oldRow.groupKey != newRow.groupKey) {
-                //move group
-            }
+    _onRowReorderEndCallback(rowKey, oldRowIndex, newRowIndex) {
+        let rows = this.state.sortedRowList.getRowMap();
+        if (oldRowIndex !== newRowIndex) {            
+   
+            // if (oldRow.groupKey != newRow.groupKey) {
+            //     //move group
+            //     for (let row = oldRowIndex; row > newRowIndex; -- row ) {
+            //         rows[row] = rows[row-1];
+
+            //     }
+
+            // }
 
             if ( newRowIndex < oldRowIndex ) { // move backward
                 let oldrow = rows[oldRowIndex];
@@ -161,12 +193,14 @@ class MainTable extends React.Component {
                 }
                 rows[newRowIndex] = oldrow;
             }
-            this.setState({sortedRowList: rows});
+            
+            this.setState({sortedRowList: new DataListWrapper(this._dataset, rows)});
+            this._refresh();
         }
 
     }
 
-    getColumnTemplate(columnKey) {
+    getColumnTemplate(sortedRowList, columnKey) {
         let columns = this.state.columns;
         let rowTemplates = {};
         for (let i  = 0; i < columns.length; i ++) {
@@ -176,7 +210,7 @@ class MainTable extends React.Component {
                 if (column.type === ColumnType.LABEL) {
                     rowTemplates.columnKey = columnKey;
                     rowTemplates.header = <Cell>{column.name}</Cell>;
-                    rowTemplates.cell = <TextCell data={this}/>;
+                    rowTemplates.cell = <TextCell data={sortedRowList}/>;
                     rowTemplates.footer = <Cell>summary</Cell>;
                     rowTemplates.width = this.getColumnWidth(columnKey);
                     rowTemplates.minWidth = 70;
@@ -186,7 +220,7 @@ class MainTable extends React.Component {
                 if (column.type === ColumnType.EDITBOX) {
                     rowTemplates.columnKey = columnKey;
                     rowTemplates.header = <Cell>{column.name}</Cell>;
-                    rowTemplates.cell = <EditableCell data={this}/>;
+                    rowTemplates.cell = <EditableCell data={sortedRowList}/>;
                     rowTemplates.footer = <Cell>summary</Cell>;
                     rowTemplates.width = this.getColumnWidth(columnKey);
                     rowTemplates.minWidth = 70;
@@ -203,11 +237,18 @@ class MainTable extends React.Component {
         this.setState({ref: component});
     };
 
-    onColumnResizeEndCallback(newColumnWidth, columnKey) {
+    _onColumnResizeEndCallback(newColumnWidth, columnKey) {
         this.setColumnWidth(columnKey, newColumnWidth);
     }
 
+    _refresh() {
+        this.setState({
+          version: this.state.version + 1,
+        });
+    }
     render() {
+        const version = this.state.version;
+        var { sortedRowList } = this.state;
         const addColumnStyle = {
             boxShadow: 'none',
         };
@@ -223,21 +264,26 @@ class MainTable extends React.Component {
                 isColumnResizing={false}
                 addRowHeight={35}
                 footerHeight={40}
-                rowsCount={this.state.sortedRowList.length}
-                rowHeightGetter={this.getRowHeight}
-                rowTypeGetter={this.getRowType}
-                rowKeyGetter={this.getRowKey}
-                onColumnResizeEndCallback={this.onColumnResizeEndCallback}
-                height={400}
-                width={800}
+                rowsCount={sortedRowList.getSize()}
+                rowHeightGetter={sortedRowList.getRowHeight}
+                rowTypeGetter={sortedRowList.getRowType}
+                rowKeyGetter={sortedRowList.getRowKey}
+                onColumnResizeEndCallback={this._onColumnResizeEndCallback}
+                onRowReorderEndCallback={this._onRowReorderEndCallback}
+                onNewRowAddCallback={this._onAddNewRowCallback}
+                data={sortedRowList}
+                height={700}
+                width={1000}
+                {...version}
                 {...this.props}>
-                {fixedColumn && <Column {...this.getColumnTemplate(fixedColumn.columnKey)} fixed={true} />}
+                {fixedColumn && <Column {...this.getColumnTemplate(sortedRowList, fixedColumn.columnKey)} fixed={true} />}
                 {scrollColumns.map(column => (
-                    <Column {...this.getColumnTemplate(column.columnKey)} fixed={false} />
-                ))}              
+                    <Column {...this.getColumnTemplate(sortedRowList, column.columnKey)} fixed={false} />
+                ))
+                }              
                 <Column
                     columnKey="addnew"
-                    header={<Button basic circular icon='plus circle' style={addColumnStyle} />}
+                    header={<Button basic circular icon='plus circle' style={addColumnStyle} onClick={this._onColumnAddCallback}/>}
                     width={40}
                 />
             </Table>        

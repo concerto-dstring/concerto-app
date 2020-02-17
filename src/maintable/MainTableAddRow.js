@@ -90,10 +90,25 @@ class MainTableAddRow extends React.Component {
 
   componentWillMount() {
     this._initialRender = true;
+    this._onKeyPress = this._onKeyPress.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.setState({newItem:''});
   }
 
   componentDidMount() {
     this._initialRender = false;
+  }
+  
+  _onKeyPress(event) {
+    if (event.key === 'Enter') {
+      if (this.props.onNewRowAdd) {
+        this.props.onNewRowAdd(this.props.index, this.state.newItem);
+      }
+    }
+  }
+
+  handleChange(event) {
+    this.setState({newItem: event.target.value});
   }
 
   render() /*object*/ {
@@ -142,7 +157,6 @@ class MainTableAddRow extends React.Component {
 
     FixedDataTableTranslateDOMPosition(style, 0, offset, this._initialRender, this.props.isRTL);
 
-
     const { offsetTop, zIndex, visible, ...rowProps } = this.props;
 
     var scrollbarOffset = this.props.showScrollbarY ? Scrollbar.SIZE : 0;
@@ -164,7 +178,7 @@ class MainTableAddRow extends React.Component {
     }
 
     return <div style={style} className={className} >
-            <Input style={inputStyle} action='Add' placeholder='+ Add' />
+            <Input style={inputStyle} action='Add' placeholder='+ Add' onKeyPress={this._onKeyPress} value={this.state.newItem} onChange={this.handleChange} />
             {scrollbarSpacer}
            </div>;
   }

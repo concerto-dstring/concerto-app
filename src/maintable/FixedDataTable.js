@@ -412,6 +412,8 @@ class FixedDataTable extends React.Component {
      */
     onColumnResizeEndCallback: PropTypes.func,
 
+    onNewRowAddCallback: PropTypes.func,
+
     /**
      * Callback that is called when reordering has been completed
      * and columns need to be updated.
@@ -688,6 +690,7 @@ class FixedDataTable extends React.Component {
       className,
       gridAttributesGetter,
       maxScrollX,
+      maxScrollY,
       scrollContentHeight,
       scrollX,
       scrollY,
@@ -740,11 +743,6 @@ class FixedDataTable extends React.Component {
       tabIndex = 0;
     }
 
-    let tableClassName = className;
-    if (this.props.isRTL) {
-      tableClassName = joinClasses(tableClassName, 'fixedDataTable_isRTL');
-    }
-
     const dragKnob =
       <ColumnResizerLine
         height={componentHeight}
@@ -760,6 +758,43 @@ class FixedDataTable extends React.Component {
         touchEnabled={touchScrollEnabled}
         isRTL={this.props.isRTL}
       />;
+
+    let topShadow;
+    if (scrollY) {
+      topShadow =
+        <div
+          className={joinClasses(
+            cx('fixedDataTableLayout/topShadow'),
+            cx('public/fixedDataTable/topShadow'),
+          )}
+          style={{top: 0}}
+        />;
+    }
+
+    // ownerScrollAvailable is true if the rows rendered will overflow the owner element
+    // so we show a shadow in that case even if the FDT component can't scroll anymore
+    const ownerScrollAvailable = ownerHeight && ownerHeight < componentHeight &&
+      scrollContentHeight > visibleRowsHeight;
+    let bottomShadow;
+    if (ownerScrollAvailable || scrollY < maxScrollY) {
+      bottomShadow =
+        <div
+          className={joinClasses(
+            cx('fixedDataTableLayout/bottomShadow'),
+            cx('public/fixedDataTable/bottomShadow'),
+          )}
+          style={{top: visibleRowsHeight}}
+        />;
+    }
+    var tabIndex = null;
+    if (this.props.keyboardPageEnabled || this.props.keyboardScrollEnabled) {
+      tabIndex = 0;
+    }
+
+    let tableClassName = className;
+    if (this.props.isRTL) {
+      tableClassName = joinClasses(tableClassName, 'fixedDataTable_isRTL');
+    } 
 
     return (
       <div
@@ -789,6 +824,8 @@ class FixedDataTable extends React.Component {
           }} ref={this._onRefRows}>
           {dragKnob}
           {rows}
+          {topShadow}
+          {bottomShadow}
         </div>
         {scrollbarY}
         {scrollbarX}
@@ -835,6 +872,7 @@ class FixedDataTable extends React.Component {
         isColumnReordering={props.isColumnReordering}
         isColumnResizing={props.isColumnResizing}
         isRowReordering={props.isRowReordering}
+        onNewRowAdd={props.onNewRowAddCallback}
         onColumnReorder={onColumnReorder}
         onColumnReorderMove={this._onColumnReorderMove}
         onColumnReorderEnd={this._onColumnReorderEnd}
@@ -1077,9 +1115,9 @@ class FixedDataTable extends React.Component {
       if (this.props.rowReorderingData.oldRowIndex !== this.props.rowReorderingData.newRowIndex
          && this.props.onRowReorderEndCallback) {
         this.props.onRowReorderEndCallback(          
-          { rowKey: this.props.rowReorderingData.rowKey, 
-            oldRowIndex: this.props.rowReorderingData.oldRowIndex, 
-            newRowIndex: this.props.rowReorderingData.newRowIndex});
+          this.props.rowReorderingData.rowKey, 
+          this.props.rowReorderingData.oldRowIndex, 
+          this.props.rowReorderingData.newRowIndex);
       };
     } 
   }

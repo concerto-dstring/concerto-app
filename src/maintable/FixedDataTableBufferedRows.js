@@ -156,6 +156,7 @@ class FixedDataTableBufferedRows extends React.Component {
       fixedRightColumns,
       scrollableColumns,
       scrollEnabledY,
+      onNewRowAdd,
     } = props;
 
     const { footerHeight,  headerHeight, addRowHeight } = elementHeights;
@@ -251,6 +252,7 @@ class FixedDataTableBufferedRows extends React.Component {
                 isRTL={props.isRTL}
                 container={props.container}
                 visible={visible} 
+                onNewRowAdd={onNewRowAdd}
               />;
           break;
         
