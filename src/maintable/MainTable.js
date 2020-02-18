@@ -23,6 +23,7 @@ class DataListWrapper {
         this.getRowKey = this.getRowKey.bind(this);
         this.getRowHeight = this.getRowHeight.bind(this);
         this.getRowMap = this.getRowMap.bind(this);
+        this.setObjectAt = this.setObjectAt.bind(this);
     }
     getSize() {
         return this._indexMap.length;
@@ -78,6 +79,9 @@ class DataListWrapper {
     }
     getRowMap() {
         return this._indexMap;
+    }
+    setObjectAt(rowIndex, columnKey, value) {
+        this._dataset.setObjectAt(this._indexMap[rowIndex].rowKey, columnKey, value);
     }
 }
 
@@ -272,7 +276,7 @@ class MainTable extends React.Component {
                 onRowReorderEndCallback={this._onRowReorderEndCallback}
                 onNewRowAddCallback={this._onAddNewRowCallback}
                 data={sortedRowList}
-                height={700}
+                height={600}
                 width={1000}
                 {...version}
                 {...this.props}>

@@ -20,6 +20,10 @@ class EditableCell extends React.PureComponent {
     editing: false,
   }
 
+  componentWillReceiveProps(props) {
+    this.setState({ value: props.data.getObjectAt(this.props.rowIndex)[this.props.columnKey]});
+  }
+
   setTargetRef = ref => (this.targetRef = ref);
 
   getTargetRef = () => this.targetRef;
@@ -31,7 +35,7 @@ class EditableCell extends React.PureComponent {
   handleHide = () => {
     this.setState({ editing: false });
     if (this.props.data) {
-      //this.props.data.setObjectAt(this.props.rowIndex, this.props.columnKey, this.state.value);
+      this.props.data.setObjectAt(this.props.rowIndex, this.props.columnKey, this.state.value);
     }
   }
 
@@ -62,7 +66,7 @@ class EditableCell extends React.PureComponent {
 
     return (
       <CellContainer ref={this.setTargetRef} onClick={this.handleClick}>
-        {!editing && data.getObjectAt(rowIndex)[columnKey]}
+        {!editing && value}
         {editing && this.targetRef && (
           <Overlay
             show
@@ -70,7 +74,8 @@ class EditableCell extends React.PureComponent {
             rootClose
             container={this.getTargetRef}
             target={this.getTargetRef}
-            onHide={this.handleHide}>
+            onHide={this.handleHide}
+            onExit={this.handleHide}>
             {({ props, placement }) => (
               <div
                 {...props}
@@ -82,7 +87,7 @@ class EditableCell extends React.PureComponent {
                       ? this.targetRef.offsetHeight
                       : -this.targetRef.offsetHeight,
                 }}>
-                <Input autoFocus value={data.getObjectAt(rowIndex)[columnKey]} onChange={this.handleChange} style={inputStyle}     
+                <Input autoFocus value={value} onChange={this.handleChange} style={inputStyle}     
                       onKeyDown={this.handleKey} />
               </div>
             )}

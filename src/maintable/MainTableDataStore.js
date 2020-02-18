@@ -24,6 +24,7 @@ class MainTableDataStore {
         this._groups = [];
         this.addNewRow = this.addNewRow.bind(this);
         this.addNewColumn = this.addNewColumn.bind(this);
+        this.setObjectAt = this.setObjectAt.bind(this);
     }
     
     createFakeObjectData() {
@@ -79,6 +80,10 @@ class MainTableDataStore {
         return this._rowData[rowKey];
     }
 
+    setObjectAt(rowKey, columnKey, value) {
+        this._rowData[rowKey][columnKey] = value;
+    }
+
     getGroups() {
         return this._groups;
     }
@@ -100,6 +105,8 @@ class MainTableDataStore {
         this._columns.push({columnKey: id, name:newItem, width: 200, type: ColumnType.EDITBOX});
         return id;
     }
+
+
 
 }
 
