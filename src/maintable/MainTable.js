@@ -51,7 +51,7 @@ class DataListWrapper {
 
     addNewRow(index, groupKey, newItem) {
         let rowKey = this._dataset.addNewRow(groupKey, newItem);
-        for (let row = this._indexMap.length - 1; row > index; -- row ) {
+        for (let row = this._indexMap.length; row > index; -- row ) {
             this._indexMap[row] = this._indexMap[row-1]; 
         }
         this._indexMap[index] = {rowType:RowType.ROW, groupKey:groupKey, rowKey:rowKey};
