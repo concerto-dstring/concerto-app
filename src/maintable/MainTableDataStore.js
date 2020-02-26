@@ -43,34 +43,34 @@ class MainTableDataStore {
         this._groups.push({groupKey: '3', name: 'group 3', rows:['9', '10']});
 
         // create row data
-        this._rowData['1'] = {'1': 'row 1, column 1','2': 'row 1, column 1', '3': 'row 1, column 3', '4': 'row 1, column 4',
+        this._rowData['1'] = {'1': 'row 1, column 1','2': 'row 1, column 2', '3': 'row 1, column 3', '4': 'row 1, column 4',
         '5': 'row 1, column 5', '6': 'row 1, column 6'};
 
-        this._rowData['2'] = {'1': 'row 2, column 1','2': 'row 2, column 1', '3': 'row 2, column 3', '4': 'row 2, column 4',
+        this._rowData['2'] = {'1': 'row 2, column 1','2': 'row 2, column 2', '3': 'row 2, column 3', '4': 'row 2, column 4',
         '5': 'row 2, column 5', '6': 'row 2, column 6'};
         
-        this._rowData['3'] = {'1': 'row 3, column 1','2': 'row 3, column 1', '3': 'row 3, column 3', '4': 'row 3, column 4',
+        this._rowData['3'] = {'1': 'row 3, column 1','2': 'row 3, column 2', '3': 'row 3, column 3', '4': 'row 3, column 4',
         '5': 'row 3, column 5', '6': 'row 3, column 6'};  
 
-        this._rowData['4'] = {'1': 'row 4, column 1','2': 'row 4, column 1', '3': 'row 4, column 3', '4': 'row 4, column 4',
+        this._rowData['4'] = {'1': 'row 4, column 1','2': 'row 4, column 2', '3': 'row 4, column 3', '4': 'row 4, column 4',
         '5': 'row 4, column 5', '6': 'row 4, column 6'}; 
 
-        this._rowData['5'] = {'1': 'row 5, column 1','2': 'row 5, column 1', '3': 'row 5, column 3', '4': 'row 5, column 4',
+        this._rowData['5'] = {'1': 'row 5, column 1','2': 'row 5, column 2', '3': 'row 5, column 3', '4': 'row 5, column 4',
         '5': 'row 5, column 5', '6': 'row 5, column 6'}; 
 
-        this._rowData['6'] = {'1': 'row 6, column 1','2': 'row 6, column 1', '3': 'row 6, column 3', '4': 'row 6, column 4',
+        this._rowData['6'] = {'1': 'row 6, column 1','2': 'row 6, column 2', '3': 'row 6, column 3', '4': 'row 6, column 4',
         '5': 'row 6, column 5', '6': 'row 6, column 6'}; 
 
-        this._rowData['7'] = {'1': 'row 7, column 1','2': 'row 7, column 1', '3': 'row 7, column 3', '4': 'row 7, column 4',
+        this._rowData['7'] = {'1': 'row 7, column 1','2': 'row 7, column 2', '3': 'row 7, column 3', '4': 'row 7, column 4',
         '5': 'row 7, column 5', '6': 'row 7, column 6'};
 
-        this._rowData['8'] = {'1': 'row 8, column 1','2': 'row 8, column 1', '3': 'row 8, column 3', '4': 'row 8, column 4',
+        this._rowData['8'] = {'1': 'row 8, column 1','2': 'row 8, column 2', '3': 'row 8, column 3', '4': 'row 8, column 4',
         '5': 'row 8, column 5', '6': 'row 8, column 6'};
 
-        this._rowData['9'] = {'1': 'row 9, column 1','2': 'row 9, column 1', '3': 'row 9, column 3', '4': 'row 9, column 4',
+        this._rowData['9'] = {'1': 'row 9, column 1','2': 'row 9, column 2', '3': 'row 9, column 3', '4': 'row 9, column 4',
         '5': 'row 9, column 5', '6': 'row 9, column 6'};
 
-        this._rowData['10'] = {'1': 'row 10, column 1','2': 'row 10, column 1', '3': 'row 10, column 3', '4': 'row 10, column 4',
+        this._rowData['10'] = {'1': 'row 10, column 1','2': 'row 10, column 2', '3': 'row 10, column 3', '4': 'row 10, column 4',
         '5': 'row 10, column 5', '6': 'row 10, column 6'};
 
         this._size = 10;

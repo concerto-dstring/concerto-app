@@ -21,7 +21,7 @@ class EditableCell extends React.PureComponent {
   }
 
   componentWillReceiveProps(props) {
-    this.setState({ value: props.data.getObjectAt(this.props.rowIndex)[this.props.columnKey]});
+    this.setState({ value: props.data ? props.data.getObjectAt(this.props.rowIndex)[this.props.columnKey] : props.value});
   }
 
   setTargetRef = ref => (this.targetRef = ref);
