@@ -82,9 +82,6 @@ class DataListWrapper {
     }
 
     setObjectAt(rowIndex, columnKey, value) {
-        // skip the group row 
-        if (this._indexMap[rowIndex].rowType !== RowType.ROW) 
-            return;
         this._dataset.setObjectAt(this._indexMap[rowIndex].rowKey, columnKey, value);
     }
 }

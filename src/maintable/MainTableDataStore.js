@@ -81,6 +81,9 @@ class MainTableDataStore {
     }
 
     setObjectAt(rowKey, columnKey, value) {
+        // skip the group row 
+        if (rowKey == "") 
+            return;
         this._rowData[rowKey][columnKey] = value;
     }
 
