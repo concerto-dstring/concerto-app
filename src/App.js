@@ -6,8 +6,8 @@
 
   import React from 'react';
   
-  import MainTable from './maintable/MainTable';
   import MainTableDataStore from './maintable/MainTableDataStore';
+  import MiniSidebar from './Sidebar.js'
   
   class App extends React.Component {
   
@@ -17,7 +17,7 @@
       datastore.createFakeObjectData();
 
       return (
-        <MainTable dataset={datastore}/>
+          <MiniSidebar dataset={datastore} />
       );
     }
   }
