@@ -96,8 +96,11 @@ class FixedDataTableCell extends React.Component {
 
   state = {
     isReorderingThisColumn: false,
-    displacement: 0,
-    reorderingDisplacement: 0
+    isReplacingThisColumn: false,
+    displacementX: 0,
+    displacementY: 0,
+    // displacement: 0,
+    // reorderingDisplacement: 0
   }
 
   shouldComponentUpdate(nextProps) {
@@ -128,75 +131,104 @@ class FixedDataTableCell extends React.Component {
     return false;
   }
 
-  componentWillReceiveProps(props) {
-    var left = props.left + this.state.displacement;
+  // componentWillReceiveProps(prevProps) {
+  //   if (prevProps === this.props) {
+  //     return;
+  //   }
 
-    var newState = {
-      isReorderingThisColumn: false
-    };
+  //   const props = this.props;
+  //   //var left = props.left + this.state.displacement;
 
-    if (props.isColumnReordering) {
-      var originalLeft = props.columnReorderingData.originalLeft;
-      var reorderCellLeft = originalLeft + props.columnReorderingData.dragDistance;
-      var farthestPossiblePoint = props.columnGroupWidth - props.columnReorderingData.columnWidth;
+  //   var newState = {
+  //     isReplaceingThisColumn: false,
+  //   };
 
-      // ensure the cell isn't being dragged out of the column group
-      reorderCellLeft = Math.max(reorderCellLeft, 0);
-      reorderCellLeft = Math.min(reorderCellLeft, farthestPossiblePoint);
+  //   if (props.isColumnReordering) {
 
-      if (props.columnKey === props.columnReorderingData.columnKey) {
-        newState.displacement = reorderCellLeft - props.left;
-        newState.isReorderingThisColumn = true;
-      } else {
-        var reorderCellRight = reorderCellLeft + props.columnReorderingData.columnWidth;
-        var reorderCellCenter = reorderCellLeft + (props.columnReorderingData.columnWidth / 2);
-        var centerOfThisColumn = left + (props.width / 2);
+  //     //var originalLeft = props.columnReorderingData.originalLeft;
+  //     //var reorderCellLeft = originalLeft + props.columnReorderingData.dragDistanceX;
+  //     //var farthestPossiblePoint = props.columnGroupWidth;
+  
+  //       // ensure the cell isn't being dragged out of the column group
+  //     //reorderCellLeft = Math.max(reorderCellLeft, 0);
+  //     //reorderCellLeft = Math.min(reorderCellLeft, farthestPossiblePoint);
 
-        var cellIsBeforeOneBeingDragged = reorderCellCenter > centerOfThisColumn;
-        var cellWasOriginallyBeforeOneBeingDragged = originalLeft > props.left;
-        var changedPosition = false;
+  //     if (props.columnKey !== props.columnReorderingData.columnKey) {
 
-        if (cellIsBeforeOneBeingDragged) {
-          if (reorderCellLeft < centerOfThisColumn) {
-            changedPosition = true;
-            if (cellWasOriginallyBeforeOneBeingDragged) {
-              newState.displacement = props.columnReorderingData.columnWidth;
-            } else {
-              newState.displacement = 0;
-            }
-          }
-        } else {
-          if (reorderCellRight > centerOfThisColumn) {
-            changedPosition = true;
-            if (cellWasOriginallyBeforeOneBeingDragged) {
-              newState.displacement = 0;
-            } else {
-              newState.displacement = props.columnReorderingData.columnWidth * -1;
-            }
-          }
-        }
+  //       var originalLeft = props.columnReorderingData.originalLeft;
+  //       var reorderCellLeft = originalLeft + props.columnReorderingData.dragDistanceX;
+  //       var farthestPossiblePoint = props.columnGroupWidth;
 
-        if (changedPosition) {
-          if (cellIsBeforeOneBeingDragged) {
-            if (!props.columnReorderingData.columnAfter) {
-              props.columnReorderingData.columnAfter = props.columnKey;
-            }
-          } else {
-            props.columnReorderingData.columnBefore = props.columnKey;
-          }
-        } else if (cellIsBeforeOneBeingDragged) {
-          props.columnReorderingData.columnBefore = props.columnKey;
-        } else if (!props.columnReorderingData.columnAfter) {
-          props.columnReorderingData.columnAfter = props.columnKey;
-        }
+  //       // ensure the cell isn't being dragged out of the column group
+  //       reorderCellLeft = Math.max(reorderCellLeft, 0);
+  //       reorderCellLeft = Math.min(reorderCellLeft, farthestPossiblePoint);
+  //       //var reorderCellRight = reorderCellLeft + props.columnReorderingData.columnWidth;
+  
+  //       reorderCellLeft += props.columnReorderingData.locationInElement;
+  //       console.log(reorderCellLeft);
+  //       // reorderCellRight += reorderCellLeft + props.columnReorderingData.columnWidth;
+  //       // if (reorderCellLeft >= props.left && reorderCellLeft <= props.left + props.width) {
+  //       //   isReplacingThisColumn = true;
+  //       //   props.columnReorderingData.columnAfter = props.columnKey;
+  //       // }
+  //       // let displacement = reorderCellLeft - props.left;
 
-      }
-    } else {
-      newState.displacement = 0;
-    }
+  //       // var reorderCellRight = reorderCellLeft + props.columnReorderingData.columnWidth;
+  //       // var reorderCellCenter = reorderCellLeft + (props.columnReorderingData.columnWidth / 2);
+  //       // var centerOfThisColumn = left + (props.width / 2);
+  //       if (reorderCellLeft > props.left &&  reorderCellLeft < props.left + props.width) {
+  //         if (!props.columnReorderingData.columnAfter) {
+  //           props.columnReorderingData.columnAfter = props.columnKey;
+  //           newState.isReplaceingThisColumn = true;
+  //         }
+  //       } 
 
-    this.setState(newState);
-  }
+  //       // var cellIsBeforeOneBeingDragged = reorderCellLeft > props.left + props.width;
+  //       // //var cellWasOriginallyBeforeOneBeingDragged = originalLeft > props.left;
+  //       // var changedPosition = false;
+
+  //       // if (cellIsBeforeOneBeingDragged) {
+  //       //   if (reorderCellLeft < props.left) {
+  //       //     changedPosition = true;
+  //       //     // if (cellWasOriginallyBeforeOneBeingDragged) {
+  //       //     //   newState.displacement = props.columnReorderingData.columnWidth;
+  //       //     // } else {
+  //       //     //   newState.displacement = 0;
+  //       //     // }
+  //       //   }
+  //       // } else {
+  //       //   if (reorderCellLeft > props.left + props.width) {
+  //       //     changedPosition = true;
+  //       //     // if (cellWasOriginallyBeforeOneBeingDragged) {
+  //       //     //   newState.displacement = 0;
+  //       //     // } else {
+  //       //     //   newState.displacement = props.columnReorderingData.columnWidth * -1;
+  //       //     // }
+  //       //   }
+  //       // }
+
+  //       // if (changedPosition) {
+  //       //   if (cellIsBeforeOneBeingDragged) {
+  //       //     if (!props.columnReorderingData.columnAfter) {
+  //       //       props.columnReorderingData.columnAfter = props.columnKey;
+  //       //     }
+  //       //   } else {
+  //       //     props.columnReorderingData.columnBefore = props.columnKey;
+  //       //   }
+  //       // } else if (cellIsBeforeOneBeingDragged) {
+  //       //   props.columnReorderingData.columnBefore = props.columnKey;
+  //       // } else if (!props.columnReorderingData.columnAfter) {
+  //       //   props.columnReorderingData.columnAfter = props.columnKey;
+  //       // }
+
+  //     }
+  //   } 
+  //   // else {
+  //   //   newState.displacement = 0;
+  //   // }
+
+  //   this.setState(newState);
+  // }
 
   static defaultProps = /*object*/ {
     align: 'left',
@@ -208,7 +240,7 @@ class FixedDataTableCell extends React.Component {
   render() /*object*/ {
 
     var { height, width, columnKey, isHeaderOrFooter, ...props } = this.props;
-    
+
     var style = {
       height,
       width,
@@ -219,12 +251,11 @@ class FixedDataTableCell extends React.Component {
     } else {
       style.left = props.left;
     }
-    
-    if (this.state.isReorderingThisColumn) {
-      const DIR_SIGN = this.props.isRTL ? -1 : 1;
-      style.transform = `translateX(${this.state.displacement * DIR_SIGN}px) translateZ(0)`;
-      style.zIndex = 1;
-    }
+
+    let replacingColumn = false;
+    if (props.isColumnReordering && isHeaderOrFooter && props.columnReorderingData.columnAfter === columnKey) { 
+      replacingColumn = true;
+    } 
 
     var className = joinClasses(
       cx({
@@ -233,8 +264,9 @@ class FixedDataTableCell extends React.Component {
         'fixedDataTableCellLayout/alignRight': props.align === 'right',
         'fixedDataTableCellLayout/alignCenter': props.align === 'center',
         'public/fixedDataTableCell/alignRight': props.align === 'right',
-        'public/fixedDataTableCell/highlighted': props.highlighted,
-        'public/fixedDataTableCell/main': true,
+        'public/fixedDataTableCell/highlighted': props.highlighted ,
+        'fixedDataTableCellLayout/focusDropHeader': replacingColumn,
+        'public/fixedDataTableCell/main': !replacingColumn,
         'public/fixedDataTableCell/hasReorderHandle': !!props.onColumnReorder,
         'public/fixedDataTableCell/reordering': this.state.isReorderingThisColumn,
       }),
@@ -266,9 +298,10 @@ class FixedDataTableCell extends React.Component {
     }
 
     var columnReorderComponent;
-    if (props.onColumnReorder) { //header row
+    if (props.onColumnReorder && columnKey !== "") { //header row
       columnReorderComponent = (
         <FixedDataTableColumnReorderHandle
+          rowIndex={this.props.rowIndex}
           columnKey={this.columnKey}
           touchEnabled={this.props.touchEnabled}
           onMouseDown={this._onColumnReorderMouseDown}
@@ -290,7 +323,7 @@ class FixedDataTableCell extends React.Component {
       cellProps.rowIndex = props.rowIndex;
     }
 
-    var content;
+    let content;
     if (React.isValidElement(props.cell)) {
       content = React.cloneElement(props.cell, cellProps);
     } else if (typeof props.cell === 'function') {
@@ -302,14 +335,14 @@ class FixedDataTableCell extends React.Component {
           {props.cell}
         </FixedDataTableCellDefault>
       );
-    }
+    } 
 
     const role = isHeaderOrFooter ? 'columnheader' : 'gridcell';
 
     return (
       <div className={className} style={style} role={role}>
-        {columnResizerComponent}
-        {columnReorderComponent}
+        {!replacingColumn && columnResizerComponent}
+        {!replacingColumn && columnReorderComponent}
         {content}
       </div>
     );
@@ -336,9 +369,9 @@ class FixedDataTableCell extends React.Component {
 
   _onColumnReorderMouseDown = (/*object*/ event) => {
     this.props.onColumnReorder(
+      this.props.rowIndex,
       this.props.columnKey,
       this.props.width,
-      this.props.left,
       event
     );
   }

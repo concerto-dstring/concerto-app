@@ -471,6 +471,12 @@ class FixedDataTable extends React.Component {
      * Callback that returns an object of html attributes to add to the grid element
      */
     gridAttributesGetter: PropTypes.func,
+
+    /**
+     * Callback to get column name
+     */
+    columnNameGetter: PropTypes.func,
+
   }
 
   static defaultProps = /*object*/ {
@@ -698,6 +704,8 @@ class FixedDataTable extends React.Component {
       touchScrollEnabled,
       isColumnResizing,
       columnResizingData,
+      isColumnReordering,
+      columnReorderingData,
       onColumnResizeEndCallback,
       elementHeights,
     } = this.props;
@@ -707,6 +715,29 @@ class FixedDataTable extends React.Component {
     // const { cellGroupWrapperHeight, footerHeight, groupHeaderHeight, headerHeight, addRowHeight } = elementHeights;
     const { scrollEnabledX, scrollEnabledY } = scrollbarsVisible(this.props);
     const attributes = gridAttributesGetter && gridAttributesGetter();
+
+    let dragRect;
+    if (isColumnReordering) {
+      const DIR_SIGN = this.props.isRTL ? -1 : 1;
+      let style = {
+        position: 'absolute',
+        left: columnReorderingData.originalLeft,
+        top: columnReorderingData.originalTop,
+        height: '100px',
+        backgroundColor: 'rgba(250, 250, 250, 0.8)',
+        width: columnReorderingData.columnWidth,
+        padding: '5px',
+        borderRadius: '3px',
+        border: '1px solid lightgray',
+        zIndex: 99,
+      };
+      let columnName;
+      if (this.props.columnNameGetter) {
+        columnName = this.props.columnNameGetter(columnReorderingData.columnKey);
+      }
+      style.transform = `translate(${columnReorderingData.dragDistanceX * DIR_SIGN}px, ${columnReorderingData.dragDistanceY * DIR_SIGN}px)`;
+      dragRect = <div style={style}>{columnName}</div>;
+    }
 
     let scrollbarY;
     if (scrollEnabledY) {
@@ -786,7 +817,7 @@ class FixedDataTable extends React.Component {
           style={{top: visibleRowsHeight}}
         />;
     }
-    var tabIndex = null;
+    //var tabIndex = null;
     if (this.props.keyboardPageEnabled || this.props.keyboardScrollEnabled) {
       tabIndex = 0;
     }
@@ -822,6 +853,7 @@ class FixedDataTable extends React.Component {
             height: scrollbarXOffsetTop,
             width
           }} ref={this._onRefRows}>
+          {dragRect}   
           {dragKnob}
           {rows}
           {topShadow}
@@ -947,21 +979,23 @@ class FixedDataTable extends React.Component {
   }
 
   _onColumnReorder = (
+    /*number*/ rowIndex,
     /*string*/ columnKey,
     /*number*/ width,
-    /*number*/ left,
     /*object*/ event,
   ) => {
     this.props.columnActions.startColumnReorder({
       scrollStart: this.props.scrollX,
+      rowIndex,
       columnKey,
       width,
-      left
+      top: this.props.rowOffsets[rowIndex],
+      event,
     });
   }
 
-  _onColumnReorderMove = (/*number*/ deltaX) => {
-    this.props.columnActions.moveColumnReorder(deltaX);
+  _onColumnReorderMove = (/*number*/ deltaX, /*number*/ deltaY) => {
+    this.props.columnActions.moveColumnReorder(deltaX, deltaY);
   }
 
   _onColumnReorderEnd = (/*object*/ props, /*object*/ event) => {

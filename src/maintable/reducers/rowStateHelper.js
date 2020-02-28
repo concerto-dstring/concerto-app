@@ -33,7 +33,7 @@ function reorderRow(state, reorderData) {
 function reorderRowMove(state, reorderData) {
 
   let { deltaX, deltaY, newRowIndex } = reorderData;
-  let { firstRowIndex, endRowIndex} = state;
+  //let { firstRowIndex, endRowIndex} = state;
   
   // NOTE (jordan) Need to clone this object when use pureRendering
   const reorderingData = Object.assign({}, state.rowReorderingData, {

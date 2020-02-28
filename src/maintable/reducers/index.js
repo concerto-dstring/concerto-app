@@ -187,8 +187,8 @@ function reducers(state = getInitialState(), action) {
       });
     }
     case ActionTypes.COLUMN_REORDER_MOVE: {
-      const { deltaX } = action;
-      return columnStateHelper.reorderColumnMove(state, deltaX);
+      const { deltaX, deltaY } = action;
+      return columnStateHelper.reorderColumnMove(state, deltaX, deltaY);
     }
     case ActionTypes.ROW_REORDER_START: {
       const { reorderData } = action;

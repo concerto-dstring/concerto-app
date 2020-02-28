@@ -104,6 +104,8 @@ class MainTable extends React.Component {
         this._onColumnResizeEndCallback = this._onColumnResizeEndCallback.bind(this);
         this._onAddNewRowCallback = this._onAddNewRowCallback.bind(this);
         this._onColumnAddCallback = this._onColumnAddCallback.bind(this);
+        this._onColumnReorderEndCallback = this._onColumnReorderEndCallback.bind(this);
+        this._getColumnName = this._getColumnName.bind(this);
 
 
         var index = 0;
@@ -135,6 +137,9 @@ class MainTable extends React.Component {
         };
     }
 
+    _onColumnReorderEndCallback(event) {
+
+    }
 
     getColumnWidth(columnKey) {
         let columns = this.state.columns;
@@ -171,19 +176,20 @@ class MainTable extends React.Component {
         this._refresh();
     }
 
+    _getColumnName(columnKey) {
+        let columns = this.state.columns;
+        for (let index = 0; index < columns.length; index++) {
+            const column = columns[index];
+            if (column.columnKey === columnKey) {
+                return column.name;
+            }
+        }
+        return '';
+    }
+
     _onRowReorderEndCallback(rowKey, oldRowIndex, newRowIndex) {
         let rows = this.state.sortedRowList.getRowMap();
         if (oldRowIndex !== newRowIndex) {            
-   
-            // if (oldRow.groupKey != newRow.groupKey) {
-            //     //move group
-            //     for (let row = oldRowIndex; row > newRowIndex; -- row ) {
-            //         rows[row] = rows[row-1];
-
-            //     }
-
-            // }
-
             if ( newRowIndex < oldRowIndex ) { // move backward
                 let oldrow = rows[oldRowIndex];
                 for (let row = oldRowIndex; row > newRowIndex; -- row ) {
@@ -201,8 +207,9 @@ class MainTable extends React.Component {
             this.setState({sortedRowList: new DataListWrapper(this._dataset, rows)});
             this._refresh();
         }
-
     }
+
+    
 
     getColumnTemplate(sortedRowList, columnKey) {
         let columns = this.state.columns;
@@ -268,10 +275,12 @@ class MainTable extends React.Component {
                 isColumnResizing={false}
                 addRowHeight={35}
                 footerHeight={40}
+                onColumnReorderEndCallback={this._onColumnReorderEndCallback}
                 rowsCount={sortedRowList.getSize()}
                 rowHeightGetter={sortedRowList.getRowHeight}
                 rowTypeGetter={sortedRowList.getRowType}
                 rowKeyGetter={sortedRowList.getRowKey}
+                columnNameGetter={this._getColumnName}
                 onColumnResizeEndCallback={this._onColumnResizeEndCallback}
                 onRowReorderEndCallback={this._onRowReorderEndCallback}
                 onNewRowAddCallback={this._onAddNewRowCallback}
@@ -286,7 +295,7 @@ class MainTable extends React.Component {
                 ))
                 }              
                 <Column
-                    columnKey="addnew"
+                    columnKey=""
                     header={<Button basic circular icon='plus circle' style={addColumnStyle} onClick={this._onColumnAddCallback}/>}
                     width={40}
                 />

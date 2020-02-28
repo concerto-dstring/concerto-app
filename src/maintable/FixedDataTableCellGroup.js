@@ -156,7 +156,7 @@ class FixedDataTableCellGroupImpl extends React.Component {
         minWidth={columnProps.minWidth}
         touchEnabled={this.props.touchEnabled}
         onColumnResize={onColumnResize}
-        onColumnReorder={onColumnReorder}
+        onColumnReorder={this.props.onColumnReorder}
         onColumnReorderMove={this.props.onColumnReorderMove}
         onColumnReorderEnd={this.props.onColumnReorderEnd}
         isColumnReordering={isColumnReordering}

@@ -156,36 +156,59 @@ function resizeColumn(state, resizeData) {
 }
 
 function reorderColumn(state, reorderData) {
-  let { columnKey, left, scrollStart, width } = reorderData;
-  const { fixedColumns } = columnWidths(state);
+  let { columnKey, rowIndex, top, scrollStart, width, event } = reorderData;
+  const { fixedColumns, columnProps} = columnWidths(state);
   const isFixed = fixedColumns.some(function(column) {
     return column.columnKey === columnKey;
   });
+  let left = 0;
+  for(let i = 0; i < columnProps.length; i ++) {
+    if (columnProps[i].columnKey === columnKey) {
+      break;
+    }
+    left += columnProps[i].width;
+  }
 
   return Object.assign({}, state, {
     isColumnReordering: true,
     columnReorderingData: {
       cancelReorder: false,
-      dragDistance: 0,
+      dragDistanceX: 0,
+      dragDistanceY: 0,
       isFixed: isFixed,
       scrollStart: scrollStart,
       columnKey: columnKey,
+      rowIndex: rowIndex,
       columnWidth: width,
-      originalLeft: left,
+      originalLeft: left - scrollStart,
+      originalTop: top,
+      locationInElement: event.mouseLocation.inElement,
       columnBefore: undefined,
-      columnAfter: undefined
+      columnAfter: undefined,
     }
   });
 }
 
-function reorderColumnMove(state, deltaX) {
+function reorderColumnMove(state, deltaX, deltaY) {
   const { isFixed, originalLeft, scrollStart } = state.columnReorderingData;
-  let { maxScrollX, scrollX } = state;
+  let { columnReorderingData, maxScrollX, scrollX } = state;
   if (!isFixed) {
     // Relative dragX position on scroll
-    const dragX = originalLeft - scrollStart + deltaX;
-    const { availableScrollWidth } = columnWidths(state);
-    deltaX += scrollX - scrollStart;
+    const dragX = originalLeft + deltaX;
+    const { columnProps, availableScrollWidth } = columnWidths(state);
+    //deltaX += scrollX - scrollStart;
+    let x = columnReorderingData.originalLeft + deltaX + columnReorderingData.locationInElement + scrollX;
+    var columnAfter, left = 0;
+    for(let i = 0; i < columnProps.length; i ++) {
+      let columnKey = columnProps[i].columnKey;
+      let width = columnProps[i].width;
+      if (columnKey !== '' && columnKey !== columnReorderingData.columnKey 
+      && x >= left &&  x <= left + width) {
+        columnAfter = columnKey;
+        break;
+      }
+      left += width;
+    }
 
     // Scroll the table left or right if we drag near the edges of the table
     if (dragX > availableScrollWidth - DRAG_SCROLL_BUFFER) {
@@ -197,9 +220,10 @@ function reorderColumnMove(state, deltaX) {
 
   // NOTE (jordan) Need to clone this object when use pureRendering
   const reorderingData = Object.assign({}, state.columnReorderingData, {
-    dragDistance: deltaX,
+    dragDistanceX: deltaX,
+    dragDistanceY: deltaY,
     columnBefore: undefined,
-    columnAfter: undefined,
+    columnAfter: columnAfter,
   });
 
   return Object.assign({}, state, {

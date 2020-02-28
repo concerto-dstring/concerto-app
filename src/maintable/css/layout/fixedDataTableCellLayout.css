@@ -59,6 +59,13 @@
   z-index: 1;
 }
 
+.fixedDataTableCellLayout_focusDropHeader {
+  border: 1px;
+  background-color: #e6f9ff;
+  border-color: skyblue;
+  border-style: solid;
+}
+
 .fixedDataTable_isRTL .fixedDataTableCellLayout_columnResizerContainer {
   left: 0px;
   right: auto;

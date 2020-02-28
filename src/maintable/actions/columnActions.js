@@ -36,9 +36,10 @@ export const stopColumnReorder = () => ({
  *
  * @param {number} deltaX
  */
-export const moveColumnReorder = (deltaX) => ({
+export const moveColumnReorder = (deltaX, deltaY) => ({
   type: COLUMN_REORDER_MOVE,
-  deltaX
+  deltaX,
+  deltaY,
 });
 
 /**

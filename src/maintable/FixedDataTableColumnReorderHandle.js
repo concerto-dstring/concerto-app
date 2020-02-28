@@ -25,7 +25,7 @@ class FixedDataTableColumnReorderHandle extends React.PureComponent {
   static propTypes = {
 
     /**
-     * When resizing is complete this is called.
+     * When reordering is complete this is called.
      */
     onColumnReorderEnd: PropTypes.func,
 
@@ -36,6 +36,11 @@ class FixedDataTableColumnReorderHandle extends React.PureComponent {
       PropTypes.string,
       PropTypes.number
     ]),
+
+     /**
+     * RowIndex for the header being reordered.
+     */
+    rowIndex: PropTypes.number,
 
     /**
      * Whether the reorder handle should respond to touch events or not.
@@ -49,7 +54,8 @@ class FixedDataTableColumnReorderHandle extends React.PureComponent {
   }
 
   state = /*object*/ {
-    dragDistance: 0
+    dragDistanceX: 0,
+    dragDistanceY: 0,
   }
 
   componentWillReceiveProps(/*object*/ newProps) {
@@ -98,18 +104,21 @@ class FixedDataTableColumnReorderHandle extends React.PureComponent {
     );
     this._mouseMoveTracker.captureMouseMoves(event);
     this.setState({
-      dragDistance: 0
+      dragDistanceX: 0,
+      dragDistanceY: 0,
     });
     this.props.onMouseDown({
       columnKey: this.props.columnKey,
       mouseLocation: {
-        dragDistance: 0,
+        dragDistanceX: 0,
+        dragDistanceY: 0,
         inElement: mouseLocationInElement,
         inColumnGroup: mouseLocationInRelationToColumnGroup
       }
     });
 
-    this._distance = 0;
+    this._distanceX = 0;
+    this._distanceY = 0;
     this._animating = true;
     this.frameId = requestAnimationFrame(this._updateState);
 
@@ -122,8 +131,9 @@ class FixedDataTableColumnReorderHandle extends React.PureComponent {
     }
   }
 
-  _onMove = (/*number*/ deltaX) => {
-    this._distance = this.state.dragDistance + deltaX * (this.props.isRTL ? -1 : 1);
+  _onMove = (/*number*/ deltaX, /*number*/ deltaY) => {
+    this._distanceX = this.state.dragDistanceX + deltaX * (this.props.isRTL ? -1 : 1);
+    this._distanceY = this.state.dragDistanceY + deltaY * (this.props.isRTL ? -1 : 1);
   }
 
   _onColumnReorderEnd = (/*boolean*/ cancelReorder) => {
@@ -140,9 +150,10 @@ class FixedDataTableColumnReorderHandle extends React.PureComponent {
       this.frameId = requestAnimationFrame(this._updateState)
     }
     this.setState({
-      dragDistance: this._distance
+      dragDistanceX: this._distanceX,
+      dragDistanceY: this._distanceY,
     });
-    this.props.onColumnReorderMove(this._distance);
+    this.props.onColumnReorderMove(this._distanceX, this._distanceY);
   }
 }
 export default FixedDataTableColumnReorderHandle;
