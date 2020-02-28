@@ -496,7 +496,8 @@ class FixedDataTable extends React.Component {
   componentWillMount() {
     this._didScrollStop = debounceCore(this._didScrollStopSync, 200, this);
     this._onKeyDown = this._onKeyDown.bind(this);
-
+    this._onMouseMove = this._onMouseMove.bind(this);
+    this._onMouseUp = this._onMouseUp.bind(this);
     this._wheelHandler = new ReactWheelHandler(
       this._onScroll,
       this._shouldHandleWheelX,
@@ -657,13 +658,13 @@ class FixedDataTable extends React.Component {
       start: this._handleStart,
     };
 
-    if (this._divRefRows) {
-      Object.keys(this.events).forEach((key) =>
-        events[key].forEach((eventName) =>
-        this._divRefRows.addEventListener(eventName, this.events[key], false),
-        ),
-      );
-    }
+    // if (this._divRefRows) {
+    //   Object.keys(this.events).forEach((key) =>
+    //     events[key].forEach((eventName) =>
+    //     this._divRefRows.addEventListener(eventName, this.events[key], false),
+    //     ),
+    //   );
+    // }
 
     this._reportContentHeight();
   }
@@ -722,7 +723,7 @@ class FixedDataTable extends React.Component {
       let style = {
         position: 'absolute',
         left: columnReorderingData.originalLeft,
-        top: columnReorderingData.originalTop,
+        top: columnReorderingData.originalTop - scrollY,
         height: '100px',
         backgroundColor: 'rgba(250, 250, 250, 0.8)',
         width: columnReorderingData.columnWidth,
@@ -838,6 +839,8 @@ class FixedDataTable extends React.Component {
         aria-rowcount={ariaRowCount}
         {...attributes}
         tabIndex={tabIndex}
+        onMouseMove={this._onMouseMove}
+        onMouseUp={this._onMouseUp}
         onKeyDown={this._onKeyDown}
         onTouchStart={touchScrollEnabled ? this._touchHandler.onTouchStart : null}
         onTouchEnd={touchScrollEnabled ? this._touchHandler.onTouchEnd : null}
@@ -852,7 +855,7 @@ class FixedDataTable extends React.Component {
           style={{
             height: scrollbarXOffsetTop,
             width
-          }} ref={this._onRefRows}>
+          }}>
           {dragRect}   
           {dragKnob}
           {rows}
@@ -912,8 +915,8 @@ class FixedDataTable extends React.Component {
         onRowClick={props.onRowClick}
         onRowContextMenu={props.onRowContextMenu}
         onRowDoubleClick={props.onRowDoubleClick}
-        onRowMouseUp={props.onRowMouseUp}
-        onRowMouseDown={props.onRowMouseDown}
+        onRowMouseUp={this.props.onRowMouseUp}
+        onRowMouseDown={this._onRowReorderStart}
         onRowMouseEnter={props.onRowMouseEnter}
         onRowMouseLeave={props.onRowMouseLeave}
         onRowTouchStart={props.touchScrollEnabled ? props.onRowTouchStart : null}
@@ -945,9 +948,9 @@ class FixedDataTable extends React.Component {
     }
   }
 
-  _onRefRows = (div) => {
-    this._divRefRows = div;
-  }
+  // _onRefRows = (div) => {
+  //   this._divRefRows = div;
+  // }
 
   /**
    * This is called when a cell that is in the header of a column has its
@@ -1029,40 +1032,38 @@ class FixedDataTable extends React.Component {
     };
   }
 
-  _handleStart = (event) => {
-    let { firstRowIndex, rowOffsets, rowsCount, scrollY, storedHeights, rowSettings } = this.props; 
-    this._position = getPosition(event);
-    const y = this._position.y + scrollY;
+  _onRowReorderStart = (event, rowIndex) => {
 
-    var offset, type;
-    for (let rowIndex = firstRowIndex; rowIndex < rowsCount; rowIndex ++) {
-      offset = rowOffsets[rowIndex];
-      type = rowSettings.rowTypeGetter(rowIndex); 
-      if (type === RowType.ROW && y >= offset && y <= offset + storedHeights[rowIndex]) {
-        if (this.props.rowKeyGetter) {
-          this._draggingRowKey = this.props.rowKeyGetter(rowIndex);
-        }
-        this._draggingRowIndex = rowIndex;
-        this._draggingHeight = storedHeights[rowIndex];
-        this._originalTop = y;
-        break;
+    let { rowOffsets, storedHeights, rowSettings } = this.props; 
+
+    this._position = getPosition(event, this._divRef);
+    
+    let type = rowSettings.rowTypeGetter(rowIndex); 
+
+    if (type === RowType.ROW) {
+      if (this.props.rowKeyGetter) {
+        this._draggingRowKey = this.props.rowKeyGetter(rowIndex);
       }
+      this._draggingRowIndex = rowIndex;
+      this._draggingHeight = storedHeights[rowIndex];
+      this._originalTop = rowOffsets[rowIndex];
     }
   }
 
-  _handleMove = (event) => {
+  _onMouseMove(event) {
     // not selected any row
     if (!this._draggingRowKey) {
       return;
     }
 
     let { firstRowIndex, rowOffsets, rowsCount, scrollX, scrollY, storedHeights } = this.props; 
-    const position = getPosition(event);
+    const position = getPosition(event, this._divRef);
     const delta = {
       x: this._position.x - position.x,
       y: this._position.y - position.y,
     };
-    const y = Math.min(position.y + scrollY, this.props.scrollContentHeight);
+    
+   
     if (this._dragging) {
       ///here find a place to drop the dragging row
       if (position.x > this.props.width - DRAG_SCROLL_BUFFER) {
@@ -1077,16 +1078,8 @@ class FixedDataTable extends React.Component {
         this._onScroll(0, DRAG_SCROLL_SPEED * -1);
       }
 
-      // if (this._dropRowIndex < this._draggingRowIndex) {
-      //   if (rowIndex > this._dropRowIndex && rowIndex < this._draggingRowIndex) {
-      //     offset += this._draggingHeight;
-      //   }
-      // } else if (this._dropRowIndex > this._draggingRowIndex) {
-      //   if (rowIndex > this._draggingRowIndex && rowIndex < this._dropRowIndex) {
-      //     offset -= this._draggingHeight;
-      //   }
-      // }
-
+      const y = Math.min(position.y + scrollY, this.props.scrollContentHeight);
+      //const y = Math.min(this._originalTop + delta.y + scrollY, this.props.scrollContentHeight);
       // let off = 0;
       for (let rowIndex = firstRowIndex; rowIndex < rowsCount; rowIndex ++) {
         let offset = rowOffsets[rowIndex];
@@ -1126,7 +1119,7 @@ class FixedDataTable extends React.Component {
 
     const combinedDelta = Math.abs(delta.x) + Math.abs(delta.y);
 
-    if (combinedDelta > 10 && this._draggingRowIndex) {
+    if (combinedDelta > 15 && this._draggingRowIndex) {
       this._dragging = true;
       this.props.rowActions.startRowReorder({
         left: scrollX,
@@ -1141,7 +1134,7 @@ class FixedDataTable extends React.Component {
     }
   }
 
-  _handleEnd = (event) => {
+  _onMouseUp(event) {
     this._draggingRowIndex = undefined;
     this._dragging = false;
     if (this.props.isRowReordering) {

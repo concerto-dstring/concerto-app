@@ -18,21 +18,22 @@ export const events = {
     start: ['touchstart', 'mousedown'],
 }
 
-export function getPosition(event) {
+export function getPosition(event, ref) {
+    var targetRect = ref.getBoundingClientRect();
     if (event.touches && event.touches.length) {
       return {
-        x: event.touches[0].pageX,
-        y: event.touches[0].pageY,
+        x: event.touches[0].pageX - targetRect.left,
+        y: event.touches[0].pageY - targetRect.top,
       };
     } else if (event.changedTouches && event.changedTouches.length) {
       return {
-        x: event.changedTouches[0].pageX,
-        y: event.changedTouches[0].pageY,
+        x: event.changedTouches[0].pageX - targetRect.left,
+        y: event.changedTouches[0].pageY - targetRect.top,
       };
     } else {
       return {
-        x: event.pageX,
-        y: event.pageY,
+        x: event.pageX - targetRect.left,
+        y: event.pageY - targetRect.top,
       };
     }
 }
