@@ -51,7 +51,7 @@ class DataListWrapper {
 
     addNewRow(index, groupKey, newItem) {
         let rowKey = this._dataset.addNewRow(groupKey, newItem);
-        for (let row = this._indexMap.length - 1; row > index; -- row ) {
+        for (let row = this._indexMap.length; row > index; -- row ) {
             this._indexMap[row] = this._indexMap[row-1]; 
         }
         this._indexMap[index] = {rowType:RowType.ROW, groupKey:groupKey, rowKey:rowKey};
@@ -80,6 +80,7 @@ class DataListWrapper {
     getRowMap() {
         return this._indexMap;
     }
+
     setObjectAt(rowIndex, columnKey, value) {
         this._dataset.setObjectAt(this._indexMap[rowIndex].rowKey, columnKey, value);
     }
@@ -218,25 +219,19 @@ class MainTable extends React.Component {
             let column = columns[i];
             if (columnKey === column.columnKey) {
                 rowTemplates.width = column.width;
+                rowTemplates.columnKey = columnKey;
+                rowTemplates.header = <EditableCell value={column.name} />;
+                rowTemplates.footer = <Cell>summary</Cell>;
+                rowTemplates.width = this.getColumnWidth(columnKey);
+                rowTemplates.minWidth = 70;
+                rowTemplates.isResizable = true;
                 if (column.type === ColumnType.LABEL) {
-                    rowTemplates.columnKey = columnKey;
-                    rowTemplates.header = <Cell>{column.name}</Cell>;
                     rowTemplates.cell = <TextCell data={sortedRowList}/>;
-                    rowTemplates.footer = <Cell>summary</Cell>;
-                    rowTemplates.width = this.getColumnWidth(columnKey);
-                    rowTemplates.minWidth = 70;
-                    rowTemplates.isResizable = true;
                     return rowTemplates;   
                 }
                 if (column.type === ColumnType.EDITBOX) {
-                    rowTemplates.columnKey = columnKey;
-                    rowTemplates.header = <Cell>{column.name}</Cell>;
                     rowTemplates.cell = <EditableCell data={sortedRowList}/>;
-                    rowTemplates.footer = <Cell>summary</Cell>;
-                    rowTemplates.width = this.getColumnWidth(columnKey);
-                    rowTemplates.minWidth = 70;
-                    rowTemplates.isResizable = true;
-                    return rowTemplates;  
+                    return rowTemplates;
                 }
             }
         }

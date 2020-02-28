@@ -17,11 +17,12 @@ class MainTableDataStore {
     // columnkey
 
     constructor() {
-        this._size = 0;
+        this._sizeRows = 0;
         this._columns= [];
         this._sizeColumns = 0;
         this._rowData = {};
         this._groups = [];
+        this._sizeGroups = 0;
         this.addNewRow = this.addNewRow.bind(this);
         this.addNewColumn = this.addNewColumn.bind(this);
         this.setObjectAt = this.setObjectAt.bind(this);
@@ -41,39 +42,40 @@ class MainTableDataStore {
         this._groups.push({groupKey: '1', name: 'group 1', rows:['1', '2', '3', '4']});
         this._groups.push({groupKey: '2', name: 'group 2', rows:['5', '6', '7', '8']});
         this._groups.push({groupKey: '3', name: 'group 3', rows:['9', '10']});
-
+        this._sizeGroups = 3;
+        
         // create row data
-        this._rowData['1'] = {'1': 'row 1, column 1','2': 'row 1, column 1', '3': 'row 1, column 3', '4': 'row 1, column 4',
+        this._rowData['1'] = {'1': 'row 1, column 1','2': 'row 1, column 2', '3': 'row 1, column 3', '4': 'row 1, column 4',
         '5': 'row 1, column 5', '6': 'row 1, column 6'};
 
-        this._rowData['2'] = {'1': 'row 2, column 1','2': 'row 2, column 1', '3': 'row 2, column 3', '4': 'row 2, column 4',
+        this._rowData['2'] = {'1': 'row 2, column 1','2': 'row 2, column 2', '3': 'row 2, column 3', '4': 'row 2, column 4',
         '5': 'row 2, column 5', '6': 'row 2, column 6'};
         
-        this._rowData['3'] = {'1': 'row 3, column 1','2': 'row 3, column 1', '3': 'row 3, column 3', '4': 'row 3, column 4',
+        this._rowData['3'] = {'1': 'row 3, column 1','2': 'row 3, column 2', '3': 'row 3, column 3', '4': 'row 3, column 4',
         '5': 'row 3, column 5', '6': 'row 3, column 6'};  
 
-        this._rowData['4'] = {'1': 'row 4, column 1','2': 'row 4, column 1', '3': 'row 4, column 3', '4': 'row 4, column 4',
+        this._rowData['4'] = {'1': 'row 4, column 1','2': 'row 4, column 2', '3': 'row 4, column 3', '4': 'row 4, column 4',
         '5': 'row 4, column 5', '6': 'row 4, column 6'}; 
 
-        this._rowData['5'] = {'1': 'row 5, column 1','2': 'row 5, column 1', '3': 'row 5, column 3', '4': 'row 5, column 4',
+        this._rowData['5'] = {'1': 'row 5, column 1','2': 'row 5, column 2', '3': 'row 5, column 3', '4': 'row 5, column 4',
         '5': 'row 5, column 5', '6': 'row 5, column 6'}; 
 
-        this._rowData['6'] = {'1': 'row 6, column 1','2': 'row 6, column 1', '3': 'row 6, column 3', '4': 'row 6, column 4',
+        this._rowData['6'] = {'1': 'row 6, column 1','2': 'row 6, column 2', '3': 'row 6, column 3', '4': 'row 6, column 4',
         '5': 'row 6, column 5', '6': 'row 6, column 6'}; 
 
-        this._rowData['7'] = {'1': 'row 7, column 1','2': 'row 7, column 1', '3': 'row 7, column 3', '4': 'row 7, column 4',
+        this._rowData['7'] = {'1': 'row 7, column 1','2': 'row 7, column 2', '3': 'row 7, column 3', '4': 'row 7, column 4',
         '5': 'row 7, column 5', '6': 'row 7, column 6'};
 
-        this._rowData['8'] = {'1': 'row 8, column 1','2': 'row 8, column 1', '3': 'row 8, column 3', '4': 'row 8, column 4',
+        this._rowData['8'] = {'1': 'row 8, column 1','2': 'row 8, column 2', '3': 'row 8, column 3', '4': 'row 8, column 4',
         '5': 'row 8, column 5', '6': 'row 8, column 6'};
 
-        this._rowData['9'] = {'1': 'row 9, column 1','2': 'row 9, column 1', '3': 'row 9, column 3', '4': 'row 9, column 4',
+        this._rowData['9'] = {'1': 'row 9, column 1','2': 'row 9, column 2', '3': 'row 9, column 3', '4': 'row 9, column 4',
         '5': 'row 9, column 5', '6': 'row 9, column 6'};
 
-        this._rowData['10'] = {'1': 'row 10, column 1','2': 'row 10, column 1', '3': 'row 10, column 3', '4': 'row 10, column 4',
+        this._rowData['10'] = {'1': 'row 10, column 1','2': 'row 10, column 2', '3': 'row 10, column 3', '4': 'row 10, column 4',
         '5': 'row 10, column 5', '6': 'row 10, column 6'};
 
-        this._size = 10;
+        this._sizeRows = 10;
     }
 
     getObjectAt(rowKey) {
@@ -81,6 +83,9 @@ class MainTableDataStore {
     }
 
     setObjectAt(rowKey, columnKey, value) {
+        // skip the group row 
+        if (rowKey == "") 
+            return;
         this._rowData[rowKey][columnKey] = value;
     }
 
@@ -93,8 +98,8 @@ class MainTableDataStore {
     }
 
     addNewRow(groupKey, newItem) {
-        this._size ++;
-        let id = this._size.toString();
+        this._sizeRows ++;
+        let id = this._sizeRows.toString();
         this._rowData[id] = {'1':newItem};
         return id;
     }
