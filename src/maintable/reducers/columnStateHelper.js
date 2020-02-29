@@ -17,7 +17,7 @@ import columnWidths from '../selectors/columnWidths';
 import clamp from 'lodash/clamp';
 
 const DRAG_SCROLL_SPEED = 15;
-const DRAG_SCROLL_BUFFER = 100;
+const DRAG_SCROLL_BUFFER = 50;
 
 /**
  * Initialize scrollX state
@@ -195,7 +195,7 @@ function reorderColumnMove(state, deltaX, deltaY) {
   if (!isFixed) {
     // Relative dragX position on scroll
     const dragX = originalLeft + deltaX;
-    const { columnProps, availableScrollWidth } = columnWidths(state);
+    const { columnProps, availableScrollWidth, availableScrollStart } = columnWidths(state);
     //deltaX += scrollX - scrollStart;
     let x = columnReorderingData.originalLeft + deltaX + columnReorderingData.locationInElement + scrollX;
     var columnAfter, left = 0;
@@ -209,11 +209,11 @@ function reorderColumnMove(state, deltaX, deltaY) {
       }
       left += width;
     }
-
+    
     // Scroll the table left or right if we drag near the edges of the table
-    if (dragX > availableScrollWidth - DRAG_SCROLL_BUFFER) {
+    if (dragX > availableScrollStart + availableScrollWidth - DRAG_SCROLL_BUFFER) {
       scrollX = Math.min(scrollX + DRAG_SCROLL_SPEED, maxScrollX);
-    } else if (dragX <= DRAG_SCROLL_BUFFER) {
+    } else if (dragX <= availableScrollStart + DRAG_SCROLL_BUFFER) {
       scrollX = Math.max(scrollX - DRAG_SCROLL_SPEED, 0);
     }
   }

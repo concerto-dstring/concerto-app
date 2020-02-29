@@ -112,9 +112,27 @@ class MainTableAddRow extends React.Component {
   }
 
   render() /*object*/ {
+
+    const { offsetTop, zIndex, visible, ...rowProps } = this.props;
+
     const className = cx({
       'fixedDataTableRowLayout/main': true
     });
+
+    let dropPlace;
+    if (this.props.isRowReordering 
+      && this.props.rowReorderingData 
+      && rowProps.index === this.props.rowReorderingData.newRowIndex) {
+      let placeStyle = {
+        height: this.props.rowReorderingData.height,
+        width: this.props.width,
+        marginBottom: '-3px',
+        border: '1px dashed gray',
+      }
+      FixedDataTableTranslateDOMPosition(placeStyle, 0, offsetTop, this._initialRender, this.props.isRTL);
+
+      dropPlace = <div style={placeStyle}></div>;
+    }  
 
     const fixedColumnsWidth = sumPropWidths(this.props.fixedColumns);
     var scrollableColumnsWidth = sumPropWidths(this.props.scrollableColumns);
@@ -157,8 +175,6 @@ class MainTableAddRow extends React.Component {
 
     FixedDataTableTranslateDOMPosition(style, 0, offset, this._initialRender, this.props.isRTL);
 
-    const { offsetTop, zIndex, visible, ...rowProps } = this.props;
-
     var scrollbarOffset = this.props.showScrollbarY ? Scrollbar.SIZE : 0;
     
     let scrollbarSpacer = null;
@@ -177,10 +193,15 @@ class MainTableAddRow extends React.Component {
         />;
     }
 
-    return <div style={style} className={className} >
-            <Input style={inputStyle} action='Add' placeholder='+ Add' onKeyPress={this._onKeyPress} value={this.state.newItem} onChange={this.handleChange} />
-            {scrollbarSpacer}
-           </div>;
+    return ( 
+          <div> 
+            {dropPlace}
+            <div style={style} className={className} >
+              <Input style={inputStyle} action='Add' placeholder='+ Add' onKeyPress={this._onKeyPress} value={this.state.newItem} onChange={this.handleChange} />
+              {scrollbarSpacer}
+            </div>
+          </div>
+          );
   }
 }
 

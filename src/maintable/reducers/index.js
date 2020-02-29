@@ -196,7 +196,7 @@ function reducers(state = getInitialState(), action) {
     }
     case ActionTypes.ROW_REORDER_MOVE: {
       const { reorderData } = action;
-      return rowStateHelper.reorderRowMove(state, reorderData);
+        return rowStateHelper.reorderRowMove(state, reorderData);
     }
     case ActionTypes.ROW_REORDER_END: {
       return Object.assign({}, state, {

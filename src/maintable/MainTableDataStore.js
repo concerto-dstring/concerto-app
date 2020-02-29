@@ -3,8 +3,7 @@
  * Column array [{ColumnKey, Name, Width, Type}]
  * Rows Data {(RowKey, ColumnKey) -> Data }]
  * Group array [GroupKey, Group Name, [Rows]]
- * @providesModule FixedDataTableBufferedRows
- * @typechecks
+ * all data will go to api
  */
 
 'use strict';
@@ -26,6 +25,11 @@ class MainTableDataStore {
         this.addNewRow = this.addNewRow.bind(this);
         this.addNewColumn = this.addNewColumn.bind(this);
         this.setObjectAt = this.setObjectAt.bind(this);
+        this.removeRow = this.removeRow.bind(this);
+        this.removeRows = this.removeRows.bind(this);
+        this.reorderColumn = this.reorderColumn.bind(this);
+        this.addGroup = this.addGroup.bind(this);
+        this.removeGroup = this.removeGroup.bind(this);
     }
     
     createFakeObjectData() {
@@ -84,7 +88,7 @@ class MainTableDataStore {
 
     setObjectAt(rowKey, columnKey, value) {
         // skip the group row 
-        if (rowKey == "") 
+        if (!rowKey || !columnKey) 
             return;
         this._rowData[rowKey][columnKey] = value;
     }
@@ -93,14 +97,34 @@ class MainTableDataStore {
         return this._groups;
     }
 
+    addGroup(groupName) {
+        this._sizeGroups ++;
+        let id = this._sizeGroups.toString();
+        this._groups.push({groupKey: id, name: groupName, rows:[]});
+    }
+
+    removeGroup(groupKey) {
+        let index = this._groups.findIndex(column => column.groupKey == groupKey);
+        if (index < 0) {
+            return;
+        }
+        this._groups.splice(index, 1);
+    }
+
     getColumns() {
         return this._columns;
     }
 
-    addNewRow(groupKey, newItem) {
+    addNewRow(newItem, groupKey) {
+        let index = this._groups.findIndex(column => column.groupKey == groupKey);
+        if (index < 0) {
+            return;
+        }
         this._sizeRows ++;
         let id = this._sizeRows.toString();
         this._rowData[id] = {'1':newItem};
+        let rows = this._groups[index].rows;
+        rows.push(id);
         return id;
     }
 
@@ -111,8 +135,47 @@ class MainTableDataStore {
         return id;
     }
 
+    removeColumn(columnKey) {
+        let index = this._columns.findIndex(column => column.columnKey == columnKey);
+        if (index < 0) {
+            return;
+        }
+        this._columns.splice(index, 1);
+        // push undo stack 
+    }
 
+    removeRow(rowKey) {
+        delete this._rowData[rowKey];
+    }
 
+    removeRows(rowKeys) {
+        rowKeys.forEach(rowKey => {
+            delete this._rowData[rowKey];
+        });
+    }
+
+    reorderColumn(columnAfter, columnKey) {
+        if (columnAfter === columnKey) {
+            return;
+        }
+        let index = this._columns.findIndex(column => column.columnKey == columnKey);
+        if (index < 0) {
+            return;
+        }
+        let columnToReorder = this._columns[index];
+
+        if (columnAfter) {
+            var iindex = this._columns.findIndex(column => column.columnKey == columnAfter);
+            if (iindex < 0) { 
+                return;
+            }
+            this._columns.splice(index, 1);
+            this._columns.splice(iindex, 0, columnToReorder);
+        } else if (index !== this._columns.length - 1) {
+            this._columns.splice(index, 1);
+            this._columns.push(columnToReorder);
+        }
+    }
 }
 
 

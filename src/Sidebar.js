@@ -24,6 +24,7 @@ import Settings from '@material-ui/icons/Settings';
 import PersonPin from '@material-ui/icons/PersonPin';
 
 import MainTable from './maintable/MainTable';
+import { Hidden } from '@material-ui/core';
   
 const drawerWidth = 240;
 

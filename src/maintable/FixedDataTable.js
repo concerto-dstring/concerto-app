@@ -37,7 +37,7 @@ import './css/style/fixedDataTable.css';
 const ARROW_SCROLL_SPEED = 25;
 
 const DRAG_SCROLL_SPEED  = 10;
-const DRAG_SCROLL_BUFFER = 50;
+const DRAG_SCROLL_BUFFER = 40;
 
 
 /**
@@ -1100,10 +1100,12 @@ class FixedDataTable extends React.Component {
                 dropRowIndex --;
               break;
             case RowType.FOOTER:
+              if (this._draggingRowIndex < rowIndex)
                 dropRowIndex -= 2;
+              else 
+                dropRowIndex --;
               break;
           }
-
           this.props.rowActions.moveRowReorder({
             deltaX: delta.x,
             deltaY: delta.y,
@@ -1119,7 +1121,7 @@ class FixedDataTable extends React.Component {
 
     const combinedDelta = Math.abs(delta.x) + Math.abs(delta.y);
 
-    if (combinedDelta > 15 && this._draggingRowIndex) {
+    if (combinedDelta > 20 && this._draggingRowIndex) {
       this._dragging = true;
       this.props.rowActions.startRowReorder({
         left: scrollX,

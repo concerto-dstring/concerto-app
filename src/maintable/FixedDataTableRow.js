@@ -231,7 +231,7 @@ class FixedDataTableRowImpl extends React.Component {
         columns={this.props.fixedColumns}
         touchEnabled={this.props.touchEnabled}
         onColumnResize={this.props.onColumnResize}
-        onColumnReorder={this.props.onColumnReorder}
+        //onColumnReorder={this.props.onColumnReorder}
         onColumnReorderMove={this.props.onColumnReorderMove}
         onColumnReorderEnd={this.props.onColumnReorderEnd}
         isColumnReordering={this.props.isColumnReordering}
@@ -552,7 +552,7 @@ class FixedDataTableRow extends React.Component {
       }
       FixedDataTableTranslateDOMPosition(placeStyle, 0, offsetTop, this._initialRender, this.props.isRTL);
 
-      dropPlace = <div style={placeStyle}></div>
+      dropPlace = <div style={placeStyle}></div>;
     }  
 
     FixedDataTableTranslateDOMPosition(style, 0, top, this._initialRender, this.props.isRTL);
