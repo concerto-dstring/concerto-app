@@ -83,6 +83,8 @@ class MainTableDataStore {
     }
 
     getObjectAt(rowKey) {
+        console.log(rowKey);
+        console.log(this._rowData[rowKey]);
         return this._rowData[rowKey];
     }
 
