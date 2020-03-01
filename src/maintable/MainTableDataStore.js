@@ -115,8 +115,8 @@ class MainTableDataStore {
         return this._columns;
     }
 
-    addNewRow(newItem, groupKey) {
-        let index = this._groups.findIndex(column => column.groupKey == groupKey);
+    addNewRow(groupKey, newItem) {
+        let index = this._groups.findIndex(group => group.groupKey == groupKey);
         if (index < 0) {
             return;
         }
