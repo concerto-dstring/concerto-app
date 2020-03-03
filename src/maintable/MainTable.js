@@ -303,7 +303,7 @@ class MainTable extends React.Component {
 
         const fixedColumn = this.state.columns.length > 0 ? this.state.columns[0] : []; 
         const scrollColumns = this.state.columns.slice(1); 
-        
+
         return (
             <Table
                 ref={this.handleRef}
@@ -323,7 +323,9 @@ class MainTable extends React.Component {
                 onNewRowAddCallback={this._onAddNewRowCallback}
                 data={sortedRowList}
                 height={this.props.containerHeight}
-                width={this.props.containerWidth}
+
+                // 如果侧边栏展开则宽度减去侧边栏宽度
+                width={this.props.isOpenDrawer ? this.props.containerWidth - this.props.drawerWidth : this.props.containerWidth}
                 {...version}
                 {...this.props}>
                 {fixedColumn && <Column {...this.getColumnTemplate(sortedRowList, fixedColumn.columnKey)} fixed={true} />}

@@ -18,12 +18,12 @@
 .public_Scrollbar_main.public_Scrollbar_mainActive,
 .public_Scrollbar_main {
   background-color: #fff;
-  border-left: 1px solid #d3d3d3;
+  /* border-left: 1px solid #d3d3d3; */
 }
 
 .fixedDataTable_isRTL .public_Scrollbar_main.public_Scrollbar_mainActive,
 .fixedDataTable_isRTL .public_Scrollbar_main {
-  border-right: 1px solid #d3d3d3;
+  /* border-right: 1px solid #d3d3d3; */
   border-left-width: 0;
 }
 
@@ -40,5 +40,5 @@
 .public_Scrollbar_main:hover .public_Scrollbar_face:after,
 .public_Scrollbar_mainActive .public_Scrollbar_face:after,
 .public_Scrollbar_faceActive:after {
-  background-color: #7d7d7d;
+  background-color: #c2c2c2;
 }

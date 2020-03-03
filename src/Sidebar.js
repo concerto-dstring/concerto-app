@@ -126,6 +126,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function MiniSidebar(props) {
   const classes = useStyles();
+  
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
 
@@ -138,6 +139,8 @@ export default function MiniSidebar(props) {
   };
 
   const dataset = props.dataset;
+
+  const leftDrawerWidth = document.getElementById("leftDrawer") ? document.getElementById("leftDrawer").clientWidth : 0;
 
   return (
     <div className={classes.root}>
@@ -179,6 +182,7 @@ export default function MiniSidebar(props) {
         </Toolbar>
       </AppBar>
       <Drawer
+        id="leftDrawer"
         variant="permanent"
         className={clsx(classes.drawer, {
           [classes.drawerOpen]: open,
@@ -221,7 +225,7 @@ export default function MiniSidebar(props) {
       </Drawer>
       <main className={classes.content}>
         <div className={classes.toolbar} />
-        <MainTable dataset={dataset}/>
+        <MainTable dataset={dataset} isOpenDrawer={open} drawerWidth={drawerWidth - leftDrawerWidth} />
       </main>
     </div>
   );
