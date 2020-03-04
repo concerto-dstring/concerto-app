@@ -36,7 +36,6 @@ class EditableCell extends React.PureComponent {
     }
 
     handleHide = () => {
-        debugger
         const type = this.state.type;
         if(type == 'DATE'){
           this.state.value = moment(this.state.value).format('YYYY-MM-DD');
@@ -58,6 +57,12 @@ class EditableCell extends React.PureComponent {
            case 'NUMBER':
                  value = e;
                  break;
+           case 'SELECT':
+                 value = e;
+                 break;    
+           case 'PEOPLE':
+                 value = String(e);
+                 break;            
            default:
                  value = e.target.value;    
         }

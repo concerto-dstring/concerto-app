@@ -1,6 +1,6 @@
 import React from 'react';
 import 'antd/dist/antd.css'
-import {Button, DatePicker,Input,InputNumber,Select, Popover,Menu, Dropdown} from 'antd';
+import {Avatar,Button, DatePicker,Input,InputNumber,Select, Popover,Menu, Dropdown} from 'antd';
 import {DownloadOutlined,PlusOutlined, DownOutlined, UserOutlined,ScheduleOutlined,AccountBookOutlined } from '@ant-design/icons';
 
 class TableCellComponent{
@@ -21,7 +21,11 @@ class TableCellComponent{
         const { Option } = Select;
         const children = [];
         for (let i = 10; i < 36; i++) {
-          children.push(<Option key={i.toString(36) + i}>{i.toString(36) + i}</Option>);
+          children.push(<Option key={i.toString(36) + i}>
+              <Avatar style={{ verticalAlign: 'middle' }}>
+              {i.toString(36)}
+              </Avatar>&nbsp;
+              {i.toString(36) + i}</Option>);
         }
         return children;
     } 
@@ -58,13 +62,14 @@ class TableCellComponent{
 
            case this._proptype.TABLE_CELL_COMPONENT.PEOPLE:
            return <Select 
-                    // mode="tags" 
+                    mode="tags" 
                     style={{ width: '100%' }}
-                    placeholder="Tags Mode" 
+                    placeholder="Select a person" 
                     suffixIcon={<UserOutlined />}
+                    tokenSeparators={[',']}
+                    onChange = {events[0]}
                     >
                     {this.getItems()}
-                    onSelect = {events[0]}
                   </Select>;
 
            case this._proptype.TABLE_CELL_COMPONENT.SELECT_LIST:
@@ -72,11 +77,13 @@ class TableCellComponent{
                     showSearch
                     value={value}
                     style={{ width: 200 }}
-                    placeholder="Select a person"
+                    placeholder="Select a option"
                     optionFilterProp="children"
                     filterOption={(input, option) =>
                         option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                    }>
+                    }
+                    onSelect={events[0]}
+                    >
                     <Option value="jack">Jack</Option>
                     <Option value="lucy">Lucy</Option>
                     <Option value="tom">Tom</Option>
