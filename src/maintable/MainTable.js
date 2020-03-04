@@ -6,12 +6,21 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Button } from 'semantic-ui-react';
 import { Table, Cell, Column } from './FixedDataTableRoot';
 import { ColumnType,  RowType } from './MainTableType';
 import { TextCell } from '../helpers/cells';
 import { EditableCell } from '../helpers/EditableCell';
 import Dimensions from 'react-dimensions';
+import { Menu, Dropdown, Button, message, Tooltip } from 'antd';
+import {DownloadOutlined,
+    PlusOutlined,
+    DownOutlined,
+    UserOutlined,
+    ScheduleOutlined,
+    FormOutlined,
+    CheckSquareOutlined,
+    StrikethroughOutlined,
+    AccountBookOutlined } from '@ant-design/icons';
 
 class DataViewWrapper {
     constructor(dataset, indexMap) {
@@ -175,6 +184,7 @@ class MainTable extends React.Component {
             groups: groups,
             columns: this._dataset.getColumns(),
             version: 0,
+            type:'INPUT_TEXT'
         };
     }
 
@@ -216,7 +226,10 @@ class MainTable extends React.Component {
         }
     }
 
-    _onColumnAddCallback() {
+    _onColumnAddCallback(t) {
+        this.setState({
+            type:t.key
+        });
         this.state.sortedRowList.addNewColumn('New Column');
         this._refresh();
     }
@@ -257,12 +270,13 @@ class MainTable extends React.Component {
     getColumnTemplate(sortedRowList, columnKey) {
         let columns = this.state.columns;
         let rowTemplates = {};
+        let type = this.state.type;
         for (let i  = 0; i < columns.length; i ++) {
             let column = columns[i];
             if (columnKey === column.columnKey) {
                 rowTemplates.width = column.width;
                 rowTemplates.columnKey = columnKey;
-                rowTemplates.header = <EditableCell value={column.name} />;
+                rowTemplates.header = <EditableCell value={column.name} type={type} />;
                 rowTemplates.footer = <Cell>summary</Cell>;
                 rowTemplates.width = this.getColumnWidth(columnKey);
                 rowTemplates.minWidth = 70;
@@ -272,7 +286,7 @@ class MainTable extends React.Component {
                     return rowTemplates;   
                 }
                 if (column.type === ColumnType.EDITBOX) {
-                    rowTemplates.cell = <EditableCell data={sortedRowList}/>;
+                    rowTemplates.cell = <EditableCell data={sortedRowList} type={type}/>;
                     return rowTemplates;
                 }
             }
@@ -302,8 +316,35 @@ class MainTable extends React.Component {
         };
 
         const fixedColumn = this.state.columns.length > 0 ? this.state.columns[0] : []; 
-        const scrollColumns = this.state.columns.slice(1); 
-        
+        const scrollColumns = this.state.columns.slice(1);
+        const menu = (
+            <Menu onClick={this._onColumnAddCallback}>
+                <Menu.Item key="DATE">
+                    <ScheduleOutlined />
+                    DATE
+                </Menu.Item>
+                <Menu.Item key="NUMBER">
+                    <AccountBookOutlined />
+                    NUMBER
+                </Menu.Item>
+                <Menu.Item key="TEXT">
+                    <FormOutlined />
+                    TEXT
+                </Menu.Item>
+                <Menu.Item key="SELECT">
+                    <CheckSquareOutlined />
+                    SELECT
+                </Menu.Item>
+                <Menu.Item key="PEOPLE">
+                    <UserOutlined />
+                    PEOPLE
+                </Menu.Item>
+                <Menu.Item key="STATUS">
+                    <StrikethroughOutlined />
+                    STATUS
+                </Menu.Item>
+            </Menu>
+        );
         return (
             <Table
                 ref={this.handleRef}
@@ -333,7 +374,13 @@ class MainTable extends React.Component {
                 }              
                 <Column
                     columnKey=""
-                    header={<Button basic circular icon='plus circle' style={addColumnStyle} onClick={this._onColumnAddCallback}/>}
+                    header={
+
+                        <Dropdown overlay={menu}>
+                        <Button shape="circle" icon={<PlusOutlined />} size="large" style={addColumnStyle}>
+                        </Button>
+                        </Dropdown>
+                        }
                     width={40}
                 />
             </Table>        
