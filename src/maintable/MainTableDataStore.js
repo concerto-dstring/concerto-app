@@ -83,11 +83,7 @@ class MainTableDataStore {
     }
 
     getObjectAt(rowKey) {
-<<<<<<< .merge_file_a14488
-        // console.log(rowKey);
-        // console.log(this._rowData[rowKey]);
-=======
->>>>>>> .merge_file_a13152
+
         return this._rowData[rowKey];
     }
 
