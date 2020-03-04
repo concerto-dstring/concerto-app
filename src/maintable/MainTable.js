@@ -6,12 +6,13 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Button } from 'semantic-ui-react';
 import { Table, Cell, Column } from './FixedDataTableRoot';
 import { ColumnType,  RowType } from './MainTableType';
 import { TextCell } from '../helpers/cells';
 import { EditableCell } from '../helpers/EditableCell';
 import Dimensions from 'react-dimensions';
-import { Menu, Dropdown, Button, message, Tooltip } from 'antd';
+import { Menu, Dropdown, message, Tooltip } from 'antd';
 import {DownloadOutlined,
     PlusOutlined,
     DownOutlined,
@@ -377,8 +378,7 @@ class MainTable extends React.Component {
                     header={
 
                         <Dropdown overlay={menu}>
-                        <Button shape="circle" icon={<PlusOutlined />} size="large" style={addColumnStyle}>
-                        </Button>
+                        <Button basic circular icon='plus circle' style={addColumnStyle}/>
                         </Dropdown>
                         }
                     width={40}

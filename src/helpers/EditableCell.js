@@ -3,6 +3,8 @@ import { Overlay } from 'react-overlays';
 import { Input } from 'semantic-ui-react';
 import styled from 'styled-components';
 import Keys from '../maintable/vendor_upstream/core/Keys';
+import moment from 'moment';
+import 'moment/locale/zh-cn';
 import TableCellComponent from '../maintable/TableCellComponent';
 const CellContainer = styled.div`
   display: flex;
@@ -34,7 +36,11 @@ class EditableCell extends React.PureComponent {
     }
 
     handleHide = () => {
-        debugger;
+        debugger
+        const type = this.state.type;
+        if(type == 'DATE'){
+          this.state.value = moment(this.state.value).format('YYYY-MM-DD');
+        }
         this.setState({ editing: false });
         if (this.props.data) {
             this.props.data.setObjectAt(this.props.rowIndex, this.props.columnKey, this.state.value);
@@ -43,10 +49,22 @@ class EditableCell extends React.PureComponent {
 
     handleChange = (e,v )=>
     {
-        debugger;
+        const type = this.state.type;
+        let value = '';
+        switch(type){
+           case 'DATE':
+                 value = moment(v, 'YYYY-MM-DD');
+                 break;
+           case 'NUMBER':
+                 value = e;
+                 break;
+           default:
+                 value = e.target.value;    
+        }
         this.setState({
-            value: e.target.value,
+            value: value,
         });
+        
     }
 
     handleKey = e =>

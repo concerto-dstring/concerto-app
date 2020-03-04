@@ -28,29 +28,23 @@ class TableCellComponent{
     getMenu = () =>{
         return (
             <Menu>
-                <Menu.Item key="DATE">
-                <ScheduleOutlined />
-                DATE
+                <Menu.Item key="DATE" style={{background:'red'}}>
+                &nbsp;
                 </Menu.Item>
-                <Menu.Item key="NUMBER">
-                <AccountBookOutlined />
-                NUMBER
+                <Menu.Item key="NUMBER" style={{background:'yellow'}}>
+                &nbsp;
                 </Menu.Item>
-                <Menu.Item key="TEXT">
-                <UserOutlined />
-                TEXT
+                <Menu.Item key="TEXT" style={{background:'blue'}}>
+                &nbsp;
                 </Menu.Item>
-                <Menu.Item key="SELECT">
-                <UserOutlined />
-                SELECT
+                <Menu.Item key="SELECT"  style={{background:'green'}}>
+                &nbsp;
                 </Menu.Item>
-                <Menu.Item key="PEOPLE">
-                <UserOutlined />
-                PEOPLE
+                <Menu.Item key="PEOPLE"  style={{background:'white'}}>
+                &nbsp;
                 </Menu.Item>
-                <Menu.Item key="STATUS">
-                <UserOutlined />
-                STATUS
+                <Menu.Item key="STATUS" style={{background:'black'}}>
+                &nbsp;
                 </Menu.Item>
           </Menu>
         );
@@ -69,8 +63,8 @@ class TableCellComponent{
                     placeholder="Tags Mode" 
                     suffixIcon={<UserOutlined />}
                     >
-                    {this.getItems}
-                    onSelect = {this.cellExitEditSetText}
+                    {this.getItems()}
+                    onSelect = {events[0]}
                   </Select>;
 
            case this._proptype.TABLE_CELL_COMPONENT.SELECT_LIST:
@@ -82,8 +76,7 @@ class TableCellComponent{
                     optionFilterProp="children"
                     filterOption={(input, option) =>
                         option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                    }
-                    >
+                    }>
                     <Option value="jack">Jack</Option>
                     <Option value="lucy">Lucy</Option>
                     <Option value="tom">Tom</Option>
@@ -91,12 +84,12 @@ class TableCellComponent{
 
            case this._proptype.TABLE_CELL_COMPONENT.STATUS:
            return <Dropdown overlay={this.getMenu}>
-                    <Button shape="circle" icon={<PlusOutlined />} >
+                    <Button  style={{width:'100%',background:'#f1f3f5'}} >
                     </Button>
                   </Dropdown>
            
            case this._proptype.TABLE_CELL_COMPONENT.NUMBER:
-           return <InputNumber  value={value}/>;
+           return <InputNumber  value={value} onChange={events[0]} onKeyDown={events[1]}/>;
 
            default:
            return <Input style={style} value={value} onChange={events[0]} onKeyDown={events[1]}/>;
