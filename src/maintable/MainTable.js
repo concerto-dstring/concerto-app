@@ -12,7 +12,16 @@ import { ColumnType,  RowType } from './MainTableType';
 import { TextCell } from '../helpers/cells';
 import { EditableCell } from '../helpers/EditableCell';
 import Dimensions from 'react-dimensions';
-
+import { Menu, Dropdown, message, Tooltip } from 'antd';
+import {DownloadOutlined,
+    PlusOutlined,
+    DownOutlined,
+    UserOutlined,
+    ScheduleOutlined,
+    FormOutlined,
+    CheckSquareOutlined,
+    StrikethroughOutlined,
+    AccountBookOutlined } from '@ant-design/icons';
 class DataViewWrapper {
     constructor(dataset, indexMap) {
         this._indexMap = indexMap;
@@ -216,7 +225,10 @@ class MainTable extends React.Component {
         }
     }
 
-    _onColumnAddCallback() {
+    _onColumnAddCallback(t) {
+        this.setState({
+            type:t.key
+        });
         this.state.sortedRowList.addNewColumn('New Column');
         this._refresh();
     }
@@ -256,13 +268,14 @@ class MainTable extends React.Component {
 
     getColumnTemplate(sortedRowList, columnKey) {
         let columns = this.state.columns;
+        let type = this.state.type;
         let rowTemplates = {};
         for (let i  = 0; i < columns.length; i ++) {
             let column = columns[i];
             if (columnKey === column.columnKey) {
                 rowTemplates.width = column.width;
                 rowTemplates.columnKey = columnKey;
-                rowTemplates.header = <EditableCell value={column.name} />;
+                rowTemplates.header = <EditableCell value={column.name} type={type}/>;
                 rowTemplates.footer = <Cell>summary</Cell>;
                 rowTemplates.width = this.getColumnWidth(columnKey);
                 rowTemplates.minWidth = 70;
@@ -272,7 +285,7 @@ class MainTable extends React.Component {
                     return rowTemplates;   
                 }
                 if (column.type === ColumnType.EDITBOX) {
-                    rowTemplates.cell = <EditableCell data={sortedRowList}/>;
+                    rowTemplates.cell = <EditableCell data={sortedRowList} type={type}/>;
                     return rowTemplates;
                 }
             }
@@ -303,7 +316,34 @@ class MainTable extends React.Component {
 
         const fixedColumn = this.state.columns.length > 0 ? this.state.columns[0] : []; 
         const scrollColumns = this.state.columns.slice(1); 
-        
+        const menu = (
+            <Menu onClick={this._onColumnAddCallback}>
+                <Menu.Item key="DATE">
+                    <ScheduleOutlined />
+                    DATE
+                </Menu.Item>
+                <Menu.Item key="NUMBER">
+                    <AccountBookOutlined />
+                    NUMBER
+                </Menu.Item>
+                <Menu.Item key="TEXT">
+                    <FormOutlined />
+                    TEXT
+                </Menu.Item>
+                <Menu.Item key="SELECT">
+                    <CheckSquareOutlined />
+                    SELECT
+                </Menu.Item>
+                <Menu.Item key="PEOPLE">
+                    <UserOutlined />
+                    PEOPLE
+                </Menu.Item>
+                <Menu.Item key="STATUS">
+                    <StrikethroughOutlined />
+                    STATUS
+                </Menu.Item>
+            </Menu>
+        );
         return (
             <Table
                 ref={this.handleRef}
@@ -333,7 +373,13 @@ class MainTable extends React.Component {
                 }              
                 <Column
                     columnKey=""
-                    header={<Button basic circular icon='plus circle' style={addColumnStyle} onClick={this._onColumnAddCallback}/>}
+                    header={
+
+                        <Dropdown overlay={menu}>
+                        <Button basic circular icon='plus circle' style={addColumnStyle}/>
+                        </Dropdown>
+                        }
+
                     width={40}
                 />
             </Table>        
