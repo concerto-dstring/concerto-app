@@ -166,7 +166,7 @@ class MainTableDataStore {
 
         if (columnAfter) {
             var iindex = this._columns.findIndex(column => column.columnKey == columnAfter);
-            if (iindex < 0) { 
+            if (iindex <= 0) { 
                 return;
             }
             this._columns.splice(index, 1);

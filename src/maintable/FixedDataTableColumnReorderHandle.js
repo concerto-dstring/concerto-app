@@ -93,8 +93,8 @@ class FixedDataTableColumnReorderHandle extends React.PureComponent {
     var targetRect = event.target.getBoundingClientRect();
     var coordinates = FixedDataTableEventHelper.getCoordinatesFromEvent(event);
 
-    var mouseLocationInElement = coordinates.x - targetRect.left;
-    var mouseLocationInRelationToColumnGroup = mouseLocationInElement + event.target.parentElement.offsetLeft;
+    this.mouseLocationInElement = coordinates.x - targetRect.left;
+    this.mouseLocationInRelationToColumnGroup = this.mouseLocationInElement + event.target.parentElement.offsetLeft;
 
     this._mouseMoveTracker = new DOMMouseMoveTracker(
       this._onMove,
@@ -107,21 +107,12 @@ class FixedDataTableColumnReorderHandle extends React.PureComponent {
       dragDistanceX: 0,
       dragDistanceY: 0,
     });
-    this.props.onMouseDown({
-      columnKey: this.props.columnKey,
-      mouseLocation: {
-        dragDistanceX: 0,
-        dragDistanceY: 0,
-        inElement: mouseLocationInElement,
-        inColumnGroup: mouseLocationInRelationToColumnGroup
-      }
-    });
 
     this._distanceX = 0;
     this._distanceY = 0;
     this._animating = true;
-    this.frameId = requestAnimationFrame(this._updateState);
-
+    this._cumulativeX = 0;
+    this._cumulativeY = 0;
     /**
      * This prevents the rows from moving around when we drag the
      * headers on touch devices.
@@ -134,10 +125,30 @@ class FixedDataTableColumnReorderHandle extends React.PureComponent {
   _onMove = (/*number*/ deltaX, /*number*/ deltaY) => {
     this._distanceX = this.state.dragDistanceX + deltaX * (this.props.isRTL ? -1 : 1);
     this._distanceY = this.state.dragDistanceY + deltaY * (this.props.isRTL ? -1 : 1);
+    this._cumulativeX += this._distanceX;
+    this._cumulativeY += this._distanceY;
+    const combinedDelta = Math.abs(this._cumulativeX) + Math.abs(this._cumulativeY);
+    if (combinedDelta > 15 && !this._dragging && this._animating) {
+      this._distanceX = this._cumulativeX;
+      this._distanceY = this._cumulativeY;
+      this._dragging = true;
+      console.log(this._offsetX);
+      this.props.onMouseDown({
+        columnKey: this.props.columnKey,
+        mouseLocation: {
+          dragDistanceX: 0,
+          dragDistanceY: 0,
+          inElement: this.mouseLocationInElement,
+          inColumnGroup: this.mouseLocationInRelationToColumnGroup
+        }
+      });
+      this.frameId = requestAnimationFrame(this._updateState);
+    }
   }
 
   _onColumnReorderEnd = (/*boolean*/ cancelReorder) => {
     this._animating = false;
+    this._dragging = false;
     cancelAnimationFrame(this.frameId);
     this.frameId = null;
     this._mouseMoveTracker.releaseMouseMoves();
