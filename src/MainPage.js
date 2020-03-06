@@ -24,7 +24,6 @@ import Settings from '@material-ui/icons/Settings';
 import PersonPin from '@material-ui/icons/PersonPin';
 
 import MainTable from './maintable/MainTable';
-import { Hidden } from '@material-ui/core';
   
 const drawerWidth = 240;
 
@@ -124,7 +123,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function MiniSidebar(props) {
+export default function MainPage(props) {
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
@@ -221,7 +220,7 @@ export default function MiniSidebar(props) {
       </Drawer>
       <main className={classes.content}>
         <div className={classes.toolbar} />
-        <MainTable dataset={dataset}/>
+       <MainTable dataset={dataset}/>
       </main>
     </div>
   );
