@@ -31,23 +31,51 @@ class TableCellComponent{
         }
         return children;
     } 
-    getMenu = () =>{
+    getMenu = (event) =>{
         return (
-          <Menu style={{textAlign:'center',fontWeight:'bold'}}>
-            <Menu.Item key="DATE" style={{background:'red',color:'white'}}>
+          <Menu style={{textAlign:'center',fontWeight:'bold'}} onClick={event}>
+            <Menu.Item key="Low" style={this.getColorByStatus('Low')}>
             Low
             </Menu.Item>
-            <Menu.Item key="NUMBER" style={{background:'yellow',color:'white'}}>
+            <Menu.Item key="High" style={this.getColorByStatus('High')}>
             High
             </Menu.Item>
-            <Menu.Item key="TEXT" style={{background:'blue',color:'white'}}>
+            <Menu.Item key="Medium" style={this.getColorByStatus('Medium')}>
             Medium
             </Menu.Item>
-            <Menu.Item key="SELECT"  style={{background:'green',color:'white'}}>
+            <Menu.Item key="Besteffort" style={this.getColorByStatus('Besteffort')}>
             Best effort
+            </Menu.Item>
+            <Menu.Item key="null" style={this.getColorByStatus('null')}>
+            &nbsp;
             </Menu.Item>
           </Menu>
         );
+    }
+    getColorByStatus = (status) => {
+        let styles = {
+            color:'white',
+            width:'100%',
+            margin:'3px 0'
+        };
+        switch(status){
+            case 'Low':
+                styles['background'] = 'rgb(87, 155, 252)';
+                break;
+            case 'High':
+                styles['background'] = 'rgb(226, 68, 92)';
+                break;
+            case 'Medium':
+                styles['background'] = 'rgb(162, 93, 220)';
+                break;
+            case 'Besteffort':
+                styles['background'] = 'rgb(253, 171, 61)';
+                break;
+            default:
+                styles['background'] = 'rgb(196, 196, 196)';
+            
+        }
+        return styles;
     }
     createTableCellComponentByType = (cell_type,value,style,events)=>{
        const { Option } = Select;
@@ -55,7 +83,10 @@ class TableCellComponent{
    
            case this._proptype.TABLE_CELL_COMPONENT.DATEPICK:               
                   value = value?moment(value, 'YYYY-MM-DD'):"";
-           return <DatePicker style={{width:'100%'}} value={value} onChange={events[0]}/>;
+           return <DatePicker 
+                    style={{width:'100%'}} 
+                    value={value} 
+                    onChange={events[0]}/>;
 
            case this._proptype.TABLE_CELL_COMPONENT.PEOPLE:
            return <Select 
@@ -88,16 +119,25 @@ class TableCellComponent{
                 </Select>;
 
            case this._proptype.TABLE_CELL_COMPONENT.STATUS:
-           return <Dropdown overlay={this.getMenu}>
-                    <Button  style={{width:'100%',background:'#f1f3f5'}} >
+           return <Dropdown overlay={this.getMenu(events[0])}>
+                    <Button style={this.getColorByStatus(value)}>
+                        {value}
                     </Button>
                   </Dropdown>
            
            case this._proptype.TABLE_CELL_COMPONENT.NUMBER:
-           return <InputNumber style={{width:'100%'}} value={value} onChange={events[0]} onKeyDown={events[1]}/>;
+           return <InputNumber 
+                    style={{width:'100%'}} 
+                    value={value} 
+                    onChange={events[0]} 
+                    onKeyDown={events[1]}/>;
 
            default:
-           return <Input style={style} value={value} onChange={events[0]} onKeyDown={events[1]}/>;
+           return <Input 
+                    style={style} 
+                    value={value} 
+                    onChange={events[0]} 
+                    onKeyDown={events[1]}/>;
        }
     }
     
