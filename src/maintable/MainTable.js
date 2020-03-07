@@ -183,7 +183,7 @@ class MainTable extends React.Component {
             this._defaultSortIndexes.push(index);
             let startIndex = index;
             index ++;
-            for (let j = 0; j < group.rows.length; j ++) {
+            for (let j = group.rows.length - 1; j >=0; j --) {
                 rows.push({rowType:RowType.ROW, groupKey:group.groupKey, rowKey:group.rows[j]});
                 this._defaultSortIndexes.push(index);
                 index ++;
@@ -327,13 +327,13 @@ class MainTable extends React.Component {
     _onRowReorderEndCallback(rowKey, oldRowIndex, newRowIndex) {
         let rows = this.state.sortedRowList.getRowMap();
         if (oldRowIndex !== newRowIndex) {            
-            if ( newRowIndex < oldRowIndex ) { // move backward
+            if ( newRowIndex < oldRowIndex ) {  // move backward
                 let oldrow = rows[oldRowIndex];
                 for (let row = oldRowIndex; row > newRowIndex; -- row ) {
                     rows[row] = rows[row-1]; 
                 }
                 rows[newRowIndex] = oldrow;
-            } else {   // move forward
+            } else {                            // move forward
                 let oldrow = rows[oldRowIndex];
                 for (let row = oldRowIndex; row < newRowIndex; ++ row ) {
                     rows[row] = rows[row+1]; 
