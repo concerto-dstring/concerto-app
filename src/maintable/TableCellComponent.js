@@ -2,6 +2,8 @@ import React from 'react';
 import 'antd/dist/antd.css'
 import {Avatar,Button, DatePicker,Input,InputNumber,Select, Popover,Menu, Dropdown} from 'antd';
 import {DownloadOutlined,PlusOutlined, DownOutlined, UserOutlined,ScheduleOutlined,AccountBookOutlined } from '@ant-design/icons';
+import moment from 'moment';
+import 'moment/locale/zh-cn';
 
 class TableCellComponent{
     constructor(props){
@@ -31,34 +33,29 @@ class TableCellComponent{
     } 
     getMenu = () =>{
         return (
-            <Menu>
-                <Menu.Item key="DATE" style={{background:'red'}}>
-                &nbsp;
-                </Menu.Item>
-                <Menu.Item key="NUMBER" style={{background:'yellow'}}>
-                &nbsp;
-                </Menu.Item>
-                <Menu.Item key="TEXT" style={{background:'blue'}}>
-                &nbsp;
-                </Menu.Item>
-                <Menu.Item key="SELECT"  style={{background:'green'}}>
-                &nbsp;
-                </Menu.Item>
-                <Menu.Item key="PEOPLE"  style={{background:'white'}}>
-                &nbsp;
-                </Menu.Item>
-                <Menu.Item key="STATUS" style={{background:'black'}}>
-                &nbsp;
-                </Menu.Item>
+          <Menu style={{textAlign:'center',fontWeight:'bold'}}>
+            <Menu.Item key="DATE" style={{background:'red',color:'white'}}>
+            Low
+            </Menu.Item>
+            <Menu.Item key="NUMBER" style={{background:'yellow',color:'white'}}>
+            High
+            </Menu.Item>
+            <Menu.Item key="TEXT" style={{background:'blue',color:'white'}}>
+            Medium
+            </Menu.Item>
+            <Menu.Item key="SELECT"  style={{background:'green',color:'white'}}>
+            Best effort
+            </Menu.Item>
           </Menu>
         );
     }
     createTableCellComponentByType = (cell_type,value,style,events)=>{
        const { Option } = Select;
        switch(cell_type){
-
-           case this._proptype.TABLE_CELL_COMPONENT.DATEPICK:
-           return <DatePicker value={value} onChange={events[0]}/>;
+   
+           case this._proptype.TABLE_CELL_COMPONENT.DATEPICK:               
+                  value = value?moment(value, 'YYYY-MM-DD'):"";
+           return <DatePicker style={{width:'100%'}} value={value} onChange={events[0]}/>;
 
            case this._proptype.TABLE_CELL_COMPONENT.PEOPLE:
            return <Select 
@@ -68,6 +65,7 @@ class TableCellComponent{
                     suffixIcon={<UserOutlined />}
                     tokenSeparators={[',']}
                     onChange = {events[0]}
+                    value={value}
                     >
                     {this.getItems()}
                   </Select>;
@@ -76,7 +74,7 @@ class TableCellComponent{
            return <Select
                     showSearch
                     value={value}
-                    style={{ width: 200 }}
+                    style={{ width: '100%' }}
                     placeholder="Select a option"
                     optionFilterProp="children"
                     filterOption={(input, option) =>
@@ -96,7 +94,7 @@ class TableCellComponent{
                   </Dropdown>
            
            case this._proptype.TABLE_CELL_COMPONENT.NUMBER:
-           return <InputNumber  value={value} onChange={events[0]} onKeyDown={events[1]}/>;
+           return <InputNumber style={{width:'100%'}} value={value} onChange={events[0]} onKeyDown={events[1]}/>;
 
            default:
            return <Input style={style} value={value} onChange={events[0]} onKeyDown={events[1]}/>;

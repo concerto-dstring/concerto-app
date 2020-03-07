@@ -1,30 +1,30 @@
 
 import React from 'react';
-import clsx from 'clsx';
 import { fade, makeStyles, useTheme } from '@material-ui/core/styles';
-import InputBase from '@material-ui/core/InputBase';
-import Drawer from '@material-ui/core/Drawer';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import List from '@material-ui/core/List';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import Typography from '@material-ui/core/Typography';
-import Divider from '@material-ui/core/Divider';
-import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import NotificationsActive from '@material-ui/icons/NotificationsActive';
-import Group from '@material-ui/icons/Group';
-import SearchIcon from '@material-ui/icons/Search';
-import Settings from '@material-ui/icons/Settings';
-import PersonPin from '@material-ui/icons/PersonPin';
-
 import MainTable from './maintable/MainTable';
-  
+ 
+import { Layout, Menu, Breadcrumb, Input, Collapse, Button } from 'antd';
+import { 
+    LeftOutlined,
+    SearchOutlined,
+    UserOutlined,
+    LaptopOutlined,
+    NotificationOutlined,
+    MailOutlined,
+    CalendarOutlined,
+    AppstoreOutlined,
+    SettingOutlined,
+    MenuUnfoldOutlined,
+    MenuFoldOutlined,
+    LeftCircleOutlined,
+    RightCircleOutlined 
+   } from '@ant-design/icons';
+
+const { Panel } = Collapse;
+const { SubMenu } = Menu;
+const { Header, Content, Sider } = Layout;
+const { Search } = Input;
+
 const drawerWidth = 240;
 
 const useStyles = makeStyles(theme => ({
@@ -123,105 +123,136 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function MainPage(props) {
-  const classes = useStyles();
-  const theme = useTheme();
-  const [open, setOpen] = React.useState(false);
+export default class MainPage extends React.Component {
+  constructor(props){
+    super(props)
+    this.dataset = props.dataset;
+    this.state = {
+      collapsed: false,
+    };
+  }
+  
 
-  const handleDrawerOpen = () => {
-    setOpen(true);
+  toggle = () => {
+    this.setState({
+      collapsed: !this.state.collapsed,
+    });
   };
+   
+  
 
-  const handleDrawerClose = () => {
-    setOpen(false);
-  };
-
-  const dataset = props.dataset;
-
-  return (
-    <div className={classes.root}>
-      <CssBaseline />
-      <AppBar
-        position="fixed"
-        className={clsx(classes.appBar, {
-          [classes.appBarShift]: open,
-        })}
-      >
-        <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDrawerOpen}
-            edge="start"
-            className={clsx(classes.menuButton, {
-              [classes.hide]: open,
+  render(){
+    return (
+      <Layout>
+        <Header className="header" style={{background:'#3f51b5',padding:'0 0 0 15px'}} >
+          
+          <h2 style={{fontWeight:'bold',lineHeight:'64px',color:'#cccccc'}}>
+            Concerto Dstring   
+            {React.createElement(this.state.collapsed ? RightCircleOutlined : LeftCircleOutlined , {
+              className: 'trigger',
+              onClick: this.toggle,
+              style:{
+                paddingLeft:'37px',
+                color:'white'
+              }
             })}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" noWrap>
-            Concerto Dstring
-          </Typography>
-          <div className={classes.search}>
-            <div className={classes.searchIcon}>
-              <SearchIcon />
-            </div>
-            <InputBase
-              placeholder="Search…"
-              classes={{
-                root: classes.inputRoot,
-                input: classes.inputInput,
-              }}
-              inputProps={{ 'aria-label': 'search' }}
-            />
-          </div>
-        </Toolbar>
-      </AppBar>
-      <Drawer
-        variant="permanent"
-        className={clsx(classes.drawer, {
-          [classes.drawerOpen]: open,
-          [classes.drawerClose]: !open,
-        })}
-        classes={{
-          paper: clsx({
-            [classes.drawerOpen]: open,
-            [classes.drawerClose]: !open,
-          }),
-        }}
-      >
-        <div className={classes.toolbar}>
-          <IconButton onClick={handleDrawerClose}>
-            {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
-          </IconButton>
-        </div>
-        <Divider />
-        <List>
-        <ListItem button key='Notifications'>
-            <ListItemIcon><NotificationsActive /> </ListItemIcon>
-            <ListItemText primary='Notifications' />
-          </ListItem>
-          <ListItem button key='Group'>
-            <ListItemIcon><Group /></ListItemIcon>
-            <ListItemText primary='Group' />
-          </ListItem>
-        </List>
-        <Divider />
-        <List>
-          <ListItem button key='Settings'>
-            <ListItemIcon><Settings /> </ListItemIcon>
-            <ListItemText primary='Settings' />
-          </ListItem>
-          <ListItem button key='PersonPin'>
-            <ListItemIcon><PersonPin /></ListItemIcon>
-            <ListItemText primary='PersonPin' />
-          </ListItem>
-        </List>
-      </Drawer>
-      <main className={classes.content}>
-        <div className={classes.toolbar} />
-       <MainTable dataset={dataset}/>
-      </main>
-    </div>
-  );
+          
+          </h2>
+          
+        </Header>
+        <Layout>
+          <Sider style={{background:'white'}} collapsible={true} collapsedWidth={0} width={250}
+            trigger={null} collapsed={this.state.collapsed}>
+            
+            <Collapse accordion defaultActiveKey={['1']}>
+              <Panel header={<h3 style={{fontWeight:"bold",color:'#767676'}}>Boards</h3>} showArrow={false} key="1">
+                <Search
+                  placeholder="Search"
+                  bordered={false}
+                  onSearch={value => console.log(value)}
+                  style={{margin:'0 0 5px 0' }}
+                />
+                <Menu
+                  defaultSelectedKeys={['1']}
+                  defaultOpenKeys={['sub1']}
+                  mode='inline'
+                >
+                  <Menu.Item key="1">
+                    <MailOutlined />
+                    Navigation One
+                  </Menu.Item>
+                  <Menu.Item key="2">
+                    <CalendarOutlined />
+                    Navigation Two
+                  </Menu.Item>
+                  <SubMenu
+                    key="sub1"
+                    title={
+                      <span>
+                        <AppstoreOutlined />
+                        <span>Navigation Three</span>
+                      </span>
+                    }
+                  >
+                    <Menu.Item key="3">Option 3</Menu.Item>
+                    <Menu.Item key="4">Option 4</Menu.Item>
+                    <SubMenu key="sub1-2" title="Submenu">
+                      <Menu.Item key="5">Option 5</Menu.Item>
+                      <Menu.Item key="6">Option 6</Menu.Item>
+                    </SubMenu>
+                  </SubMenu>
+                  
+                </Menu>
+              </Panel>
+              <Panel showArrow={false} header={<h3 style={{fontWeight:"bold",color:'#767676'}}>Dashboards</h3>} key="2">
+                <Menu
+                  defaultSelectedKeys={['1']}
+                  defaultOpenKeys={['sub1']}
+                  mode='inline'
+                >
+                  <Menu.Item key="1">
+                    <MailOutlined />
+                    Navigation One
+                  </Menu.Item>
+                  <Menu.Item key="2">
+                    <CalendarOutlined />
+                    Navigation Two
+                  </Menu.Item>
+                  <SubMenu
+                    key="sub1"
+                    title={
+                      <span>
+                        <AppstoreOutlined />
+                        <span>Navigation Three</span>
+                      </span>
+                    }
+                  >
+                    <Menu.Item key="3">Option 3</Menu.Item>
+                    <Menu.Item key="4">Option 4</Menu.Item>
+                    <SubMenu key="sub1-2" title="Submenu">
+                      <Menu.Item key="5">Option 5</Menu.Item>
+                      <Menu.Item key="6">Option 6</Menu.Item>
+                    </SubMenu>
+                  </SubMenu>
+                
+                </Menu>
+              </Panel>
+            </Collapse>
+            
+          </Sider>
+          <Layout style={{ padding: '0 15px 15px' }}>
+            <Breadcrumb style={{ margin: '16px 0' }}>
+              <Breadcrumb.Item>Home</Breadcrumb.Item>
+              <Breadcrumb.Item>List</Breadcrumb.Item>
+              <Breadcrumb.Item>App</Breadcrumb.Item>
+            </Breadcrumb>
+            <Content>
+              <MainTable dataset={this.dataset}/>
+            </Content>
+          </Layout>
+        </Layout>
+      </Layout>
+     
+    );
+  }
 }
