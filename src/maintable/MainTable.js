@@ -5,6 +5,7 @@
 "use strict";
 
 import React from 'react';
+import moment from 'moment';
 import PropTypes from 'prop-types';
 import { Button } from 'semantic-ui-react';
 import { Table, Cell, Column } from './FixedDataTableRoot';
@@ -130,6 +131,9 @@ class DataViewWrapper {
         if (rowIndex < 0 || rowIndex >= this._indexMap.length) {
             return;
         }
+        if(typeof value != 'string'){
+            value = moment(value).format('YYYY-MM-DD');
+         }
         this._dataset.setObjectAt(this._indexMap[rowIndex].rowKey, columnKey, value);
     }
 
@@ -355,7 +359,7 @@ class MainTable extends React.Component {
             if (columnKey === column.columnKey) {
                 rowTemplates.width = column.width;
                 rowTemplates.columnKey = columnKey;
-                rowTemplates.header = <EditableCell value={column.name} type={type}/>;
+                rowTemplates.header = <EditableCell value={column.name}/>;
                 rowTemplates.footer = <Cell>summary</Cell>;
                 rowTemplates.width = this.getColumnWidth(columnKey);
                 rowTemplates.minWidth = 70;
@@ -433,10 +437,10 @@ class MainTable extends React.Component {
                     <CheckSquareOutlined />
                     SELECT
                 </Menu.Item>
-                <Menu.Item key="PEOPLE">
+                {/* <Menu.Item key="PEOPLE">
                     <UserOutlined />
                     PEOPLE
-                </Menu.Item>
+                </Menu.Item> */}
                 <Menu.Item key="STATUS">
                     <StrikethroughOutlined />
                     STATUS
@@ -490,9 +494,9 @@ class MainTable extends React.Component {
 
 export default Dimensions({
     getHeight: function(element) {
-      return window.innerHeight - 160;
+      return window.innerHeight - 195;
     },
     getWidth: function(element) {
-      return window.innerWidth -  96;
+      return window.innerWidth -  265;
     }
   })(MainTable);

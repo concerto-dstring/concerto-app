@@ -1,4 +1,6 @@
 import React from 'react';
+import 'antd/dist/antd.css'
+import {Button} from 'antd';
 import { Overlay } from 'react-overlays';
 import { Input } from 'semantic-ui-react';
 import styled from 'styled-components';
@@ -37,13 +39,15 @@ class EditableCell extends React.PureComponent {
 
     handleHide = () => {
         const type = this.state.type;
-        if(type == 'DATE'){
-          this.state.value = moment(this.state.value).format('YYYY-MM-DD');
-        }
-        this.setState({ editing: false });
         if (this.props.data) {
             this.props.data.setObjectAt(this.props.rowIndex, this.props.columnKey, this.state.value);
         }
+        if(type == 'DATE'){
+          this.state.value = moment(this.state.value).format('YYYY-MM-DD');
+        }else if(type == 'STATUS'){
+          return;
+        }
+        this.setState({ editing: false });
     }
 
     handleChange = (e,v )=>
@@ -62,7 +66,10 @@ class EditableCell extends React.PureComponent {
                  break;    
            case 'PEOPLE':
                  value = String(e);
-                 break;            
+                 break;
+           case 'STATUS':
+                 value = e.key!='null'?e.key:'';
+                 break;                       
            default:
                  value = e.target.value;    
         }
