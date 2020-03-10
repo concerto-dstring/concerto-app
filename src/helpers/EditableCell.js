@@ -1,4 +1,5 @@
 import React from 'react';
+import 'antd/dist/antd.css'
 import { Overlay } from 'react-overlays';
 import 'antd/dist/antd.css'
 import {Button} from 'antd';
@@ -48,7 +49,6 @@ class EditableCell extends React.PureComponent {
           return;
         }
         this.setState({ editing: false });
-        
     }
 
     handleChange = (e,v )=>

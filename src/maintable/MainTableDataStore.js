@@ -23,12 +23,12 @@ class MainTableDataStore {
         this._groups = [];
         this._sizeGroups = 0;
         this.addNewRow = this.addNewRow.bind(this);
-        this.addNewColumn = this.addNewColumn.bind(this);
         this.setObjectAt = this.setObjectAt.bind(this);
         this.removeRow = this.removeRow.bind(this);
         this.removeRows = this.removeRows.bind(this);
+        this.addNewColumn = this.addNewColumn.bind(this);
         this.reorderColumn = this.reorderColumn.bind(this);
-        this.addGroup = this.addGroup.bind(this);
+        this.addNewGroup = this.addNewGroup.bind(this);
         this.removeGroup = this.removeGroup.bind(this);
     }
     
@@ -97,10 +97,11 @@ class MainTableDataStore {
         return this._groups;
     }
 
-    addGroup(groupName) {
+    addNewGroup(groupName) {
         this._sizeGroups ++;
         let id = this._sizeGroups.toString();
         this._groups.push({groupKey: id, name: groupName, rows:[]});
+        return id;
     }
 
     removeGroup(groupKey) {
@@ -108,7 +109,8 @@ class MainTableDataStore {
         if (index < 0) {
             return;
         }
-        this._groups.splice(index, 1);
+        this._sizeGroups --;
+        return this._groups.splice(index, 1);
     }
 
     getColumns() {
