@@ -57,7 +57,7 @@ class EditableCell extends React.PureComponent {
         let value = '';
         switch(type){
            case 'DATE':
-                 value = moment(v, 'YYYY-MM-DD');
+                 value = v!=''?moment(v, 'YYYY-MM-DD'):undefined;
                  break;
            case 'NUMBER':
                  value = e;
@@ -123,8 +123,7 @@ class EditableCell extends React.PureComponent {
                                             ? this.targetRef.offsetHeight
                                             : -this.targetRef.offsetHeight,
                                 }}>
-                                {/* <Input autoFocus value={value} onChange={this.handleChange} style={inputStyle}
-                      onKeyDown={this.handleKey} /> */}
+                                
                                 {component}
 
                             </div>
