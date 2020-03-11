@@ -34,12 +34,12 @@ class MainTableDataStore {
     
     createFakeObjectData() {
         // create columns
-        this._columns.push({columnKey: '1', name:'Column 1', width: 100, type: ColumnType.EDITBOX, ColumnCompentsType:'TEXT'});
-        this._columns.push({columnKey: '2', name:'Column 2', width: 200, type: ColumnType.EDITBOX, ColumnCompentsType:'TEXT'});
-        this._columns.push({columnKey: '3', name:'Column 3', width: 200, type: ColumnType.EDITBOX, ColumnCompentsType:'TEXT'});
-        this._columns.push({columnKey: '4', name:'Column 4', width: 200, type: ColumnType.LABEL, ColumnCompentsType:'TEXT'});
-        this._columns.push({columnKey: '5', name:'Column 5', width: 200, type: ColumnType.EDITBOX, ColumnCompentsType:'TEXT'});
-        this._columns.push({columnKey: '6', name:'Column 6', width: 200, type: ColumnType.EDITBOX, ColumnCompentsType:'TEXT'});
+        this._columns.push({columnKey: '1', name:'Column 1', width: 100, type: ColumnType.EDITBOX, columnComponentType:'TEXT'});
+        this._columns.push({columnKey: '2', name:'Column 2', width: 200, type: ColumnType.EDITBOX, columnComponentType:'TEXT'});
+        this._columns.push({columnKey: '3', name:'Column 3', width: 200, type: ColumnType.EDITBOX, columnComponentType:'TEXT'});
+        this._columns.push({columnKey: '4', name:'Column 4', width: 200, type: ColumnType.LABEL, columnComponentType:'TEXT'});
+        this._columns.push({columnKey: '5', name:'Column 5', width: 200, type: ColumnType.EDITBOX, columnComponentType:'TEXT'});
+        this._columns.push({columnKey: '6', name:'Column 6', width: 200, type: ColumnType.EDITBOX, columnComponentType:'TEXT'});
         this._sizeColumns = 6;
 
         // create groups 
@@ -130,10 +130,10 @@ class MainTableDataStore {
         return id;
     }
 
-    addNewColumn(newItem,columnCompentsType) {
+    addNewColumn(newItem,columnComponentType) {
         this._sizeColumns ++; 
         let id = this._sizeColumns.toString();
-        this._columns.push({columnKey: id, name:newItem, width: 200, type: ColumnType.EDITBOX, columnCompentsType: columnCompentsType});
+        this._columns.push({columnKey: id, name:newItem, width: 200, type: ColumnType.EDITBOX, columnComponentType: columnComponentType});
         return id;
     }
 

@@ -98,8 +98,8 @@ class DataViewWrapper {
         this._dataset.rowRows(rowKeys);
     }
 
-    addNewColumn(newItem,columnCompentsType) {
-        this._dataset.addNewColumn(newItem,columnCompentsType);
+    addNewColumn(newItem,columnComponentType) {
+        this._dataset.addNewColumn(newItem,columnComponentType);
     }
 
     reorderColumn(columnAfter, columnKey) {
@@ -310,8 +310,8 @@ class MainTable extends React.Component {
     }
 
     _onColumnAddCallback(t) {
-        const columnCompentsType = t.key;
-        this.state.sortedRowList.addNewColumn('New Column',columnCompentsType);
+        const columnComponentType = t.key;
+        this.state.sortedRowList.addNewColumn('New Column', columnComponentType);
         this._refresh();
     }
 
@@ -366,7 +366,7 @@ class MainTable extends React.Component {
                     return rowTemplates;   
                 }
                 if (column.type === ColumnType.EDITBOX) {
-                    rowTemplates.cell = <EditableCell data={sortedRowList} type={column.columnCompentsType}/>;
+                    rowTemplates.cell = <EditableCell data={sortedRowList} type={column.columnComponentType}/>;
                     return rowTemplates;
                 }
             }
