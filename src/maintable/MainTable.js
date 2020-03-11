@@ -5,7 +5,6 @@
 "use strict";
 
 import React from 'react';
-import moment from 'moment';
 import PropTypes from 'prop-types';
 import { Button } from 'semantic-ui-react';
 import { Table, Cell, Column } from './FixedDataTableRoot';
@@ -131,9 +130,6 @@ class DataViewWrapper {
         if (rowIndex < 0 || rowIndex >= this._indexMap.length) {
             return;
         }
-        if(typeof value != 'string'){
-            value = moment(value).format('YYYY-MM-DD');
-         }
         this._dataset.setObjectAt(this._indexMap[rowIndex].rowKey, columnKey, value);
     }
 
@@ -359,7 +355,7 @@ class MainTable extends React.Component {
             if (columnKey === column.columnKey) {
                 rowTemplates.width = column.width;
                 rowTemplates.columnKey = columnKey;
-                rowTemplates.header = <EditableCell value={column.name}/>;
+                rowTemplates.header = <EditableCell value={column.name} type={type}/>;
                 rowTemplates.footer = <Cell>summary</Cell>;
                 rowTemplates.width = this.getColumnWidth(columnKey);
                 rowTemplates.minWidth = 70;
@@ -404,7 +400,7 @@ class MainTable extends React.Component {
 
     renderControls() {
         return (
-            <div className='autoScrollControls'>
+            <div id="addGroupBtn" className='autoScrollControls'>
               <Button primary onClick={this._onAddNewGroupCallback} >Add Group</Button>
             </div>
           )
@@ -437,10 +433,10 @@ class MainTable extends React.Component {
                     <CheckSquareOutlined />
                     SELECT
                 </Menu.Item>
-                {/* <Menu.Item key="PEOPLE">
+                <Menu.Item key="PEOPLE">
                     <UserOutlined />
                     PEOPLE
-                </Menu.Item> */}
+                </Menu.Item>
                 <Menu.Item key="STATUS">
                     <StrikethroughOutlined />
                     STATUS
@@ -467,7 +463,9 @@ class MainTable extends React.Component {
                     onNewRowAddCallback={this._onAddNewRowCallback}
                     data={sortedRowList}
                     height={this.props.containerHeight}
-                    width={this.props.containerWidth}
+
+                    // 减去左侧Sider宽度 
+                    width={this.props.containerWidth - this.props.siderWidth}
                     {...version}
                     {...this.props}>
                     {fixedColumn && <Column {...this.getColumnTemplate(sortedRowList, fixedColumn.columnKey)} fixed={true} />}
@@ -494,9 +492,10 @@ class MainTable extends React.Component {
 
 export default Dimensions({
     getHeight: function(element) {
-      return window.innerHeight - 195;
+      // 减去上面面包屑的高度
+      return window.innerHeight - 152 - document.getElementById("appBread").clientHeight;
     },
     getWidth: function(element) {
-      return window.innerWidth -  265;
+      return window.innerWidth - 16;
     }
   })(MainTable);

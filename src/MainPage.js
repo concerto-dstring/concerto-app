@@ -24,17 +24,22 @@ const { SubMenu } = Menu;
 const { Header, Content, Sider } = Layout;
 const { Search } = Input;
 
+// Sider默认宽度
+const defaultSiderWidth = 250
+
 export default class MainPage extends React.Component {
   constructor(props){
     super(props)
     this.dataset = props.dataset;
     this.state = {
+      siderWidth: defaultSiderWidth,
       collapsed: false,
     };
   }
 
   toggle = () => {
     this.setState({
+      siderWidth: !this.state.collapsed ? 0 : defaultSiderWidth,
       collapsed: !this.state.collapsed,
     });
   };
@@ -59,8 +64,14 @@ export default class MainPage extends React.Component {
           
         </Header>
         <Layout>
-          <Sider style={{background:'white'}} collapsible={true} collapsedWidth={0} width={250}
-            trigger={null} collapsed={this.state.collapsed}>
+          <Sider 
+            style={{background:'white'}} 
+            collapsible={true} 
+            collapsedWidth={this.state.siderWidth} 
+            width={this.state.siderWidth}
+            trigger={null} 
+            collapsed={this.state.collapsed}
+          >
             
             <Collapse accordion defaultActiveKey={['1']}>
               <Panel header={<h3 style={{fontWeight:"bold",color:'#767676'}}>Boards</h3>} showArrow={false} key="1">
@@ -138,14 +149,20 @@ export default class MainPage extends React.Component {
             </Collapse>
             
           </Sider>
-          <Layout style={{ padding: '0 15px 15px' }}>
-            <Breadcrumb style={{ margin: '16px 0' }}>
+          <Layout style={{ padding: '0 0 16px 16px' }}>
+            <Breadcrumb 
+              id="appBread"
+              style={{ margin: '16px 0' }}
+            >
               <Breadcrumb.Item>Home</Breadcrumb.Item>
               <Breadcrumb.Item>List</Breadcrumb.Item>
               <Breadcrumb.Item>App</Breadcrumb.Item>
             </Breadcrumb>
             <Content>
-              <MainTable dataset={this.dataset}/>
+              <MainTable 
+                dataset={this.dataset} 
+                siderWidth={this.state.siderWidth} 
+              />
             </Content>
           </Layout>
         </Layout>
