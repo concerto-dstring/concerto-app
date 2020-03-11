@@ -97,8 +97,8 @@ class DataViewWrapper {
         this._dataset.rowRows(rowKeys);
     }
 
-    addNewColumn(newItem) {
-        this._dataset.addNewColumn(newItem);
+    addNewColumn(newItem,columnComponentType) {
+        this._dataset.addNewColumn(newItem,columnComponentType);
     }
 
     reorderColumn(columnAfter, columnKey) {
@@ -306,10 +306,8 @@ class MainTable extends React.Component {
     }
 
     _onColumnAddCallback(t) {
-        this.setState({
-            type:t.key
-        });
-        this.state.sortedRowList.addNewColumn('New Column');
+        const columnComponentType = t.key;
+        this.state.sortedRowList.addNewColumn('New Column', columnComponentType);
         this._refresh();
     }
 
@@ -348,7 +346,6 @@ class MainTable extends React.Component {
 
     getColumnTemplate(sortedRowList, columnKey) {
         let columns = this.state.columns;
-        let type = this.state.type;
         let rowTemplates = {};
         for (let i  = 0; i < columns.length; i ++) {
             let column = columns[i];
@@ -365,7 +362,7 @@ class MainTable extends React.Component {
                     return rowTemplates;   
                 }
                 if (column.type === ColumnType.EDITBOX) {
-                    rowTemplates.cell = <EditableCell data={sortedRowList} type={type}/>;
+                    rowTemplates.cell = <EditableCell data={sortedRowList} type={column.columnComponentType}/>;
                     return rowTemplates;
                 }
             }
