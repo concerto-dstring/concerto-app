@@ -420,27 +420,27 @@ class MainTable extends React.Component {
             <Menu onClick={this._onColumnAddCallback}>
                 <Menu.Item key="DATE">
                     <ScheduleOutlined />
-                    DATE
+                    Date
                 </Menu.Item>
                 <Menu.Item key="NUMBER">
                     <AccountBookOutlined />
-                    NUMBER
+                    Numbers
                 </Menu.Item>
                 <Menu.Item key="TEXT">
                     <FormOutlined />
-                    TEXT
+                    Text
                 </Menu.Item>
                 <Menu.Item key="SELECT">
                     <CheckSquareOutlined />
-                    SELECT
+                    Select
                 </Menu.Item>
-                {/* <Menu.Item key="PEOPLE">
+                <Menu.Item key="PEOPLE">
                     <UserOutlined />
-                    PEOPLE
-                </Menu.Item> */}
+                    People
+                </Menu.Item>
                 <Menu.Item key="STATUS">
                     <StrikethroughOutlined />
-                    STATUS
+                    Status
                 </Menu.Item>
             </Menu>
         );
@@ -476,7 +476,7 @@ class MainTable extends React.Component {
                         columnKey=""
                         header={
 
-                            <Dropdown overlay={menu}>
+                            <Dropdown overlay={menu} trigger={['click']}>
                             <Button basic circular icon='plus circle' style={addColumnStyle}/>
                             </Dropdown>
                             }
