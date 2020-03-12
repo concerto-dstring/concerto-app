@@ -219,7 +219,7 @@ class MainTable extends React.Component {
         let sortedRowList = this.state.sortedRowList;
         let rows = sortedRowList.getRowMap();
         let startIndex = this._defaultSortIndexes.length;
-        let groupKey = sortedRowList.addNewGroup("group_new")
+        let groupKey = sortedRowList.addNewGroup("新组")
 
         let index = startIndex;
         rows.unshift({rowType:RowType.FOOTER, groupKey:groupKey, rowKey:''});
@@ -311,7 +311,7 @@ class MainTable extends React.Component {
 
     _onColumnAddCallback(t) {
         const columnComponentType = t.key;
-        this.state.sortedRowList.addNewColumn('New Column', columnComponentType);
+        this.state.sortedRowList.addNewColumn('新列', columnComponentType);
         this._refresh();
     }
 
@@ -357,7 +357,7 @@ class MainTable extends React.Component {
                 rowTemplates.width = column.width;
                 rowTemplates.columnKey = columnKey;
                 rowTemplates.header = <EditableCell value={column.name}/>;
-                rowTemplates.footer = <Cell>summary</Cell>;
+                rowTemplates.footer = <Cell>汇总</Cell>;
                 rowTemplates.width = this.getColumnWidth(columnKey);
                 rowTemplates.minWidth = 70;
                 rowTemplates.isResizable = true;
@@ -402,7 +402,7 @@ class MainTable extends React.Component {
     renderControls() {
         return (
             <div id="addGroupBtn" className='autoScrollControls'>
-              <Button primary onClick={this._onAddNewGroupCallback} >Add Group</Button>
+              <Button primary onClick={this._onAddNewGroupCallback} >添加新分区</Button>
             </div>
           )
     }
@@ -420,27 +420,27 @@ class MainTable extends React.Component {
             <Menu onClick={this._onColumnAddCallback}>
                 <Menu.Item key="DATE">
                     <ScheduleOutlined />
-                    DATE
+                    日期
                 </Menu.Item>
                 <Menu.Item key="NUMBER">
                     <AccountBookOutlined />
-                    NUMBER
+                    数字
                 </Menu.Item>
                 <Menu.Item key="TEXT">
                     <FormOutlined />
-                    TEXT
+                    文本
                 </Menu.Item>
                 <Menu.Item key="SELECT">
                     <CheckSquareOutlined />
-                    SELECT
+                    选择
                 </Menu.Item>
                 <Menu.Item key="PEOPLE">
                     <UserOutlined />
-                    PEOPLE
+                    人员
                 </Menu.Item>
                 <Menu.Item key="STATUS">
                     <StrikethroughOutlined />
-                    STATUS
+                    状态
                 </Menu.Item>
             </Menu>
         );
