@@ -356,7 +356,7 @@ class MainTable extends React.Component {
             if (columnKey === column.columnKey) {
                 rowTemplates.width = column.width;
                 rowTemplates.columnKey = columnKey;
-                rowTemplates.header = <EditableCell value={column.name}  type={type}/>;
+                rowTemplates.header = <EditableCell value={column.name}/>;
                 rowTemplates.footer = <Cell>summary</Cell>;
                 rowTemplates.width = this.getColumnWidth(columnKey);
                 rowTemplates.minWidth = 70;
