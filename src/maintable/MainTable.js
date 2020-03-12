@@ -5,6 +5,7 @@
 "use strict";
 
 import React from 'react';
+import moment from 'moment';
 import PropTypes from 'prop-types';
 import { Button } from 'semantic-ui-react';
 import { Table, Cell, Column } from './FixedDataTableRoot';
@@ -12,6 +13,16 @@ import { ColumnType,  RowType } from './MainTableType';
 import { TextCell } from '../helpers/cells';
 import { EditableCell } from '../helpers/EditableCell';
 import Dimensions from 'react-dimensions';
+import { Menu, Dropdown, message, Tooltip } from 'antd';
+import {DownloadOutlined,
+    PlusOutlined,
+    DownOutlined,
+    UserOutlined,
+    ScheduleOutlined,
+    FormOutlined,
+    CheckSquareOutlined,
+    StrikethroughOutlined,
+    AccountBookOutlined } from '@ant-design/icons';
 
 class DataViewWrapper {
     constructor(dataset, indexMap) {
@@ -87,8 +98,8 @@ class DataViewWrapper {
         this._dataset.rowRows(rowKeys);
     }
 
-    addNewColumn(newItem) {
-        this._dataset.addNewColumn(newItem);
+    addNewColumn(newItem,columnComponentType) {
+        this._dataset.addNewColumn(newItem,columnComponentType);
     }
 
     reorderColumn(columnAfter, columnKey) {
@@ -120,11 +131,28 @@ class DataViewWrapper {
         if (rowIndex < 0 || rowIndex >= this._indexMap.length) {
             return;
         }
+        if(typeof value != 'string'){
+            value = moment(value).format('YYYY-MM-DD');
+         }
         this._dataset.setObjectAt(this._indexMap[rowIndex].rowKey, columnKey, value);
     }
+
+    /**
+     * add a new group to the backend dataset 
+     * @param {*} groupName 
+     */
+    addNewGroup(groupName) {
+        return this._dataset.addNewGroup(groupName);
+    }
+
+    /**
+     * remove a group from the backend dataset by the groupKey
+     * @param {*} groupKey 
+     */
+    removeGroup(groupKey) {
+        return this._dataset.removeGroup(groupKey);
+    }
 }
-
-
 
 class MainTable extends React.Component {
 
@@ -141,22 +169,25 @@ class MainTable extends React.Component {
         let groups = []; //{groupkey, startIndex} // group -> name, key, rows[rowkey]
         let rows = []; //{type, rowkey, groupKey}
 
+        this._onAddNewGroupCallback = this._onAddNewGroupCallback.bind(this);
+        this._onRemoveGroupCallback = this._onRemoveGroupCallback.bind(this);
+        this._onAddNewRowCallback = this._onAddNewRowCallback.bind(this);
         this._onRowReorderEndCallback = this._onRowReorderEndCallback.bind(this);
         this._onColumnResizeEndCallback = this._onColumnResizeEndCallback.bind(this);
-        this._onAddNewRowCallback = this._onAddNewRowCallback.bind(this);
         this._onColumnAddCallback = this._onColumnAddCallback.bind(this);
         this._onColumnReorderEndCallback = this._onColumnReorderEndCallback.bind(this);
         this._getColumnName = this._getColumnName.bind(this);
 
 
+        // the latest added group is on the top
         var index = 0;
-        for(let i = 0; i < this._dataset.getGroups().length; i ++) {
+        for(let i = this._dataset.getGroups().length - 1; i >= 0; i --) {
             let group = this._dataset.getGroups()[i];
             rows.push({rowType:RowType.HEADER, groupKey:group.groupKey, rowKey:''});
             this._defaultSortIndexes.push(index);
             let startIndex = index;
             index ++;
-            for (let j = 0; j < group.rows.length; j ++) {
+            for (let j = group.rows.length - 1; j >=0; j --) {
                 rows.push({rowType:RowType.ROW, groupKey:group.groupKey, rowKey:group.rows[j]});
                 this._defaultSortIndexes.push(index);
                 index ++;
@@ -177,6 +208,68 @@ class MainTable extends React.Component {
             version: 0,
         };
     }
+
+    /**
+     * callback assoicated with the group add button
+     * add new row header/add/footer to the state.sortedRowlist.RowMap
+     * add new group to the state.groups
+     * @param {*} event 
+     */
+    _onAddNewGroupCallback(event) {
+        let sortedRowList = this.state.sortedRowList;
+        let rows = sortedRowList.getRowMap();
+        let startIndex = this._defaultSortIndexes.length;
+        let groupKey = sortedRowList.addNewGroup("group_new")
+
+        let index = startIndex;
+        rows.unshift({rowType:RowType.FOOTER, groupKey:groupKey, rowKey:''});
+        this._defaultSortIndexes.push(index++);
+        rows.unshift({rowType:RowType.ADDROW, groupKey:groupKey, rowKey:''});
+        this._defaultSortIndexes.push(index++);
+        rows.unshift({rowType:RowType.HEADER, groupKey:groupKey, rowKey:''});
+        this._defaultSortIndexes.push(index);
+
+        this.state.groups.push({rowType:groupKey, startIndex:startIndex, endIndex:index});
+        
+        this.setState({sortedRowList: new DataViewWrapper(this._dataset, rows)});
+        this._refresh();
+     }
+
+     /**
+      * callback assoicated with the group delete button
+      * remove the rows with the same groupKey from the state.sortedRowList.RowMap
+      * remove the group from the state.groups
+      * @param {*} groupKey 
+      */
+     _onRemoveGroupCallback(groupKey){
+        let sortedRowList = this.state.sortedRowList;
+        let groups = this.state.groups;
+        let rows = sortedRowList.getRowMap();
+        let rowslen = rows.length;
+        let rmgroup = sortedRowList.getGroupAt(groupKey)
+        
+        if (!rmgroup)
+            return;
+        
+        // TODO: check inplace delete in javascript
+        for  (let ridx = 0; ridx < rowslen; ridx ++) {
+            let row = rows[ridx];
+            if (row && row.groupKey === groupKey) {
+                rows.splice(ridx, 1);
+                this._defaultSortIndexes(ridx, 1);
+            }
+        }
+
+        for (let gidx = 0; gidx < groups.length; gidx ++){
+            if (groups[gidx].groupKey === groupKey) {
+                groups.splice(gidx, 1);
+                break;
+            }
+        }
+        
+        this.setState({sortedRowList: new DataViewWrapper(this._dataset, rows), groups : groups});
+        this._refresh();
+     }
 
     _onColumnReorderEndCallback(event) {
         let {columnAfter, reorderColumn} = event;
@@ -216,8 +309,9 @@ class MainTable extends React.Component {
         }
     }
 
-    _onColumnAddCallback() {
-        this.state.sortedRowList.addNewColumn('New Column');
+    _onColumnAddCallback(t) {
+        const columnComponentType = t.key;
+        this.state.sortedRowList.addNewColumn('New Column', columnComponentType);
         this._refresh();
     }
 
@@ -235,13 +329,13 @@ class MainTable extends React.Component {
     _onRowReorderEndCallback(rowKey, oldRowIndex, newRowIndex) {
         let rows = this.state.sortedRowList.getRowMap();
         if (oldRowIndex !== newRowIndex) {            
-            if ( newRowIndex < oldRowIndex ) { // move backward
+            if ( newRowIndex < oldRowIndex ) {  // move backward
                 let oldrow = rows[oldRowIndex];
                 for (let row = oldRowIndex; row > newRowIndex; -- row ) {
                     rows[row] = rows[row-1]; 
                 }
                 rows[newRowIndex] = oldrow;
-            } else {   // move forward
+            } else {                            // move forward
                 let oldrow = rows[oldRowIndex];
                 for (let row = oldRowIndex; row < newRowIndex; ++ row ) {
                     rows[row] = rows[row+1]; 
@@ -262,7 +356,7 @@ class MainTable extends React.Component {
             if (columnKey === column.columnKey) {
                 rowTemplates.width = column.width;
                 rowTemplates.columnKey = columnKey;
-                rowTemplates.header = <EditableCell value={column.name} />;
+                rowTemplates.header = <EditableCell value={column.name}  type={type}/>;
                 rowTemplates.footer = <Cell>summary</Cell>;
                 rowTemplates.width = this.getColumnWidth(columnKey);
                 rowTemplates.minWidth = 70;
@@ -272,7 +366,7 @@ class MainTable extends React.Component {
                     return rowTemplates;   
                 }
                 if (column.type === ColumnType.EDITBOX) {
-                    rowTemplates.cell = <EditableCell data={sortedRowList}/>;
+                    rowTemplates.cell = <EditableCell data={sortedRowList} type={column.columnComponentType}/>;
                     return rowTemplates;
                 }
             }
@@ -294,7 +388,26 @@ class MainTable extends React.Component {
           version: this.state.version + 1,
         });
     }
+
     render() {
+        return (
+          <div className='autoScrollContainer'>
+            {this.renderControls()}
+            <br />
+            {this.renderTable()}
+          </div>
+        );
+    }
+
+    renderControls() {
+        return (
+            <div id="addGroupBtn" className='autoScrollControls'>
+              <Button primary onClick={this._onAddNewGroupCallback} >Add Group</Button>
+            </div>
+          )
+    }
+
+    renderTable() {
         const version = this.state.version;
         var { sortedRowList } = this.state;
         const addColumnStyle = {
@@ -303,51 +416,87 @@ class MainTable extends React.Component {
 
         const fixedColumn = this.state.columns.length > 0 ? this.state.columns[0] : []; 
         const scrollColumns = this.state.columns.slice(1); 
-
+        const menu = (
+            <Menu onClick={this._onColumnAddCallback}>
+                <Menu.Item key="DATE">
+                    <ScheduleOutlined />
+                    DATE
+                </Menu.Item>
+                <Menu.Item key="NUMBER">
+                    <AccountBookOutlined />
+                    NUMBER
+                </Menu.Item>
+                <Menu.Item key="TEXT">
+                    <FormOutlined />
+                    TEXT
+                </Menu.Item>
+                <Menu.Item key="SELECT">
+                    <CheckSquareOutlined />
+                    SELECT
+                </Menu.Item>
+                <Menu.Item key="PEOPLE">
+                    <UserOutlined />
+                    PEOPLE
+                </Menu.Item>
+                <Menu.Item key="STATUS">
+                    <StrikethroughOutlined />
+                    STATUS
+                </Menu.Item>
+            </Menu>
+        );
         return (
-            <Table
-                ref={this.handleRef}
-                headerHeight={40}
-                rowHeight={40}
-                isColumnResizing={false}
-                addRowHeight={35}
-                footerHeight={40}
-                onColumnReorderEndCallback={this._onColumnReorderEndCallback}
-                rowsCount={sortedRowList.getSize()}
-                rowHeightGetter={sortedRowList.getRowHeight}
-                rowTypeGetter={sortedRowList.getRowType}
-                rowKeyGetter={sortedRowList.getRowKey}
-                columnNameGetter={this._getColumnName}
-                onColumnResizeEndCallback={this._onColumnResizeEndCallback}
-                onRowReorderEndCallback={this._onRowReorderEndCallback}
-                onNewRowAddCallback={this._onAddNewRowCallback}
-                data={sortedRowList}
-                height={this.props.containerHeight}
+            <div>
+                <Table
+                    ref={this.handleRef}
+                    headerHeight={40}
+                    rowHeight={40}
+                    isColumnResizing={false}
+                    addRowHeight={35}
+                    footerHeight={40}
+                    onColumnReorderEndCallback={this._onColumnReorderEndCallback}
+                    rowsCount={sortedRowList.getSize()}
+                    rowHeightGetter={sortedRowList.getRowHeight}
+                    rowTypeGetter={sortedRowList.getRowType}
+                    rowKeyGetter={sortedRowList.getRowKey}
+                    columnNameGetter={this._getColumnName}
+                    onColumnResizeEndCallback={this._onColumnResizeEndCallback}
+                    onRowReorderEndCallback={this._onRowReorderEndCallback}
+                    onNewRowAddCallback={this._onAddNewRowCallback}
+                    data={sortedRowList}
+                    height={this.props.containerHeight}
 
-                // 如果侧边栏展开则宽度减去侧边栏宽度
-                width={this.props.isOpenDrawer ? this.props.containerWidth - this.props.drawerWidth : this.props.containerWidth}
-                {...version}
-                {...this.props}>
-                {fixedColumn && <Column {...this.getColumnTemplate(sortedRowList, fixedColumn.columnKey)} fixed={true} />}
-                {scrollColumns.map(column => (
-                    <Column {...this.getColumnTemplate(sortedRowList, column.columnKey)} fixed={false} />
-                ))
-                }              
-                <Column
-                    columnKey=""
-                    header={<Button basic circular icon='plus circle' style={addColumnStyle} onClick={this._onColumnAddCallback}/>}
-                    width={40}
-                />
-            </Table>        
+                    // 减去左侧Sider宽度 
+                    width={this.props.containerWidth - this.props.siderWidth}
+                    {...version}
+                    {...this.props}>
+                    {fixedColumn && <Column {...this.getColumnTemplate(sortedRowList, fixedColumn.columnKey)} fixed={true} />}
+                    {scrollColumns.map(column => (
+                        <Column {...this.getColumnTemplate(sortedRowList, column.columnKey)} fixed={false} />
+                    ))
+                    }              
+                    <Column
+                        columnKey=""
+                        header={
+
+                            <Dropdown overlay={menu}>
+                            <Button basic circular icon='plus circle' style={addColumnStyle}/>
+                            </Dropdown>
+                            }
+
+                        width={40}
+                    />
+                </Table>
+            </div>      
         );
     }
 }
 
 export default Dimensions({
     getHeight: function(element) {
-      return window.innerHeight - 160;
+      // 减去上面面包屑的高度
+      return window.innerHeight - 152 - document.getElementById("appBread").clientHeight;
     },
     getWidth: function(element) {
-      return window.innerWidth -  96;
+      return window.innerWidth - 16;
     }
   })(MainTable);
