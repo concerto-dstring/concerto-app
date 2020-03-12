@@ -23,23 +23,23 @@ class MainTableDataStore {
         this._groups = [];
         this._sizeGroups = 0;
         this.addNewRow = this.addNewRow.bind(this);
-        this.addNewColumn = this.addNewColumn.bind(this);
         this.setObjectAt = this.setObjectAt.bind(this);
         this.removeRow = this.removeRow.bind(this);
         this.removeRows = this.removeRows.bind(this);
+        this.addNewColumn = this.addNewColumn.bind(this);
         this.reorderColumn = this.reorderColumn.bind(this);
-        this.addGroup = this.addGroup.bind(this);
+        this.addNewGroup = this.addNewGroup.bind(this);
         this.removeGroup = this.removeGroup.bind(this);
     }
     
     createFakeObjectData() {
         // create columns
-        this._columns.push({columnKey: '1', name:'Column 1', width: 100, type: ColumnType.EDITBOX});
-        this._columns.push({columnKey: '2', name:'Column 2', width: 200, type: ColumnType.EDITBOX});
-        this._columns.push({columnKey: '3', name:'Column 3', width: 200, type: ColumnType.EDITBOX});
-        this._columns.push({columnKey: '4', name:'Column 4', width: 200, type: ColumnType.LABEL});
-        this._columns.push({columnKey: '5', name:'Column 5', width: 200, type: ColumnType.EDITBOX});
-        this._columns.push({columnKey: '6', name:'Column 6', width: 200, type: ColumnType.EDITBOX});
+        this._columns.push({columnKey: '1', name:'Column 1', width: 100, type: ColumnType.EDITBOX, columnComponentType:'TEXT'});
+        this._columns.push({columnKey: '2', name:'Column 2', width: 200, type: ColumnType.EDITBOX, columnComponentType:'TEXT'});
+        this._columns.push({columnKey: '3', name:'Column 3', width: 200, type: ColumnType.EDITBOX, columnComponentType:'TEXT'});
+        this._columns.push({columnKey: '4', name:'Column 4', width: 200, type: ColumnType.LABEL, columnComponentType:'TEXT'});
+        this._columns.push({columnKey: '5', name:'Column 5', width: 200, type: ColumnType.EDITBOX, columnComponentType:'TEXT'});
+        this._columns.push({columnKey: '6', name:'Column 6', width: 200, type: ColumnType.EDITBOX, columnComponentType:'TEXT'});
         this._sizeColumns = 6;
 
         // create groups 
@@ -83,7 +83,6 @@ class MainTableDataStore {
     }
 
     getObjectAt(rowKey) {
-
         return this._rowData[rowKey];
     }
 
@@ -98,10 +97,11 @@ class MainTableDataStore {
         return this._groups;
     }
 
-    addGroup(groupName) {
+    addNewGroup(groupName) {
         this._sizeGroups ++;
         let id = this._sizeGroups.toString();
         this._groups.push({groupKey: id, name: groupName, rows:[]});
+        return id;
     }
 
     removeGroup(groupKey) {
@@ -109,7 +109,8 @@ class MainTableDataStore {
         if (index < 0) {
             return;
         }
-        this._groups.splice(index, 1);
+        this._sizeGroups --;
+        return this._groups.splice(index, 1);
     }
 
     getColumns() {
@@ -129,10 +130,10 @@ class MainTableDataStore {
         return id;
     }
 
-    addNewColumn(newItem) {
+    addNewColumn(newItem,columnComponentType) {
         this._sizeColumns ++; 
         let id = this._sizeColumns.toString();
-        this._columns.push({columnKey: id, name:newItem, width: 200, type: ColumnType.EDITBOX});
+        this._columns.push({columnKey: id, name:newItem, width: 200, type: ColumnType.EDITBOX, columnComponentType: columnComponentType});
         return id;
     }
 
@@ -167,7 +168,7 @@ class MainTableDataStore {
 
         if (columnAfter) {
             var iindex = this._columns.findIndex(column => column.columnKey == columnAfter);
-            if (iindex < 0) { 
+            if (iindex <= 0) { 
                 return;
             }
             this._columns.splice(index, 1);
