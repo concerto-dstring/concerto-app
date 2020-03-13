@@ -157,7 +157,7 @@ function getScrollStateX(columnProps, scrollFlags, width) {
 function getBufferRowCount(maxAvailableHeight, rowSettings) {
   const { bufferRowCount, rowHeight, subRowHeight } = rowSettings;
   if (bufferRowCount !== undefined) {
-    console.log('buffer set: ' + bufferRowCount);
+    // console.log('buffer set: ' + bufferRowCount);
     return bufferRowCount;
   }
 

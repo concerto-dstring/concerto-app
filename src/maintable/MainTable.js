@@ -109,7 +109,7 @@ class MainTable extends React.Component {
         let sortedRowList = this.state.sortedRowList;
         let rows = sortedRowList.getRowMap();
         let startIndex = this._defaultSortIndexes.length;
-        let groupKey = sortedRowList.addNewGroup("group_new")
+        let groupKey = sortedRowList.addNewGroup("新组")
 
         let index = startIndex;
         rows.unshift({rowType:RowType.FOOTER, groupKey:groupKey, rowKey:''});
@@ -216,7 +216,7 @@ class MainTable extends React.Component {
                 colTemplates.isResizable = true;
                 if (column.type === ColumnType.LABEL) { 
                     colTemplates.cell = DataTextCell;
-                    return colTemplates;   
+                    return colTemplates;
                 }
                 if (column.type === ColumnType.EDITBOX) {
                     colTemplates.cell = DataEditableCell;
@@ -253,8 +253,8 @@ class MainTable extends React.Component {
 
     renderControls() {
         return (
-            <div className='autoScrollControls'>
-              <Button primary onClick={this._onAddNewGroupCallback} >Add Group</Button>
+            <div id="addGroupBtn" className='autoScrollControls'>
+              <Button primary onClick={this._onAddNewGroupCallback} >添加新分区</Button>
             </div>
           )
     }
@@ -271,27 +271,27 @@ class MainTable extends React.Component {
             <Menu onClick={this._onColumnAddCallback}>
                 <Menu.Item key="DATE">
                     <ScheduleOutlined />
-                    DATE
+                    日期
                 </Menu.Item>
                 <Menu.Item key="NUMBER">
                     <AccountBookOutlined />
-                    NUMBER
+                    数字
                 </Menu.Item>
                 <Menu.Item key="TEXT">
                     <FormOutlined />
-                    TEXT
+                    文本
                 </Menu.Item>
                 <Menu.Item key="SELECT">
                     <CheckSquareOutlined />
-                    SELECT
+                    选择
                 </Menu.Item>
-                {/* <Menu.Item key="PEOPLE">
+                <Menu.Item key="PEOPLE">
                     <UserOutlined />
-                    PEOPLE
-                </Menu.Item> */}
+                    人员
+                </Menu.Item>
                 <Menu.Item key="STATUS">
                     <StrikethroughOutlined />
-                    STATUS
+                    状态
                 </Menu.Item>
             </Menu>
         );
@@ -309,7 +309,8 @@ class MainTable extends React.Component {
                     footerHeight={40}
                     filters={filters}                
                     height={this.props.containerHeight}
-                    width={this.props.containerWidth}
+                    // 减去左侧Sider宽度 
+                    width={this.props.containerWidth - this.props.siderWidth}
                     {...this.props}>
                     {fixedColumn && <Column {...this.getColumnTemplate(fixedColumn.columnKey)} fixed={true} />}
                     {scrollColumns.map(column => (
@@ -335,9 +336,10 @@ class MainTable extends React.Component {
 
 export default Dimensions({
     getHeight: function(element) {
-      return window.innerHeight - 195;
+      // 减去上面面包屑的高度
+      return window.innerHeight - 152 - document.getElementById("appBread").clientHeight;
     },
     getWidth: function(element) {
-      return window.innerWidth -  265;
+      return window.innerWidth - 16;
     }
   })(MainTable);

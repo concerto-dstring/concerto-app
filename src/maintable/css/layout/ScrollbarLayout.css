@@ -9,7 +9,7 @@
  * @providesModule ScrollbarLayout
  */
 
-.ScrollbarLayout_main {
+ .ScrollbarLayout_main {
   box-sizing: border-box;
   outline: none;
   overflow: hidden;
@@ -21,11 +21,11 @@
   bottom: 0;
   right: 0;
   top: 0;
-  width: 15px;
+  width: 10px;
 }
 
 .ScrollbarLayout_mainHorizontal {
-  height: 15px;
+  height: 12px;
   left: 0;
   transition-property: background-color height;
 }
@@ -33,7 +33,7 @@
 /* Touching the scroll-track directly makes the scroll-track bolder */
 .ScrollbarLayout_mainHorizontal.public_Scrollbar_mainActive,
 .ScrollbarLayout_mainHorizontal:hover {
-  height: 17px;
+  height: 12px;
 }
 
 .ScrollbarLayout_face {
@@ -66,38 +66,39 @@
 }
 
 .ScrollbarLayout_faceHorizontal:after {
-  bottom: 4px;
+  bottom: 0;
   left: 0;
-  top: 4px;
+  top: 0;
   width: 100%;
 }
 
 .fixedDataTable_isRTL .ScrollbarLayout_faceHorizontal,
 .fixedDataTable_isRTL .ScrollbarLayout_faceHorizontal:after {
-  right: 0;
-  left: auto;
+  right: 0px;
+  left: 0px;
 }
 
 .ScrollbarLayout_faceHorizontal.public_Scrollbar_faceActive:after,
 .ScrollbarLayout_main:hover .ScrollbarLayout_faceHorizontal:after {
-  bottom: 2px;
+  bottom: 0;
 }
 
 .ScrollbarLayout_faceVertical {
+  left: 0px;
+  right: 0px;
+  top: 0px;
+  bottom: 0px;
+}
+
+.ScrollbarLayout_faceVertical:after {
+  height: 100%;
   left: 0;
   right: 0;
   top: 0;
 }
 
-.ScrollbarLayout_faceVertical:after {
-  height: 100%;
-  left: 4px;
-  right: 4px;
-  top: 0;
-}
-
 .ScrollbarLayout_main:hover .ScrollbarLayout_faceVertical:after,
 .ScrollbarLayout_faceVertical.public_Scrollbar_faceActive:after {
-  left: 2px;
-  right: 2px;
+  left: 0;
+  right: 0;
 }
