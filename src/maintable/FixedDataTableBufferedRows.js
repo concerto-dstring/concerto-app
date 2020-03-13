@@ -17,7 +17,8 @@ import emptyFunction from './vendor_upstream/core/emptyFunction';
 import joinClasses from './vendor_upstream/core/joinClasses';
 import inRange from 'lodash/inRange';
 import MainTableAddRow from './MainTableAddRow';
-import { RowType } from './MainTableType';
+import { RowType } from './data/MainTableType';
+
 //import FixedDataTableTranslateDOMPosition from './FixedDataTableTranslateDOMPosition';
 
 import './css/layout/fixedDataTableLayout.css';

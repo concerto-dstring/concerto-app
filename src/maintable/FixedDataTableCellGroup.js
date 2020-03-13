@@ -138,9 +138,6 @@ class FixedDataTableCellGroupImpl extends React.Component {
       this.props.onColumnResize;
     var onColumnResize = cellIsResizable ? this.props.onColumnResize : null;
 
-    var cellIsReorderable = columnProps.isReorderable && this.props.onColumnReorder && rowIndex === -1 && columnGroupWidth !== columnProps.width;
-    var onColumnReorder = cellIsReorderable ? this.props.onColumnReorder : null;
-
     var className = columnProps.cellClassName;
     var pureRendering = columnProps.pureRendering || false;
 

@@ -132,7 +132,6 @@ class FixedDataTableColumnReorderHandle extends React.PureComponent {
       this._distanceX = this._cumulativeX;
       this._distanceY = this._cumulativeY;
       this._dragging = true;
-      console.log(this._offsetX);
       this.props.onMouseDown({
         columnKey: this.props.columnKey,
         mouseLocation: {

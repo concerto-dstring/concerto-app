@@ -8,7 +8,7 @@
 
 'use strict';
 
-import { ColumnType } from './MainTableType';
+import { ColumnType } from './data/MainTableType';
 
 class MainTableDataStore {
 
@@ -22,24 +22,27 @@ class MainTableDataStore {
         this._rowData = {};
         this._groups = [];
         this._sizeGroups = 0;
+        this.getSize = this.getSize.bind(this);
         this.addNewRow = this.addNewRow.bind(this);
+        this.addNewColumn = this.addNewColumn.bind(this);
         this.setObjectAt = this.setObjectAt.bind(this);
         this.removeRow = this.removeRow.bind(this);
         this.removeRows = this.removeRows.bind(this);
-        this.addNewColumn = this.addNewColumn.bind(this);
         this.reorderColumn = this.reorderColumn.bind(this);
-        this.addNewGroup = this.addNewGroup.bind(this);
+        this.addGroup = this.addGroup.bind(this);
         this.removeGroup = this.removeGroup.bind(this);
+        this._callbacks = [];
+        this.runCallbacks = this.runCallbacks.bind(this);
     }
     
     createFakeObjectData() {
         // create columns
-        this._columns.push({columnKey: '1', name:'Column 1', width: 100, type: ColumnType.EDITBOX, columnComponentType:'TEXT'});
-        this._columns.push({columnKey: '2', name:'Column 2', width: 200, type: ColumnType.EDITBOX, columnComponentType:'TEXT'});
-        this._columns.push({columnKey: '3', name:'Column 3', width: 200, type: ColumnType.EDITBOX, columnComponentType:'TEXT'});
-        this._columns.push({columnKey: '4', name:'Column 4', width: 200, type: ColumnType.LABEL, columnComponentType:'TEXT'});
-        this._columns.push({columnKey: '5', name:'Column 5', width: 200, type: ColumnType.EDITBOX, columnComponentType:'TEXT'});
-        this._columns.push({columnKey: '6', name:'Column 6', width: 200, type: ColumnType.EDITBOX, columnComponentType:'TEXT'});
+        this._columns.push({columnKey: '1', name:'Column 1', width: 100, type: ColumnType.EDITBOX});
+        this._columns.push({columnKey: '2', name:'Column 2', width: 200, type: ColumnType.EDITBOX});
+        this._columns.push({columnKey: '3', name:'Column 3', width: 200, type: ColumnType.EDITBOX});
+        this._columns.push({columnKey: '4', name:'Column 4', width: 200, type: ColumnType.LABEL});
+        this._columns.push({columnKey: '5', name:'Column 5', width: 200, type: ColumnType.EDITBOX});
+        this._columns.push({columnKey: '6', name:'Column 6', width: 200, type: ColumnType.EDITBOX});
         this._sizeColumns = 6;
 
         // create groups 
@@ -82,6 +85,10 @@ class MainTableDataStore {
         this._sizeRows = 10;
     }
 
+    getSize() {
+        return this._rowData.length;
+    }
+
     getObjectAt(rowKey) {
         return this._rowData[rowKey];
     }
@@ -97,11 +104,10 @@ class MainTableDataStore {
         return this._groups;
     }
 
-    addNewGroup(groupName) {
+    addGroup(groupName) {
         this._sizeGroups ++;
         let id = this._sizeGroups.toString();
         this._groups.push({groupKey: id, name: groupName, rows:[]});
-        return id;
     }
 
     removeGroup(groupKey) {
@@ -109,8 +115,7 @@ class MainTableDataStore {
         if (index < 0) {
             return;
         }
-        this._sizeGroups --;
-        return this._groups.splice(index, 1);
+        this._groups.splice(index, 1);
     }
 
     getColumns() {
@@ -127,13 +132,21 @@ class MainTableDataStore {
         this._rowData[id] = {'1':newItem};
         let rows = this._groups[index].rows;
         rows.push(id);
+
+        //refresh
+        this.runCallbacks();
+
         return id;
     }
 
-    addNewColumn(newItem,columnComponentType) {
+    addNewColumn(newItem, columnComponentType) {
         this._sizeColumns ++; 
         let id = this._sizeColumns.toString();
         this._columns.push({columnKey: id, name:newItem, width: 200, type: ColumnType.EDITBOX, columnComponentType: columnComponentType});
+
+        //refresh
+        this.runCallbacks();
+
         return id;
     }
 
@@ -177,8 +190,83 @@ class MainTableDataStore {
             this._columns.splice(index, 1);
             this._columns.push(columnToReorder);
         }
+        //refresh
+        this.runCallbacks();
+    }
+
+    reorderRow(oldGroupKey, rowKey, newGroupKey, rowAfter) {
+        let oldgroup = this._groups.find(group => group.groupKey == oldGroupKey);
+        if (!oldgroup) {
+            return;
+        }
+        let index = oldgroup.rows.findIndex(row => row === rowKey);
+        if (index >= 0) {
+            oldgroup.rows.splice(index, 1);
+        }
+        let newgroup = this._groups.find(group => group.groupKey == newGroupKey);
+        if (!newgroup) {
+            return;
+        }
+        index = newgroup.rows.findIndex(row => row == rowAfter);
+        if (index === -1)
+            index = 0;
+        else 
+            index ++;
+
+        if (index >= 0) {
+            newgroup.rows.splice(index, 0, rowKey);
+        }
+        
+        //refresh
+        this.runCallbacks();
+    }
+
+    /**
+    * The callbacks are used to trigger events as new data arrives.
+    *
+    * In most cases the callback is a method that updates the state, e.g.
+    * updates a version number without direct impact on the component but that
+    * will trigger an component refresh/update.
+    *
+    * @param callback {function} The fallback function to be called
+    * @param id       {string}   The string that identifies the given callback.
+    *   This allows a callback to be overwritten when creating new objects that
+    *   use this data as reference.
+    * @return void
+    */
+    setCallback(callback, id = 'base') {
+        const newCallback = { id, fun: callback };
+
+        let found = false;
+        const newCallbacks = [];
+        for (const cb of this._callbacks) {
+            if (cb.id === id) {
+                found = true;
+                newCallbacks.push(newCallback);
+            } else {
+                newCallbacks.push(cb);
+            }
+        }
+
+        if (!found) {
+            newCallbacks.push(newCallback);
+        }
+
+        this._callbacks = newCallbacks;
+    }
+
+    /**
+     * Runs callbacks in the order that they've been added.
+     *
+     * The function is triggered when the fetchRange() Promise resolves.
+     *
+     * @return {void}
+     */
+    runCallbacks() {
+        for (const cb of this._callbacks) {
+            cb.fun();
+        }
     }
 }
-
 
 export default MainTableDataStore;
