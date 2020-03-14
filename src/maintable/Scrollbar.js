@@ -31,7 +31,7 @@ var UNSCROLLABLE_STATE = {
   scrollable: false,
 };
 
-var FACE_MARGIN = parseInt(cssVar('--scrollbar-face-margin'), 2);
+var FACE_MARGIN = parseInt(cssVar('--scrollbar-face-margin'), 10);
 var FACE_MARGIN_2 = FACE_MARGIN * 2;
 var FACE_SIZE_MIN = 30;
 var KEYBOARD_SCROLL_AMOUNT = 40;
