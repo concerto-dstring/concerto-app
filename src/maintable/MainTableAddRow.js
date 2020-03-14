@@ -197,7 +197,7 @@ class MainTableAddRow extends React.Component {
           <div> 
             {dropPlace}
             <div style={style} className={className} >
-              <Input style={inputStyle} action='Add' placeholder='+ Add' onKeyPress={this._onKeyPress} value={this.state.newItem} onChange={this.handleChange} />
+              <Input style={inputStyle} action='添加' placeholder='+ 添加' onKeyPress={this._onKeyPress} value={this.state.newItem} onChange={this.handleChange} />
               {scrollbarSpacer}
             </div>
           </div>
