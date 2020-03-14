@@ -27,7 +27,8 @@ class EditableCell extends React.PureComponent {
     }
 
     componentWillReceiveProps(props) {
-        this.setState({ value: props.data ? props.data.getObjectAt(this.props.rowIndex)[this.props.columnKey] : props.value});
+        this.setState({ value: props.data ? props.data.getObjectAt(props.rowIndex)[props.columnKey] : props.value});
+        this.setState({ version:  props.dataVersion });
     }
 
     setTargetRef = ref => (this.targetRef = ref);
@@ -89,7 +90,7 @@ class EditableCell extends React.PureComponent {
     }
 
     render() {
-        const {container, data, rowIndex, columnKey, width, height,  ...props} = this.props;
+        const {container, data, rowIndex, columnKey, dataVersion, width, height,  ...props} = this.props;
         const { value, editing } = this.state;
         const type = this.state.type;
         const inputStyle = {

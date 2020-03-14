@@ -771,7 +771,7 @@ class FixedDataTable extends React.Component {
           offset={scrollbarXOffsetTop}
           onScroll={this._onHorizontalScroll}
           position={scrollX}
-          size={width - (scrollFlags.showScrollbarY === true ? 11 : 0)}
+          size={width - (scrollFlags.showScrollbarY === true ? Scrollbar.SIZE : 0)}
           touchEnabled={touchScrollEnabled}
           isRTL={this.props.isRTL}
         />;

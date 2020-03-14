@@ -115,7 +115,7 @@ class RemovableHeaderCell extends React.PureComponent {
 
 class TextCell extends React.PureComponent {
   render() {
-    const {data, rowIndex, columnKey, ...props} = this.props;
+    const {data, rowIndex, columnKey, dataVersion, ...props} = this.props;
     return (
       <Cell {...props}>
         {data.getObjectAt(rowIndex)[columnKey]}
