@@ -9,7 +9,7 @@ import { RowType } from './MainTableType';
 
 const DataVersionContext = React.createContext({
   data: null,
-  version: -1,
+  version: 0,
 });
 
 function DataContext(Wrapped) {
@@ -32,11 +32,6 @@ function DataContext(Wrapped) {
         this.setState({
           data: nextProps.data,
         });
-      }
-      if (this.state.version != nextProps.version) {
-        this.setState({
-          version: nextProps.version,
-        })
       }
     }
 

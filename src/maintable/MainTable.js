@@ -46,7 +46,7 @@ const DataEditableCell = function(props) {
             {({data, version}) => (
                 <EditableCell
                     data={data}
-                    dataVersion={version}
+                    version={version}
                     {...this.props}
                 />
             )}
@@ -61,7 +61,7 @@ const DataTextCell = function(props) {
             {({data, version}) => (
                 <TextCell
                     data={data}
-                    dataVersion={version}
+                    version={version}
                     {...this.props}
                 />
             )}

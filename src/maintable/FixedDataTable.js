@@ -717,6 +717,7 @@ class FixedDataTable extends React.Component {
       columnReorderingData,
       onColumnResizeEndCallback,
       elementHeights,
+      scrollFlags,
     } = this.props;
 
     const { ownerHeight, width } = tableSize;
@@ -770,7 +771,7 @@ class FixedDataTable extends React.Component {
           offset={scrollbarXOffsetTop}
           onScroll={this._onHorizontalScroll}
           position={scrollX}
-          size={width}
+          size={width - (scrollFlags.showScrollbarY === true ? 8 : 0)}
           touchEnabled={touchScrollEnabled}
           isRTL={this.props.isRTL}
         />;
