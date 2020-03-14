@@ -1,0 +1,13 @@
+.user{
+    margin:5px 0px;
+    width:'100%';
+}
+.user:hover{
+    background: #009AFF;
+    color:white;
+    border-radius: 3px;
+}
+.user Avatar{
+    vertical-align: middle;
+    font-weight: bold;
+}

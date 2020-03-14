@@ -35,7 +35,12 @@ class EditableCell extends React.PureComponent {
     getTargetRef = () => this.targetRef;
 
     handleClick = () => {
-        this.setState({ editing: true });
+        const tableCellComponent = new TableCellComponent();
+        const columnCanEditor = tableCellComponent.columnCanEditor(this.state.type);
+        if(columnCanEditor){
+            this.setState({ editing: true });
+        }
+        
     }
 
     handleHide = () => {
@@ -66,7 +71,7 @@ class EditableCell extends React.PureComponent {
                  value = e;
                  break;    
            case 'PEOPLE':
-                 value = String(e);
+                 value = e.target.textContent;
                  break;
            case 'STATUS':
                  value = e.key!='null'?e.key:'';
@@ -99,10 +104,11 @@ class EditableCell extends React.PureComponent {
         }
         const tableCellComponent = new TableCellComponent();
         const component = tableCellComponent.createTableCellComponentByType(type,value,inputStyle,[this.handleChange,this.handleKey]);
+        const renderComtext = tableCellComponent.renderCellContextByType(type,value,[this.handleChange,this.handleKey])
         return (
 
             <CellContainer ref={this.setTargetRef} onClick={this.handleClick}>
-                {!editing && value}
+                {!editing && renderComtext}
                 {editing && this.targetRef && (
                     <Overlay
                         show
