@@ -17,7 +17,8 @@ import PropTypes from 'prop-types';
 import cx from './vendor_upstream/stubs/cx';
 import joinClasses from './vendor_upstream/core/joinClasses';
 import shallowEqual from './vendor_upstream/core/shallowEqual';
-
+import TableColumnSort from './TableColumnSort'
+import TableColumnMenu from './TableColumnMenu'
 import './css/layout/fixedDataTableCellLayout.css';
 import './css/style/fixedDataTableCell.css';
 
@@ -170,6 +171,7 @@ class FixedDataTableCell extends React.Component {
     );
 
     var columnResizerComponent;
+    var tableColumnSort;
     if (props.onColumnResize) {
       var columnResizerStyle = {
         height
@@ -191,9 +193,14 @@ class FixedDataTableCell extends React.Component {
           />
         </div>
       );
+      tableColumnSort = (
+        <TableColumnSort/>
+      );
+      
     }
 
     var columnReorderComponent;
+    var tableColumnMenu;
     if (props.onColumnReorder && columnKey !== "") { //header row
       columnReorderComponent = (
         <FixedDataTableColumnReorderHandle
@@ -206,6 +213,9 @@ class FixedDataTableCell extends React.Component {
           {...this.props}
         />
       );
+      tableColumnMenu = (
+        <TableColumnMenu/>
+      )
     }
 
     var cellProps = {
@@ -233,12 +243,14 @@ class FixedDataTableCell extends React.Component {
       );
     } 
 
+    
     const role = isHeaderOrFooter ? 'columnheader' : 'gridcell';
-
+ 
     return (
       <div className={className} style={style} role={role}>
         {!replacingColumn && columnResizerComponent}
         {!replacingColumn && columnReorderComponent}
+        {!replacingColumn && tableColumnMenu}
         {content}
       </div>
     );

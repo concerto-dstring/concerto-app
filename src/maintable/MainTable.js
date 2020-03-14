@@ -321,7 +321,7 @@ class MainTable extends React.Component {
                         columnKey=""
                         header={
 
-                            <Dropdown overlay={menu}>
+                            <Dropdown overlay={menu} trigger={['click']}>
                             <Button basic circular icon='plus circle' style={addColumnStyle}/>
                             </Dropdown>
                             }
