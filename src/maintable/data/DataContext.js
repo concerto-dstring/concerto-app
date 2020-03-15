@@ -144,7 +144,7 @@ function AddFilter(TableComponent) {
           }
         }
       } else {
-        for(let i = 0; i < dataset.getGroups().length; i ++) {
+        for(let i = dataset.getGroups().length - 1; i >=0;  i --) {
             let group = dataset.getGroups()[i];
             filteredIndexes.push({rowType:RowType.HEADER, groupKey:group.groupKey, rowKey:''});
             for (let j = 0; j < group.rows.length; j ++) {

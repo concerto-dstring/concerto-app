@@ -93,7 +93,6 @@ class TableCellComponent{
     }
 
     renderCellContextByType = (cell_type,value,events) => {
-        debugger;
        switch(cell_type){
            case this._proptype.TABLE_CELL_COMPONENT.PEOPLE:
            return <Popover  placement="bottom" trigger="click" content={

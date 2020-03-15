@@ -145,7 +145,22 @@ class DataViewWrapper {
         this._dataset.setObjectAt(this._indexMap[rowIndex].rowKey, columnKey, value);
     }
 
-   
+    /**
+     * add a new group to the backend dataset 
+     * @param {*} groupName 
+     */
+    addNewGroup(groupName) {
+        return this._dataset.addNewGroup(groupName);
+    }
+
+    /**
+     * remove a group from the backend dataset by the groupKey
+     * @param {*} groupKey 
+     */
+    removeGroup(groupKey) {
+        return this._dataset.removeGroup(groupKey);
+    }
+       
 }
 
 export {

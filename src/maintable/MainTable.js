@@ -101,59 +101,18 @@ class MainTable extends React.Component {
 
     /**
      * callback assoicated with the group add button
-     * add new row header/add/footer to the state.sortedRowlist.RowMap
-     * add new group to the state.groups
      * @param {*} event 
      */
     _onAddNewGroupCallback(event) {
-        let sortedRowList = this.state.sortedRowList;
-        let rows = sortedRowList.getRowMap();
-        let startIndex = this._defaultSortIndexes.length;
-        let groupKey = sortedRowList.addNewGroup("新组")
-
-        let index = startIndex;
-        rows.unshift({rowType:RowType.FOOTER, groupKey:groupKey, rowKey:''});
-        this._defaultSortIndexes.push(index++);
-        rows.unshift({rowType:RowType.ADDROW, groupKey:groupKey, rowKey:''});
-        this._defaultSortIndexes.push(index++);
-        rows.unshift({rowType:RowType.HEADER, groupKey:groupKey, rowKey:''});
-        this._defaultSortIndexes.push(index);
-
-        this.state.groups.push({rowType:groupKey, startIndex:startIndex, endIndex:index});
-        
-     }
+        this._dataset.addNewGroup("新组")
+    }
 
      /**
       * callback assoicated with the group delete button
-      * remove the rows with the same groupKey from the state.sortedRowList.RowMap
-      * remove the group from the state.groups
       * @param {*} groupKey 
       */
      _onRemoveGroupCallback(groupKey){
-        let sortedRowList = this.state.sortedRowList;
-        let groups = this.state.groups;
-        let rows = sortedRowList.getRowMap();
-        let rowslen = rows.length;
-        let rmgroup = sortedRowList.getGroupAt(groupKey)
-        
-        if (!rmgroup)
-            return;
-        
-        // TODO: check inplace delete in javascript
-        for  (let ridx = 0; ridx < rowslen; ridx ++) {
-            let row = rows[ridx];
-            if (row && row.groupKey === groupKey) {
-                rows.splice(ridx, 1);
-                this._defaultSortIndexes(ridx, 1);
-            }
-        }
-
-        for (let gidx = 0; gidx < groups.length; gidx ++){
-            if (groups[gidx].groupKey === groupKey) {
-                groups.splice(gidx, 1);
-                break;
-            }
-        }
+        this._dataset.removeGroup(groupKey)
      }
 
     _onColumnReorderEndCallback(event) {
