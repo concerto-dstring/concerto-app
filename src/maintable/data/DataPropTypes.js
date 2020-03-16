@@ -9,7 +9,7 @@
  * @param {string} propName      The prop that is to be validated
  * @param {string} componentName The name of the component that the prop belongs to
  */
-function CtxtDataListStore(props, propName, componentName) {
+function ContextDataListStore(props, propName, componentName) {
   const dataObj = props[propName];
   if (dataObj.setCallback === undefined) {
     return new Error(`${componentName} requires that ${propName} has a setCallback() function`);
@@ -44,6 +44,6 @@ function FilterObject(props, propName, componentName) {
 }
 
 export default {
-  CtxtDataListStore,
+  ContextDataListStore,
   FilterObject
 };

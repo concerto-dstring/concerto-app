@@ -8,7 +8,7 @@
 
 'use strict';
 
-import { ColumnType, ColumnKey } from './MainTableType';
+import { ColumnType, ColumnKey } from './data/MainTableType';
 
 class MainTableDataStore {
 
@@ -22,69 +22,75 @@ class MainTableDataStore {
         this._rowData = {};
         this._groups = [];
         this._sizeGroups = 0;
+        this.getSize = this.getSize.bind(this);
         this.addNewRow = this.addNewRow.bind(this);
+        this.addNewColumn = this.addNewColumn.bind(this);
         this.setObjectAt = this.setObjectAt.bind(this);
         this.removeRow = this.removeRow.bind(this);
         this.removeRows = this.removeRows.bind(this);
-        this.addNewColumn = this.addNewColumn.bind(this);
         this.reorderColumn = this.reorderColumn.bind(this);
         this.addNewGroup = this.addNewGroup.bind(this);
         this.removeGroup = this.removeGroup.bind(this);
+        this._callbacks = [];
+        this.runCallbacks = this.runCallbacks.bind(this);
     }
     
     createFakeObjectData() {
-
+        // create columns
         // 增加行操作列和行复选框列
         this._columns.push({columnKey: ColumnKey.ROWACTION, name:'', width: 36, type: ColumnType.DROPDOWN, columnComponentType:''});
         this._columns.push({columnKey: ColumnKey.ROWSELECT, name:'', width: 36, type: ColumnType.CHECKBOX, columnComponentType:''}); 
 
-        // create columns
-        this._columns.push({columnKey: '1', name:'Column 1', width: 100, type: ColumnType.EDITBOX, columnComponentType:'TEXT'});
-        this._columns.push({columnKey: '2', name:'Column 2', width: 200, type: ColumnType.EDITBOX, columnComponentType:'TEXT'});
-        this._columns.push({columnKey: '3', name:'Column 3', width: 200, type: ColumnType.EDITBOX, columnComponentType:'TEXT'});
-        this._columns.push({columnKey: '4', name:'Column 4', width: 200, type: ColumnType.LABEL, columnComponentType:'TEXT'});
-        this._columns.push({columnKey: '5', name:'Column 5', width: 200, type: ColumnType.EDITBOX, columnComponentType:'TEXT'});
-        this._columns.push({columnKey: '6', name:'Column 6', width: 200, type: ColumnType.EDITBOX, columnComponentType:'TEXT'});
+        this._columns.push({columnKey: '1', name:'主题', width: 100, type: ColumnType.EDITBOX, columnComponentType:'TEXT'});
+        this._columns.push({columnKey: '2', name:'备注', width: 200, type: ColumnType.EDITBOX, columnComponentType:'TEXT'});
+        this._columns.push({columnKey: '3', name:'分配', width: 200, type: ColumnType.EDITBOX, columnComponentType:'TEXT'});
+        this._columns.push({columnKey: '4', name:'日志', width: 200, type: ColumnType.LABEL, columnComponentType:'TEXT'});
+        this._columns.push({columnKey: '5', name:'文件', width: 200, type: ColumnType.EDITBOX, columnComponentType:'TEXT'});
+        this._columns.push({columnKey: '6', name:'补充说明', width: 200, type: ColumnType.EDITBOX, columnComponentType:'TEXT'});
         this._sizeColumns = 6;
 
         // create groups 
-        this._groups.push({groupKey: '1', name: 'group 1', rows:['1', '2', '3', '4'], color:'#D8BFD8'});
-        this._groups.push({groupKey: '2', name: 'group 2', rows:['5', '6', '7', '8'], color:'#00BFFF'});
-        this._groups.push({groupKey: '3', name: 'group 3', rows:['9', '10'], color:'#FFAEB9'});
+        this._groups.push({groupKey: '1', name: '组1', rows:['1', '2', '3', '4'], color:'#D8BFD8'});
+        this._groups.push({groupKey: '2', name: '组2', rows:['5', '6', '7', '8'], color:'#00BFFF'});
+        this._groups.push({groupKey: '3', name: '组3', rows:['9', '10'], color:'#FFAEB9'});
         this._sizeGroups = 3;
         
         // create row data
-        this._rowData['1'] = {'1': 'row 1, column 1','2': 'row 1, column 2', '3': 'row 1, column 3', '4': 'row 1, column 4',
-        '5': 'row 1, column 5', '6': 'row 1, column 6'};
+        this._rowData['1'] = {'1': '主题 1','2': '备注 1', '3': '分配 1', '4': '日志 1',
+        '5': '文件 1', '6': '补充说明 1'};
 
-        this._rowData['2'] = {'1': 'row 2, column 1','2': 'row 2, column 2', '3': 'row 2, column 3', '4': 'row 2, column 4',
-        '5': 'row 2, column 5', '6': 'row 2, column 6'};
+        this._rowData['2'] = {'1': '主题 2','2': '备注 2', '3': '分配 2', '4': '日志 2',
+        '5': '文件 2', '6': '补充说明 2'};
         
-        this._rowData['3'] = {'1': 'row 3, column 1','2': 'row 3, column 2', '3': 'row 3, column 3', '4': 'row 3, column 4',
-        '5': 'row 3, column 5', '6': 'row 3, column 6'};  
+        this._rowData['3'] = {'1': '主题 3','2': '备注 3', '3': '分配 3', '4': '日志 3',
+        '5': '文件 3', '6': '补充说明 3'};  
 
-        this._rowData['4'] = {'1': 'row 4, column 1','2': 'row 4, column 2', '3': 'row 4, column 3', '4': 'row 4, column 4',
-        '5': 'row 4, column 5', '6': 'row 4, column 6'}; 
+        this._rowData['4'] = {'1': '主题 4','2': '备注 4', '3': '分配 4', '4': '日志 4',
+        '5': '文件 4', '6': '补充说明 4'}; 
 
-        this._rowData['5'] = {'1': 'row 5, column 1','2': 'row 5, column 2', '3': 'row 5, column 3', '4': 'row 5, column 4',
-        '5': 'row 5, column 5', '6': 'row 5, column 6'}; 
+        this._rowData['5'] = {'1': '主题 5','2': '备注 5', '3': '分配 5', '4': '日志 5',
+        '5': '文件 5', '6': '补充说明 5'}; 
 
-        this._rowData['6'] = {'1': 'row 6, column 1','2': 'row 6, column 2', '3': 'row 6, column 3', '4': 'row 6, column 4',
-        '5': 'row 6, column 5', '6': 'row 6, column 6'}; 
+        this._rowData['6'] = {'1': '主题 6','2': '备注 6', '3': '分配 6', '4': '日志 6',
+        '5': '文件 6', '6': '补充说明 6'}; 
 
-        this._rowData['7'] = {'1': 'row 7, column 1','2': 'row 7, column 2', '3': 'row 7, column 3', '4': 'row 7, column 4',
-        '5': 'row 7, column 5', '6': 'row 7, column 6'};
+        this._rowData['7'] = {'1': '主题 7','2': '备注 7', '3': '分配 7', '4': '日志 7',
+        '5': '文件 7', '6': '补充说明 7'};
 
-        this._rowData['8'] = {'1': 'row 8, column 1','2': 'row 8, column 2', '3': 'row 8, column 3', '4': 'row 8, column 4',
-        '5': 'row 8, column 5', '6': 'row 8, column 6'};
+        this._rowData['8'] = {'1': '主题 8','2': '备注 8', '3': '分配 8', '4': '日志 8',
+        '5': '文件 8', '6': '补充说明 8'};
 
-        this._rowData['9'] = {'1': 'row 9, column 1','2': 'row 9, column 2', '3': 'row 9, column 3', '4': 'row 9, column 4',
-        '5': 'row 9, column 5', '6': 'row 9, column 6'};
+        this._rowData['9'] = {'1': '主题 9','2': '备注 9', '3': '分配 9', '4': '日志 9',
+        '5': '文件 9', '6': '补充说明 9'};
 
-        this._rowData['10'] = {'1': 'row 10, column 1','2': 'row 10, column 2', '3': 'row 10, column 3', '4': 'row 10, column 4',
-        '5': 'row 10, column 5', '6': 'row 10, column 6'};
+        this._rowData['10'] = {'1': '主题 10','2': '备注 10', '3': '分配 10', '4': '日志 10',
+        '5': '文件 10', '6': '补充说明 10'};
 
         this._sizeRows = 10;
+    }
+
+    getSize() {
+        return this._rowData.length;
     }
 
     getObjectAt(rowKey) {
@@ -106,6 +112,9 @@ class MainTableDataStore {
         this._sizeGroups ++;
         let id = this._sizeGroups.toString();
         this._groups.push({groupKey: id, name: groupName, rows:[]});
+
+        //refresh
+        this.runCallbacks();
         return id;
     }
 
@@ -114,8 +123,18 @@ class MainTableDataStore {
         if (index < 0) {
             return;
         }
-        this._sizeGroups --;
-        return this._groups.splice(index, 1);
+        this._groups.splice(index, 1);
+
+        //refresh
+        this.runCallbacks();
+    }
+
+    getGroupAt(groupKey) {
+        let index = this._groups.findIndex(column => column.groupKey == groupKey);
+        if (index < 0) {
+            return null;
+        }
+        return this._groups[index]
     }
 
     getColumns() {
@@ -132,6 +151,10 @@ class MainTableDataStore {
         this._rowData[id] = {'1':newItem};
         let rows = this._groups[index].rows;
         rows.push(id);
+
+        //refresh
+        this.runCallbacks();
+
         return id;
     }
 
@@ -149,13 +172,20 @@ class MainTableDataStore {
       sourceGroupRows.splice(sourceRowIndex, 1)
       targetGroupRows.push(rowKey);
       
+      //refresh
+      this.runCallbacks();
+
       return rowKey;
   }
 
-    addNewColumn(newItem,columnComponentType) {
+    addNewColumn(newItem, columnComponentType) {
         this._sizeColumns ++; 
         let id = this._sizeColumns.toString();
         this._columns.push({columnKey: id, name:newItem, width: 200, type: ColumnType.EDITBOX, columnComponentType: columnComponentType});
+
+        //refresh
+        this.runCallbacks();
+
         return id;
     }
 
@@ -181,6 +211,9 @@ class MainTableDataStore {
 
       delete this._rowData[rowKey];
       this._sizeRows--
+
+      //refresh
+      this.runCallbacks();
     }
 
     removeRows(rowKeys) {
@@ -210,8 +243,83 @@ class MainTableDataStore {
             this._columns.splice(index, 1);
             this._columns.push(columnToReorder);
         }
+        //refresh
+        this.runCallbacks();
+    }
+
+    reorderRow(oldGroupKey, rowKey, newGroupKey, rowAfter) {
+        let oldgroup = this._groups.find(group => group.groupKey == oldGroupKey);
+        if (!oldgroup) {
+            return;
+        }
+        let index = oldgroup.rows.findIndex(row => row === rowKey);
+        if (index >= 0) {
+            oldgroup.rows.splice(index, 1);
+        }
+        let newgroup = this._groups.find(group => group.groupKey == newGroupKey);
+        if (!newgroup) {
+            return;
+        }
+        index = newgroup.rows.findIndex(row => row == rowAfter);
+        if (index === -1)
+            index = 0;
+        else 
+            index ++;
+
+        if (index >= 0) {
+            newgroup.rows.splice(index, 0, rowKey);
+        }
+        
+        //refresh
+        this.runCallbacks();
+    }
+
+    /**
+    * The callbacks are used to trigger events as new data arrives.
+    *
+    * In most cases the callback is a method that updates the state, e.g.
+    * updates a version number without direct impact on the component but that
+    * will trigger an component refresh/update.
+    *
+    * @param callback {function} The fallback function to be called
+    * @param id       {string}   The string that identifies the given callback.
+    *   This allows a callback to be overwritten when creating new objects that
+    *   use this data as reference.
+    * @return void
+    */
+    setCallback(callback, id = 'base') {
+        const newCallback = { id, fun: callback };
+
+        let found = false;
+        const newCallbacks = [];
+        for (const cb of this._callbacks) {
+            if (cb.id === id) {
+                found = true;
+                newCallbacks.push(newCallback);
+            } else {
+                newCallbacks.push(cb);
+            }
+        }
+
+        if (!found) {
+            newCallbacks.push(newCallback);
+        }
+
+        this._callbacks = newCallbacks;
+    }
+
+    /**
+     * Runs callbacks in the order that they've been added.
+     *
+     * The function is triggered when the fetchRange() Promise resolves.
+     *
+     * @return {void}
+     */
+    runCallbacks() {
+        for (const cb of this._callbacks) {
+            cb.fun();
+        }
     }
 }
-
 
 export default MainTableDataStore;

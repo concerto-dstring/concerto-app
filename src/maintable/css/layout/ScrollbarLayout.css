@@ -74,8 +74,8 @@
 
 .fixedDataTable_isRTL .ScrollbarLayout_faceHorizontal,
 .fixedDataTable_isRTL .ScrollbarLayout_faceHorizontal:after {
-  right: 0;
-  left: auto;
+  right: 0px;
+  left: 0px;
 }
 
 .ScrollbarLayout_faceHorizontal.public_Scrollbar_faceActive:after,
@@ -84,9 +84,10 @@
 }
 
 .ScrollbarLayout_faceVertical {
-  left: 0;
-  right: 0;
-  top: 0;
+  left: 0px;
+  right: 0px;
+  top: 0px;
+  bottom: 0px;
 }
 
 .ScrollbarLayout_faceVertical:after {

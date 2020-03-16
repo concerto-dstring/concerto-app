@@ -28,7 +28,7 @@ import isNaN from 'lodash/isNaN';
 import joinClasses from './vendor_upstream/core/joinClasses';
 import scrollbarsVisible from './selectors/scrollbarsVisible';
 import tableHeightsSelector from './selectors/tableHeights';
-import { RowType } from './MainTableType';
+import { RowType } from './data/MainTableType';
 import ColumnResizerLine from './ColumnResizerLine';
 
 import './css/layout/fixedDataTableLayout.css';
@@ -658,6 +658,9 @@ class FixedDataTable extends React.Component {
       start: this._handleStart,
     };
 
+    document.addEventListener('mousemove', this._onMouseMove);
+    document.addEventListener('mouseup', this._onMouseUp);
+
     // if (this._divRefRows) {
     //   Object.keys(this.events).forEach((key) =>
     //     events[key].forEach((eventName) =>
@@ -667,6 +670,11 @@ class FixedDataTable extends React.Component {
     // }
 
     this._reportContentHeight();
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('mousemove', this._onMouseMove);
+    document.removeEventListener('mouseup', this._onMouseUp);
   }
 
   componentWillReceiveProps(/*object*/ nextProps) {
@@ -709,6 +717,7 @@ class FixedDataTable extends React.Component {
       columnReorderingData,
       onColumnResizeEndCallback,
       elementHeights,
+      scrollFlags,
     } = this.props;
 
     const { ownerHeight, width } = tableSize;
@@ -762,7 +771,7 @@ class FixedDataTable extends React.Component {
           offset={scrollbarXOffsetTop}
           onScroll={this._onHorizontalScroll}
           position={scrollX}
-          size={width}
+          size={width - (scrollFlags.showScrollbarY === true ? Scrollbar.SIZE : 0)}
           touchEnabled={touchScrollEnabled}
           isRTL={this.props.isRTL}
         />;
@@ -839,8 +848,6 @@ class FixedDataTable extends React.Component {
         aria-rowcount={ariaRowCount}
         {...attributes}
         tabIndex={tabIndex}
-        onMouseMove={this._onMouseMove}
-        onMouseUp={this._onMouseUp}
         onKeyDown={this._onKeyDown}
         onTouchStart={touchScrollEnabled ? this._touchHandler.onTouchStart : null}
         onTouchEnd={touchScrollEnabled ? this._touchHandler.onTouchEnd : null}
@@ -1056,7 +1063,7 @@ class FixedDataTable extends React.Component {
       return;
     }
 
-    let { firstRowIndex, rowOffsets, rowsCount, scrollX, scrollY, storedHeights } = this.props; 
+    let { firstRowIndex, rowOffsets, rowsCount, endRowIndex, scrollX, scrollY, storedHeights } = this.props; 
     const position = getPosition(event, this._divRef);
     const delta = {
       x: this._position.x - position.x,
@@ -1079,16 +1086,10 @@ class FixedDataTable extends React.Component {
       }
 
       const y = Math.min(position.y + scrollY, this.props.scrollContentHeight);
-      //const y = Math.min(this._originalTop + delta.y + scrollY, this.props.scrollContentHeight);
-      // let off = 0;
-      for (let rowIndex = firstRowIndex; rowIndex < rowsCount; rowIndex ++) {
+      for (let rowIndex = firstRowIndex; rowIndex < endRowIndex; rowIndex ++) {
         let offset = rowOffsets[rowIndex];
 
         if (y >= offset && y <= offset + storedHeights[rowIndex]) {
-          // if (rowIndex > this._draggingRowIndex && off === 0) {
-          //   off = this._draggingHeight;
-          // }
-          //this._dropRowIndex = this.props.rowDropIndexGetter(this._draggingRowIndex, rowIndex);
           let type = this.props.rowTypeGetter(rowIndex);
           let dropRowIndex = rowIndex;
           switch (type) {
@@ -1097,6 +1098,7 @@ class FixedDataTable extends React.Component {
                 dropRowIndex ++;
               break;
             case RowType.ADDROW:
+              if (this._draggingRowIndex < rowIndex)
                 dropRowIndex --;
               break;
             case RowType.FOOTER:
@@ -1113,9 +1115,10 @@ class FixedDataTable extends React.Component {
           });
  
           this._dropRowIndex = dropRowIndex;
-          return;
+          break;
         }
       }
+      event.preventDefault();
       return;
     }
 
@@ -1132,8 +1135,8 @@ class FixedDataTable extends React.Component {
         scrollLeft: Math.round(this.props.scrollX),
         scrollTop: Math.round(this.props.scrollY),
       });
-      //this._position = position;
     }
+    event.preventDefault();
   }
 
   _onMouseUp(event) {

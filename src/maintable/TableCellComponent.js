@@ -1,9 +1,10 @@
 import React from 'react';
 import {Avatar,Button, DatePicker,Input,InputNumber,Select, Popover,Menu, Dropdown} from 'antd';
-import {DownloadOutlined,PlusOutlined, DownOutlined, UserOutlined,ScheduleOutlined,AccountBookOutlined } from '@ant-design/icons';
+import {DownloadOutlined,PlusOutlined, DownOutlined, UserOutlined,ScheduleOutlined,AccountBookOutlined,UsergroupAddOutlined,PlusCircleOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
-
+import '../maintable/css/style/TableCellComponent.css'
+const {Search} = Input;
 class TableCellComponent{
     constructor(props){
         this.createTableCellComponentByType = this.createTableCellComponentByType.bind(this);
@@ -18,18 +19,7 @@ class TableCellComponent{
             }
         }
     }
-    getItems = () =>{
-        const { Option } = Select;
-        const children = [];
-        for (let i = 10; i < 36; i++) {
-          children.push(<Option key={i.toString(36) + i}>
-              <Avatar style={{ verticalAlign: 'middle' }}>
-              {i.toString(36)}
-              </Avatar>&nbsp;
-              {i.toString(36) + i}</Option>);
-        }
-        return children;
-    } 
+    
     getMenu = (event) =>{
         return (
           <Menu style={{textAlign:'center',fontWeight:'bold'}} onClick={event}>
@@ -51,6 +41,7 @@ class TableCellComponent{
           </Menu>
         );
     }
+
     getColorByStatus = (status) => {
         let styles = {
             color:'white',
@@ -76,7 +67,74 @@ class TableCellComponent{
         }
         return styles;
     }
-    createTableCellComponentByType = (cell_type,value,style,events)=>{
+
+    getUserArray = () => {
+       return [{
+           'smallName':'ZT',
+           'userName':'ZhangTao'
+       },{
+           'smallName':'WM',
+           'userName':'WuMing'
+       },{
+           'smallName':'李',
+           'userName':'李白'
+       }]
+    }
+
+    columnCanEditor = (cell_type) => {
+        switch(cell_type){
+            case this._proptype.TABLE_CELL_COMPONENT.PEOPLE:
+            return false;
+
+            default:
+            return true;
+        }
+    }
+
+    renderCellContextByType = (cell_type,value,events) => {
+       switch(cell_type){
+           case this._proptype.TABLE_CELL_COMPONENT.PEOPLE:
+           return <Popover  placement="bottom" trigger="click" content={
+                    <div>
+                        {
+                            this.getUserArray().map((v, i) => (
+                                <div className='user' onClick={events[0]}>
+                                    <div style={{padding:'5px;'}}>
+                                        &nbsp;<Avatar>{v.smallName}</Avatar>&nbsp;{v.userName}
+                                    </div>
+                                </div>
+                            ))
+                        }
+                    
+                    </div>
+                    } title={
+                        <Search
+                            placeholder="Search"
+                            bordered={false}
+                            onSearch={value => console.log(value)}
+                            style={{margin:'0 0 5px 0' }}
+                        />
+                    }>
+                    {
+                        value&&
+                        <div>
+                            <Avatar style={{cursor:'pointer'}}>{value.substr(1,1)}</Avatar>
+                            <PlusCircleOutlined style={{position:'absolute',bottom:'3px',left:'30px',color:'#1890ff'}} />
+                        </div>
+                    }    
+                    {
+                        !value&&<Button 
+                        shape="circle"
+                        icon={<UsergroupAddOutlined />}
+                    />
+                    }
+                </Popover>;
+            default:
+            return value;
+       }
+    }
+
+    createTableCellComponentByType = (cell_type,value,style,events) => {
        const { Option } = Select;
        switch(cell_type){
    
@@ -88,17 +146,32 @@ class TableCellComponent{
                     onChange={events[0]}/>;
 
            case this._proptype.TABLE_CELL_COMPONENT.PEOPLE:
-           return <Select 
-                    mode="tags" 
-                    style={{ width: '100%' }}
-                    placeholder="Select a person" 
-                    suffixIcon={<UserOutlined />}
-                    tokenSeparators={[',']}
-                    onChange = {events[0]}
-                    value={value}
-                    >
-                    {this.getItems()}
-                  </Select>;
+           return <Popover  placement="bottom" trigger="click" content={
+                    <div>
+                        {
+                            this.getUserArray().map((v, i) => (
+                                <div className='user' onClick={events[0]}>
+                                    <div style={{padding:'5px;'}}>
+                                        &nbsp;<Avatar>{v.smallName}</Avatar>&nbsp;{v.userName}
+                                    </div>
+                                </div>
+                            ))
+                        }
+                    
+                    </div>
+                  } title={
+                    <Search
+                        placeholder="Search"
+                        bordered={false}
+                        onSearch={value => console.log(value)}
+                        style={{margin:'0 0 5px 0' }}
+                    />
+                  }>
+                    <Button 
+                        shape="circle"
+                        icon={<UsergroupAddOutlined />}
+                    />
+                  </Popover>
 
            case this._proptype.TABLE_CELL_COMPONENT.SELECT_LIST:
            return <Select

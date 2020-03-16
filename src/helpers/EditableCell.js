@@ -26,6 +26,7 @@ class EditableCell extends React.PureComponent {
 
     componentWillReceiveProps(props) {
         this.setState({ value: props.data ? props.data.getObjectAt(props.rowIndex)[props.columnKey] : props.value});
+        this.setState({ version: props.dataVersion });
     }
 
     setTargetRef = ref => (this.targetRef = ref);
@@ -33,7 +34,12 @@ class EditableCell extends React.PureComponent {
     getTargetRef = () => this.targetRef;
 
     handleClick = () => {
-        this.setState({ editing: true });
+        const tableCellComponent = new TableCellComponent();
+        const columnCanEditor = tableCellComponent.columnCanEditor(this.state.type);
+        if(columnCanEditor){
+            this.setState({ editing: true });
+        }
+        
     }
 
     handleHide = () => {
@@ -64,7 +70,7 @@ class EditableCell extends React.PureComponent {
                  value = e;
                  break;    
            case 'PEOPLE':
-                 value = String(e);
+                 value = e.target.textContent;
                  break;
            case 'STATUS':
                  value = e.key!='null'?e.key:'';
@@ -87,7 +93,7 @@ class EditableCell extends React.PureComponent {
     }
 
     render() {
-        const {container, data, rowIndex, columnKey, width, height,  ...props} = this.props;
+        const {container, data, rowIndex, columnKey, dataVersion, width, height,  ...props} = this.props;
         const { value, editing } = this.state;
         const type = this.state.type;
         const inputStyle = {
@@ -97,10 +103,11 @@ class EditableCell extends React.PureComponent {
         }
         const tableCellComponent = new TableCellComponent();
         const component = tableCellComponent.createTableCellComponentByType(type,value,inputStyle,[this.handleChange,this.handleKey]);
+        const renderComtext = tableCellComponent.renderCellContextByType(type,value,[this.handleChange,this.handleKey])
         return (
 
             <CellContainer ref={this.setTargetRef} onClick={this.handleClick}>
-                {!editing && value}
+                {!editing && renderComtext}
                 {editing && this.targetRef && (
                     <Overlay
                         show

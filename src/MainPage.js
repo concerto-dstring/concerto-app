@@ -74,9 +74,9 @@ export default class MainPage extends React.Component {
           >
             
             <Collapse accordion defaultActiveKey={['1']}>
-              <Panel header={<h3 style={{fontWeight:"bold",color:'#767676'}}>Boards</h3>} showArrow={false} key="1">
+              <Panel header={<h3 style={{fontWeight:"bold",color:'#767676'}}>工作板区</h3>} showArrow={false} key="1">
                 <Search
-                  placeholder="Search"
+                  placeholder="搜索"
                   bordered={false}
                   onSearch={value => console.log(value)}
                   style={{margin:'0 0 5px 0' }}
@@ -88,32 +88,32 @@ export default class MainPage extends React.Component {
                 >
                   <Menu.Item key="1">
                     <MailOutlined />
-                    Navigation One
+                    邮件工作板
                   </Menu.Item>
                   <Menu.Item key="2">
                     <CalendarOutlined />
-                    Navigation Two
+                    进度工作板
                   </Menu.Item>
                   <SubMenu
                     key="sub1"
                     title={
                       <span>
                         <AppstoreOutlined />
-                        <span>Navigation Three</span>
+                        <span>开发工作板</span>
                       </span>
                     }
                   >
-                    <Menu.Item key="3">Option 3</Menu.Item>
-                    <Menu.Item key="4">Option 4</Menu.Item>
-                    <SubMenu key="sub1-2" title="Submenu">
-                      <Menu.Item key="5">Option 5</Menu.Item>
-                      <Menu.Item key="6">Option 6</Menu.Item>
+                    <Menu.Item key="3">开发组1</Menu.Item>
+                    <Menu.Item key="4">开发组2</Menu.Item>
+                    <SubMenu key="sub1-2" title="开发组3">
+                      <Menu.Item key="5">设计</Menu.Item>
+                      <Menu.Item key="6">测试</Menu.Item>
                     </SubMenu>
                   </SubMenu>
                   
                 </Menu>
               </Panel>
-              <Panel showArrow={false} header={<h3 style={{fontWeight:"bold",color:'#767676'}}>Dashboards</h3>} key="2">
+              <Panel showArrow={false} header={<h3 style={{fontWeight:"bold",color:'#767676'}}>仪表板区</h3>} key="2">
                 <Menu
                   defaultSelectedKeys={['1']}
                   defaultOpenKeys={['sub1']}
@@ -121,26 +121,26 @@ export default class MainPage extends React.Component {
                 >
                   <Menu.Item key="1">
                     <MailOutlined />
-                    Navigation One
+                    邮件统计仪表板
                   </Menu.Item>
                   <Menu.Item key="2">
                     <CalendarOutlined />
-                    Navigation Two
+                    进度仪表板
                   </Menu.Item>
                   <SubMenu
                     key="sub1"
                     title={
                       <span>
                         <AppstoreOutlined />
-                        <span>Navigation Three</span>
+                        <span>开发仪表板</span>
                       </span>
                     }
                   >
-                    <Menu.Item key="3">Option 3</Menu.Item>
-                    <Menu.Item key="4">Option 4</Menu.Item>
-                    <SubMenu key="sub1-2" title="Submenu">
-                      <Menu.Item key="5">Option 5</Menu.Item>
-                      <Menu.Item key="6">Option 6</Menu.Item>
+                    <Menu.Item key="3">开发组1</Menu.Item>
+                    <Menu.Item key="4">开发组2</Menu.Item>
+                    <SubMenu key="sub1-2" title="开发组3">
+                      <Menu.Item key="5">设计</Menu.Item>
+                      <Menu.Item key="6">测试</Menu.Item>
                     </SubMenu>
                   </SubMenu>
                 
@@ -154,9 +154,9 @@ export default class MainPage extends React.Component {
               id="appBread"
               style={{ margin: '16px 0' }}
             >
-              <Breadcrumb.Item>Home</Breadcrumb.Item>
-              <Breadcrumb.Item>List</Breadcrumb.Item>
-              <Breadcrumb.Item>App</Breadcrumb.Item>
+              <Breadcrumb.Item>主页</Breadcrumb.Item>
+              <Breadcrumb.Item>部门</Breadcrumb.Item>
+              <Breadcrumb.Item>工作区</Breadcrumb.Item>
             </Breadcrumb>
             <Content>
               <MainTable 
