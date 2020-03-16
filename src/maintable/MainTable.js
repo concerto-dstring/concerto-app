@@ -8,14 +8,15 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Button } from 'semantic-ui-react';
 import { Table, Cell, Column } from './FixedDataTableRoot';
-import { ColumnType,  RowType } from './MainTableType';
-import { TextCell } from '../helpers/cells';
+import { ColumnType,  RowType, ColumnKey } from './MainTableType';
+import { TextCell, DropDownMenuCell, CheckBoxCell } from '../helpers/cells';
+import ReNameRowModal from './helper/ReNameRowModal'
+import DeleteRowModal from './helper/DeleteRowModal'
+import AfterMoveRowModal from './helper/AfterMoveRowModal'
 import { EditableCell } from '../helpers/EditableCell';
 import Dimensions from 'react-dimensions';
-import { Menu, Dropdown, message, Tooltip } from 'antd';
-import {DownloadOutlined,
-    PlusOutlined,
-    DownOutlined,
+import { Menu, Dropdown, message } from 'antd';
+import {
     UserOutlined,
     ScheduleOutlined,
     FormOutlined,
@@ -37,6 +38,8 @@ class DataViewWrapper {
         this.removeRows = this.removeRows.bind(this);
         this.reorderColumn = this.reorderColumn.bind(this);
         this.setObjectAt = this.setObjectAt.bind(this);
+        this.getGroups=this.getGroups.bind(this)
+        this.moveRow=this.moveRow.bind(this)
     }
 
     // The callback is used for triggering re-rendering
@@ -83,9 +86,9 @@ class DataViewWrapper {
         this._indexMap[index] = {rowType:RowType.ROW, groupKey:groupKey, rowKey:rowKey};
     }
 
-    removeRow(index) {
+    removeRow(groupKey, index) {
         let rowKey = this._indexMap[index];
-        this._dataset.removeRow(rowKey);
+        this._dataset.removeRow(groupKey, rowKey);
     }
 
     removeRows(indexArray) {
@@ -148,6 +151,14 @@ class DataViewWrapper {
     removeGroup(groupKey) {
         return this._dataset.removeGroup(groupKey);
     }
+
+    getGroups() {
+      return this._dataset.getGroups()
+    }
+
+    moveRow(sourceGroupKey, targetGroupKey, rowKey) {
+      return this._dataset.moveRow(sourceGroupKey, targetGroupKey, rowKey)
+    }
 }
 
 class MainTable extends React.Component {
@@ -202,6 +213,12 @@ class MainTable extends React.Component {
             groups: groups,
             columns: this._dataset.getColumns(),
             version: 0,
+            isShowAddSubRowModal: false,
+            isShowReNameRowModal: false,
+            isShowAfterMoveRowModal: false,
+            isShowDeleteRowModal: false,
+            rowIndex: null,
+            columnKey: null
         };
     }
 
@@ -369,7 +386,83 @@ class MainTable extends React.Component {
         }
         return null;
     }
+    
+    /**
+     * 固定列(行操作列，行复选框列，行标题列)
+     * @param {*} sortedRowList 
+     * @param {*} column 
+     */
+    getFixedColumnTemplate(sortedRowList, column) {
+      
+      let rowTemplates = {};
+      const columnKey = column.columnKey
+      if (columnKey == ColumnKey.ROWACTION) {
+        rowTemplates.width = column.width;
+        rowTemplates.columnKey = columnKey;
+        rowTemplates.header = <DropDownMenuCell data={sortedRowList} isHeader={true} />;
+        rowTemplates.footer = null;
+        rowTemplates.isResizable = false;
+        rowTemplates.cell = <DropDownMenuCell 
+                              data={sortedRowList} 
+                              isHeader={false} 
+                              handleRowModal={this.handleRowModal}
+                              moveRowToOtherSection={this.moveRowToOtherSection}
+                            />;
 
+        return rowTemplates
+      }
+      else if (columnKey == ColumnKey.ROWSELECT) {
+
+        rowTemplates.width = column.width;
+        rowTemplates.columnKey = columnKey;
+        rowTemplates.header = null;
+        rowTemplates.footer = null;
+        rowTemplates.isResizable = false;
+        rowTemplates.cell = <CheckBoxCell data={sortedRowList} />;
+
+        return rowTemplates
+      }
+      else {
+        rowTemplates.width = column.width;
+        rowTemplates.columnKey = columnKey;
+        rowTemplates.header = <EditableCell value={column.name} />;
+        rowTemplates.footer = <Cell>summary</Cell>;
+        rowTemplates.width = this.getColumnWidth(columnKey);
+        rowTemplates.minWidth = 70;
+        rowTemplates.isResizable = true;
+        if (column.type === ColumnType.LABEL) {
+            rowTemplates.cell = <TextCell data={sortedRowList}/>;
+        }
+        else if (column.type === ColumnType.EDITBOX) {
+            rowTemplates.cell = <EditableCell data={sortedRowList} type={column.columnComponentType}/>;
+        }
+      }
+
+      if (Object.keys(rowTemplates).length == 0) {
+        return null
+      }
+      else {
+        return rowTemplates;
+      }
+    }
+
+    handleRowModal = (
+      isShowAddSubRowModal, 
+      isShowReNameRowModal,
+      isShowAfterMoveRowModal,
+      isShowDeleteRowModal, 
+      rowIndex, 
+      columnKey
+    ) => {
+      this.setState({
+        isShowAddSubRowModal: isShowAddSubRowModal,
+        isShowReNameRowModal: isShowReNameRowModal,
+        isShowAfterMoveRowModal: isShowAfterMoveRowModal,
+        isShowDeleteRowModal: isShowDeleteRowModal,
+        rowIndex: rowIndex,
+        columnKey: columnKey
+      })
+    }
 
     handleRef = component => {
         this.setState({ref: component});
@@ -397,21 +490,108 @@ class MainTable extends React.Component {
 
     renderControls() {
         return (
-            <div id="addGroupBtn" className='autoScrollControls'>
+            <div className='autoScrollControls'>
               <Button primary onClick={this._onAddNewGroupCallback} >Add Group</Button>
             </div>
           )
     }
 
+    handleDeleteRowOKClick = () => {
+      const { sortedRowList, rowIndex } = this.state
+      
+      let rowKey = sortedRowList.getRowKey(rowIndex)
+      
+      let rows = sortedRowList.getRowMap();
+      let groupKey
+      for  (let ridx = 0; ridx < rows.length; ridx ++) {
+          let row = rows[ridx];
+          if (row && row.rowKey === rowKey) {
+              groupKey = row.groupKey
+              rows.splice(ridx, 1);
+          }
+      }
+
+      // 删除行
+      this._dataset.removeRow(groupKey, rowKey)
+      
+      this.setState({
+        sortedRowList: new DataViewWrapper(this._dataset, rows),
+        isShowDeleteRowModal: false
+      });
+      this._refresh();
+    }
+
+    // 移动行，并记录行原来所在的分区和行数
+    moveRowToOtherSection = (sourceGroupKey, targetGroupKey, rowIndex) => {
+      this.handleMoveRow(sourceGroupKey, targetGroupKey, rowIndex, null, -1, true)
+    }
+
+    handleMoveRow = (sourceGroupKey, targetGroupKey, rowIndex, 
+      rowKey, insertIndex, isShowAfterMoveRowModal) => {
+
+      const { sortedRowList } = this.state
+
+      let rows = sortedRowList.getRowMap();
+
+      if (!rowKey) {
+        rowKey = sortedRowList.getRowKey(rowIndex)
+      }
+
+      let moveRow
+      for  (let ridx = 0; ridx < rows.length; ridx ++) {
+        let row = rows[ridx];
+        if (row && row.rowKey === rowKey) {
+          moveRow = row
+          rows.splice(ridx, 1)
+          break;
+        }
+      }
+
+      moveRow.groupKey = targetGroupKey
+
+      if (insertIndex < 0) {
+        for (let ridx = 0; ridx < rows.length; ridx ++) {
+          let row = rows[ridx];
+          if (row && row.groupKey === targetGroupKey && row.rowType === RowType.ADDROW) {
+            insertIndex = ridx
+            break
+          }
+        }
+      }
+
+      rows.splice(insertIndex, 0, moveRow)
+      
+      sortedRowList.moveRow(sourceGroupKey, targetGroupKey, rowKey)
+
+      this.setState({
+        sortedRowList: new DataViewWrapper(this._dataset, rows),
+        isShowAfterMoveRowModal: isShowAfterMoveRowModal,
+        sourceGroupKey: isShowAfterMoveRowModal ? sourceGroupKey : null,
+        targetGroupKey: isShowAfterMoveRowModal ? targetGroupKey : null,
+        rowKey: isShowAfterMoveRowModal ? rowKey : null,
+        rowIndex: isShowAfterMoveRowModal ? rowIndex : null,
+      });
+      this._refresh();
+    }
+
+    // 撤销移动行
+    cancelMoveRowToOtherSection = () => {
+
+      const { sourceGroupKey, targetGroupKey, rowIndex,  rowKey } = this.state
+
+      this.handleMoveRow(targetGroupKey, sourceGroupKey, -1, rowKey, rowIndex, false)
+    }
+
     renderTable() {
         const version = this.state.version;
         var { sortedRowList } = this.state;
+        
         const addColumnStyle = {
             boxShadow: 'none',
         };
-
-        const fixedColumn = this.state.columns.length > 0 ? this.state.columns[0] : []; 
-        const scrollColumns = this.state.columns.slice(1); 
+        
+        const fixedColumns = this.state.columns.length > 0 ? this.state.columns.slice(0, 3) : [];
+        const scrollColumns = this.state.columns.slice(3); 
         const menu = (
             <Menu onClick={this._onColumnAddCallback}>
                 <Menu.Item key="DATE">
@@ -443,45 +623,67 @@ class MainTable extends React.Component {
         return (
             <div>
                 <Table
-                    ref={this.handleRef}
-                    headerHeight={40}
-                    rowHeight={40}
-                    isColumnResizing={false}
-                    addRowHeight={35}
-                    footerHeight={40}
-                    onColumnReorderEndCallback={this._onColumnReorderEndCallback}
-                    rowsCount={sortedRowList.getSize()}
-                    rowHeightGetter={sortedRowList.getRowHeight}
-                    rowTypeGetter={sortedRowList.getRowType}
-                    rowKeyGetter={sortedRowList.getRowKey}
-                    columnNameGetter={this._getColumnName}
-                    onColumnResizeEndCallback={this._onColumnResizeEndCallback}
-                    onRowReorderEndCallback={this._onRowReorderEndCallback}
-                    onNewRowAddCallback={this._onAddNewRowCallback}
-                    data={sortedRowList}
-                    height={this.props.containerHeight}
+                  ref={this.handleRef}
+                  headerHeight={40}
+                  rowHeight={40}
+                  isColumnResizing={false}
+                  addRowHeight={35}
+                  footerHeight={40}
+                  onColumnReorderEndCallback={this._onColumnReorderEndCallback}
+                  rowsCount={sortedRowList.getSize()}
+                  rowHeightGetter={sortedRowList.getRowHeight}
+                  rowTypeGetter={sortedRowList.getRowType}
+                  rowKeyGetter={sortedRowList.getRowKey}
+                  columnNameGetter={this._getColumnName}
+                  onColumnResizeEndCallback={this._onColumnResizeEndCallback}
+                  onRowReorderEndCallback={this._onRowReorderEndCallback}
+                  onNewRowAddCallback={this._onAddNewRowCallback}
+                  data={sortedRowList}
+                  height={this.props.containerHeight}
 
-                    // 减去左侧Sider宽度 
-                    width={this.props.containerWidth - this.props.siderWidth}
-                    {...version}
-                    {...this.props}>
-                    {fixedColumn && <Column {...this.getColumnTemplate(sortedRowList, fixedColumn.columnKey)} fixed={true} />}
-                    {scrollColumns.map(column => (
-                        <Column {...this.getColumnTemplate(sortedRowList, column.columnKey)} fixed={false} />
-                    ))
-                    }              
-                    <Column
-                        columnKey=""
-                        header={
+                  // 减去左侧Sider宽度 
+                  width={this.props.containerWidth - this.props.siderWidth}
+                  {...version}
+                  {...this.props}
+                >
+                  {/* {fixedColumns[2] && <Column {...this.getColumnTemplate(sortedRowList, fixedColumns[2].columnKey)} fixed={true} />} */}
+                  {fixedColumns.map(column => (
+                      <Column {...this.getFixedColumnTemplate(sortedRowList, column)} fixed={true} />
+                  ))}
+                  {scrollColumns.map(column => (
+                      <Column {...this.getColumnTemplate(sortedRowList, column.columnKey)} fixed={false} />
+                  ))
+                  }              
+                  <Column
+                      columnKey=""
+                      header={
 
-                            <Dropdown overlay={menu}>
-                            <Button basic circular icon='plus circle' style={addColumnStyle}/>
-                            </Dropdown>
-                            }
+                          <Dropdown overlay={menu}>
+                          <Button basic circular icon='plus circle' style={addColumnStyle}/>
+                          </Dropdown>
+                          }
 
-                        width={40}
-                    />
+                      width={40}
+                  />
                 </Table>
+                <ReNameRowModal 
+                  isShowReNameRowModal={this.state.isShowReNameRowModal}
+                  handleRowModal={this.handleRowModal}
+                  data={sortedRowList}
+                  rowIndex={this.state.rowIndex}
+                  columnKey={this.state.columnKey}
+                  _refresh={this._refresh}
+                />
+                <DeleteRowModal 
+                  isShowDeleteRowModal={this.state.isShowDeleteRowModal}
+                  handleRowModal={this.handleRowModal}
+                  handleDeleteRowOKClick={this.handleDeleteRowOKClick}
+                />
+                <AfterMoveRowModal 
+                  isShowAfterMoveRowModal={this.state.isShowAfterMoveRowModal}
+                  handleRowModal={this.handleRowModal}
+                  cancelMoveRowToOtherSection={this.cancelMoveRowToOtherSection}
+                />
             </div>      
         );
     }

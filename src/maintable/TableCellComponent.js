@@ -1,5 +1,4 @@
 import React from 'react';
-import 'antd/dist/antd.css'
 import {Avatar,Button, DatePicker,Input,InputNumber,Select, Popover,Menu, Dropdown} from 'antd';
 import {DownloadOutlined,PlusOutlined, DownOutlined, UserOutlined,ScheduleOutlined,AccountBookOutlined } from '@ant-design/icons';
 import moment from 'moment';

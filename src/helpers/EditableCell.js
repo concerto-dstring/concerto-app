@@ -1,7 +1,5 @@
 import React from 'react';
-import 'antd/dist/antd.css'
 import { Overlay } from 'react-overlays';
-import 'antd/dist/antd.css'
 import {Button} from 'antd';
 import { Input } from 'semantic-ui-react';
 import styled from 'styled-components';
@@ -27,7 +25,7 @@ class EditableCell extends React.PureComponent {
     }
 
     componentWillReceiveProps(props) {
-        this.setState({ value: props.data ? props.data.getObjectAt(this.props.rowIndex)[this.props.columnKey] : props.value});
+        this.setState({ value: props.data ? props.data.getObjectAt(props.rowIndex)[props.columnKey] : props.value});
     }
 
     setTargetRef = ref => (this.targetRef = ref);

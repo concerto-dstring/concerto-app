@@ -4,7 +4,16 @@ import App from './App';
 import * as serviceWorker from './serviceWorker';
 import './index.css'
 
-ReactDOM.render(<App />, document.getElementById('root'));
+// antd配置
+import { ConfigProvider } from 'antd'
+import zh_CN from 'antd/es/locale/zh_CN'
+
+ReactDOM.render(
+  <ConfigProvider locale={zh_CN}>
+    <App />
+  </ConfigProvider>, 
+  document.getElementById('root')
+);
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

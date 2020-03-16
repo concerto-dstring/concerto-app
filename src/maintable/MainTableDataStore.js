@@ -8,7 +8,7 @@
 
 'use strict';
 
-import { ColumnType } from './MainTableType';
+import { ColumnType, ColumnKey } from './MainTableType';
 
 class MainTableDataStore {
 
@@ -33,6 +33,11 @@ class MainTableDataStore {
     }
     
     createFakeObjectData() {
+
+        // 增加行操作列和行复选框列
+        this._columns.push({columnKey: ColumnKey.ROWACTION, name:'', width: 36, type: ColumnType.DROPDOWN, columnComponentType:''});
+        this._columns.push({columnKey: ColumnKey.ROWSELECT, name:'', width: 36, type: ColumnType.CHECKBOX, columnComponentType:''}); 
+
         // create columns
         this._columns.push({columnKey: '1', name:'Column 1', width: 100, type: ColumnType.EDITBOX, columnComponentType:'TEXT'});
         this._columns.push({columnKey: '2', name:'Column 2', width: 200, type: ColumnType.EDITBOX, columnComponentType:'TEXT'});
@@ -43,9 +48,9 @@ class MainTableDataStore {
         this._sizeColumns = 6;
 
         // create groups 
-        this._groups.push({groupKey: '1', name: 'group 1', rows:['1', '2', '3', '4']});
-        this._groups.push({groupKey: '2', name: 'group 2', rows:['5', '6', '7', '8']});
-        this._groups.push({groupKey: '3', name: 'group 3', rows:['9', '10']});
+        this._groups.push({groupKey: '1', name: 'group 1', rows:['1', '2', '3', '4'], color:'#D8BFD8'});
+        this._groups.push({groupKey: '2', name: 'group 2', rows:['5', '6', '7', '8'], color:'#00BFFF'});
+        this._groups.push({groupKey: '3', name: 'group 3', rows:['9', '10'], color:'#FFAEB9'});
         this._sizeGroups = 3;
         
         // create row data
@@ -130,6 +135,23 @@ class MainTableDataStore {
         return id;
     }
 
+    moveRow(sourceGroupKey, targetGroupKey, rowKey) {
+      let sourceGroupIndex = this._groups.findIndex(group => group.groupKey == sourceGroupKey);
+      let targetGroupIndex = this._groups.findIndex(group => group.groupKey == targetGroupKey);
+      if (sourceGroupIndex < 0 || targetGroupIndex < 0) {
+          return;
+      }
+      
+      let sourceGroupRows = this._groups[sourceGroupIndex].rows;
+      let targetGroupRows = this._groups[targetGroupIndex].rows;
+      
+      let sourceRowIndex = sourceGroupRows.findIndex(row => row == rowKey);
+      sourceGroupRows.splice(sourceRowIndex, 1)
+      targetGroupRows.push(rowKey);
+      
+      return rowKey;
+  }
+
     addNewColumn(newItem,columnComponentType) {
         this._sizeColumns ++; 
         let id = this._sizeColumns.toString();
@@ -146,8 +168,19 @@ class MainTableDataStore {
         // push undo stack 
     }
 
-    removeRow(rowKey) {
-        delete this._rowData[rowKey];
+    removeRow(groupKey, rowKey) {
+      let groupIndex = this._groups.findIndex(group => group.groupKey == groupKey);
+      if (groupIndex < 0) {
+          return;
+      }
+
+      let groupRows = this._groups[groupIndex].rows;
+
+      let rowIndex = groupRows.findIndex(row => row == rowKey);
+      groupRows.splice(rowIndex, 1)
+
+      delete this._rowData[rowKey];
+      this._sizeRows--
     }
 
     removeRows(rowKeys) {

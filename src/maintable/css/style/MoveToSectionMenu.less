@@ -1,0 +1,73 @@
+@menu_width: 210px;
+@menu_height: 210px;
+@item_width: 190px;
+@item_height: 32px;
+@list_height: 160px;
+@after_moverow_modal_btn_bg_color: #24C97E;
+@after_moverow_modal_color: #FFFFFF;
+@after_moverow_modal_btn_border_radius: 5px;
+
+.move_menu {
+  width: @menu_width;
+  height: @menu_height;
+}
+
+.move_menu_list_item_circle_point {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  margin: 8px 8px;
+}
+
+.move_menu_search_input {
+  margin: 8px 10px 5px 10px; 
+  width: @item_width;
+  height: @item_height;
+}
+
+.move_menu_list {
+  width: @item_width;
+  height: @item_height;
+  display: flex;
+  border-radius: 5px;
+  margin-left: 6px;
+}
+
+.move_menu_list:hover {
+  background-color: #1890ff;
+  color: #FFFFFF;
+}
+
+.move_menu_item_span {
+  padding-left: 2px; 
+  line-height: @item_height;
+}
+
+.after_mover_row_modal {
+
+  .ant-modal-body {
+    background-color: @after_moverow_modal_btn_bg_color;
+    color: @after_moverow_modal_color;
+    padding: 0;
+    border-radius: @after_moverow_modal_btn_border_radius;
+  }
+
+  button.ant-btn-link {
+    border: 0px none @after_moverow_modal_color;
+  }
+
+  button.ant-btn-link:hover {
+    transform: rotate(180deg);
+    transition: transform 0.3s linear;
+  }
+
+  .ant-modal-content {
+    border-radius: @after_moverow_modal_btn_border_radius;
+  }
+
+  .ant-btn {
+    border: 1px solid @after_moverow_modal_color;
+    background-color: @after_moverow_modal_btn_bg_color;
+    color: @after_moverow_modal_color;
+  }
+}

@@ -10,4 +10,11 @@ export const RowType = {
 export const ColumnType = {
     LABEL: "LABEL",
     EDITBOX: "EDITBOX",
+    DROPDOWN: 'DROPDOWN',
+    CHECKBOX: 'CHECKBOX',
+}
+
+export const ColumnKey = {
+  ROWACTION: 'ROWACTION',
+  ROWSELECT: 'ROWSELECT'
 }
