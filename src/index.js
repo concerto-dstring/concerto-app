@@ -3,15 +3,19 @@ import ReactDOM from 'react-dom';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import './index.css'
+import store from '../src/maintable/FixedDataTableStore'
+import { Provider } from 'react-redux'
 
 // antd配置
 import { ConfigProvider } from 'antd'
 import zh_CN from 'antd/es/locale/zh_CN'
 
 ReactDOM.render(
-  <ConfigProvider locale={zh_CN}>
-    <App />
-  </ConfigProvider>, 
+  <Provider store={store}>
+    <ConfigProvider locale={zh_CN}>
+      <App />
+    </ConfigProvider>
+  </Provider>, 
   document.getElementById('root')
 );
 

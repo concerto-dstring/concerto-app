@@ -28,7 +28,7 @@ class FixedDataTableContainer extends React.Component {
 
     this.update = this.update.bind(this);
 
-    this.reduxStore = FixedDataTableStore.get();
+    this.reduxStore = FixedDataTableStore;
     this.unsubscribe = this.reduxStore.subscribe(this.update);
 
     this.scrollActions = bindActionCreators(scrollActions, this.reduxStore.dispatch);

@@ -87,8 +87,20 @@ class DataViewWrapper {
     }
     
     removeRow(index) {
-        let rowKey = this._indexMap[index];
-        this._dataset.removeRow(rowKey);
+      let rowKey = this._indexMap[index];
+      
+      let rows = this._indexMap;
+      let groupKey
+      for  (let ridx = 0; ridx < rows.length; ridx ++) {
+          let row = rows[ridx];
+          if (row && row.rowKey === rowKey) {
+              groupKey = row.groupKey
+              rows.splice(ridx, 1);
+          }
+      }
+
+      // 删除行
+      this._dataset.removeRow(groupKey, rowKey)
     }
 
     removeRows(indexArray) {
@@ -160,7 +172,37 @@ class DataViewWrapper {
     removeGroup(groupKey) {
         return this._dataset.removeGroup(groupKey);
     }
-       
+
+    getGroups() {
+      return this._dataset.getGroups()
+    }
+    
+    moveRow(sourceGroupKey, targetGroupKey, rowKey, rowIndex) {
+
+      let moveRow
+      for  (let ridx = 0; ridx < this._indexMap.length; ridx ++) {
+        let row = this._indexMap[ridx];
+        if (row && row.rowKey === rowKey) {
+          moveRow = row
+          this._indexMap.splice(ridx, 1)
+          break;
+        }
+      }
+
+      if (rowIndex < 0) {
+        for (let ridx = 0; ridx < this._indexMap.length; ridx ++) {
+          let row = this._indexMap[ridx];
+          if (row && row.groupKey === targetGroupKey && row.rowType === RowType.ADDROW) {
+            rowIndex = ridx
+            break
+          }
+        }
+      }
+
+      this._indexMap.splice(rowIndex, 0, moveRow)
+
+      return this._dataset.moveRow(sourceGroupKey, targetGroupKey, rowKey, rowIndex)
+    }
 }
 
 export {

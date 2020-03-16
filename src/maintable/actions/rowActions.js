@@ -11,6 +11,9 @@ import {
   ROW_REORDER_START,
   ROW_REORDER_END,
   ROW_REORDER_MOVE,
+  DEAL_ROW_RENAME_MODAL,
+  DEAL_ROW_DELETE_MODAL,
+  DEAL_ROW_MOVE_MODAL,
 } from './ActionTypes';
 
 /**
@@ -39,5 +42,33 @@ export const moveRowReorder = (reorderData) => ({
   type: ROW_REORDER_MOVE,
   reorderData
 });
+
+/**
+ * 处理重命名弹窗
+ * @param {*} modalData 
+ */
+export const dealRowRenameModal = (modalData) => ({
+  type: DEAL_ROW_RENAME_MODAL,
+  modalData
+});
+
+/**
+ * 处理删除行弹窗
+ * @param {*} modalData 
+ */
+export const dealRowDeleteModal = (modalData) => ({
+  type: DEAL_ROW_DELETE_MODAL,
+  modalData
+});
+
+/**
+ * 处理移动行后撤销操作的弹窗
+ * @param {*} modalData 
+ */
+export const dealRowMoveModal = (modalData) => ({
+  type: DEAL_ROW_MOVE_MODAL,
+  modalData
+});
+
 
 

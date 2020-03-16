@@ -147,6 +147,7 @@ class MainTableAddRow extends React.Component {
 
     const width = fixedColumnsWidth + scrollableColumnsWidth + fixedRightColumnsWidth - this.props.scrollLeft;
     var inputStyle = {
+      paddingLeft: '71.5px',
       width: width,
       height: this.props.height,
       zIndex: this.props.zIndex,

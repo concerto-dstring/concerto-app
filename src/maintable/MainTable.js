@@ -19,6 +19,8 @@ import Dimensions from 'react-dimensions';
 import { Menu, Dropdown, message, Tooltip } from 'antd';
 import { DataContext, AddFilter } from './data/DataContext';
 import { DataVersionContext } from './data/DataContext';
+import { connect } from 'react-redux'
+import { mapRowActionStateToProps } from './data/mapStateToProps'
 
 import {
     UserOutlined,
@@ -72,7 +74,6 @@ const DataTextCell = function(props) {
 
 const DropDownCell = function(props) {
   this.props = props;
-  console.log(props)
   return (
     <DataVersionContext.Consumer>
         {({data, version}) => (
@@ -105,6 +106,7 @@ const DropDownHeader = function(props) {
 
 const FilterableDataTable = AddFilter(DataContext(Table));
 
+@connect(mapRowActionStateToProps)
 class MainTable extends React.Component {
 
     static propTypes = {
@@ -241,7 +243,7 @@ class MainTable extends React.Component {
         rowTemplates.header = <DropDownMenuCell data={data} isHeader={true} />;
         rowTemplates.footer = null;
         rowTemplates.isResizable = false;
-        rowTemplates.cell = DropDownCell(this.handleRowModal, this.moveRowToOtherSection);
+        rowTemplates.cell = DropDownCell;
 
         return rowTemplates
       }
@@ -280,24 +282,6 @@ class MainTable extends React.Component {
       }
     }
 
-    handleRowModal = (
-      isShowAddSubRowModal, 
-      isShowReNameRowModal,
-      isShowAfterMoveRowModal,
-      isShowDeleteRowModal, 
-      rowIndex, 
-      columnKey
-    ) => {
-      this.setState({
-        isShowAddSubRowModal: isShowAddSubRowModal,
-        isShowReNameRowModal: isShowReNameRowModal,
-        isShowAfterMoveRowModal: isShowAfterMoveRowModal,
-        isShowDeleteRowModal: isShowDeleteRowModal,
-        rowIndex: rowIndex,
-        columnKey: columnKey
-      })
-    }
-
     handleRef = component => {
         this.setState({ref: component});
     };
@@ -330,90 +314,15 @@ class MainTable extends React.Component {
           )
     }
 
-    handleDeleteRowOKClick = () => {
-      // const { sortedRowList, rowIndex } = this.state
-      
-      // let rowKey = sortedRowList.getRowKey(rowIndex)
-      
-      // let rows = sortedRowList.getRowMap();
-      // let groupKey
-      // for  (let ridx = 0; ridx < rows.length; ridx ++) {
-      //     let row = rows[ridx];
-      //     if (row && row.rowKey === rowKey) {
-      //         groupKey = row.groupKey
-      //         rows.splice(ridx, 1);
-      //     }
-      // }
+    handleDeleteRowOKClick = (groupKey, rowKey) => {
 
       // // 删除行
-      // this._dataset.removeRow(groupKey, rowKey)
+      this._dataset.removeRow(groupKey, rowKey)
       
-      // this.setState({
-      //   sortedRowList: new DataViewWrapper(this._dataset, rows),
-      //   isShowDeleteRowModal: false
-      // });
-      // this._refresh();
-    }
-
-    // 移动行，并记录行原来所在的分区和行数
-    moveRowToOtherSection = (sourceGroupKey, targetGroupKey, rowIndex) => {
-      this.handleMoveRow(sourceGroupKey, targetGroupKey, rowIndex, null, -1, true)
-    }
-
-    handleMoveRow = (sourceGroupKey, targetGroupKey, rowIndex, 
-      rowKey, insertIndex, isShowAfterMoveRowModal) => {
-
-      // const { sortedRowList } = this.state
-
-      // let rows = sortedRowList.getRowMap();
-
-      // if (!rowKey) {
-      //   rowKey = sortedRowList.getRowKey(rowIndex)
-      // }
-
-      // let moveRow
-      // for  (let ridx = 0; ridx < rows.length; ridx ++) {
-      //   let row = rows[ridx];
-      //   if (row && row.rowKey === rowKey) {
-      //     moveRow = row
-      //     rows.splice(ridx, 1)
-      //     break;
-      //   }
-      // }
-
-      // moveRow.groupKey = targetGroupKey
-
-      // if (insertIndex < 0) {
-      //   for (let ridx = 0; ridx < rows.length; ridx ++) {
-      //     let row = rows[ridx];
-      //     if (row && row.groupKey === targetGroupKey && row.rowType === RowType.ADDROW) {
-      //       insertIndex = ridx
-      //       break
-      //     }
-      //   }
-      // }
-
-      // rows.splice(insertIndex, 0, moveRow)
-      
-      // sortedRowList.moveRow(sourceGroupKey, targetGroupKey, rowKey)
-
-      // this.setState({
-      //   sortedRowList: new DataViewWrapper(this._dataset, rows),
-      //   isShowAfterMoveRowModal: isShowAfterMoveRowModal,
-      //   sourceGroupKey: isShowAfterMoveRowModal ? sourceGroupKey : null,
-      //   targetGroupKey: isShowAfterMoveRowModal ? targetGroupKey : null,
-      //   rowKey: isShowAfterMoveRowModal ? rowKey : null,
-      //   rowIndex: isShowAfterMoveRowModal ? rowIndex : null,
-      // });
-      // this._refresh();
-    }
-
-    // 撤销移动行
-    cancelMoveRowToOtherSection = () => {
-
-      const { sourceGroupKey, targetGroupKey, rowIndex,  rowKey } = this.state
-
-      this.handleMoveRow(targetGroupKey, sourceGroupKey, -1, rowKey, rowIndex, false)
+      this.setState({
+        data: this._dataset,
+      });
+      this.refresh();
     }
 
     renderTable() {
@@ -490,22 +399,17 @@ class MainTable extends React.Component {
                     />
                 </FilterableDataTable>
                 <ReNameRowModal 
-                  isShowReNameRowModal={this.state.isShowReNameRowModal}
-                  handleRowModal={this.handleRowModal}
-                  // data={sortedRowList}
-                  // rowIndex={this.state.rowIndex}
-                  // columnKey={this.state.columnKey}
-                  _refresh={this._refresh}
+                  isShowReNameRowModal={this.props.isShowReNameRowModal}
+                  refresh={this.refresh}
                 />
                 <DeleteRowModal 
-                  isShowDeleteRowModal={this.state.isShowDeleteRowModal}
-                  handleRowModal={this.handleRowModal}
+                  isShowDeleteRowModal={this.props.isShowDeleteRowModal}
                   handleDeleteRowOKClick={this.handleDeleteRowOKClick}
+                  refresh={this.refresh}
                 />
                 <AfterMoveRowModal 
                   isShowAfterMoveRowModal={this.state.isShowAfterMoveRowModal}
-                  handleRowModal={this.handleRowModal}
-                  cancelMoveRowToOtherSection={this.cancelMoveRowToOtherSection}
+                  refresh={this.refresh}
                 />
             </div>      
         );

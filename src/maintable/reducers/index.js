@@ -103,6 +103,12 @@ function getInitialState() {
     rowBufferSet: new IntegerBufferSet(),
     storedHeights: [],
     rowOffsetIntervalTree: null, // PrefixIntervalTree
+    isShowReNameRowModal: false,
+    isShowDeleteRowModal: false,
+    isShowAfterMoveRowModal: false,
+    columnKey: null,
+    rowIndex: null,
+    data: null,
   };
 }
 
@@ -211,6 +217,32 @@ function reducers(state = getInitialState(), action) {
         scrollX,
       });
     }
+
+    case ActionTypes.DEAL_ROW_RENAME_MODAL:
+      return Object.assign({}, state, {
+        isShowReNameRowModal: action.modalData.isShowReNameRowModal,
+        columnKey: action.modalData.columnKey,
+        rowIndex: action.modalData.rowIndex,
+        data: action.modalData.data
+      })
+
+    case ActionTypes.DEAL_ROW_DELETE_MODAL:
+      return Object.assign({}, state, {
+        isShowDeleteRowModal: action.modalData.isShowDeleteRowModal,
+        data: action.modalData.data,
+        rowIndex: action.modalData.rowIndex,
+      })
+
+    case ActionTypes.DEAL_ROW_MOVE_MODAL:
+      return Object.assign({}, state, {
+        isShowAfterMoveRowModal: action.modalData.isShowAfterMoveRowModal,
+        data: action.modalData.data,
+        rowIndex: action.modalData.rowIndex,
+        rowKey: action.modalData.rowKey,
+        sourceGroupKey: action.modalData.sourceGroupKey,
+        targetGroupKey: action.modalData.targetGroupKey,
+      })
+
     default: {
       return state;
     }

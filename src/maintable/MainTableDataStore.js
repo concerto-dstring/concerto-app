@@ -158,7 +158,7 @@ class MainTableDataStore {
         return id;
     }
 
-    moveRow(sourceGroupKey, targetGroupKey, rowKey) {
+    moveRow(sourceGroupKey, targetGroupKey, rowKey, rowIndex) {
       let sourceGroupIndex = this._groups.findIndex(group => group.groupKey == sourceGroupKey);
       let targetGroupIndex = this._groups.findIndex(group => group.groupKey == targetGroupKey);
       if (sourceGroupIndex < 0 || targetGroupIndex < 0) {
@@ -170,12 +170,19 @@ class MainTableDataStore {
       
       let sourceRowIndex = sourceGroupRows.findIndex(row => row == rowKey);
       sourceGroupRows.splice(sourceRowIndex, 1)
-      targetGroupRows.push(rowKey);
+      
+      // rowIndex 小于0 则为移动，否则为撤销移动
+      if (rowIndex < 0) {
+        targetGroupRows.push(rowKey);
+      }
+      else {
+        targetGroupRows.splice(rowIndex, 0, rowKey)
+      }
       
       //refresh
       this.runCallbacks();
 
-      return rowKey;
+      return sourceRowIndex;
   }
 
     addNewColumn(newItem, columnComponentType) {
@@ -211,9 +218,6 @@ class MainTableDataStore {
 
       delete this._rowData[rowKey];
       this._sizeRows--
-
-      //refresh
-      this.runCallbacks();
     }
 
     removeRows(rowKeys) {

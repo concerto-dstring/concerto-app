@@ -3,8 +3,13 @@ import { Modal, Button } from 'antd';
 import { CloseOutlined } from '@ant-design/icons'
 import '../css/style/MoveToSectionMenu.less'
 
+import { connect } from 'react-redux'
+import { dealRowMoveModal } from '../actions/rowActions'
+import { mapRowActionStateToProps } from '../data/mapStateToProps'
+
 let intervalTimer
 
+@connect(mapRowActionStateToProps, { dealRowMoveModal })
 class AfterMoveRowModal extends PureComponent {
   constructor() {
     super()
@@ -17,11 +22,15 @@ class AfterMoveRowModal extends PureComponent {
   handleCancelClick = () => {
     clearInterval(intervalTimer)
 
-    this.props.handleRowModal(false, false, false, false, null, null)
+    this.props.dealRowMoveModal({
+      isShowAfterMoveRowModal: false
+    })
 
     this.setState({
       countdown: 10
     })
+
+    this.props.refresh()
   }
 
   componentWillUnmount() {
@@ -40,9 +49,10 @@ class AfterMoveRowModal extends PureComponent {
 
   // 撤销移动行
   cancelMoveRow = () => {
-    const { sourceGroupKey, targetGroupKey, rowKey } = this.props
+    const { data, sourceGroupKey, targetGroupKey, rowKey, rowIndex } = this.props
 
-    this.props.cancelMoveRowToOtherSection(targetGroupKey, sourceGroupKey, rowKey)
+    // 撤销操作
+    data.moveRow(targetGroupKey, sourceGroupKey, rowKey, rowIndex)
 
     this.handleCancelClick()
   }

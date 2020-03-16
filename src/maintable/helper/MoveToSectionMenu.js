@@ -3,20 +3,18 @@ import React, { Component } from 'react';
 import { 
   Input,
   List,
-  Modal,
-  message,
-  Button,
-  Alert
 } from 'antd';
 
 import '../css/style/MoveToSectionMenu.less'
 
 import { DISPLAY } from '../../helpers/StyleValues'
 
+import { connect } from 'react-redux'
+import { dealRowMoveModal } from '../actions/rowActions'
+
 const { Search } = Input;
 
-let timer
-
+@connect(null, { dealRowMoveModal })
 class MoveToSectionMenu extends Component {
 
   constructor() {
@@ -25,8 +23,6 @@ class MoveToSectionMenu extends Component {
       groups: [],
       curGroupKey: null,
       timeSecond: 10,
-      isShowModal: false,
-      isShowSubMenu: DISPLAY.BLOCK,
     }
   }
 
@@ -41,15 +37,10 @@ class MoveToSectionMenu extends Component {
 
     const rowKey = data.getRowKey(rowIndex)
 
-    let groupKey
-
     // 寻找行所在的分区
-    data._indexMap.map(index => {
-      if (index.rowKey === rowKey) {
-        groupKey = index.groupKey
-        return
-      }
-    })
+    const rows = data.getRowMap()
+    const row = rows[rowIndex]
+    let groupKey = row.groupKey
 
     this.setState({
       curGroupKey: groupKey
@@ -57,13 +48,11 @@ class MoveToSectionMenu extends Component {
 
     // 去除当前行所在的分区
     let groups = []
-
     data.getGroups().map(group => {
       if (group.groupKey !== groupKey) {
         groups.push(group)
       }
     })
-
     return groups
   }
 
@@ -100,31 +89,32 @@ class MoveToSectionMenu extends Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    const { groups, curGroupKey, isShowSubMenu } = this.state
+    const { groups, curGroupKey } = this.state
+    const { isShowSubMenu } = this.props
     if (nextState.groups !== groups
           || nextState.curGroupKey !== curGroupKey
-          || nextState.isShowSubMenu !== isShowSubMenu) {
+          || nextProps.isShowSubMenu !== isShowSubMenu) {
       return true
     }
     return false
   }
 
   moveRow = (targetGroupKey) => {
-    const { rowIndex } = this.props
+    const { data, rowIndex } = this.props
     
     // 关闭菜单并移动行
-    this.setState({
-      isShowSubMenu: DISPLAY.NONE
+    this.props.hiddenSubMenu()
+
+    let rowKey = data.getRowKey(rowIndex)
+    let sourceGroupRowIndex =  data.moveRow(this.state.curGroupKey, targetGroupKey, rowKey, -1)
+    this.props.dealRowMoveModal({
+      isShowAfterMoveRowModal: true,
+      data,
+      rowIndex: sourceGroupRowIndex,
+      rowKey,
+      sourceGroupKey: this.state.curGroupKey,
+      targetGroupKey
     })
-
-    this.props.moveRowToOtherSection(this.state.curGroupKey, targetGroupKey, rowIndex);
-
-    // 再次设置菜单的display setTimeou必须使用匿名函数
-    timer = setTimeout(() => {
-      this.setState({
-        isShowSubMenu: DISPLAY.BLOCK
-      })
-    }, 1000);
   }
 
   componentWillUnmount() {
@@ -133,9 +123,6 @@ class MoveToSectionMenu extends Component {
     this.setState = (state, callback) => {
       return
     }
-
-    // 清除定时
-    clearTimeout(timer)
   }
 
   render() {
@@ -143,7 +130,7 @@ class MoveToSectionMenu extends Component {
     return (
         <div
           className='move_menu'
-          style={{display: this.state.isShowSubMenu}}
+          style={{display: this.props.isShowSubMenu}}
         >
           <Search
             className='move_menu_search_input'

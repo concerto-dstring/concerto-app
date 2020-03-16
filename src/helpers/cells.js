@@ -27,12 +27,16 @@ import {
 } from '../maintable/MainTableRowKeyAndDesc'
 
 import {
-  VISIBILITY
+  VISIBILITY,
+  DISPLAY
 } from './StyleValues'
 
 import MoveToSectionMenu from '../maintable/helper/MoveToSectionMenu'
 
 import '../maintable/css/style/RowActionMenu.less'
+
+import { connect } from 'react-redux'
+import { dealRowRenameModal, dealRowDeleteModal } from '../maintable/actions/rowActions'
 
 const { SubMenu } = Menu;
 
@@ -151,18 +155,21 @@ class TextCell extends React.PureComponent {
   }
 }
 
+@connect(null, { dealRowRenameModal, dealRowDeleteModal })
 class DropDownMenuCell extends React.PureComponent {
   constructor() {
     super()
     this.state = {
       isShowRowActionBtn: VISIBILITY.HIDDEN,
       isBtnClicked: false,
+      isShowSubMenu: DISPLAY.NONE
     }
   }
 
   hanldeRowActionMenuClick = ({ item, key, keyPath, selectedKeys, domEvent }) => {
     this.hiddenRowActionBtn()
-    const { rowIndex } = this.props;
+    this.hiddenSubMenu()
+    const { rowIndex, data } = this.props;
     if (key == ADD_SUB_TABLE.key) {
       // 添加子项
 
@@ -171,7 +178,7 @@ class DropDownMenuCell extends React.PureComponent {
     else if (key == RENAME_ROW.key) {
       // 重命名行
       const columnKey = '1'
-      this.props.handleRowModal(false, true, false, false, rowIndex, columnKey)
+      this.props.dealRowRenameModal({rowIndex, columnKey, isShowReNameRowModal: true, data})
     }
     else if (key == MOVE_TO_SECTION.key) {
       // 移动至其他分区
@@ -180,7 +187,7 @@ class DropDownMenuCell extends React.PureComponent {
     }
     else if (key == DELETE_ROW.key) {
       // 删除行
-      this.props.handleRowModal(false, false, false, true, rowIndex, null)
+      this.props.dealRowDeleteModal({isShowDeleteRowModal: true, data, rowIndex})
     }
   } 
 
@@ -205,10 +212,23 @@ class DropDownMenuCell extends React.PureComponent {
     })
   }
 
-  render() {
-    const { data, rowIndex, columnKey, isHeader } = this.props;
+  showSubMenu = () => {
+    this.setState({
+      isShowSubMenu: DISPLAY.BLOCK
+    })
+  }
 
-    const { isBtnClicked, isShowRowActionBtn, openKeys } = this.state
+  hiddenSubMenu = () => {
+    this.setState({
+      isShowSubMenu: DISPLAY.NONE,
+      isShowRowActionBtn: VISIBILITY.HIDDEN,
+    })
+  }
+
+  render() {
+    const { data, rowIndex, isHeader } = this.props;
+
+    const { isBtnClicked, isShowRowActionBtn } = this.state
 
     const headerMenu = (<Menu></Menu>);
 
@@ -237,12 +257,14 @@ class DropDownMenuCell extends React.PureComponent {
               {MOVE_TO_SECTION.desc}
             </span>
           }
+          onMouseEnter={this.showSubMenu}
         >
           {
             <MoveToSectionMenu 
               data={data}
               rowIndex={rowIndex}
-              moveRowToOtherSection={this.props.moveRowToOtherSection}
+              isShowSubMenu={this.state.isShowSubMenu}
+              hiddenSubMenu={this.hiddenSubMenu}
             />
           }
         </SubMenu>

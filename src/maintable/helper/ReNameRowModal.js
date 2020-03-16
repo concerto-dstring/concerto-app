@@ -1,6 +1,11 @@
 import React, { PureComponent, createRef } from 'react';
 import { Modal, Input, message } from 'antd';
 
+import { connect } from 'react-redux'
+import { dealRowRenameModal } from '../actions/rowActions'
+import { mapRowActionStateToProps } from '../data/mapStateToProps'
+
+@connect(mapRowActionStateToProps, { dealRowRenameModal })
 class ReNameRowModal extends PureComponent {
   constructor() {
     super()
@@ -9,7 +14,9 @@ class ReNameRowModal extends PureComponent {
   }
 
   handleCancelClick = () => {
-    this.props.handleRowModal(false, false, false, false, null, null)
+    this.props.dealRowRenameModal({
+      isShowReNameRowModal: false,
+    })
   }
 
   handleOkClick = () => {
@@ -25,7 +32,7 @@ class ReNameRowModal extends PureComponent {
     // 更新标题 真实项目应该请求后台方法更新数据
     data.setObjectAt(rowIndex, columnKey, inputValue)
     this.handleCancelClick()
-    this.props._refresh()
+    this.props.refresh()
   }
 
   render() {
