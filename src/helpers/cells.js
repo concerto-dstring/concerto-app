@@ -23,17 +23,26 @@ import {
   ADD_SUB_TABLE,
   RENAME_ROW,
   MOVE_TO_SECTION,
-  DELETE_ROW
+  DELETE_ROW,
+  RENAME_SECTION,
+  CHANGE_SECTION_COLOR,
+  ADD_SECTION,
+  COLLPASE_THIS_SECTION,
+  COLLPASE_ALL_SECTION,
+  DELETE_SECTION
 } from '../maintable/MainTableRowKeyAndDesc'
 
 import {
   VISIBILITY,
-  DISPLAY
+  DISPLAY,
+  COLOR,
+  ANTD_BTN_TYPE
 } from './StyleValues'
 
 import MoveToSectionMenu from '../maintable/helper/MoveToSectionMenu'
 
 import '../maintable/css/style/RowActionMenu.less'
+import '../maintable/css/style/SectionMenu.less'
 
 import { connect } from 'react-redux'
 import { dealRowRenameModal, dealRowDeleteModal } from '../maintable/actions/rowActions'
@@ -162,11 +171,13 @@ class DropDownMenuCell extends React.PureComponent {
     this.state = {
       isShowRowActionBtn: VISIBILITY.HIDDEN,
       isBtnClicked: false,
-      isShowSubMenu: DISPLAY.NONE
+      isShowSubMenu: DISPLAY.NONE,
+      headerBtnColor: '',
+      headerBtnType: ANTD_BTN_TYPE.PRIMARY
     }
   }
 
-  hanldeRowActionMenuClick = ({ item, key, keyPath, selectedKeys, domEvent }) => {
+  hanldeRowCellMenuClick = ({ item, key, keyPath, selectedKeys, domEvent }) => {
     this.hiddenRowActionBtn()
     this.hiddenSubMenu()
     const { rowIndex, data } = this.props;
@@ -225,22 +236,19 @@ class DropDownMenuCell extends React.PureComponent {
     })
   }
 
-  render() {
-    const { data, rowIndex, isHeader } = this.props;
+  getRowMenu = (data, rowIndex) => {
 
-    const { isBtnClicked, isShowRowActionBtn } = this.state
-
-    const headerMenu = (<Menu></Menu>);
-
-    const rowMenu = (
+    return (
       <Menu 
-        onClick={this.hanldeRowActionMenuClick}
+        onClick={this.hanldeRowCellMenuClick}
         style={{width: 180, borderRadius: '8px', padding: '5px, 0px, 5px, 5px'}}
       >
         <Menu.Item 
           key={ADD_SUB_TABLE.key}
         >
-          {ADD_SUB_TABLE.desc}
+          <span>
+            {ADD_SUB_TABLE.desc}
+          </span>
         </Menu.Item>
 
         <Menu.Divider />
@@ -248,7 +256,9 @@ class DropDownMenuCell extends React.PureComponent {
         <Menu.Item 
           key={RENAME_ROW.key}
         >
-          {RENAME_ROW.desc}
+          <span>
+            {RENAME_ROW.desc}
+          </span>
         </Menu.Item>
         <SubMenu
           key={MOVE_TO_SECTION.key}
@@ -274,47 +284,171 @@ class DropDownMenuCell extends React.PureComponent {
         <Menu.Item 
           key={DELETE_ROW.key}
         >
-          {DELETE_ROW.desc}
+          <span>
+            {DELETE_ROW.desc}
+          </span>
         </Menu.Item>
       </Menu>
     )
+  }
 
+  getHeaderMenuData = (menuText) => {
     return (
-      isHeader
-      ?
-      <Dropdown 
-        overlay={headerMenu}
-        trigger='click'
-      >
-        <AntdButton 
-          icon={<CaretDownOutlined />}
-          type='primary'
-          shape="circle"
-          size='small'
-          style={{margin: '8px 6px'}}
-        >
-        </AntdButton>
-      </Dropdown>
-      :
-      <div 
-        onMouseEnter={this.showRowActionBtn}
-        onMouseLeave={this.hiddenRowActionBtn}
-      >
-        <Dropdown 
-          overlay={rowMenu} 
-          overlayClassName='menu_item_bgcolor'
-          visible={isBtnClicked ? (isShowRowActionBtn === VISIBILITY.HIDDEN ? false : true) : false}
-        >
-          <AntdButton
-            icon={<CaretDownOutlined />} 
-            shape='circle'
-            size='small'
-            style={{margin: '8px 6px', visibility: isShowRowActionBtn}}
-            onClick={this.showRowActionMenu}
-          />
-        </Dropdown>
-      </div>
+      <>
+        <i className='section_menu_icon' />
+        <span className='section_menu_text'>
+          {menuText}
+        </span>
+      </>
     )
+  }
+
+  getHeaderMenuColor = (menuText) => {
+    return (
+      <>
+        <i 
+          className='section_menu_circle_point section_menu_icon'
+          style={{backgroundColor: this.state.groupColor}}
+        />
+        <span className='section_menu_text'>
+          {menuText}
+        </span>
+      </>
+    )
+  }
+
+  getHeaderMenu = () => {
+    return (
+      <Menu 
+        onClick={this.hanldeRowHeaderMenuClick}
+        style={{width: 180, borderRadius: '8px', padding: '5px, 0px, 5px, 5px'}}
+      >
+        <Menu.Item 
+          key={RENAME_SECTION.key}
+        >
+          {this.getHeaderMenuData(RENAME_SECTION.desc)}
+        </Menu.Item>
+        <Menu.Item 
+          key={CHANGE_SECTION_COLOR.key}
+        >
+          {this.getHeaderMenuColor(CHANGE_SECTION_COLOR.desc)}
+        </Menu.Item>
+
+        <Menu.Divider />
+
+        <Menu.Item 
+          key={ADD_SECTION.key}
+        >
+          {this.getHeaderMenuData(ADD_SECTION.desc)}
+        </Menu.Item>
+        <Menu.Item 
+          key={COLLPASE_THIS_SECTION.key}
+        >
+          {this.getHeaderMenuData(COLLPASE_THIS_SECTION.desc)}
+        </Menu.Item>
+        <Menu.Item 
+          key={COLLPASE_ALL_SECTION.key}
+        >
+          {this.getHeaderMenuData(COLLPASE_ALL_SECTION.desc)}
+        </Menu.Item>
+
+        <Menu.Divider />
+
+        <Menu.Item 
+          key={DELETE_SECTION.key}
+        >
+          {this.getHeaderMenuData(DELETE_SECTION.desc)}
+        </Menu.Item>
+      </Menu>
+    )
+  }
+
+  changeHeaderMenuBtnColor = (color, borderColor, btnType) => {
+    this.setState({
+      headerBtnColor: color,
+      headerBtnBorderColor: borderColor,
+      headerBtnType: btnType
+    })
+  }
+
+  render() {
+    const { data, rowIndex, isHeader } = this.props;
+
+    let returnMenu
+
+    if (isHeader) {
+
+      const { groupColor, headerBtnColor, headerBtnBorderColor } = this.state
+
+      let ownGroupColor
+      if (!groupColor) {
+        let row = data.getRowMap()[rowIndex]
+        let group = data.getGroups().filter(group => group.groupKey === row.groupKey)
+
+        if (group.length > 0) {
+          ownGroupColor = group[0].color
+        }
+        else {
+          // 默认颜色
+          ownGroupColor = COLOR.DEFAULT
+        }
+      }
+
+      // 保存分区原有的颜色
+      this.setState({
+        groupColor: groupColor ? groupColor : ownGroupColor,
+        headerBtnColor: headerBtnColor ? headerBtnColor : groupColor,
+        headerBtnBorderColor: headerBtnBorderColor ? headerBtnBorderColor : groupColor
+      })
+
+      returnMenu = (
+        <div 
+          onMouseEnter={this.changeHeaderMenuBtnColor.bind(this, COLOR.WHITE, COLOR.DEFAULT, ANTD_BTN_TYPE.DEFAULT)}
+          onMouseLeave={this.changeHeaderMenuBtnColor.bind(this, groupColor, groupColor, ANTD_BTN_TYPE.PRIMARY)}
+        >
+          <Dropdown 
+            overlay={this.getHeaderMenu(groupColor)}
+            trigger='click'
+            overlayClassName='menu_item_bgcolor'
+          >
+            <AntdButton 
+              icon={<CaretDownOutlined />}
+              type={this.state.headerBtnType}
+              shape="circle"
+              size='small'
+              style={{margin: '8px 6px', backgroundColor: this.state.headerBtnColor, borderColor: this.state.headerBtnBorderColor}}
+            >
+            </AntdButton>
+          </Dropdown>
+          </div>
+      )
+    }
+    else {
+      const { isBtnClicked, isShowRowActionBtn } = this.state
+
+      returnMenu = (
+        <div 
+          onMouseEnter={this.showRowActionBtn}
+          onMouseLeave={this.hiddenRowActionBtn}
+        >
+          <Dropdown 
+            overlay={this.getRowMenu(data, rowIndex)} 
+            overlayClassName='menu_item_bgcolor'
+            visible={isBtnClicked ? (isShowRowActionBtn === VISIBILITY.HIDDEN ? false : true) : false}
+          >
+            <AntdButton
+              icon={<CaretDownOutlined />} 
+              shape='circle'
+              size='small'
+              style={{margin: '8px 6px', visibility: isShowRowActionBtn}}
+              onClick={this.showRowActionMenu}
+            />
+          </Dropdown>
+        </div>
+      )
+    }
+
+    return returnMenu
   }
 }
 

@@ -17,3 +17,33 @@ export const DELETE_ROW = {
   key: 'DELETE_ROW',
   desc: '删除行'
 }
+
+export const RENAME_SECTION = {
+  key: 'RENAME_SECTION',
+  desc: '重命名'
+}
+
+export const CHANGE_SECTION_COLOR = {
+  key: 'CHANGE_SECTION_COLOR',
+  desc: '改变分组颜色'
+}
+
+export const ADD_SECTION = {
+  key: 'ADD_SECTION',
+  desc: '添加分区'
+}
+
+export const COLLPASE_THIS_SECTION = {
+  key: 'COLLPASE_THIS_SECTION',
+  desc: '折叠当前分区'
+}
+
+export const COLLPASE_ALL_SECTION = {
+  key: 'COLLPASE_ALL_SECTION',
+  desc: '折叠所有分区'
+}
+
+export const DELETE_SECTION = {
+  key: 'DELETE_SECTION',
+  desc: '删除分区'
+}

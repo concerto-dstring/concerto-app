@@ -50,9 +50,9 @@ class MainTableDataStore {
         this._sizeColumns = 6;
 
         // create groups 
-        this._groups.push({groupKey: '1', name: '组1', rows:['1', '2', '3', '4'], color:'#D8BFD8'});
-        this._groups.push({groupKey: '2', name: '组2', rows:['5', '6', '7', '8'], color:'#00BFFF'});
-        this._groups.push({groupKey: '3', name: '组3', rows:['9', '10'], color:'#FFAEB9'});
+        this._groups.push({groupKey: '1', name: '组1', rows:['1', '2', '3', '4'], color:'#7EC0EE'});
+        this._groups.push({groupKey: '2', name: '组2', rows:['5', '6', '7', '8'], color:'#CD5C5C'});
+        this._groups.push({groupKey: '3', name: '组3', rows:['9', '10'], color:'#79CDCD'});
         this._sizeGroups = 3;
         
         // create row data

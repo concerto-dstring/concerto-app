@@ -104,6 +104,21 @@ const DropDownHeader = function(props) {
   )
 }
 
+const DataCheckBoxCell = function(props) {
+  this.props = props;
+  return (
+    <DataVersionContext.Consumer>
+        {({data, version}) => (
+            <CheckBoxCell
+                data={data}
+                dataVersion={version}
+                {...this.props}
+            />
+        )}
+    </DataVersionContext.Consumer>
+  )
+}
+
 const FilterableDataTable = AddFilter(DataContext(Table));
 
 @connect(mapRowActionStateToProps)
@@ -233,14 +248,14 @@ class MainTable extends React.Component {
      * @param {*} sortedRowList 
      * @param {*} column 
      */
-    getFixedColumnTemplate(data, column) {
+    getFixedColumnTemplate(column) {
       
       let rowTemplates = {};
       const columnKey = column.columnKey
       if (columnKey == ColumnKey.ROWACTION) {
         rowTemplates.width = column.width;
         rowTemplates.columnKey = columnKey;
-        rowTemplates.header = <DropDownMenuCell data={data} isHeader={true} />;
+        rowTemplates.header = DropDownHeader;
         rowTemplates.footer = null;
         rowTemplates.isResizable = false;
         rowTemplates.cell = DropDownCell;
@@ -254,7 +269,7 @@ class MainTable extends React.Component {
         rowTemplates.header = null;
         rowTemplates.footer = null;
         rowTemplates.isResizable = false;
-        rowTemplates.cell = <CheckBoxCell data={data} />;
+        rowTemplates.cell = DataCheckBoxCell;
 
         return rowTemplates
       }
@@ -380,7 +395,7 @@ class MainTable extends React.Component {
                     {...this.props}>
                     {/* {fixedColumn && <Column {...this.getColumnTemplate(fixedColumn.columnKey)} fixed={true} />} */}
                     {fixedColumns.map(column => (
-                      <Column {...this.getFixedColumnTemplate(data, column)} fixed={true} />
+                      <Column {...this.getFixedColumnTemplate(column)} fixed={true} />
                     ))}
                     {scrollColumns.map(column => (
                         <Column {...this.getColumnTemplate(column.columnKey)} fixed={false} />
