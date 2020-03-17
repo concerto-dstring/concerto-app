@@ -21,6 +21,8 @@ import TableColumnSort from './TableColumnSort'
 import TableColumnMenu from './TableColumnMenu'
 import './css/layout/fixedDataTableCellLayout.css';
 import './css/style/fixedDataTableCell.css';
+import { TableContext } from './data/DataContext';
+import { ColumnWidthOutlined} from '@ant-design/icons';
 
 class FixedDataTableCell extends React.Component {
   /**
@@ -134,8 +136,17 @@ class FixedDataTableCell extends React.Component {
 
   handleRef = component => (this.ref = component);
 
-  render() /*object*/ {
 
+  getColumnCollpseByColumnKey = (columns,columnKey) => {
+    for(let i=0,len=columns.length;i<len;i++){
+      let column = columns[i];
+      if(columnKey === column.columnKey){
+          return column.collpse;
+      } 
+    }
+  }
+
+  render() /*object*/ {
     var { height, width, columnKey, isHeaderOrFooter, ...props } = this.props;
 
     var style = {
@@ -193,9 +204,9 @@ class FixedDataTableCell extends React.Component {
           />
         </div>
       );
-      tableColumnSort = (
-        <TableColumnSort/>
-      );
+      // tableColumnSort = (
+      //   <TableColumnSort columnKey={columnKey}/>
+      // );
       
     }
 
@@ -214,7 +225,7 @@ class FixedDataTableCell extends React.Component {
         />
       );
       tableColumnMenu = (
-        <TableColumnMenu/>
+        <TableColumnMenu columnKey={columnKey}/>
       )
     }
 
@@ -245,14 +256,32 @@ class FixedDataTableCell extends React.Component {
 
     
     const role = isHeaderOrFooter ? 'columnheader' : 'gridcell';
- 
+
+    const setTableColumn = (table)=>{
+      const collpse = this.getColumnCollpseByColumnKey(table.columns,columnKey)
+      if(collpse){
+        return <div className={className} style={style} role={role}>
+                  <ColumnWidthOutlined style={{cursor:'pointer',lineHeight:'40px'}} 
+                  onClick={table._onCollpseColumnCallback.bind(this,columnKey,false)}/>
+                </div>;
+      }else{
+        return <div className={className} style={style} role={role}>
+                  {!replacingColumn && columnResizerComponent}
+                  {!replacingColumn && columnReorderComponent}
+                  {!replacingColumn && tableColumnMenu}
+                  {content}
+                </div>;
+      }
+    }
+     
     return (
-      <div className={className} style={style} role={role}>
-        {!replacingColumn && columnResizerComponent}
-        {!replacingColumn && columnReorderComponent}
-        {!replacingColumn && tableColumnMenu}
-        {content}
-      </div>
+      <TableContext.Consumer>
+        {(table) => (
+          <div>
+            {setTableColumn(table)}
+          </div>
+        )}
+      </TableContext.Consumer>
     );
   }
 

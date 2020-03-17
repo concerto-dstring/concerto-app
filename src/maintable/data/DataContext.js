@@ -7,6 +7,8 @@ import DataPropTypes from './DataPropTypes';
 import { DataViewWrapper } from './DataViewWrapper';
 import { RowType } from './MainTableType';
 
+const TableContext = React.createContext();
+
 const DataVersionContext = React.createContext({
   data: null,
   version: 0,
@@ -187,4 +189,5 @@ export {
   DataVersionContext,
   DataContext,
   AddFilter,
+  TableContext
 };

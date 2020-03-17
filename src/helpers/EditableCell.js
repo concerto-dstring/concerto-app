@@ -6,7 +6,8 @@ import styled from 'styled-components';
 import Keys from '../maintable/vendor_upstream/core/Keys';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
-import TableCellComponent from '../maintable/TableCellComponent';
+import { TableCell } from '../helpers/TableCell'
+import { TableContext } from '../maintable/data/DataContext';
 const CellContainer = styled.div`
   display: flex;
   flex: 1 0 100%;
@@ -18,11 +19,33 @@ const CellContainer = styled.div`
 `
 
 class EditableCell extends React.PureComponent {
-    state = {
-        value: this.props.data ? this.props.data.getObjectAt(this.props.rowIndex)[this.props.columnKey] : this.props.value,
-        editing: false,
-        type:this.props.type
+    constructor(props){
+       super(props)
+       this.state = {
+            value: props.data ? props.data.getObjectAt(props.rowIndex)[props.columnKey] : props.value,
+            editing: false,
+            type:props.type,
+            handleChange:this.handleChange,
+            handleKey:this.handleKey
+        }
+        this.cellRenderValues={
+            TEXT:true,
+            NUMBER:true,
+            SELECT:true,
+            DATE:true,
+            PEOPLE:false,
+            STATUS:true
+        }
+        this.cellhideValues={
+            TEXT:true,
+            NUMBER:true,
+            SELECT:true,
+            DATE:true,
+            PEOPLE:true,
+            STATUS:false
+        }
     }
+    
 
     componentWillReceiveProps(props) {
         this.setState({ value: props.data ? props.data.getObjectAt(props.rowIndex)[props.columnKey] : props.value});
@@ -33,13 +56,15 @@ class EditableCell extends React.PureComponent {
 
     getTargetRef = () => this.targetRef;
 
-    handleClick = () => {
-        const tableCellComponent = new TableCellComponent();
-        const columnCanEditor = tableCellComponent.columnCanEditor(this.state.type);
-        if(columnCanEditor){
+    handleClick = (type) => {
+        if(type){
+            const columnCanEditor = this.cellRenderValues[type] ;
+            if(columnCanEditor){
+                this.setState({ editing: true });
+            }
+        }else{
             this.setState({ editing: true });
         }
-        
     }
 
     handleHide = () => {
@@ -49,35 +74,16 @@ class EditableCell extends React.PureComponent {
         }
         if(type == 'DATE'){
           this.state.value = moment(this.state.value).format('YYYY-MM-DD');
-        }else if(type == 'STATUS'){
-          return;
+        }
+        const hideValue = this.cellhideValues[type];
+        if(!hideValue){
+           return;
         }
         this.setState({ editing: false });
     }
 
-    handleChange = (e,v )=>
+    handleChange = (value)=>
     {
-        const type = this.state.type;
-        let value = '';
-        switch(type){
-           case 'DATE':
-                 value = v!=''?moment(v, 'YYYY-MM-DD'):undefined;
-                 break;
-           case 'NUMBER':
-                 value = e;
-                 break;
-           case 'SELECT':
-                 value = e;
-                 break;    
-           case 'PEOPLE':
-                 value = e.target.textContent;
-                 break;
-           case 'STATUS':
-                 value = e.key!='null'?e.key:'';
-                 break;                       
-           default:
-                 value = e.target.value;    
-        }
         this.setState({
             value: value,
         });
@@ -92,22 +98,36 @@ class EditableCell extends React.PureComponent {
         }
     }
 
+    getColumnCompentTypeByColumnKey = (columnKey) => {
+        let parent = this.props.container;
+            parent = parent.props.container;
+        const columns = parent.props.dataset._columns
+        for(let i=0,len=columns.length;i<len;i++){
+            let column = columns[i];
+            if(columnKey === column.columnKey){
+                return column.columnComponentType;
+            } 
+        }
+    }
+
     render() {
         const {container, data, rowIndex, columnKey, dataVersion, width, height,  ...props} = this.props;
         const { value, editing } = this.state;
-        const type = this.state.type;
+        const type = this.state.type||'TEXT';
         const inputStyle = {
             width: width - 10,
             height: height - 5,
             borderRadius: '0px',
         }
-        const tableCellComponent = new TableCellComponent();
-        const component = tableCellComponent.createTableCellComponentByType(type,value,inputStyle,[this.handleChange,this.handleKey]);
-        const renderComtext = tableCellComponent.renderCellContextByType(type,value,[this.handleChange,this.handleKey])
+       
         return (
 
-            <CellContainer ref={this.setTargetRef} onClick={this.handleClick}>
-                {!editing && renderComtext}
+            <CellContainer ref={this.setTargetRef} onClick={this.handleClick.bind(this,type)}>
+                {!editing && this.cellRenderValues[type] && value}
+                {!editing && !this.cellRenderValues[type]&&
+                <TableContext.Provider value={this.state}>
+                    <TableCell></TableCell>
+                </TableContext.Provider>}
                 {editing && this.targetRef && (
                     <Overlay
                         show
@@ -128,9 +148,9 @@ class EditableCell extends React.PureComponent {
                                             ? this.targetRef.offsetHeight
                                             : -this.targetRef.offsetHeight,
                                 }}>
-                                
-                                {component}
-
+                                <TableContext.Provider value={this.state}>
+                                    <TableCell></TableCell>test
+                                </TableContext.Provider>
                             </div>
                         )}
                     </Overlay>
