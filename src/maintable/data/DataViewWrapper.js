@@ -17,6 +17,11 @@ class DataViewWrapper {
         this.reorderRow = this.reorderRow.bind(this);
         this.setObjectAt = this.setObjectAt.bind(this);
         this.getObjectAt = this.getObjectAt.bind(this);
+        this.getGroups = this.getGroups.bind(this)
+        this.moveRow = this.moveRow.bind(this)
+        this.getGroupByRowIndex = this.getGroupByRowIndex.bind(this)
+        this.setGroupData = this.setGroupData.bind(this)
+        this.addNewGroup = this.addNewGroup.bind(this)
     }
 
     // /**
@@ -202,6 +207,26 @@ class DataViewWrapper {
       this._indexMap.splice(rowIndex, 0, moveRow)
 
       return this._dataset.moveRow(sourceGroupKey, targetGroupKey, rowKey, rowIndex)
+    }
+
+    getGroupByRowIndex(rowIndex) {
+      let row = this._indexMap[rowIndex]
+      let groups = this._dataset.getGroups().filter(group => group.groupKey === row.groupKey)
+
+      if (groups && groups.length > 0) {
+        return groups[0]
+      }
+      else {
+        return null
+      }
+    }
+
+    setGroupData(groupData) {
+      this._dataset.setGroupData(groupData)
+    }
+
+    addNewGroup(groupKey) {
+      this._dataset.addNewGroup("新分区", groupKey)
     }
 }
 

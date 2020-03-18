@@ -9,6 +9,7 @@
 'use strict';
 
 import { ColumnType, ColumnKey } from './data/MainTableType';
+import { COLOR } from '../helpers/StyleValues'
 
 class MainTableDataStore {
 
@@ -41,7 +42,7 @@ class MainTableDataStore {
         this._columns.push({columnKey: ColumnKey.ROWACTION, name:'', width: 36, type: ColumnType.DROPDOWN, columnComponentType:''});
         this._columns.push({columnKey: ColumnKey.ROWSELECT, name:'', width: 36, type: ColumnType.CHECKBOX, columnComponentType:''}); 
 
-        this._columns.push({columnKey: '1', name:'主题', width: 100, type: ColumnType.EDITBOX, columnComponentType:'TEXT'});
+        this._columns.push({columnKey: '1', name:'', width: 100, type: ColumnType.EDITBOX, columnComponentType:'TEXT'});
         this._columns.push({columnKey: '2', name:'备注', width: 200, type: ColumnType.EDITBOX, columnComponentType:'TEXT'});
         this._columns.push({columnKey: '3', name:'分配', width: 200, type: ColumnType.EDITBOX, columnComponentType:'TEXT'});
         this._columns.push({columnKey: '4', name:'日志', width: 200, type: ColumnType.LABEL, columnComponentType:'TEXT'});
@@ -50,9 +51,9 @@ class MainTableDataStore {
         this._sizeColumns = 6;
 
         // create groups 
-        this._groups.push({groupKey: '1', name: '组1', rows:['1', '2', '3', '4'], color:'#7EC0EE'});
-        this._groups.push({groupKey: '2', name: '组2', rows:['5', '6', '7', '8'], color:'#CD5C5C'});
-        this._groups.push({groupKey: '3', name: '组3', rows:['9', '10'], color:'#79CDCD'});
+        this._groups.push({groupKey: '1', name: '分区1', rows:['1', '2', '3', '4'], color:'#7EC0EE'});
+        this._groups.push({groupKey: '2', name: '分区2', rows:['5', '6', '7', '8'], color:'#CD5C5C'});
+        this._groups.push({groupKey: '3', name: '分区3', rows:['9', '10'], color:'#79CDCD'});
         this._sizeGroups = 3;
         
         // create row data
@@ -108,10 +109,22 @@ class MainTableDataStore {
         return this._groups;
     }
 
-    addNewGroup(groupName) {
+    addNewGroup(groupName, groupKey) {
         this._sizeGroups ++;
         let id = this._sizeGroups.toString();
-        this._groups.push({groupKey: id, name: groupName, rows:[]});
+        if (groupKey) {
+          // groupKey有值
+          let index = this._groups.findIndex(group => group.groupKey == groupKey);
+          if (index < 0) {
+              return null;
+          }
+          const group = this._groups[index]
+          this._groups.splice(index, 1, {groupKey: id, name: groupName + id, rows:[], color: COLOR.SECTION_DEFAULT})
+          this._groups.splice(index + 1, 0, group)
+        }
+        else {
+          this._groups.push({groupKey: id, name: groupName + id, rows:[], color: COLOR.SECTION_DEFAULT});
+        }
 
         //refresh
         this.runCallbacks();
@@ -276,6 +289,23 @@ class MainTableDataStore {
         
         //refresh
         this.runCallbacks();
+    }
+
+    setGroupData(groupData) {
+      let group
+      let groups = this._groups.filter(group => group.groupKey === groupData.groupKey)
+
+      if (groups && groups.length > 0) {
+        group = groups[0]
+      }
+
+      if (group) {
+        group.name = groupData.name ? groupData.name : group.name
+        group.color = groupData.color ? groupData.color : group.color
+      }
+
+      //refresh
+      this.runCallbacks();
     }
 
     /**

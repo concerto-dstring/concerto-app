@@ -14,6 +14,7 @@ import {
   DEAL_ROW_RENAME_MODAL,
   DEAL_ROW_DELETE_MODAL,
   DEAL_ROW_MOVE_MODAL,
+  DEAL_SECTION_RENAME_MODAL,
 } from './ActionTypes';
 
 /**
@@ -44,7 +45,7 @@ export const moveRowReorder = (reorderData) => ({
 });
 
 /**
- * 处理重命名弹窗
+ * 处理行重命名弹窗
  * @param {*} modalData 
  */
 export const dealRowRenameModal = (modalData) => ({
@@ -67,6 +68,15 @@ export const dealRowDeleteModal = (modalData) => ({
  */
 export const dealRowMoveModal = (modalData) => ({
   type: DEAL_ROW_MOVE_MODAL,
+  modalData
+});
+
+/**
+ * 处理分区重命名弹窗
+ * @param {*} modalData 
+ */
+export const dealSectionRenameModal = (modalData) => ({
+  type: DEAL_SECTION_RENAME_MODAL,
   modalData
 });
 

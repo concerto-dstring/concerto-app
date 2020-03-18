@@ -16,5 +16,6 @@ export const ColumnType = {
 
 export const ColumnKey = {
   ROWACTION: 'ROWACTION',
-  ROWSELECT: 'ROWSELECT'
+  ROWSELECT: 'ROWSELECT',
+  NAME: '1',
 }
