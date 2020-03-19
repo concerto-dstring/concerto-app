@@ -193,7 +193,7 @@ class FixedDataTableRowImpl extends React.Component {
     };
 
     if (isRowReordering && rowReorderingData) {
-      if (rowReorderingData.rowKey === this.props.rowKey) {
+      if (rowReorderingData.oldRowIndex === this.props.index) {
         let x = rowReorderingData.left - rowReorderingData.dragDistanceX - rowReorderingData.oldScrollLeft;
         style.width = '2000px';
         style.transform = `translate(${x}px) rotate(1deg)`;
@@ -528,7 +528,7 @@ class FixedDataTableRow extends React.Component {
   render() /*object*/ {
     const { offsetTop, scrollTop, zIndex, visible, ...rowProps } = this.props;
     const isMovingRow = this.props.isRowReordering && this.props.rowReorderingData 
-                        && this.props.rowReorderingData.rowKey === rowProps.rowKey;
+                        && this.props.rowReorderingData.oldRowIndex === rowProps.index;
     var style = {
       width: this.props.width,
       height: this.props.height,
