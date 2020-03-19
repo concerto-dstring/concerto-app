@@ -42,12 +42,12 @@ class MainTableDataStore {
         this._columns.push({columnKey: ColumnKey.ROWACTION, name:'', width: 36, type: ColumnType.DROPDOWN, columnComponentType:''});
         this._columns.push({columnKey: ColumnKey.ROWSELECT, name:'', width: 36, type: ColumnType.CHECKBOX, columnComponentType:''}); 
 
-        this._columns.push({columnKey: '1', name:'', width: 100, type: ColumnType.EDITBOX, columnComponentType:'TEXT'});
-        this._columns.push({columnKey: '2', name:'备注', width: 200, type: ColumnType.EDITBOX, columnComponentType:'TEXT'});
-        this._columns.push({columnKey: '3', name:'分配', width: 200, type: ColumnType.EDITBOX, columnComponentType:'TEXT'});
-        this._columns.push({columnKey: '4', name:'日志', width: 200, type: ColumnType.LABEL, columnComponentType:'TEXT'});
-        this._columns.push({columnKey: '5', name:'文件', width: 200, type: ColumnType.EDITBOX, columnComponentType:'TEXT'});
-        this._columns.push({columnKey: '6', name:'补充说明', width: 200, type: ColumnType.EDITBOX, columnComponentType:'TEXT'});
+        this._columns.push({columnKey: '1', name:'主题', width: 100, type: ColumnType.EDITBOX, columnComponentType:'TEXT',collpse:false});
+        this._columns.push({columnKey: '2', name:'备注', width: 200, type: ColumnType.EDITBOX, columnComponentType:'TEXT',collpse:false});
+        this._columns.push({columnKey: '3', name:'分配', width: 200, type: ColumnType.EDITBOX, columnComponentType:'TEXT',collpse:false});
+        this._columns.push({columnKey: '4', name:'日志', width: 200, type: ColumnType.LABEL, columnComponentType:'TEXT',collpse:false});
+        this._columns.push({columnKey: '5', name:'文件', width: 200, type: ColumnType.EDITBOX, columnComponentType:'TEXT',collpse:false});
+        this._columns.push({columnKey: '6', name:'补充说明', width: 200, type: ColumnType.EDITBOX, columnComponentType:'TEXT',collpse:false});
         this._sizeColumns = 6;
 
         // create groups 
@@ -215,7 +215,9 @@ class MainTableDataStore {
             return;
         }
         this._columns.splice(index, 1);
-        // push undo stack 
+        // push undo stack
+        //refresh
+        this.runCallbacks(); 
     }
 
     removeRow(groupKey, rowKey) {
