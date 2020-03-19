@@ -114,7 +114,7 @@ class EditableCell extends React.PureComponent {
         const {container, data, rowIndex, columnKey, dataVersion, width, height,  ...props} = this.props;
         const { value, editing } = this.state;
         const type = this.state.type||'TEXT';
-        let v = typeof value =='string'?value:moment(value).format('YYYY-MM-DD');
+        let v = (typeof value !='undefined'&&typeof value !='string')?moment(value).format('YYYY-MM-DD'):value;
         const inputStyle = {
             width: width - 10,
             height: height - 5,
