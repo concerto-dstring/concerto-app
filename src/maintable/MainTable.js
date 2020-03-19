@@ -19,7 +19,7 @@ import SectionHeader from '../helpers/SectionHeader';
 import Dimensions from 'react-dimensions';
 import { Menu, Dropdown, message, Tooltip } from 'antd';
 import { DataContext, AddFilter } from './data/DataContext';
-import { DataVersionContext } from './data/DataContext';
+import { DataVersionContext, TableContext } from './data/DataContext';
 import { connect } from 'react-redux'
 import { mapRowActionStateToProps } from './data/mapStateToProps'
 
@@ -51,6 +51,7 @@ const DataEditableCell = function(props) {
                 <EditableCell
                     data={data}
                     dataVersion={version}
+                    type={getColumnCompentByColumnKey(props.columnKey,this.container.props.dataset._columns)}
                     {...this.props}
                 />
             )}
@@ -136,6 +137,15 @@ const DataSectionHeader = function(props) {
 }
 
 const FilterableDataTable = AddFilter(DataContext(Table));
+const getColumnCompentByColumnKey = function(columnKey,columns){
+    for(let i=0,len=columns.length;i<len;i++){
+        let column = columns[i];
+        if(columnKey === column.columnKey){
+            return column.columnComponentType;
+        } 
+    }
+}
+
 
 @connect(mapRowActionStateToProps)
 class MainTable extends React.Component {
@@ -153,6 +163,8 @@ class MainTable extends React.Component {
         this._onColumnResizeEndCallback = this._onColumnResizeEndCallback.bind(this);
         this._onColumnAddCallback = this._onColumnAddCallback.bind(this);
         this._onColumnReorderEndCallback = this._onColumnReorderEndCallback.bind(this);
+        this._onRemoveColumnCallback = this._onRemoveColumnCallback.bind(this);
+        this._onCollpseColumnCallback = this._onCollpseColumnCallback.bind(this);
 
         this._getColumnName = this._getColumnName(this);
         this.refresh = this.refresh.bind(this);
@@ -168,8 +180,24 @@ class MainTable extends React.Component {
             isShowAfterMoveRowModal: false,
             isShowDeleteRowModal: false,
             rowIndex: null,
-            columnKey: null
+            columnKey: null,
+            _onRemoveColumnCallback:this._onRemoveColumnCallback,
+            _onCollpseColumnCallback:this._onCollpseColumnCallback
         };
+    }
+
+    _onCollpseColumnCallback(columnKey,collpse){
+        if(collpse){
+            this.setColumnWidth(columnKey, 15);
+        }else{
+            this.setColumnWidth(columnKey, 200);
+        }
+        
+        this.setColumnCollpse(columnKey)
+    }
+
+    _onRemoveColumnCallback(columnKey){
+        this._dataset.removeColumn(columnKey);
     }
 
     /**
@@ -218,6 +246,17 @@ class MainTable extends React.Component {
         this.setState({columns: columns})
     }
 
+    setColumnCollpse(columnKey, width) {
+        let columns = this.state.columns;
+        for (let index = 0; index < columns.length; index++) {
+            const column = columns[index];
+            if (column.columnKey === columnKey) {
+                column.collpse = !column.collpse;
+            }
+        }
+        this.setState({columns: columns})
+    }
+
     _onColumnAddCallback(t) {
         const columnComponentType = t.key;
         this._dataset.addNewColumn('New Column', columnComponentType);
@@ -242,7 +281,7 @@ class MainTable extends React.Component {
             if (columnKey === column.columnKey) {
                 colTemplates.width = column.width;
                 colTemplates.columnKey = columnKey;
-                colTemplates.header = <EditableCell value={column.name} />;
+                colTemplates.header = <EditableCell value={column.name} type={'TEXT'}/>;
                 colTemplates.footer = <Cell>summary</Cell>;
                 colTemplates.width = this.getColumnWidth(columnKey);
                 colTemplates.minWidth = 70;
@@ -365,7 +404,7 @@ class MainTable extends React.Component {
         const fixedColumns = this.state.columns.length > 0 ? this.state.columns.slice(0, 3) : [];
         const scrollColumns = this.state.columns.slice(3); 
         const menu = (
-            <Menu onClick={this._onColumnAddCallback}>
+            <Menu onClick={this._onColumnAddCallback} style={{width:'100px'}}>
                 <Menu.Item key="DATE">
                     <ScheduleOutlined />
                     日期
@@ -393,8 +432,9 @@ class MainTable extends React.Component {
             </Menu>
         );
         return (
+         <TableContext.Provider value={this.state}>
             <div>
-            <FilterableDataTable
+                <FilterableDataTable
                     ref={this.handleRef}
                     onColumnReorderEndCallback={this._onColumnReorderEndCallback}
                     onColumnResizeEndCallback={this._onColumnResizeEndCallback}
@@ -442,7 +482,8 @@ class MainTable extends React.Component {
                   isShowAfterMoveRowModal={this.state.isShowAfterMoveRowModal}
                   refresh={this.refresh}
                 />
-            </div>      
+              </div>   
+            </TableContext.Provider>   
         );
     }
 }
