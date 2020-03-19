@@ -33,6 +33,10 @@ import {
 } from '../maintable/MainTableRowKeyAndDesc'
 
 import {
+  ColumnKey
+} from '../maintable/data/MainTableType'
+
+import {
   VISIBILITY,
   DISPLAY,
   COLOR,
@@ -45,7 +49,7 @@ import '../maintable/css/style/RowActionMenu.less'
 import '../maintable/css/style/SectionMenu.less'
 
 import { connect } from 'react-redux'
-import { dealRowRenameModal, dealRowDeleteModal } from '../maintable/actions/rowActions'
+import { dealRowRenameModal, dealRowDeleteModal, dealSectionRenameModal } from '../maintable/actions/rowActions'
 
 const { SubMenu } = Menu;
 
@@ -164,19 +168,47 @@ class TextCell extends React.PureComponent {
   }
 }
 
-@connect(null, { dealRowRenameModal, dealRowDeleteModal })
-class DropDownMenuCell extends React.PureComponent {
-  constructor() {
-    super()
+@connect(null, { dealRowRenameModal, dealRowDeleteModal, dealSectionRenameModal })
+class DropDownMenuCell extends React.Component {
+  constructor(props) {
+    super(props)
+
+    const { data, rowIndex } = props
+
+    let group = data.getGroupByRowIndex(rowIndex)
+    let groupColor = group ? group.color : COLOR.DEFAULT
+  
+    // 保存分区原有的颜色
     this.state = {
       isShowRowActionBtn: VISIBILITY.HIDDEN,
       isBtnClicked: false,
       isShowSubMenu: DISPLAY.NONE,
-      headerBtnColor: '',
+      headerBtnColor: groupColor,
+      headerBtnBorderColor: groupColor,
+      group: group,
+      groupColor: groupColor,
       headerBtnType: ANTD_BTN_TYPE.PRIMARY
     }
   }
 
+  componentWillReceiveProps(props) {
+
+    const { data, rowIndex } = props
+    let group = data.getGroupByRowIndex(rowIndex)
+    let groupColor = group ? group.color : COLOR.DEFAULT
+
+    this.setState({ 
+      group: group,
+      headerBtnColor: groupColor,
+      headerBtnBorderColor: groupColor,
+      group: group,
+      groupColor: groupColor,
+      version: props.dataVersion,
+      isShowHeaderMenu: false
+    });
+  }
+
+  // 行菜单
   hanldeRowCellMenuClick = ({ item, key, keyPath, selectedKeys, domEvent }) => {
     this.hiddenRowActionBtn()
     this.hiddenSubMenu()
@@ -188,8 +220,7 @@ class DropDownMenuCell extends React.PureComponent {
     }
     else if (key == RENAME_ROW.key) {
       // 重命名行
-      const columnKey = '1'
-      this.props.dealRowRenameModal({rowIndex, columnKey, isShowReNameRowModal: true, data})
+      this.props.dealRowRenameModal({rowIndex, columnKey: ColumnKey.NAME, isShowReNameRowModal: true, data})
     }
     else if (key == MOVE_TO_SECTION.key) {
       // 移动至其他分区
@@ -199,6 +230,37 @@ class DropDownMenuCell extends React.PureComponent {
     else if (key == DELETE_ROW.key) {
       // 删除行
       this.props.dealRowDeleteModal({isShowDeleteRowModal: true, data, rowIndex})
+    }
+  }
+  
+  // 分区菜单
+  hanldeRowHeaderMenuClick = ({ item, key, keyPath, selectedKeys, domEvent }) => {
+    this.hiddenRowActionBtn()
+    const { data, rowIndex } = this.props;
+    if (key == RENAME_SECTION.key) {
+      // 重命名
+      this.props.dealSectionRenameModal({isShowReNameRowModal: true, data, isSection: true, group: this.state.group})
+    }
+    else if (key == CHANGE_SECTION_COLOR.key) {
+      // 改变分区颜色
+      
+    }
+    else if (key == ADD_SECTION.key) {
+      // 添加分区
+      data.addNewGroup(this.state.group.groupKey)
+      data.dataVersion = data.dataVersion + 1
+    }
+    else if (key == COLLPASE_THIS_SECTION.key) {
+      // 折叠当前分区
+      
+    }
+    else if (key == COLLPASE_ALL_SECTION.key) {
+      // 折叠所有分区
+      
+    }
+    else if (key == DELETE_SECTION.key) {
+      // 删除分区
+      
     }
   } 
 
@@ -369,38 +431,28 @@ class DropDownMenuCell extends React.PureComponent {
       headerBtnBorderColor: borderColor,
       headerBtnType: btnType
     })
+
+    if (color === COLOR.WHITE) {
+      this.setState({
+        isShowHeaderMenu: true
+      })
+    }
+    else {
+      this.setState({
+        isShowHeaderMenu: false,
+        isBtnClicked: false
+      })
+    }
   }
 
   render() {
-    const { data, rowIndex, isHeader } = this.props;
-
+    const { isHeader, data, rowIndex } = this.props
+    
     let returnMenu
 
     if (isHeader) {
-
-      const { groupColor, headerBtnColor, headerBtnBorderColor } = this.state
-
-      let ownGroupColor
-      if (!groupColor) {
-        let row = data.getRowMap()[rowIndex]
-        let group = data.getGroups().filter(group => group.groupKey === row.groupKey)
-
-        if (group.length > 0) {
-          ownGroupColor = group[0].color
-        }
-        else {
-          // 默认颜色
-          ownGroupColor = COLOR.DEFAULT
-        }
-      }
-
-      // 保存分区原有的颜色
-      this.setState({
-        groupColor: groupColor ? groupColor : ownGroupColor,
-        headerBtnColor: headerBtnColor ? headerBtnColor : groupColor,
-        headerBtnBorderColor: headerBtnBorderColor ? headerBtnBorderColor : groupColor
-      })
-
+      const { groupColor, headerBtnColor, headerBtnBorderColor, headerBtnType, isShowHeaderMenu, isBtnClicked } = this.state
+      
       returnMenu = (
         <div 
           onMouseEnter={this.changeHeaderMenuBtnColor.bind(this, COLOR.WHITE, COLOR.DEFAULT, ANTD_BTN_TYPE.DEFAULT)}
@@ -408,15 +460,20 @@ class DropDownMenuCell extends React.PureComponent {
         >
           <Dropdown 
             overlay={this.getHeaderMenu(groupColor)}
-            trigger='click'
             overlayClassName='menu_item_bgcolor'
+            visible={isBtnClicked && isShowHeaderMenu}
           >
             <AntdButton 
               icon={<CaretDownOutlined />}
-              type={this.state.headerBtnType}
+              type={headerBtnType}
               shape="circle"
               size='small'
-              style={{margin: '8px 6px', backgroundColor: this.state.headerBtnColor, borderColor: this.state.headerBtnBorderColor}}
+              style={{
+                      margin: '8px 6px', 
+                      backgroundColor: headerBtnColor, 
+                      borderColor: headerBtnBorderColor
+                    }}
+              onClick={this.showRowActionMenu}
             >
             </AntdButton>
           </Dropdown>
@@ -494,4 +551,5 @@ export {
   TextCell, 
   TooltipCell, 
   DropDownMenuCell,
-  CheckBoxCell };
+  CheckBoxCell 
+};

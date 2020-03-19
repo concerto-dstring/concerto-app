@@ -103,12 +103,14 @@ function getInitialState() {
     rowBufferSet: new IntegerBufferSet(),
     storedHeights: [],
     rowOffsetIntervalTree: null, // PrefixIntervalTree
+    isSection: false,
     isShowReNameRowModal: false,
     isShowDeleteRowModal: false,
     isShowAfterMoveRowModal: false,
     columnKey: null,
     rowIndex: null,
     data: null,
+    group: {},
   };
 }
 
@@ -241,6 +243,14 @@ function reducers(state = getInitialState(), action) {
         rowKey: action.modalData.rowKey,
         sourceGroupKey: action.modalData.sourceGroupKey,
         targetGroupKey: action.modalData.targetGroupKey,
+      })
+
+    case ActionTypes.DEAL_SECTION_RENAME_MODAL:
+      return Object.assign({}, state, {
+        isShowReNameRowModal: action.modalData.isShowReNameRowModal,
+        data: action.modalData.data,
+        isSection: action.modalData.isSection,
+        group: action.modalData.group
       })
 
     default: {

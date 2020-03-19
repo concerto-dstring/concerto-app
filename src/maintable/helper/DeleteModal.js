@@ -6,7 +6,7 @@ import { dealRowDeleteModal } from '../actions/rowActions'
 import { mapRowActionStateToProps } from '../data/mapStateToProps'
 
 @connect(mapRowActionStateToProps, { dealRowDeleteModal })
-class DeleteRowModal extends PureComponent {
+class DeleteModal extends PureComponent {
 
   handleCancelClick = () => {
     // 关闭弹窗
@@ -46,4 +46,4 @@ class DeleteRowModal extends PureComponent {
   }
 }
 
-export default DeleteRowModal;
+export default DeleteModal;

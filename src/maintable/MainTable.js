@@ -11,10 +11,11 @@ import { Button } from 'semantic-ui-react';
 import { Table, Cell, Column } from './FixedDataTableRoot';
 import { ColumnType,  RowType, ColumnKey } from './data/MainTableType';
 import { TextCell, DropDownMenuCell, CheckBoxCell } from '../helpers/cells';
-import ReNameRowModal from './helper/ReNameRowModal'
-import DeleteRowModal from './helper/DeleteRowModal'
+import ReNameModal from './helper/ReNameModal'
+import DeleteModal from './helper/DeleteModal'
 import AfterMoveRowModal from './helper/AfterMoveRowModal'
 import { EditableCell } from '../helpers/EditableCell';
+import SectionHeader from '../helpers/SectionHeader';
 import Dimensions from 'react-dimensions';
 import { Menu, Dropdown, message, Tooltip } from 'antd';
 import { DataContext, AddFilter } from './data/DataContext';
@@ -120,6 +121,21 @@ const DataCheckBoxCell = function(props) {
   )
 }
 
+const DataSectionHeader = function(props) {
+  this.props = props
+  return (
+    <DataVersionContext.Consumer>
+        {({data, version}) => (
+            <SectionHeader
+                data={data}
+                dataVersion={version}
+                {...this.props}
+            />
+        )}
+    </DataVersionContext.Consumer>
+  )
+}
+
 const FilterableDataTable = AddFilter(DataContext(Table));
 const getColumnCompentByColumnKey = function(columnKey,columns){
     for(let i=0,len=columns.length;i<len;i++){
@@ -189,7 +205,8 @@ class MainTable extends React.Component {
      * @param {*} event 
      */
     _onAddNewGroupCallback(event) {
-        this._dataset.addNewGroup("新组")
+        this._dataset.addNewGroup("新分区")
+        this.refresh()
     }
 
      /**
@@ -315,9 +332,8 @@ class MainTable extends React.Component {
       else {
         rowTemplates.width = column.width;
         rowTemplates.columnKey = columnKey;
-        rowTemplates.header = <EditableCell value={column.name} />;
+        rowTemplates.header = DataSectionHeader;
         rowTemplates.footer = <Cell>summary</Cell>;
-        rowTemplates.width = this.getColumnWidth(columnKey);
         rowTemplates.minWidth = 70;
         rowTemplates.isResizable = true;
         if (column.type === ColumnType.LABEL) {
@@ -422,7 +438,7 @@ class MainTable extends React.Component {
                     ref={this.handleRef}
                     onColumnReorderEndCallback={this._onColumnReorderEndCallback}
                     onColumnResizeEndCallback={this._onColumnResizeEndCallback}
-                    data={data}    
+                    data={data}
                     headerHeight={40}
                     rowHeight={40}
                     isColumnResizing={false}
@@ -453,11 +469,11 @@ class MainTable extends React.Component {
                         width={40}
                     />
                 </FilterableDataTable>
-                <ReNameRowModal 
+                <ReNameModal 
                   isShowReNameRowModal={this.props.isShowReNameRowModal}
                   refresh={this.refresh}
                 />
-                <DeleteRowModal 
+                <DeleteModal 
                   isShowDeleteRowModal={this.props.isShowDeleteRowModal}
                   handleDeleteRowOKClick={this.handleDeleteRowOKClick}
                   refresh={this.refresh}
