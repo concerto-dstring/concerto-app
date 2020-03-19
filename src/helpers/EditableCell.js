@@ -151,7 +151,7 @@ class EditableCell extends React.PureComponent {
                                             : -this.targetRef.offsetHeight,
                                 }}>
                                 <TableContext.Provider value={this.state}>
-                                    <TableCell></TableCell>test
+                                    <TableCell></TableCell>
                                 </TableContext.Provider>
                             </div>
                         )}

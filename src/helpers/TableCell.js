@@ -249,7 +249,10 @@ class StatusCell extends React.Component {
 
 class PeopleCell extends React.Component {
   state = {
-    selectedUsers:[]
+    selectedUsers:[],
+    removeBar:{
+      display:'none'
+    }
   }
   getUserArray = () => {
     return [{
@@ -262,14 +265,13 @@ class PeopleCell extends React.Component {
         smallName:'L',
         userName:'Leo'
     },{
-        smallName:'J',
+        smallName:'M',
         userName:'Jack Ma'
     },{
         smallName:'W',
         userName:'Civen Wang'
     }]
   }
-
   render() {
     const {Search} = Input;
     const {data, rowIndex, columnKey, collapsedRows, callback, value, handleChange, handleKey, ...props} = this.props;
@@ -306,13 +308,34 @@ class PeopleCell extends React.Component {
         return handleChange("");
       }
     }
+    const memoveAllUsers = (e) => {
+      this.setState({
+        selectedUsers:[]
+      })
+      return handleChange("");
+    }
+    const showRemoveUserBar = () => {
+      const display = this.state.selectedUsers.length<1?'none':'block';
+      this.setState({
+        removeBar:{
+          display:display
+        }
+      })
+    }
+    const hideRemoveUserBar = () => {
+      this.setState({
+        removeBar:{
+          display:"none"
+        }
+      })
+    }
     return (
       <Cell {...props} style={{ width: '100%' }}>
          <Popover  placement="bottom" trigger="click" content={
             <div>
                 {
                     this.getUserArray().map((v, i) => (
-                        <div className="user" onClick={returnValue.bind(this,v)}>
+                        <div key={i} className="user" onClick={returnValue.bind(this,v)}>
                             <div style={{padding:'5px'}}>
                                 &nbsp;<Avatar>{v.smallName}</Avatar>&nbsp;{v.userName}
                             </div>
@@ -324,9 +347,9 @@ class PeopleCell extends React.Component {
                 <div>
                   <div style={{paddingBottom:'10px'}}>
                   {
-                    this.state.selectedUsers.map((v, i) => (
-                      <Tag closable color="blue" style={{borderRadius:'15px',margin:'3px'}} onClose={removeUser.bind(this,v)}>
-                      <Avatar size="small">{v.smallName}</Avatar>{v.userName}
+                    someusers.map((v, i) => (
+                      <Tag key={i} closable color="blue" className="userTag" onClose={removeUser.bind(this,v)}>
+                        <Avatar size="small">{v.smallName}</Avatar>{v.userName}
                       </Tag>
                     ))
                   }
@@ -340,15 +363,18 @@ class PeopleCell extends React.Component {
                 </div>
             }>
             {
-                value&&
-                <div className="userAvatar">
-                    <Avatar className="Avatar" style={{cursor: 'pointer'}}>{value.substr(0,1)}</Avatar>
-                    <PlusCircleFilled className="PlusCircleFilled"/>
-                    <CloseCircleFilled className="CloseCircleFilled"/>
+                someusers.length>0&&
+                <div onMouseEnter={showRemoveUserBar} onMouseLeave={hideRemoveUserBar}>
+                  <div className="userAvatar">
+                    {someusers.length===1&&<Avatar className="Avatar">{someusers[0].smallName}</Avatar>}
+                    {someusers.length===2&&<div><Avatar className="Avatar">{someusers[0].smallName}</Avatar><Avatar className="Avatar" style={{right:'10px'}}>{someusers[1].smallName}</Avatar></div>}
+                    {someusers.length>2&&<div><Avatar className="Avatar">{someusers[0].smallName}</Avatar><Avatar className="Avatar moreUserAvatar">+{someusers.length-1}</Avatar></div>}
+                  </div>
+                  <PlusCircleFilled className="PlusCircleFilled"/>
                 </div>
             }    
             {
-                !value&&
+                someusers.length<1&&
                 <div className="userAvatar">
                     <Button className="userIcon"
                         shape="circle"
@@ -359,6 +385,7 @@ class PeopleCell extends React.Component {
                 
             }
          </Popover>;
+         <CloseCircleFilled className="CloseCircleFilled" onClick={memoveAllUsers} style={this.state.removeBar}  onMouseEnter={showRemoveUserBar} onMouseLeave={hideRemoveUserBar}/>
       </Cell>
     );
   }
