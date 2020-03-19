@@ -114,7 +114,7 @@ class MainTableDataStore {
         let id = this._sizeGroups.toString();
         if (groupKey) {
           // groupKey有值
-          let index = this._groups.findIndex(group => group.groupKey == groupKey);
+          let index = this._groups.findIndex(group => group.groupKey === groupKey);
           if (index < 0) {
               return null;
           }
@@ -132,7 +132,7 @@ class MainTableDataStore {
     }
 
     removeGroup(groupKey) {
-        let index = this._groups.findIndex(column => column.groupKey == groupKey);
+        let index = this._groups.findIndex(column => column.groupKey === groupKey);
         if (index < 0) {
             return;
         }
@@ -143,7 +143,7 @@ class MainTableDataStore {
     }
 
     getGroupAt(groupKey) {
-        let index = this._groups.findIndex(column => column.groupKey == groupKey);
+        let index = this._groups.findIndex(column => column.groupKey === groupKey);
         if (index < 0) {
             return null;
         }
@@ -155,7 +155,7 @@ class MainTableDataStore {
     }
 
     addNewRow(groupKey, newItem) {
-        let index = this._groups.findIndex(group => group.groupKey == groupKey);
+        let index = this._groups.findIndex(group => group.groupKey === groupKey);
         if (index < 0) {
             return;
         }
@@ -172,8 +172,8 @@ class MainTableDataStore {
     }
 
     moveRow(sourceGroupKey, targetGroupKey, rowKey, rowIndex) {
-      let sourceGroupIndex = this._groups.findIndex(group => group.groupKey == sourceGroupKey);
-      let targetGroupIndex = this._groups.findIndex(group => group.groupKey == targetGroupKey);
+      let sourceGroupIndex = this._groups.findIndex(group => group.groupKey === sourceGroupKey);
+      let targetGroupIndex = this._groups.findIndex(group => group.groupKey === targetGroupKey);
       if (sourceGroupIndex < 0 || targetGroupIndex < 0) {
           return;
       }
@@ -181,7 +181,7 @@ class MainTableDataStore {
       let sourceGroupRows = this._groups[sourceGroupIndex].rows;
       let targetGroupRows = this._groups[targetGroupIndex].rows;
       
-      let sourceRowIndex = sourceGroupRows.findIndex(row => row == rowKey);
+      let sourceRowIndex = sourceGroupRows.findIndex(row => row === rowKey);
       sourceGroupRows.splice(sourceRowIndex, 1)
       
       // rowIndex 小于0 则为移动，否则为撤销移动
@@ -210,7 +210,7 @@ class MainTableDataStore {
     }
 
     removeColumn(columnKey) {
-        let index = this._columns.findIndex(column => column.columnKey == columnKey);
+        let index = this._columns.findIndex(column => column.columnKey === columnKey);
         if (index < 0) {
             return;
         }
@@ -219,14 +219,14 @@ class MainTableDataStore {
     }
 
     removeRow(groupKey, rowKey) {
-      let groupIndex = this._groups.findIndex(group => group.groupKey == groupKey);
+      let groupIndex = this._groups.findIndex(group => group.groupKey === groupKey);
       if (groupIndex < 0) {
           return;
       }
 
       let groupRows = this._groups[groupIndex].rows;
 
-      let rowIndex = groupRows.findIndex(row => row == rowKey);
+      let rowIndex = groupRows.findIndex(row => row === rowKey);
       groupRows.splice(rowIndex, 1)
 
       delete this._rowData[rowKey];
@@ -243,14 +243,14 @@ class MainTableDataStore {
         if (columnAfter === columnKey) {
             return;
         }
-        let index = this._columns.findIndex(column => column.columnKey == columnKey);
+        let index = this._columns.findIndex(column => column.columnKey === columnKey);
         if (index < 0) {
             return;
         }
         let columnToReorder = this._columns[index];
 
         if (columnAfter) {
-            var iindex = this._columns.findIndex(column => column.columnKey == columnAfter);
+            var iindex = this._columns.findIndex(column => column.columnKey === columnAfter);
             if (iindex <= 0) { 
                 return;
             }
@@ -265,7 +265,7 @@ class MainTableDataStore {
     }
 
     reorderRow(oldGroupKey, rowKey, newGroupKey, rowAfter) {
-        let oldgroup = this._groups.find(group => group.groupKey == oldGroupKey);
+        let oldgroup = this._groups.find(group => group.groupKey === oldGroupKey);
         if (!oldgroup) {
             return;
         }
@@ -273,11 +273,11 @@ class MainTableDataStore {
         if (index >= 0) {
             oldgroup.rows.splice(index, 1);
         }
-        let newgroup = this._groups.find(group => group.groupKey == newGroupKey);
+        let newgroup = this._groups.find(group => group.groupKey === newGroupKey);
         if (!newgroup) {
             return;
         }
-        index = newgroup.rows.findIndex(row => row == rowAfter);
+        index = newgroup.rows.findIndex(row => row === rowAfter);
         if (index === -1)
             index = 0;
         else 
@@ -354,6 +354,4 @@ class MainTableDataStore {
             cb.fun();
         }
     }
-}
-
-export default MainTableDataStore;
+}export default MainTableDataStore;

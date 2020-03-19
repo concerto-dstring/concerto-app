@@ -117,15 +117,16 @@ class DataViewWrapper {
         this._dataset.rowRows(rowKeys);
     }
 
-    reorderRow(rowKey, oldRowIndex, newRowIndex) {
+    reorderRow(oldRowIndex, newRowIndex) {
         if (oldRowIndex !== newRowIndex) {    
             let rows = this.getRowMap();
             let oldrow = rows[oldRowIndex];
-            let oldGroupKey = oldrow.groupKey; 
+            let oldGroupKey = oldrow.groupKey;
+            let rowKey = oldrow.rowKey;
             let newrow = rows[oldRowIndex < newRowIndex ? newRowIndex : newRowIndex - 1];
             let newGroupKey = newrow.groupKey; 
-            let rowAfter = newrow.rowKey; 
-           
+            let rowAfter = newrow.rowKey;
+            
             this._dataset.reorderRow(oldGroupKey, rowKey, newGroupKey, rowAfter, oldRowIndex < newRowIndex);
         }
     }

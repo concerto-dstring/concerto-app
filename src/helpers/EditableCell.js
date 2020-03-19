@@ -25,7 +25,7 @@ class EditableCell extends React.PureComponent {
     }
 
     componentWillReceiveProps(props) {
-        this.setState({ value: props.data ? props.data.getObjectAt(props.rowIndex)[props.columnKey] : props.value});
+        this.setState({ value: props.data && props.data.getObjectAt(props.rowIndex)? props.data.getObjectAt(props.rowIndex)[props.columnKey] : props.value});
         this.setState({ version: props.dataVersion });
     }
 
@@ -39,7 +39,6 @@ class EditableCell extends React.PureComponent {
         if(columnCanEditor){
             this.setState({ editing: true });
         }
-        
     }
 
     handleHide = () => {
@@ -105,8 +104,7 @@ class EditableCell extends React.PureComponent {
         const component = tableCellComponent.createTableCellComponentByType(type,value,inputStyle,[this.handleChange,this.handleKey]);
         const renderComtext = tableCellComponent.renderCellContextByType(type,value,[this.handleChange,this.handleKey])
         return (
-
-            <CellContainer ref={this.setTargetRef} onClick={this.handleClick}>
+            <CellContainer ref={this.setTargetRef} onMouseUp={this.handleClick}>
                 {!editing && renderComtext}
                 {editing && this.targetRef && (
                     <Overlay

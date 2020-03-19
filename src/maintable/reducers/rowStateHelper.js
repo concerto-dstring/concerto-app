@@ -12,7 +12,7 @@
 'use strict';
 
 function reorderRow(state, reorderData) {
-  let { left, top, rowIndex, height, rowKey, scrollLeft, scrollTop } = reorderData;
+  let { left, top, rowIndex, height, scrollLeft, scrollTop } = reorderData;
   return Object.assign({}, state, {
     isRowReordering: true,
     rowReorderingData: {
@@ -24,7 +24,6 @@ function reorderRow(state, reorderData) {
       oldScrollLeft: scrollLeft,
       oldScrollTop: scrollTop,
       oldRowIndex: rowIndex,
-      rowKey: rowKey,
       height: height,
     }
   });

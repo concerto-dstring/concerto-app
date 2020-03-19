@@ -1048,9 +1048,6 @@ class FixedDataTable extends React.Component {
     let type = rowSettings.rowTypeGetter(rowIndex); 
 
     if (type === RowType.ROW) {
-      if (this.props.rowKeyGetter) {
-        this._draggingRowKey = this.props.rowKeyGetter(rowIndex);
-      }
       this._draggingRowIndex = rowIndex;
       this._draggingHeight = storedHeights[rowIndex];
       this._originalTop = rowOffsets[rowIndex];
@@ -1059,11 +1056,11 @@ class FixedDataTable extends React.Component {
 
   _onMouseMove(event) {
     // not selected any row
-    if (!this._draggingRowKey) {
+    if (!this._draggingRowIndex) {
       return;
     }
 
-    let { firstRowIndex, rowOffsets, rowsCount, endRowIndex, scrollX, scrollY, storedHeights } = this.props; 
+    let { firstRowIndex, rowOffsets, endRowIndex, scrollX, scrollY, storedHeights } = this.props; 
     const position = getPosition(event, this._divRef);
     const delta = {
       x: this._position.x - position.x,
@@ -1129,14 +1126,14 @@ class FixedDataTable extends React.Component {
       this.props.rowActions.startRowReorder({
         left: scrollX,
         top: this._originalTop,
-        rowKey: this._draggingRowKey,
         rowIndex: this._draggingRowIndex,
         height: this._draggingHeight,
         scrollLeft: Math.round(this.props.scrollX),
         scrollTop: Math.round(this.props.scrollY),
       });
+      event.preventDefault();
     }
-    event.preventDefault();
+ 
   }
 
   _onMouseUp(event) {
@@ -1146,12 +1143,12 @@ class FixedDataTable extends React.Component {
       this.props.rowActions.stopRowReorder();
       if (this.props.rowReorderingData.oldRowIndex !== this.props.rowReorderingData.newRowIndex
          && this.props.onRowReorderEndCallback) {
-        this.props.onRowReorderEndCallback(          
-          this.props.rowReorderingData.rowKey, 
+        this.props.onRowReorderEndCallback(
           this.props.rowReorderingData.oldRowIndex, 
           this.props.rowReorderingData.newRowIndex);
       };
-    } 
+      event.preventDefault();
+    }
   }
 
   _onScroll = (/*number*/ deltaX, /*number*/ deltaY) => {

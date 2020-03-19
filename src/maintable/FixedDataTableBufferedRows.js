@@ -89,7 +89,7 @@ class FixedDataTableBufferedRows extends React.Component {
   }
 
   render() /*object*/ {
-    let { scrollTop, isScrolling, rowsToRender } = this.props;
+    let { scrollTop, isScrolling, rowsToRender, isRowReordering, rowReorderingData } = this.props;
     let baseOffsetTop =  - scrollTop;
     rowsToRender = rowsToRender || [];
 
@@ -102,21 +102,34 @@ class FixedDataTableBufferedRows extends React.Component {
     }
 
     // render each row from the buffer into the static row array
-    for (let i = 0; i < this._staticRowArray.length; i++) {
+    let found = true;
+    if (isRowReordering) {
+      found = false;
+    }
+    let i = 0;
+    for (i = 0; i < this._staticRowArray.length; i++) {
       let rowIndex = rowsToRender[i];
       // if the row doesn't exist in the buffer set, then take the previous one
       if (rowIndex === undefined) {
         rowIndex = this._staticRowArray[i] && this._staticRowArray[i].props.index;
       }
-
+      if (isRowReordering && rowReorderingData.oldRowIndex === rowIndex ) {
+        found = true;
+      }
       this._staticRowArray[i] = this.renderRow({
         rowIndex,
         key: i,
-        baseOffsetTop
+        baseOffsetTop,
       });
     }
 
-  
+    if (!found) {
+      this._staticRowArray[i + 1] = this.renderRow({
+        rowIndex: rowReorderingData.oldRowIndex,
+        key: i + 1,
+        baseOffsetTop,
+      });
+    }
 
     return <div>{this._staticRowArray}</div>;
   }
@@ -139,19 +152,15 @@ class FixedDataTableBufferedRows extends React.Component {
       ariaHeaderIndex,
       ariaFooterIndex,
       ariaAddRowIndex,
-      //componentHeight,
       elementHeights,
       isRowReordering,
       rowReorderingData,
       columnReorderingData,
-      //columnResizingData,
       isColumnReordering,
-      //isColumnResizing,
       onColumnReorder,
       onColumnReorderMove,
       onColumnReorderEnd,
       onColumnResize,
-      //onColumnResizeEnd,
       touchScrollEnabled,
       fixedColumns,
       fixedRightColumns,
@@ -192,7 +201,7 @@ class FixedDataTableBufferedRows extends React.Component {
     }
 
     const visible = inRange(rowIndex, props.firstViewportRowIndex, props.endViewportRowIndex) 
-                    || (isRowReordering && rowReorderingData.rowKey === rowProps.rowKey);
+                    || (isRowReordering && rowReorderingData.oldRowIndex === rowIndex);
 
     let row;
 
