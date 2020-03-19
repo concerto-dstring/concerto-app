@@ -1,7 +1,7 @@
 import React from 'react';
 import 'antd/dist/antd.css'
-import {Avatar,Button, DatePicker,Input,InputNumber,Select, Popover,Menu, Dropdown, Tag} from 'antd';
-import {PlusOutlined, DownOutlined,ScheduleOutlined,AccountBookOutlined,CloseCircleFilled,UsergroupAddOutlined,UserOutlined,PlusCircleFilled } from '@ant-design/icons';
+import {Avatar,Button, DatePicker,Input,InputNumber,Select, Popover,Menu, Dropdown, Tag, Switch} from 'antd';
+import {ClockCircleOutlined, PlusOutlined, DownOutlined,ScheduleOutlined,AccountBookOutlined,CloseCircleFilled,UsergroupAddOutlined,UserOutlined,PlusCircleFilled } from '@ant-design/icons';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
 import '../maintable/css/style/TableCellComponent.css'
@@ -12,17 +12,24 @@ class TableCell extends React.Component{
     constructor(props){
          super(props)
     }
+    initCellHashTable(type, value, handleChange,handleKey){
+      const cellHashTable = {
+          PEOPLE:<PeopleCell  value={value} handleChange={handleChange} handleKey={handleKey}/>,
+          TEXT:<TextCell  value={value} handleChange={handleChange} handleKey={handleKey}/>,
+          NUMBER:<NumberCell  value={value} handleChange={handleChange} handleKey={handleKey}/>,
+          SELECT:<SelectCell  value={value} handleChange={handleChange} handleKey={handleKey}/>,
+          DATE:<DateCell  value={value} handleChange={handleChange} handleKey={handleKey}/>,
+          STATUS:<StatusCell  value={value} handleChange={handleChange} handleKey={handleKey}/>
+      }
+      return cellHashTable[type];
+
+    }
     render(){
       const {type, ...props} = this.props;
       return(
         <TableContext.Consumer>
            {(table) => (
-             table.type==='PEOPLE'&&<PeopleCell value={table.value} handleChange={table.handleChange} handleKey={table.handleKey}/>||
-             table.type==='TEXT'&&<TextCell value={table.value} handleChange={table.handleChange} handleKey={table.handleKey}/>||
-             table.type==='NUMBER'&&<NumberCell value={table.value} handleChange={table.handleChange} handleKey={table.handleKey}/>||
-             table.type==='SELECT'&&<SelectCell value={table.value} handleChange={table.handleChange} handleKey={table.handleKey}/>||
-             table.type==='DATE'&&<DateCell value={table.value} handleChange={table.handleChange} handleKey={table.handleKey}/>||
-             table.type==='STATUS'&&<StatusCell value={table.value} handleChange={table.handleChange} handleKey={table.handleKey}/>
+             this.initCellHashTable(table.type,table.value,table.handleChange,table.handleKey)
            )}
         </TableContext.Consumer>
       )
@@ -31,6 +38,46 @@ class TableCell extends React.Component{
 
 
 class DateCell extends React.Component {  
+  renderyear = () => {
+    const { Option } = Select;
+    return (
+      <div>
+        Add time<Switch defaultChecked />
+        <Select
+              placeholder="Select a option"
+              size="small"
+              suffixIcon={<ClockCircleOutlined />}
+              >
+              <Option value="1">01:00 AM</Option>
+              <Option value="2">02:00 AM</Option>
+              <Option value="3">03:00 AM</Option>
+              <Option value="4">04:00 AM</Option>
+              <Option value="5">05:00 AM</Option>
+              <Option value="6">06:00 AM</Option>
+              <Option value="7">07:00 AM</Option>
+              <Option value="8">08:00 AM</Option>
+              <Option value="9">09:00 AM</Option>
+              <Option value="10">10:00 AM</Option>
+              <Option value="11">11:00 AM</Option>
+              <Option value="12">12:00 AM</Option>
+              <Option value="13">01:00 PM</Option>
+              <Option value="14">02:00 PM</Option>
+              <Option value="15">03:00 PM</Option>
+              <Option value="16">04:00 PM</Option>
+              <Option value="17">05:00 PM</Option>
+              <Option value="18">06:00 PM</Option>
+              <Option value="19">07:00 PM</Option>
+              <Option value="20">08:00 PM</Option>
+              <Option value="21">09:00 PM</Option>
+              <Option value="22">10:00 PM</Option>
+              <Option value="23">11:00 PM</Option>
+              <Option value="24">12:00 PM</Option>
+        </Select><br/>
+        <Button type="primary" size="small" style={{float:'left'}}>保存</Button>
+        <Button size="small" style={{float:'right'}}>清除</Button>
+      </div>
+    );
+  };
   render() {
     const {data, rowIndex, columnKey, collapsedRows, callback, value, handleChange, handleKey, ...props} = this.props;
     const returnValue = (e,v) => {
@@ -39,6 +86,7 @@ class DateCell extends React.Component {
     return (
       <Cell {...props} style={{ width: '100%' }}>
           <DatePicker 
+          // renderExtraFooter={this.renderyear} //antd官网提供的加入额外页脚的方法
           style={{width:'100%'}} 
           value={value} 
           onChange={returnValue}/>
@@ -200,25 +248,63 @@ class StatusCell extends React.Component {
 }
 
 class PeopleCell extends React.Component {
-  
+  state = {
+    selectedUsers:[]
+  }
   getUserArray = () => {
     return [{
-        'smallName':'Z',
-        'userName':'ZhangTao'
+        smallName:'Z',
+        userName:'ZhangTao'
     },{
-        'smallName':'W',
-        'userName':'WuMing'
+        smallName:'C',
+        userName:'Lucy Chen'
     },{
-        'smallName':'L',
-        'userName':'LiBai'
+        smallName:'L',
+        userName:'Leo'
+    },{
+        smallName:'J',
+        userName:'Jack Ma'
+    },{
+        smallName:'W',
+        userName:'Civen Wang'
     }]
   }
 
   render() {
     const {Search} = Input;
     const {data, rowIndex, columnKey, collapsedRows, callback, value, handleChange, handleKey, ...props} = this.props;
+    const someusers = this.state.selectedUsers;
     const returnValue = (e) => {
-      return handleChange(e.target.textContent);
+      let isHas = false;
+      for(let i=0,len=someusers.length;i<len;i++){
+          if(e.userName === someusers[i].userName){
+             isHas = true;
+             break;
+          }
+      }
+      if(!isHas){
+        someusers.push(e);
+      }
+      this.setState({
+        selectedUsers:someusers
+      })
+      return handleChange(e.userName);
+      
+    }
+    const removeUser = (user) =>{
+      const someusers = this.state.selectedUsers;
+      for(let j=0,len2=someusers.length;j<len2;j++){
+          if(user.userName === someusers[j].userName){
+            someusers.splice(j,1);
+            break;
+          }
+      }
+      this.setState({
+        selectedUsers:someusers
+      })
+      if(someusers.length<1){
+        return handleChange("");
+      }
     }
     return (
       <Cell {...props} style={{ width: '100%' }}>
@@ -226,8 +312,8 @@ class PeopleCell extends React.Component {
             <div>
                 {
                     this.getUserArray().map((v, i) => (
-                        <div className="user" onClick={returnValue}>
-                            <div style={{padding:'5px;'}}>
+                        <div className="user" onClick={returnValue.bind(this,v)}>
+                            <div style={{padding:'5px'}}>
                                 &nbsp;<Avatar>{v.smallName}</Avatar>&nbsp;{v.userName}
                             </div>
                         </div>
@@ -236,15 +322,15 @@ class PeopleCell extends React.Component {
             </div>
             } title={
                 <div>
-                  {/* <div style={{paddingBottom:'10px'}}>
+                  <div style={{paddingBottom:'10px'}}>
                   {
-                    this.getUserArray().map((v, i) => (
-                      <Tag closable color="blue" style={{borderRadius:'15px'}}>
+                    this.state.selectedUsers.map((v, i) => (
+                      <Tag closable color="blue" style={{borderRadius:'15px',margin:'3px'}} onClose={removeUser.bind(this,v)}>
                       <Avatar size="small">{v.smallName}</Avatar>{v.userName}
                       </Tag>
                     ))
                   }
-                  </div> */}
+                  </div>
                   <Search
                       placeholder="Search"
                       bordered={false}
@@ -256,7 +342,7 @@ class PeopleCell extends React.Component {
             {
                 value&&
                 <div className="userAvatar">
-                    <Avatar className="Avatar" style={{cursor: 'pointer'}}>{value.substr(1,1)}</Avatar>
+                    <Avatar className="Avatar" style={{cursor: 'pointer'}}>{value.substr(0,1)}</Avatar>
                     <PlusCircleFilled className="PlusCircleFilled"/>
                     <CloseCircleFilled className="CloseCircleFilled"/>
                 </div>

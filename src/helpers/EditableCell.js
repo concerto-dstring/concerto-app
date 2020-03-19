@@ -114,6 +114,7 @@ class EditableCell extends React.PureComponent {
         const {container, data, rowIndex, columnKey, dataVersion, width, height,  ...props} = this.props;
         const { value, editing } = this.state;
         const type = this.state.type||'TEXT';
+        let v = typeof value =='string'?value:moment(value).format('YYYY-MM-DD');
         const inputStyle = {
             width: width - 10,
             height: height - 5,
@@ -123,7 +124,7 @@ class EditableCell extends React.PureComponent {
         return (
 
             <CellContainer ref={this.setTargetRef} onClick={this.handleClick.bind(this,type)}>
-                {!editing && this.cellRenderValues[type] && value}
+                {!editing && this.cellRenderValues[type] && v}
                 {!editing && !this.cellRenderValues[type]&&
                 <TableContext.Provider value={this.state}>
                     <TableCell></TableCell>
@@ -136,7 +137,8 @@ class EditableCell extends React.PureComponent {
                         container={this.getTargetRef}
                         target={this.getTargetRef}
                         onHide={this.handleHide}
-                        onExit={this.handleHide}>
+                        onExit={this.handleHide}
+                        >
                         {({ props, placement }) => (
                             <div
                                 {...props}

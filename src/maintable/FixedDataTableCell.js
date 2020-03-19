@@ -23,6 +23,10 @@ import './css/layout/fixedDataTableCellLayout.css';
 import './css/style/fixedDataTableCell.css';
 import { TableContext } from './data/DataContext';
 import { ColumnWidthOutlined} from '@ant-design/icons';
+import {
+  VISIBILITY,
+  DISPLAY
+} from '../helpers/StyleValues'
 
 class FixedDataTableCell extends React.Component {
   /**
@@ -99,6 +103,7 @@ class FixedDataTableCell extends React.Component {
 
   state = {
     isReorderingThisColumn: false,
+    menuBar: DISPLAY.NONE,
   }
 
   shouldComponentUpdate(nextProps) {
@@ -144,6 +149,18 @@ class FixedDataTableCell extends React.Component {
           return column.collpse;
       } 
     }
+  }
+
+  showMenuBar = () => {
+    this.setState({
+      menuBar: DISPLAY.BLOCK
+    })
+  }
+
+  hideMenuBar = () => {
+    this.setState({
+      menuBar: DISPLAY.NONE
+    })
   }
 
   render() /*object*/ {
@@ -224,8 +241,9 @@ class FixedDataTableCell extends React.Component {
           {...this.props}
         />
       );
+      
       tableColumnMenu = (
-        <TableColumnMenu columnKey={columnKey}/>
+        <TableColumnMenu columnKey={columnKey} menuBarStyle={this.state.menuBar}/>
       )
     }
 
@@ -277,9 +295,9 @@ class FixedDataTableCell extends React.Component {
     return (
       <TableContext.Consumer>
         {(table) => (
-          <div>
-            {setTableColumn(table)}
-          </div>
+           role === 'columnheader'&&<div onMouseEnter={this.showMenuBar} onMouseLeave={this.hideMenuBar}>{setTableColumn(table)}</div>
+           ||
+           role === 'gridcell'&&<div>{setTableColumn(table)}</div>
         )}
       </TableContext.Consumer>
     );
