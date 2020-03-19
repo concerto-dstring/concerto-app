@@ -1,6 +1,7 @@
 .user{
     margin:5px 0px;
     width:'100%';
+    cursor: pointer;
 }
 .user:hover{
     background: #009AFF;
@@ -10,4 +11,34 @@
 .user Avatar{
     vertical-align: middle;
     font-weight: bold;
+    
 }
+
+.userOptions{
+    display: none;
+}
+.userAvatar{
+    margin-top: 17px;
+}
+.PlusCircleFilled
+{
+    color: #009AFF;
+    position:absolute;
+    top:15px;
+    left:3px;
+    display: none;
+}
+.CloseCircleFilled{
+    position:absolute;
+    top:15px;
+    left:55px;
+    display:none;
+}
+.userAvatar .Avatar:hover + .PlusCircleFilled{
+   display:block;
+}
+
+.userIcon:hover + .PlusCircleFilled{
+    display:block;
+ }
+  
