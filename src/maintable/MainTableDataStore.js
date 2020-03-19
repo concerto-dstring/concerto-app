@@ -51,9 +51,9 @@ class MainTableDataStore {
         this._sizeColumns = 6;
 
         // create groups 
-        this._groups.push({groupKey: '1', name: '分区1', rows:['1', '2', '3', '4'], color:'#7EC0EE'});
-        this._groups.push({groupKey: '2', name: '分区2', rows:['5', '6', '7', '8'], color:'#CD5C5C'});
-        this._groups.push({groupKey: '3', name: '分区3', rows:['9', '10'], color:'#79CDCD'});
+        this._groups.push({groupKey: '1', name: '分区1', rows:['1', '2', '3', '4'], color:'#7EC0EE', isCollapsed: false});
+        this._groups.push({groupKey: '2', name: '分区2', rows:['5', '6', '7', '8'], color:'#CD5C5C', isCollapsed: false});
+        this._groups.push({groupKey: '3', name: '分区3', rows:['9', '10'], color:'#79CDCD', isCollapsed: false});
         this._sizeGroups = 3;
         
         // create row data
@@ -309,6 +309,21 @@ class MainTableDataStore {
       //refresh
       this.runCallbacks();
     }
+
+    changeGroupCollapseState(groupKey) {
+      if (groupKey) {
+        let group = this._groups.find(group => group.groupKey == groupKey);
+        group.isCollapsed = !group.isCollapsed
+      }
+      else {
+        for (let i = 0; i < this._groups.length; i++) {
+          this._groups[i].isCollapsed = !this._groups[i].isCollapsed
+        }
+      }
+
+      //refresh
+      this.runCallbacks();
+    } 
 
     /**
     * The callbacks are used to trigger events as new data arrives.

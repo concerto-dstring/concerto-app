@@ -4,7 +4,20 @@ import { RowType } from './MainTableType';
 
 class DataViewWrapper {
     constructor(dataset, indexMap = null) {
-        this._indexMap = indexMap;
+
+        let indexMapData = [] 
+        if (indexMap) {
+          for (let i = 0; i < indexMap.length; i++) {
+            let row = indexMap[i]
+            let group = dataset._groups.filter(group => group.groupKey === row.groupKey)[0]
+            if (!group.isCollapsed || row.rowType === RowType.HEADER) {
+              row.isCollapsed = group.isCollapsed
+              indexMapData.push(row)
+            }
+          }
+        }
+
+        this._indexMap = indexMapData;
         this._dataset = dataset;
         this.getSize = this.getSize.bind(this);
         this.getRowType = this.getRowType.bind(this);
@@ -22,6 +35,8 @@ class DataViewWrapper {
         this.getGroupByRowIndex = this.getGroupByRowIndex.bind(this)
         this.setGroupData = this.setGroupData.bind(this)
         this.addNewGroup = this.addNewGroup.bind(this)
+        this.getColumn = this.getColumn.bind(this)
+        this.changeGroupCollapseState = this.changeGroupCollapseState.bind(this)
     }
 
     // /**
@@ -210,6 +225,7 @@ class DataViewWrapper {
     }
 
     getGroupByRowIndex(rowIndex) {
+      if (rowIndex === undefined || null === rowIndex) return null
       let row = this._indexMap[rowIndex]
       let groups = this._dataset.getGroups().filter(group => group.groupKey === row.groupKey)
 
@@ -227,6 +243,20 @@ class DataViewWrapper {
 
     addNewGroup(groupKey) {
       this._dataset.addNewGroup("新分区", groupKey)
+    }
+
+    getColumn(columnKey) {
+      let columns = this._dataset.getColumns()
+      if (columns) {
+        let filterColumns = columns.filter(column => column.columnKey === columnKey)
+          return filterColumns.length > 0 ? filterColumns[0] : null
+      }
+
+      return null
+    }
+
+    changeGroupCollapseState(groupKey) {
+      this._dataset.changeGroupCollapseState(groupKey)
     }
 }
 

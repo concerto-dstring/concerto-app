@@ -21,8 +21,10 @@ const CellContainer = styled.div`
 class EditableCell extends React.PureComponent {
     constructor(props){
        super(props)
+       let cellData = this.getCellData(props)
        this.state = {
-            value: props.data ? props.data.getObjectAt(props.rowIndex)[props.columnKey] : props.value,
+            value: cellData.value,
+            isCollapsed: cellData.isCollapsed,
             editing: false,
             type:props.type,
             handleChange:this.handleChange,
@@ -46,9 +48,35 @@ class EditableCell extends React.PureComponent {
         }
     }
     
+    /**
+     * 读取单元格数据，若row为空则取列标题名称(若分区折叠时则只显示分区名称)
+     */
+    getCellData = (props) => {
+      let cellData = {}
+      let isCollapsed = props.data._indexMap[props.rowIndex].isCollapsed
+      let value = props.data.getObjectAt(props.rowIndex) 
+                  ? 
+                  props.data.getObjectAt(props.rowIndex)[props.columnKey] 
+                  : 
+                  (
+                    isCollapsed
+                    ?
+                    ''
+                    :
+                    props.data.getColumn(props.columnKey).name
+                  )
+      cellData.isCollapsed =isCollapsed
+      cellData.value = value
+
+      return cellData
+    }
 
     componentWillReceiveProps(props) {
-        this.setState({ value: props.data ? props.data.getObjectAt(props.rowIndex)[props.columnKey] : props.value});
+        // this.setState({ value: props.data ? props.data.getObjectAt(props.rowIndex)[props.columnKey] : props.value});
+        let cellData = this.getCellData(props)
+        this.setState({ value: cellData.value,
+                        isCollapsed: cellData.isCollapsed
+                      });
         this.setState({ version: props.dataVersion });
     }
 

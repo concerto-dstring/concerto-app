@@ -10,7 +10,7 @@ import PropTypes from 'prop-types';
 import { Button } from 'semantic-ui-react';
 import { Table, Cell, Column } from './FixedDataTableRoot';
 import { ColumnType,  RowType, ColumnKey } from './data/MainTableType';
-import { TextCell, DropDownMenuCell, CheckBoxCell } from '../helpers/cells';
+import { TextCell, DropDownMenuCell, CheckBoxCell, CheckBoxHeader } from '../helpers/cells';
 import ReNameModal from './helper/ReNameModal'
 import DeleteModal from './helper/DeleteModal'
 import AfterMoveRowModal from './helper/AfterMoveRowModal'
@@ -112,6 +112,21 @@ const DataCheckBoxCell = function(props) {
     <DataVersionContext.Consumer>
         {({data, version}) => (
             <CheckBoxCell
+                data={data}
+                dataVersion={version}
+                {...this.props}
+            />
+        )}
+    </DataVersionContext.Consumer>
+  )
+}
+
+const DataCheckBoxHeader = function(props) {
+  this.props = props;
+  return (
+    <DataVersionContext.Consumer>
+        {({data, version}) => (
+            <CheckBoxHeader
                 data={data}
                 dataVersion={version}
                 {...this.props}
@@ -281,7 +296,7 @@ class MainTable extends React.Component {
             if (columnKey === column.columnKey) {
                 colTemplates.width = column.width;
                 colTemplates.columnKey = columnKey;
-                colTemplates.header = <EditableCell value={column.name} type={'TEXT'}/>;
+                colTemplates.header = DataEditableCell;
                 colTemplates.footer = <Cell>summary</Cell>;
                 colTemplates.width = this.getColumnWidth(columnKey);
                 colTemplates.minWidth = 70;
@@ -322,7 +337,7 @@ class MainTable extends React.Component {
 
         rowTemplates.width = column.width;
         rowTemplates.columnKey = columnKey;
-        rowTemplates.header = null;
+        rowTemplates.header = DataCheckBoxHeader;
         rowTemplates.footer = null;
         rowTemplates.isResizable = false;
         rowTemplates.cell = DataCheckBoxCell;

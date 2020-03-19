@@ -33,12 +33,12 @@ export const ADD_SECTION = {
   desc: '添加分区'
 }
 
-export const COLLPASE_THIS_SECTION = {
+export const COLLAPSE_THIS_SECTION = {
   key: 'COLLPASE_THIS_SECTION',
   desc: '折叠当前分区'
 }
 
-export const COLLPASE_ALL_SECTION = {
+export const COLLAPSE_ALL_SECTION = {
   key: 'COLLPASE_ALL_SECTION',
   desc: '折叠所有分区'
 }
@@ -46,4 +46,14 @@ export const COLLPASE_ALL_SECTION = {
 export const DELETE_SECTION = {
   key: 'DELETE_SECTION',
   desc: '删除分区'
+}
+
+export const COLLAPSE_SECTION = {
+  key: 'COLLAPSE_SECTION',
+  desc: '折叠分区'
+}
+
+export const EXPAND_SECTION = {
+  key: 'EXPAND_SECTION',
+  desc: '展开分区'
 }

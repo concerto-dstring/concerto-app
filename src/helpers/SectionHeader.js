@@ -76,8 +76,7 @@ class SectionHeader extends Component {
 
     if (columnKey !== nextProps.columnKey ||
         rowIndex !== nextProps.rowIndex ||
-        group.name !== nextState.group.name ||
-        group.color !== nextState.group.color ||
+        JSON.stringify(group) !== JSON.stringify(nextState.group) ||
         editing !== nextState.editing ||
         version !== nextState.version) {
           

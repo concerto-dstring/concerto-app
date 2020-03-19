@@ -13,10 +13,13 @@ import {
   Dropdown, 
   Checkbox, 
   Button as AntdButton,
+  Tooltip
 } from 'antd';
 
 import {
-    CaretDownOutlined
+    CaretDownOutlined,
+    DownOutlined,
+    UpOutlined
 } from '@ant-design/icons';
 
 import {
@@ -27,9 +30,11 @@ import {
   RENAME_SECTION,
   CHANGE_SECTION_COLOR,
   ADD_SECTION,
-  COLLPASE_THIS_SECTION,
-  COLLPASE_ALL_SECTION,
-  DELETE_SECTION
+  COLLAPSE_THIS_SECTION,
+  COLLAPSE_ALL_SECTION,
+  DELETE_SECTION,
+  COLLAPSE_SECTION,
+  EXPAND_SECTION
 } from '../maintable/MainTableRowKeyAndDesc'
 
 import {
@@ -172,12 +177,12 @@ class TextCell extends React.PureComponent {
 class DropDownMenuCell extends React.Component {
   constructor(props) {
     super(props)
-
+    
     const { data, rowIndex } = props
 
     let group = data.getGroupByRowIndex(rowIndex)
     let groupColor = group ? group.color : COLOR.DEFAULT
-  
+    let isCollapsed = data._indexMap[rowIndex].isCollapsed
     // 保存分区原有的颜色
     this.state = {
       isShowRowActionBtn: VISIBILITY.HIDDEN,
@@ -187,7 +192,8 @@ class DropDownMenuCell extends React.Component {
       headerBtnBorderColor: groupColor,
       group: group,
       groupColor: groupColor,
-      headerBtnType: ANTD_BTN_TYPE.PRIMARY
+      headerBtnType: ANTD_BTN_TYPE.PRIMARY,
+      isCollapsed
     }
   }
 
@@ -196,6 +202,7 @@ class DropDownMenuCell extends React.Component {
     const { data, rowIndex } = props
     let group = data.getGroupByRowIndex(rowIndex)
     let groupColor = group ? group.color : COLOR.DEFAULT
+    let isCollapsed = data._indexMap[rowIndex].isCollapsed
 
     this.setState({ 
       group: group,
@@ -204,7 +211,8 @@ class DropDownMenuCell extends React.Component {
       group: group,
       groupColor: groupColor,
       version: props.dataVersion,
-      isShowHeaderMenu: false
+      isShowHeaderMenu: false,
+      isCollapsed
     });
   }
 
@@ -248,15 +256,14 @@ class DropDownMenuCell extends React.Component {
     else if (key == ADD_SECTION.key) {
       // 添加分区
       data.addNewGroup(this.state.group.groupKey)
-      data.dataVersion = data.dataVersion + 1
     }
-    else if (key == COLLPASE_THIS_SECTION.key) {
+    else if (key == COLLAPSE_THIS_SECTION.key) {
       // 折叠当前分区
-      
+      data.changeGroupCollapseState(this.state.group.groupKey)
     }
-    else if (key == COLLPASE_ALL_SECTION.key) {
+    else if (key == COLLAPSE_ALL_SECTION.key) {
       // 折叠所有分区
-      
+      data.changeGroupCollapseState()
     }
     else if (key == DELETE_SECTION.key) {
       // 删除分区
@@ -404,14 +411,14 @@ class DropDownMenuCell extends React.Component {
           {this.getHeaderMenuData(ADD_SECTION.desc)}
         </Menu.Item>
         <Menu.Item 
-          key={COLLPASE_THIS_SECTION.key}
+          key={COLLAPSE_THIS_SECTION.key}
         >
-          {this.getHeaderMenuData(COLLPASE_THIS_SECTION.desc)}
+          {this.getHeaderMenuData(COLLAPSE_THIS_SECTION.desc)}
         </Menu.Item>
         <Menu.Item 
-          key={COLLPASE_ALL_SECTION.key}
+          key={COLLAPSE_ALL_SECTION.key}
         >
-          {this.getHeaderMenuData(COLLPASE_ALL_SECTION.desc)}
+          {this.getHeaderMenuData(COLLAPSE_ALL_SECTION.desc)}
         </Menu.Item>
 
         <Menu.Divider />
@@ -451,8 +458,8 @@ class DropDownMenuCell extends React.Component {
     let returnMenu
 
     if (isHeader) {
-      const { groupColor, headerBtnColor, headerBtnBorderColor, headerBtnType, isShowHeaderMenu, isBtnClicked } = this.state
-      
+      const { groupColor, headerBtnColor, headerBtnBorderColor, headerBtnType, isShowHeaderMenu, isBtnClicked, isCollapsed } = this.state
+
       returnMenu = (
         <div 
           onMouseEnter={this.changeHeaderMenuBtnColor.bind(this, COLOR.WHITE, COLOR.DEFAULT, ANTD_BTN_TYPE.DEFAULT)}
@@ -471,7 +478,8 @@ class DropDownMenuCell extends React.Component {
               style={{
                       margin: '8px 6px', 
                       backgroundColor: headerBtnColor, 
-                      borderColor: headerBtnBorderColor
+                      borderColor: headerBtnBorderColor,
+                      visibility: isCollapsed ? VISIBILITY.HIDDEN : VISIBILITY.VISIBLE
                     }}
               onClick={this.showRowActionMenu}
             >
@@ -540,6 +548,61 @@ class CheckBoxCell extends React.PureComponent {
   }
 }
 
+class CheckBoxHeader extends React.PureComponent {
+  constructor() {
+    super()
+    this.state = {
+      tipText: ''
+    }
+  }
+
+  getBtnIcon = () => {
+    const { data, rowIndex } = this.props;
+    let isCollapsed = data._indexMap[rowIndex].isCollapsed
+    this.setState({
+      tipText: isCollapsed ? EXPAND_SECTION.desc : COLLAPSE_SECTION.desc
+    })
+    return (
+      <div>
+        {
+          isCollapsed
+          ?
+          <DownOutlined style={{fontSize: '18px'}} />
+          :
+          <UpOutlined style={{fontSize: '18px'}} />
+        }
+      </div>
+    )
+  }
+
+  changeGroupCollapseState = () => {
+    const { data, rowIndex } = this.props
+
+    let group = data.getGroupByRowIndex(rowIndex)
+    data.changeGroupCollapseState(group.groupKey)
+  }
+
+  render() {
+    return (
+      <Tooltip
+        arrowPointAtCenter={true}
+        title={this.state.tipText}
+        mouseEnterDelay={0.8}
+      >
+        <AntdButton 
+          icon={this.getBtnIcon()}
+          shape='circle'
+          size='small'
+          type='primary'
+          style={{margin: '8px 6px', backgroundColor: '#BEBEBE', borderColor: '#BEBEBE'}}
+          onClick={this.changeGroupCollapseState}
+        />
+      </Tooltip>
+    );
+  }
+}
+
+
 export { 
   CollapseCell, 
   ColoredTextCell, 
@@ -551,5 +614,6 @@ export {
   TextCell, 
   TooltipCell, 
   DropDownMenuCell,
-  CheckBoxCell 
+  CheckBoxCell,
+  CheckBoxHeader 
 };
