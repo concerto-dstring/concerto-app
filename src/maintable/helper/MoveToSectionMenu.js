@@ -7,8 +7,6 @@ import {
 
 import '../css/style/MoveToSectionMenu.less'
 
-import { DISPLAY } from '../../helpers/StyleValues'
-
 import { connect } from 'react-redux'
 import { dealRowMoveModal } from '../actions/rowActions'
 
@@ -34,8 +32,6 @@ class MoveToSectionMenu extends Component {
 
   getInitGroups = () => {
     const {data, rowIndex} = this.props
-
-    const rowKey = data.getRowKey(rowIndex)
 
     // 寻找行所在的分区
     const rows = data.getRowMap()
@@ -108,7 +104,7 @@ class MoveToSectionMenu extends Component {
     let rowKey = data.getRowKey(rowIndex)
     let sourceGroupRowIndex =  data.moveRow(this.state.curGroupKey, targetGroupKey, rowKey, -1)
     this.props.dealRowMoveModal({
-      isShowAfterMoveRowModal: true,
+      isShowUndoModal: true,
       data,
       rowIndex: sourceGroupRowIndex,
       rowKey,
@@ -133,7 +129,7 @@ class MoveToSectionMenu extends Component {
           style={{display: this.props.isShowSubMenu}}
         >
           <Search
-            className='move_menu_search_input'
+            style={{width: 190, margin: '8px 10px 5px 10px'}}
             onChange={this.handleInputChange}
             onSearch={this.hanldeInputSearch}
           />

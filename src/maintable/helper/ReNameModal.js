@@ -2,7 +2,8 @@ import React, { PureComponent, createRef } from 'react';
 import { Modal, Input, message } from 'antd';
 
 import { connect } from 'react-redux'
-import { dealRowRenameModal, dealSectionRenameModal } from '../actions/rowActions'
+import { dealRowRenameModal, } from '../actions/rowActions'
+import { dealSectionRenameModal, } from '../actions/SectionActions'
 import { mapRowActionStateToProps } from '../data/mapStateToProps'
 
 @connect(mapRowActionStateToProps, { dealRowRenameModal, dealSectionRenameModal })
@@ -16,13 +17,13 @@ class ReNameModal extends PureComponent {
   handleCancelClick = (isSection) => {
     if (isSection) {
       this.props.dealSectionRenameModal({
-        isShowReNameRowModal: false,
+        isShowReNameModal: false,
         isSection: false
       })
     }
     else {
       this.props.dealRowRenameModal({
-        isShowReNameRowModal: false,
+        isShowReNameModal: false,
       })
     }
   }
@@ -47,12 +48,11 @@ class ReNameModal extends PureComponent {
     }
     
     this.handleCancelClick(isSection)
-    this.props.refresh()
   }
 
   render() {
     const {
-      isShowReNameRowModal,
+      isShowReNameModal,
       data, 
       rowIndex, 
       columnKey,
@@ -74,7 +74,7 @@ class ReNameModal extends PureComponent {
     return (
       <Modal
         title='重命名名称'
-        visible={isShowReNameRowModal}
+        visible={isShowReNameModal}
         okText='保存'
         onCancel={this.handleCancelClick.bind(this, isSection)}
         onOk={this.handleOkClick}

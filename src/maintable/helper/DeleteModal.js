@@ -3,41 +3,75 @@ import { Modal } from 'antd';
 
 import { connect } from 'react-redux'
 import { dealRowDeleteModal } from '../actions/rowActions'
+import { dealSectionDeleteModal, dealSectionUndoDeleteMessage } from '../actions/SectionActions'
 import { mapRowActionStateToProps } from '../data/mapStateToProps'
 
-@connect(mapRowActionStateToProps, { dealRowDeleteModal })
+import '../css/style/SectionMenu.less'
+
+@connect(mapRowActionStateToProps, { dealRowDeleteModal, dealSectionDeleteModal, dealSectionUndoDeleteMessage })
 class DeleteModal extends PureComponent {
 
-  handleCancelClick = () => {
+  handleCancelClick = (isSection) => {
     // 关闭弹窗
-    this.props.dealRowDeleteModal({
-      isShowDeleteRowModal: false,
-    })
+    if (isSection) {
+      this.props.dealSectionDeleteModal({
+        isShowDeleteModal: false,
+      })
+    }
+    else {
+      this.props.dealRowDeleteModal({
+        isShowDeleteModal: false,
+      })
+    }
   }
 
   handleOKClick = () => {
 
-    const { data, rowIndex } = this.props
-    const rows = data.getRowMap()
-    const row = rows[rowIndex]
+    const { data, rowIndex, isSection, group } = this.props
+    
+    if (isSection) {
+      // 删除分区
+      let groupIndex = data.removeGroup(group.groupKey)
+      this.handleCancelClick(isSection)
 
-    this.props.handleDeleteRowOKClick(row.groupKey, row.rowKey)
+      // 显示撤销窗口
+      this.props.dealSectionUndoDeleteMessage({
+        isShowUndoModal: true,
+        groupIndex,
+        group,
+        isSection,
+        data
+      }) 
+    }
+    else {
+      // 删除行
+      data.removeRow(rowIndex)
 
-    this.handleCancelClick()
-    this.props.refresh()
+      this.handleCancelClick(isSection)
+    }
+  }
+
+  getModalTitle = (isSection, group) => {
+    if (isSection) {
+      return '是否删除 ' + group.name + ' 分区?'
+    }
+    else {
+      return '是否删除行?'
+    }
   }
 
   render() {
-
     const {
-      isShowDeleteRowModal
+      isShowDeleteModal,
+      isSection,
+      group
     } = this.props
 
     return (
       <Modal
-        title='是否删除行?'
-        visible={isShowDeleteRowModal}
-        onCancel={this.handleCancelClick}
+        title={this.getModalTitle(isSection, group)}
+        visible={isShowDeleteModal}
+        onCancel={this.handleCancelClick.bind(this, isSection)}
         onOk={this.handleOKClick}
       >
         <span>删除后可以从回收站恢复</span>

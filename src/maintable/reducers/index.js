@@ -104,9 +104,9 @@ function getInitialState() {
     storedHeights: [],
     rowOffsetIntervalTree: null, // PrefixIntervalTree
     isSection: false,
-    isShowReNameRowModal: false,
-    isShowDeleteRowModal: false,
-    isShowAfterMoveRowModal: false,
+    isShowReNameModal: false,
+    isShowDeleteModal: false,
+    isShowUndoModal: false,
     columnKey: null,
     rowIndex: null,
     data: null,
@@ -222,35 +222,56 @@ function reducers(state = getInitialState(), action) {
 
     case ActionTypes.DEAL_ROW_RENAME_MODAL:
       return Object.assign({}, state, {
-        isShowReNameRowModal: action.modalData.isShowReNameRowModal,
+        isShowReNameModal: action.modalData.isShowReNameModal,
         columnKey: action.modalData.columnKey,
         rowIndex: action.modalData.rowIndex,
-        data: action.modalData.data
+        data: action.modalData.data,
+        isSection: action.modalData.isSection,
       })
 
     case ActionTypes.DEAL_ROW_DELETE_MODAL:
       return Object.assign({}, state, {
-        isShowDeleteRowModal: action.modalData.isShowDeleteRowModal,
+        isShowDeleteModal: action.modalData.isShowDeleteModal,
         data: action.modalData.data,
         rowIndex: action.modalData.rowIndex,
+        isSection: action.modalData.isSection,
       })
 
     case ActionTypes.DEAL_ROW_MOVE_MODAL:
       return Object.assign({}, state, {
-        isShowAfterMoveRowModal: action.modalData.isShowAfterMoveRowModal,
+        isShowUndoModal: action.modalData.isShowUndoModal,
         data: action.modalData.data,
         rowIndex: action.modalData.rowIndex,
         rowKey: action.modalData.rowKey,
         sourceGroupKey: action.modalData.sourceGroupKey,
         targetGroupKey: action.modalData.targetGroupKey,
+        isSection: action.modalData.isSection,
       })
 
     case ActionTypes.DEAL_SECTION_RENAME_MODAL:
       return Object.assign({}, state, {
-        isShowReNameRowModal: action.modalData.isShowReNameRowModal,
+        isShowReNameModal: action.modalData.isShowReNameModal,
         data: action.modalData.data,
         isSection: action.modalData.isSection,
         group: action.modalData.group
+      })
+
+    case ActionTypes.DEAL_SECTION_DELETE_MODAL:
+      return Object.assign({}, state, {
+        isShowDeleteModal: action.modalData.isShowDeleteModal,
+        data: action.modalData.data,
+        isSection: action.modalData.isSection,
+        group: action.modalData.group,
+        groupIndex: action.modalData.groupIndex,
+      })
+
+    case ActionTypes.DEAL_SECTION_UNDO_DELETE_MESSAGE:
+      return Object.assign({}, state, {
+        isShowUndoModal: action.modalData.isShowUndoModal,
+        data: action.modalData.data,
+        isSection: action.modalData.isSection,
+        group: action.modalData.group,
+        groupIndex: action.modalData.groupIndex,
       })
 
     default: {

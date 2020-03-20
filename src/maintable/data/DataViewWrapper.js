@@ -5,19 +5,7 @@ import { RowType } from './MainTableType';
 class DataViewWrapper {
     constructor(dataset, indexMap = null) {
 
-        let indexMapData = [] 
-        if (indexMap) {
-          for (let i = 0; i < indexMap.length; i++) {
-            let row = indexMap[i]
-            let group = dataset._groups.filter(group => group.groupKey === row.groupKey)[0]
-            if (!group.isCollapsed || row.rowType === RowType.HEADER) {
-              row.isCollapsed = group.isCollapsed
-              indexMapData.push(row)
-            }
-          }
-        }
-
-        this._indexMap = indexMapData;
+        this._indexMap = this.getIndexMap(dataset, indexMap);
         this._dataset = dataset;
         this.getSize = this.getSize.bind(this);
         this.getRowType = this.getRowType.bind(this);
@@ -37,6 +25,40 @@ class DataViewWrapper {
         this.addNewGroup = this.addNewGroup.bind(this)
         this.getColumn = this.getColumn.bind(this)
         this.changeGroupCollapseState = this.changeGroupCollapseState.bind(this)
+        this.getCellValue = this.getCellValue.bind(this)
+        this.undoRemoveGroup = this.undoRemoveGroup.bind(this)
+    }
+
+    /**
+     * 根据是否折叠初始化indeMap
+     */
+    getIndexMap = (dataset, indexMap) => {
+      // 先过滤折叠的分区
+      let groups = dataset._groups.filter(group => group.isCollapsed)
+
+      let indexMapData = [] 
+      if (groups.length > 0 && indexMap) {
+        for (let j = 0; j < indexMap.length; j++) {
+          let row = indexMap[j]
+
+          // 查询是否为折叠分区
+          let group = groups.find(group => group.groupKey === row.groupKey)
+
+          if (group && row.rowType === RowType.HEADER) {
+            row.isCollapsed = true
+            indexMapData.push(row)
+          }
+          else if (!group) {
+            row.isCollapsed = false
+            indexMapData.push(row)
+          }
+        }
+      }
+      else if (groups.length === 0) {
+        indexMapData.push(...indexMap)
+      }
+
+      return indexMapData
     }
 
     // /**
@@ -78,6 +100,15 @@ class DataViewWrapper {
         return rowkey ? this._dataset.getObjectAt(rowkey) : null;
     }
 
+    getCellValue(rowIndex, columnKey) {
+      let row = this.getObjectAt(rowIndex)
+      if (row) {
+        return row[columnKey]
+      }
+
+      return ''
+    }
+
     getRowType(index) {
         if (this._indexMap === null) {
             return RowType.ROW;
@@ -107,20 +138,19 @@ class DataViewWrapper {
     }
     
     removeRow(index) {
-      let rowKey = this._indexMap[index];
-      
+      let removeRow = this._indexMap[index];
+      if (!removeRow) return 
+
       let rows = this._indexMap;
-      let groupKey
       for  (let ridx = 0; ridx < rows.length; ridx ++) {
           let row = rows[ridx];
-          if (row && row.rowKey === rowKey) {
-              groupKey = row.groupKey
+          if (row && row.rowKey === removeRow.rowKey) {
               rows.splice(ridx, 1);
           }
       }
 
       // 删除行
-      this._dataset.removeRow(groupKey, rowKey)
+      this._dataset.removeRow(removeRow.groupKey, removeRow.rowKey)
     }
 
     removeRows(indexArray) {
@@ -194,6 +224,10 @@ class DataViewWrapper {
         return this._dataset.removeGroup(groupKey);
     }
 
+    undoRemoveGroup(groupIndex, group) {
+      this._dataset.undoRemoveGroup(groupIndex, group)
+    }
+
     getGroups() {
       return this._dataset.getGroups()
     }
@@ -206,7 +240,6 @@ class DataViewWrapper {
         if (row && row.rowKey === rowKey) {
           moveRow = row
           this._indexMap.splice(ridx, 1)
-          break;
         }
       }
 
@@ -228,14 +261,9 @@ class DataViewWrapper {
     getGroupByRowIndex(rowIndex) {
       if (rowIndex === undefined || null === rowIndex) return null
       let row = this._indexMap[rowIndex]
-      let groups = this._dataset.getGroups().filter(group => group.groupKey === row.groupKey)
+      let group = this._dataset.getGroups().find(group => group.groupKey === row.groupKey)
 
-      if (groups && groups.length > 0) {
-        return groups[0]
-      }
-      else {
-        return null
-      }
+      return group ? group : null
     }
 
     setGroupData(groupData) {
@@ -249,8 +277,8 @@ class DataViewWrapper {
     getColumn(columnKey) {
       let columns = this._dataset.getColumns()
       if (columns) {
-        let filterColumns = columns.filter(column => column.columnKey === columnKey)
-          return filterColumns.length > 0 ? filterColumns[0] : null
+        let column = columns.find(column => column.columnKey === columnKey)
+          return column ? column : null
       }
 
       return null

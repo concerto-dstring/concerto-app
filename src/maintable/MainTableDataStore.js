@@ -131,6 +131,13 @@ class MainTableDataStore {
         return id;
     }
 
+    undoRemoveGroup(groupIndex, group) {
+      this._groups.splice(groupIndex, 0, group);
+
+      //refresh
+      this.runCallbacks();
+    }
+
     removeGroup(groupKey) {
         let index = this._groups.findIndex(column => column.groupKey === groupKey);
         if (index < 0) {
@@ -140,6 +147,8 @@ class MainTableDataStore {
 
         //refresh
         this.runCallbacks();
+
+        return index
     }
 
     getGroupAt(groupKey) {
@@ -233,6 +242,9 @@ class MainTableDataStore {
 
       delete this._rowData[rowKey];
       this._sizeRows--
+
+      //refresh
+      this.runCallbacks(); 
     }
 
     removeRows(rowKeys) {
@@ -294,12 +306,7 @@ class MainTableDataStore {
     }
 
     setGroupData(groupData) {
-      let group
-      let groups = this._groups.filter(group => group.groupKey === groupData.groupKey)
-
-      if (groups && groups.length > 0) {
-        group = groups[0]
-      }
+      let group = this._groups.find(group => group.groupKey === groupData.groupKey)
 
       if (group) {
         group.name = groupData.name ? groupData.name : group.name

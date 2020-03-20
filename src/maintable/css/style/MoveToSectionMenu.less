@@ -6,6 +6,8 @@
 @after_moverow_modal_btn_bg_color: #24C97E;
 @after_moverow_modal_color: #FFFFFF;
 @after_moverow_modal_btn_border_radius: 5px;
+@undo_message_zindex: 9999;
+@undo_message_height: 56px;
 
 .move_menu {
   width: @menu_width;
@@ -17,12 +19,6 @@
   height: 16px;
   border-radius: 50%;
   margin: 8px 8px;
-}
-
-.move_menu_search_input {
-  margin: 8px 10px 5px 10px; 
-  width: @item_width;
-  height: @item_height;
 }
 
 .move_menu_list {
@@ -43,26 +39,34 @@
   line-height: @item_height;
 }
 
-.after_mover_row_modal {
+.undo_message {
+  position: fixed;
+  top: 32px;
+  left: 0;
+  width: 100%;
+  z-index: @undo_message_zindex;
+  text-align: center;
+}
 
-  .ant-modal-body {
-    background-color: @after_moverow_modal_btn_bg_color;
-    color: @after_moverow_modal_color;
-    padding: 0;
-    border-radius: @after_moverow_modal_btn_border_radius;
-  }
+.undo_message_content {
+
+  display: inline-table;
+  background-color: @after_moverow_modal_btn_bg_color;
+  color: @after_moverow_modal_color;
+  border-radius: @after_moverow_modal_btn_border_radius;
+  height: @undo_message_height;
+  line-height: @undo_message_height;
+  width: 360px;
+  align-items: center;
 
   button.ant-btn-link {
     border: 0px none @after_moverow_modal_color;
   }
 
   button.ant-btn-link:hover {
-    transform: rotate(180deg);
+    transform: rotateY(180deg);
     transition: transform 0.3s linear;
-  }
-
-  .ant-modal-content {
-    border-radius: @after_moverow_modal_btn_border_radius;
+    color: #FFFFFF;
   }
 
   .ant-btn {

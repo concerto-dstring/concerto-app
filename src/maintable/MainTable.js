@@ -13,7 +13,7 @@ import { ColumnType,  RowType, ColumnKey } from './data/MainTableType';
 import { TextCell, DropDownMenuCell, CheckBoxCell, CheckBoxHeader } from '../helpers/cells';
 import ReNameModal from './helper/ReNameModal'
 import DeleteModal from './helper/DeleteModal'
-import AfterMoveRowModal from './helper/AfterMoveRowModal'
+import UndoMessage from './helper/UndoMessage'
 import { EditableCell } from '../helpers/EditableCell';
 import SectionHeader from '../helpers/SectionHeader';
 import Dimensions from 'react-dimensions';
@@ -191,9 +191,9 @@ class MainTable extends React.Component {
             columns: this._dataset.getColumns(),
             version: 0,
             isShowAddSubRowModal: false,
-            isShowReNameRowModal: false,
-            isShowAfterMoveRowModal: false,
-            isShowDeleteRowModal: false,
+            isShowReNameModal: false,
+            isShowUndoModal: false,
+            isShowDeleteModal: false,
             rowIndex: null,
             columnKey: null,
             _onRemoveColumnCallback:this._onRemoveColumnCallback,
@@ -399,17 +399,6 @@ class MainTable extends React.Component {
           )
     }
 
-    handleDeleteRowOKClick = (groupKey, rowKey) => {
-
-      // // 删除行
-      this._dataset.removeRow(groupKey, rowKey)
-      
-      this.setState({
-        data: this._dataset,
-      });
-      this.refresh();
-    }
-
     renderTable() {
         var { data, filters } = this.state;
         const addColumnStyle = {
@@ -448,7 +437,7 @@ class MainTable extends React.Component {
         );
         return (
          <TableContext.Provider value={this.state}>
-            <div>
+            <div id={'appTable'}>
                 <FilterableDataTable
                     ref={this.handleRef}
                     onColumnReorderEndCallback={this._onColumnReorderEndCallback}
@@ -485,17 +474,13 @@ class MainTable extends React.Component {
                     />
                 </FilterableDataTable>
                 <ReNameModal 
-                  isShowReNameRowModal={this.props.isShowReNameRowModal}
-                  refresh={this.refresh}
+                  isShowReNameModal={this.props.isShowReNameModal}
                 />
                 <DeleteModal 
-                  isShowDeleteRowModal={this.props.isShowDeleteRowModal}
-                  handleDeleteRowOKClick={this.handleDeleteRowOKClick}
-                  refresh={this.refresh}
+                  isShowDeleteModal={this.props.isShowDeleteModal}
                 />
-                <AfterMoveRowModal 
-                  isShowAfterMoveRowModal={this.state.isShowAfterMoveRowModal}
-                  refresh={this.refresh}
+                <UndoMessage 
+                  isShowUndoModal={this.state.isShowUndoModal}
                 />
               </div>   
             </TableContext.Provider>   

@@ -71,14 +71,4 @@ export const dealRowMoveModal = (modalData) => ({
   modalData
 });
 
-/**
- * 处理分区重命名弹窗
- * @param {*} modalData 
- */
-export const dealSectionRenameModal = (modalData) => ({
-  type: DEAL_SECTION_RENAME_MODAL,
-  modalData
-});
-
-
 

@@ -54,7 +54,8 @@ import '../maintable/css/style/RowActionMenu.less'
 import '../maintable/css/style/SectionMenu.less'
 
 import { connect } from 'react-redux'
-import { dealRowRenameModal, dealRowDeleteModal, dealSectionRenameModal } from '../maintable/actions/rowActions'
+import { dealRowRenameModal, dealRowDeleteModal,  } from '../maintable/actions/rowActions'
+import { dealSectionRenameModal, dealSectionDeleteModal } from '../maintable/actions/SectionActions'
 
 const { SubMenu } = Menu;
 
@@ -76,7 +77,7 @@ class ColoredTextCell extends React.PureComponent {
     const {data, rowIndex, columnKey, ...props} = this.props;
     return (
       <Cell {...props}>
-        {this.colorizeText(data.getObjectAt(rowIndex)[columnKey], rowIndex)}
+        {this.colorizeText(data.getCellValue(rowIndex, columnKey), rowIndex)}
       </Cell>
     );
   }
@@ -96,7 +97,7 @@ class DateCell extends React.PureComponent {
     const {data, rowIndex, columnKey, ...props} = this.props;
     return (
       <Cell {...props}>
-        {data.getObjectAt(rowIndex)[columnKey].toLocaleString()}
+        {data.getCellValue(rowIndex, columnKey).toLocaleString()}
       </Cell>
     );
   }
@@ -109,7 +110,7 @@ class ImageCell extends React.PureComponent {
     const {data, rowIndex, columnKey, ...props} = this.props;
     return (
       <ExampleImage
-        src={data.getObjectAt(rowIndex)[columnKey]}
+        src={data.getCellValue(rowIndex, columnKey)}
       />
     );
   }
@@ -120,7 +121,7 @@ class LinkCell extends React.PureComponent {
     const {data, rowIndex, columnKey, ...props} = this.props;
     return (
       <Cell {...props}>
-        <a href="#">{data.getObjectAt(rowIndex)[columnKey]}</a>
+        <a href="#">{data.getCellValue(rowIndex, columnKey)}</a>
       </Cell>
     );
   }
@@ -167,14 +168,14 @@ class TextCell extends React.PureComponent {
     const {data, rowIndex, columnKey, dataVersion, ...props} = this.props;
     return (
       <Cell {...props}>
-        {data.getObjectAt(rowIndex)[columnKey]}
+        {data.getCellValue(rowIndex, columnKey)}
       </Cell>
     );
   }
 }
 
-@connect(null, { dealRowRenameModal, dealRowDeleteModal, dealSectionRenameModal })
-class DropDownMenuCell extends React.Component {
+@connect(null, { dealRowRenameModal, dealRowDeleteModal, dealSectionRenameModal, dealSectionDeleteModal })
+class DropDownMenuCell extends React.PureComponent {
   constructor(props) {
     super(props)
     
@@ -228,7 +229,7 @@ class DropDownMenuCell extends React.Component {
     }
     else if (key == RENAME_ROW.key) {
       // 重命名行
-      this.props.dealRowRenameModal({rowIndex, columnKey: ColumnKey.NAME, isShowReNameRowModal: true, data})
+      this.props.dealRowRenameModal({rowIndex, columnKey: ColumnKey.NAME, isShowReNameModal: true, data})
     }
     else if (key == MOVE_TO_SECTION.key) {
       // 移动至其他分区
@@ -237,7 +238,7 @@ class DropDownMenuCell extends React.Component {
     }
     else if (key == DELETE_ROW.key) {
       // 删除行
-      this.props.dealRowDeleteModal({isShowDeleteRowModal: true, data, rowIndex})
+      this.props.dealRowDeleteModal({isShowDeleteModal: true, data, rowIndex})
     }
   }
   
@@ -247,7 +248,7 @@ class DropDownMenuCell extends React.Component {
     const { data, rowIndex } = this.props;
     if (key == RENAME_SECTION.key) {
       // 重命名
-      this.props.dealSectionRenameModal({isShowReNameRowModal: true, data, isSection: true, group: this.state.group})
+      this.props.dealSectionRenameModal({isShowReNameModal: true, data, isSection: true, group: this.state.group})
     }
     else if (key == CHANGE_SECTION_COLOR.key) {
       // 改变分区颜色
@@ -267,7 +268,7 @@ class DropDownMenuCell extends React.Component {
     }
     else if (key == DELETE_SECTION.key) {
       // 删除分区
-      
+      this.props.dealSectionDeleteModal({isShowDeleteModal: true, data, isSection: true, group: this.state.group})
     }
   } 
 
@@ -464,11 +465,13 @@ class DropDownMenuCell extends React.Component {
         <div 
           onMouseEnter={this.changeHeaderMenuBtnColor.bind(this, COLOR.WHITE, COLOR.DEFAULT, ANTD_BTN_TYPE.DEFAULT)}
           onMouseLeave={this.changeHeaderMenuBtnColor.bind(this, groupColor, groupColor, ANTD_BTN_TYPE.PRIMARY)}
+          onWheel={this.changeHeaderMenuBtnColor.bind(this, groupColor, groupColor, ANTD_BTN_TYPE.PRIMARY)}
         >
           <Dropdown 
             overlay={this.getHeaderMenu(groupColor)}
             overlayClassName='menu_item_bgcolor'
             visible={isBtnClicked && isShowHeaderMenu}
+            getPopupContainer={triggerNode => triggerNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode}
           >
             <AntdButton 
               icon={<CaretDownOutlined />}
@@ -495,11 +498,13 @@ class DropDownMenuCell extends React.Component {
         <div 
           onMouseEnter={this.showRowActionBtn}
           onMouseLeave={this.hiddenRowActionBtn}
+          onWheel={this.hiddenRowActionBtn}
         >
           <Dropdown 
             overlay={this.getRowMenu(data, rowIndex)} 
             overlayClassName='menu_item_bgcolor'
             visible={isBtnClicked ? (isShowRowActionBtn === VISIBILITY.HIDDEN ? false : true) : false}
+            getPopupContainer={triggerNode => triggerNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode}
           >
             <AntdButton
               icon={<CaretDownOutlined />} 
@@ -521,7 +526,7 @@ class DropDownMenuCell extends React.Component {
 class TooltipCell extends React.PureComponent {
   render() {
     const {data, rowIndex, columnKey, ...props} = this.props;
-    const value = data.getObjectAt(rowIndex)[columnKey];
+    const value = data.getCellValue(rowIndex, columnKey);
     return (
       <Cell
         {...props}
