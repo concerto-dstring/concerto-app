@@ -1,3 +1,32 @@
+ .statusWidth{
+     width: 100%;
+     color:white;
+ }
+ .status:after {
+    content:"";
+    position: absolute;
+    top: 0%;
+    left: 0%;
+    width: 0px;
+    height: 0px;
+    border-top: 15px solid white;
+    border-right: 15px solid transparent;
+  } 
+  
+ .status:before {
+  content:"";
+  position: absolute;
+  top: 0%;
+  left: 0%;
+  width: 0px;
+  height: 0px;
+  border-bottom: 15px solid#eee;
+  border-left: 15px solid transparent;
+  -webkit-box-shadow: 7px 7px 7px rgba(0,0,0,0.3);
+  -moz-box-shadow: 7px 7px 7px rgba(0,0,0,0.3);
+  box-shadow: 7px 7px 7px rgba(0,0,0,0.3);
+} 
+
 .user{
     margin:5px 0px;
     width:'100%';

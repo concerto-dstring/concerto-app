@@ -34,7 +34,7 @@ class EditableCell extends React.PureComponent {
             SELECT:true,
             DATE:true,
             PEOPLE:false,
-            STATUS:true
+            STATUS:false
         }
         this.cellhideValues={
             TEXT:true,
