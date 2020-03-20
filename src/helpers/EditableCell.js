@@ -32,7 +32,7 @@ class EditableCell extends React.PureComponent {
             TEXT:true,
             NUMBER:true,
             SELECT:true,
-            DATE:true,
+            DATE:false,
             PEOPLE:false,
             STATUS:false
         }
