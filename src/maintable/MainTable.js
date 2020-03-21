@@ -258,24 +258,24 @@ class MainTable extends React.Component {
 
     getColumnTemplate(columnKey) {
         let columns = this.state.columns;
-        let colTemplates = {};
+        let colTemplate = {};
         for (let i  = 0; i < columns.length; i ++) {
             let column = columns[i];
             if (columnKey === column.columnKey) {
-                colTemplates.width = column.width;
-                colTemplates.columnKey = columnKey;
-                colTemplates.header = <EditableCell value={column.name} type={'TEXT'}/>;
-                colTemplates.footer = <Cell>summary</Cell>;
-                colTemplates.width = this.getColumnWidth(columnKey);
-                colTemplates.minWidth = 70;
-                colTemplates.isResizable = true;
+                colTemplate.width = column.width;
+                colTemplate.columnKey = columnKey;
+                colTemplate.header = <EditableCell value={column.name} type={'TEXT'}/>;
+                colTemplate.footer = <Cell>summary</Cell>;
+                colTemplate.width = this.getColumnWidth(columnKey);
+                colTemplate.minWidth = 70;
+                colTemplate.isResizable = true;
                 if (column.type === ColumnType.LABEL) { 
-                    colTemplates.cell = DataTextCell;
-                    return colTemplates;
+                    colTemplate.cell = DataTextCell;
+                    return colTemplate;
                 }
                 if (column.type === ColumnType.EDITBOX) {
-                    colTemplates.cell = DataEditableCell;
-                    return colTemplates;
+                    colTemplate.cell = DataEditableCell;
+                    return colTemplate;
                 }
             }
         }
@@ -289,51 +289,92 @@ class MainTable extends React.Component {
      */
     getFixedColumnTemplate(column) {
       
-      let rowTemplates = {};
+      let colTemplate = {};
       const columnKey = column.columnKey
       if (columnKey == ColumnKey.ROWACTION) {
-        rowTemplates.width = column.width;
-        rowTemplates.columnKey = columnKey;
-        rowTemplates.header = DropDownHeader;
-        rowTemplates.footer = null;
-        rowTemplates.isResizable = false;
-        rowTemplates.cell = DropDownCell;
+        colTemplate.width = column.width;
+        colTemplate.columnKey = columnKey;
+        colTemplate.header = DropDownHeader;
+        colTemplate.footer = null;
+        colTemplate.isResizable = false;
+        colTemplate.cell = DropDownCell;
 
-        return rowTemplates
+        return colTemplate
       }
       else if (columnKey == ColumnKey.ROWSELECT) {
 
-        rowTemplates.width = column.width;
-        rowTemplates.columnKey = columnKey;
-        rowTemplates.header = null;
-        rowTemplates.footer = null;
-        rowTemplates.isResizable = false;
-        rowTemplates.cell = DataCheckBoxCell;
+        colTemplate.width = column.width;
+        colTemplate.columnKey = columnKey;
+        colTemplate.header = null;
+        colTemplate.footer = null;
+        colTemplate.isResizable = false;
+        colTemplate.cell = DataCheckBoxCell;
 
-        return rowTemplates
+        return colTemplate
       }
       else {
-        rowTemplates.width = column.width;
-        rowTemplates.columnKey = columnKey;
-        rowTemplates.header = <EditableCell value={column.name} />;
-        rowTemplates.footer = <Cell>summary</Cell>;
-        rowTemplates.width = this.getColumnWidth(columnKey);
-        rowTemplates.minWidth = 70;
-        rowTemplates.isResizable = true;
+        colTemplate.width = column.width;
+        colTemplate.columnKey = columnKey;
+        colTemplate.header = <EditableCell value={column.name} />;
+        colTemplate.footer = <Cell>summary</Cell>;
+        colTemplate.width = this.getColumnWidth(columnKey);
+        colTemplate.minWidth = 70;
+        colTemplate.isResizable = true;
         if (column.type === ColumnType.LABEL) {
-            rowTemplates.cell = DataTextCell;
+            colTemplate.cell = DataTextCell;
         }
         else if (column.type === ColumnType.EDITBOX) {
-            rowTemplates.cell = DataEditableCell;
+            colTemplate.cell = DataEditableCell;
         }
       }
 
-      if (Object.keys(rowTemplates).length == 0) {
+      if (Object.keys(colTemplate).length == 0) {
         return null
       }
       else {
-        return rowTemplates;
+        return colTemplate;
       }
+    }
+
+    getColumnAddOptionTemplate(columnKey, width) {
+        const addColumnStyle = {
+            boxShadow: 'none',
+        };
+        const menu = (
+            <Menu onClick={this._onColumnAddCallback} style={{width:'100px'}}>
+                <Menu.Item key="DATE">
+                    <ScheduleOutlined />
+                    日期
+                </Menu.Item>
+                <Menu.Item key="NUMBER">
+                    <AccountBookOutlined />
+                    数字
+                </Menu.Item>
+                <Menu.Item key="TEXT">
+                    <FormOutlined />
+                    文本
+                </Menu.Item>
+                <Menu.Item key="SELECT">
+                    <CheckSquareOutlined />
+                    选择
+                </Menu.Item>
+                <Menu.Item key="PEOPLE">
+                    <UserOutlined />
+                    人员
+                </Menu.Item>
+                <Menu.Item key="STATUS">
+                    <StrikethroughOutlined />
+                    状态
+                </Menu.Item>
+            </Menu>
+        );
+        let colTemplate = {};
+        colTemplate.columnKey = columnKey;
+        colTemplate.header = <Dropdown overlay={menu} trigger={['click']}>
+                                <Button basic circular icon='plus circle' style={addColumnStyle} />
+                             </Dropdown>;
+        colTemplate.width = width;
+        return colTemplate;
     }
 
     handleRef = component => {
@@ -381,40 +422,9 @@ class MainTable extends React.Component {
 
     renderTable() {
         var { data, filters } = this.state;
-        const addColumnStyle = {
-            boxShadow: 'none',
-        };
-        
         const fixedColumns = this.state.columns.length > 0 ? this.state.columns.slice(0, 3) : [];
         const scrollColumns = this.state.columns.slice(3); 
-        const menu = (
-            <Menu onClick={this._onColumnAddCallback} style={{width:'100px'}}>
-                <Menu.Item key="DATE">
-                    <ScheduleOutlined />
-                    日期
-                </Menu.Item>
-                <Menu.Item key="NUMBER">
-                    <AccountBookOutlined />
-                    数字
-                </Menu.Item>
-                <Menu.Item key="TEXT">
-                    <FormOutlined />
-                    文本
-                </Menu.Item>
-                <Menu.Item key="SELECT">
-                    <CheckSquareOutlined />
-                    选择
-                </Menu.Item>
-                <Menu.Item key="PEOPLE">
-                    <UserOutlined />
-                    人员
-                </Menu.Item>
-                <Menu.Item key="STATUS">
-                    <StrikethroughOutlined />
-                    状态
-                </Menu.Item>
-            </Menu>
-        );
+ 
         return (
          <TableContext.Provider value={this.state}>
             <div>
@@ -441,17 +451,7 @@ class MainTable extends React.Component {
                         <Column {...this.getColumnTemplate(column.columnKey)} fixed={false} />
                     ))
                     }              
-                    <Column
-                        columnKey=""
-                        header={
-
-                            <Dropdown overlay={menu} trigger={['click']}>
-                            <Button basic circular icon='plus circle' style={addColumnStyle}/>
-                            </Dropdown>
-                            }
-
-                        width={40}
-                    />
+                    <Column {...this.getColumnAddOptionTemplate("", 40)}/>
                 </FilterableDataTable>
                 <ReNameRowModal 
                   isShowReNameRowModal={this.props.isShowReNameRowModal}

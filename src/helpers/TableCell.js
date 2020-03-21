@@ -65,6 +65,18 @@ class DateCell extends React.Component {
       addDateTime:o.children
     })
   }
+
+  optionVals(Option) {
+    const vals = [];
+    for(let i = 1; i <= 24; i++) {
+      if (i > 12)
+        vals.push(<Option key={i} value={i-12}>{i-12}:00 PM</Option>);
+      else
+        vals.push(<Option key={i} value={i}>{i}:00 AM</Option>);
+    }
+    return vals;
+  } 
+
   renderDatePicker = () => {
     const { Option } = Select;
     const saveDateTime = () => {
@@ -72,6 +84,7 @@ class DateCell extends React.Component {
         open:false
       })
     }
+
     return (
       <div>
         <Row>
@@ -82,30 +95,9 @@ class DateCell extends React.Component {
           <Col span={12}>
             <div style={{float:'right',marginTop:'7px'}}>
               <Select placeholder="选择时间" size="small" suffixIcon={<ClockCircleOutlined />} style={this.state.addTimeStyle} onSelect={this.checkedAddTime}> 
-                <Option value="1">01:00 AM</Option>
-                <Option value="2">02:00 AM</Option>
-                <Option value="3">03:00 AM</Option>
-                <Option value="4">04:00 AM</Option>
-                <Option value="5">05:00 AM</Option>
-                <Option value="6">06:00 AM</Option>
-                <Option value="7">07:00 AM</Option>
-                <Option value="8">08:00 AM</Option>
-                <Option value="9">09:00 AM</Option>
-                <Option value="10">10:00 AM</Option>
-                <Option value="11">11:00 AM</Option>
-                <Option value="12">12:00 AM</Option>
-                <Option value="13">01:00 PM</Option>
-                <Option value="14">02:00 PM</Option>
-                <Option value="15">03:00 PM</Option>
-                <Option value="16">04:00 PM</Option>
-                <Option value="17">05:00 PM</Option>
-                <Option value="18">06:00 PM</Option>
-                <Option value="19">07:00 PM</Option>
-                <Option value="20">08:00 PM</Option>
-                <Option value="21">09:00 PM</Option>
-                <Option value="22">10:00 PM</Option>
-                <Option value="23">11:00 PM</Option>
-                <Option value="24">12:00 PM</Option>
+                {
+                  this.optionVals(Option)
+                }
               </Select>
             </div>
           </Col>
