@@ -17,8 +17,8 @@ import PropTypes from 'prop-types';
 import cx from './vendor_upstream/stubs/cx';
 import joinClasses from './vendor_upstream/core/joinClasses';
 import shallowEqual from './vendor_upstream/core/shallowEqual';
-import TableColumnSort from './TableColumnSort'
-import TableColumnMenu from './TableColumnMenu'
+import TableColumnSort from '../helpers/columnlib/header/TableColumnSort'
+import TableColumnMenu from '../helpers/columnlib/header/TableColumnMenu'
 import './css/layout/fixedDataTableCellLayout.css';
 import './css/style/fixedDataTableCell.css';
 import { TableContext } from './data/DataContext';
@@ -26,7 +26,7 @@ import { ColumnWidthOutlined} from '@ant-design/icons';
 import {
   VISIBILITY,
   DISPLAY
-} from '../helpers/StyleValues'
+} from '../helpers/section/header/StyleValues'
 
 class FixedDataTableCell extends React.Component {
   /**

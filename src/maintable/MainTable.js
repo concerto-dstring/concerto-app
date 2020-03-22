@@ -10,12 +10,12 @@ import PropTypes from 'prop-types';
 import { Button } from 'semantic-ui-react';
 import { Table, Cell, Column } from './FixedDataTableRoot';
 import { ColumnType,  RowType, ColumnKey } from './data/MainTableType';
-import { TextCell, DropDownMenuCell, CheckBoxCell, CheckBoxHeader } from '../helpers/cells';
-import ReNameModal from './helper/ReNameModal'
-import DeleteModal from './helper/DeleteModal'
-import UndoMessage from './helper/UndoMessage'
-import { EditableCell } from '../helpers/EditableCell';
-import SectionHeader from '../helpers/SectionHeader';
+import { TextCell, DropDownMenuCell, CheckBoxCell, CheckBoxHeader } from '../helpers/row/cells';
+import ReNameModal from '../helpers/section/modal/ReNameModal'
+import DeleteModal from '../helpers/section/modal/DeleteModal'
+import UndoMessage from '../helpers/section/modal/UndoMessage'
+import { EditableCell } from '../helpers/columnlib/header/EditableCell';
+import SectionHeader from '../helpers/section/header/SectionHeader';
 import Dimensions from 'react-dimensions';
 import { Menu, Dropdown, message, Tooltip } from 'antd';
 import { DataContext, AddFilter } from './data/DataContext';

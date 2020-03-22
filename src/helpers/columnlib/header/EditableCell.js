@@ -1,13 +1,11 @@
 import React from 'react';
 import { Overlay } from 'react-overlays';
-import {Button} from 'antd';
-import { Input } from 'semantic-ui-react';
 import styled from 'styled-components';
-import Keys from '../maintable/vendor_upstream/core/Keys';
+import Keys from '../../../maintable/vendor_upstream/core/Keys';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
-import { TableCell } from '../helpers/TableCell'
-import { TableContext } from '../maintable/data/DataContext';
+import { TableCell } from '../cell/TableCell'
+import { TableContext } from '../../../maintable/data/DataContext';
 const CellContainer = styled.div`
   display: flex;
   flex: 1 0 100%;

@@ -5,10 +5,10 @@ import {
   List,
 } from 'antd';
 
-import '../css/style/MoveToSectionMenu.less'
+import '../../../maintable/css/style/MoveToSectionMenu.less'
 
 import { connect } from 'react-redux'
-import { dealRowMoveModal } from '../actions/rowActions'
+import { dealRowMoveModal } from '../../../maintable/actions/rowActions'
 
 const { Search } = Input;
 

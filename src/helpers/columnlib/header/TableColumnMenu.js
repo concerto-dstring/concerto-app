@@ -2,7 +2,7 @@ import React from 'react';
 import {Button, Menu, Dropdown, message, Tooltip } from 'antd';
 import { CaretDownOutlined, DeleteOutlined} from '@ant-design/icons';
 import PropTypes from 'prop-types';
-import { TableContext } from './data/DataContext';
+import { TableContext } from '../../../maintable/data/DataContext';
 
 class TableColumnMenu extends React.Component{
     static propTypes = {
