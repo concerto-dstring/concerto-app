@@ -1,6 +1,6 @@
 import React from 'react';
 import 'antd/dist/antd.css'
-import {Avatar,Button, DatePicker,Input,InputNumber,Select, Popover,Menu, Dropdown, Tag, Switch} from 'antd';
+import {Avatar,Button, DatePicker,Input,InputNumber,Select, Popover,Menu, Dropdown, Tag, Switch, Row, Col } from 'antd';
 import {ClockCircleOutlined, PlusOutlined, DownOutlined,ScheduleOutlined,AccountBookOutlined,CloseCircleFilled,UsergroupAddOutlined,UserOutlined,PlusCircleFilled } from '@ant-design/icons';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
@@ -12,16 +12,16 @@ class TableCell extends React.Component{
     constructor(props){
          super(props)
     }
-    initCellHashTable(type, value, handleChange,handleKey){
+    initCellHashTable(table){
       const cellHashTable = {
-          PEOPLE:<PeopleCell  value={value} handleChange={handleChange} handleKey={handleKey}/>,
-          TEXT:<TextCell  value={value} handleChange={handleChange} handleKey={handleKey}/>,
-          NUMBER:<NumberCell  value={value} handleChange={handleChange} handleKey={handleKey}/>,
-          SELECT:<SelectCell  value={value} handleChange={handleChange} handleKey={handleKey}/>,
-          DATE:<DateCell  value={value} handleChange={handleChange} handleKey={handleKey}/>,
-          STATUS:<StatusCell  value={value} handleChange={handleChange} handleKey={handleKey}/>
+          PEOPLE:<PeopleCell  value={table.value} handleChange={table.handleChange} handleKey={table.handleKey}/>,
+          TEXT:<TextCell  value={table.value} handleChange={table.handleChange} handleKey={table.handleKey}/>,
+          NUMBER:<NumberCell  value={table.value} handleChange={table.handleChange} handleKey={table.handleKey}/>,
+          SELECT:<SelectCell  value={table.value} handleChange={table.handleChange} handleKey={table.handleKey}/>,
+          DATE:<DateCell  value={table.value} handleChange={table.handleChange} handleKey={table.handleKey}/>,
+          STATUS:<StatusCell  value={table.value} handleChange={table.handleChange} handleKey={table.handleKey}/>
       }
-      return cellHashTable[type];
+      return cellHashTable[table.type];
 
     }
     render(){
@@ -29,7 +29,7 @@ class TableCell extends React.Component{
       return(
         <TableContext.Consumer>
            {(table) => (
-             this.initCellHashTable(table.type,table.value,table.handleChange,table.handleKey)
+             this.initCellHashTable(table)
            )}
         </TableContext.Consumer>
       )
@@ -37,59 +37,103 @@ class TableCell extends React.Component{
 }
 
 
-class DateCell extends React.Component {  
-  renderyear = () => {
+class DateCell extends React.Component { 
+  state = {
+    open:false,
+    addDateTime:'',
+    addTimeStyle:{
+      display:'none'
+    }
+  }
+  showDatePicker = () => {
+    this.setState({
+      open:true
+    })
+  }
+  switchAddTime = (checked) => {
+    this.setState({
+      addTimeStyle:{
+        display:checked?'block':'none'
+      }
+    })
+  }
+  checkedAddTime = (v,o) => {
+    var test = this;
+    this.setState({
+      addDateTime:o.children
+    })
+  }
+
+  optionVals(Option) {
+    const vals = [];
+    for(let i = 1; i <= 24; i++) {
+      if (i > 12)
+        vals.push(<Option key={i} value={i-12}>{i-12}:00 PM</Option>);
+      else
+        vals.push(<Option key={i} value={i}>{i}:00 AM</Option>);
+    }
+    return vals;
+  } 
+
+  renderDatePicker = () => {
     const { Option } = Select;
+    const saveDateTime = () => {
+      this.setState({
+        open:false
+      })
+    }
+
     return (
       <div>
-        Add time<Switch defaultChecked />
-        <Select
-              placeholder="Select a option"
-              size="small"
-              suffixIcon={<ClockCircleOutlined />}
-              >
-              <Option value="1">01:00 AM</Option>
-              <Option value="2">02:00 AM</Option>
-              <Option value="3">03:00 AM</Option>
-              <Option value="4">04:00 AM</Option>
-              <Option value="5">05:00 AM</Option>
-              <Option value="6">06:00 AM</Option>
-              <Option value="7">07:00 AM</Option>
-              <Option value="8">08:00 AM</Option>
-              <Option value="9">09:00 AM</Option>
-              <Option value="10">10:00 AM</Option>
-              <Option value="11">11:00 AM</Option>
-              <Option value="12">12:00 AM</Option>
-              <Option value="13">01:00 PM</Option>
-              <Option value="14">02:00 PM</Option>
-              <Option value="15">03:00 PM</Option>
-              <Option value="16">04:00 PM</Option>
-              <Option value="17">05:00 PM</Option>
-              <Option value="18">06:00 PM</Option>
-              <Option value="19">07:00 PM</Option>
-              <Option value="20">08:00 PM</Option>
-              <Option value="21">09:00 PM</Option>
-              <Option value="22">10:00 PM</Option>
-              <Option value="23">11:00 PM</Option>
-              <Option value="24">12:00 PM</Option>
-        </Select><br/>
-        <Button type="primary" size="small" style={{float:'left'}}>保存</Button>
-        <Button size="small" style={{float:'right'}}>清除</Button>
+        <Row>
+          <Col span={12}>
+            <div style={{float:'left'}}>Add time&nbsp;<Switch size="small" onChange={this.switchAddTime}/>
+            </div>
+          </Col>
+          <Col span={12}>
+            <div style={{float:'right',marginTop:'7px'}}>
+              <Select placeholder="选择时间" size="small" suffixIcon={<ClockCircleOutlined />} style={this.state.addTimeStyle} onSelect={this.checkedAddTime}> 
+                {
+                  this.optionVals(Option)
+                }
+              </Select>
+            </div>
+          </Col>
+        </Row>
+        <Row style={{paddingBottom:'5px'}}>
+          <Col span={12}>
+            <Button type="primary" shape="round" size="small" style={{float:'left'}} onClick={saveDateTime}>保存</Button>
+          </Col>
+          <Col span={12}>
+            <Button size="small" shape="round" style={{float:'right'}}>清除</Button>
+          </Col>
+        </Row>
       </div>
     );
   };
+  
   render() {
     const {data, rowIndex, columnKey, collapsedRows, callback, value, handleChange, handleKey, ...props} = this.props;
     const returnValue = (e,v) => {
-      handleChange(v!=''?moment(v, 'YYYY-MM-DD'):undefined)
+      this.setState({
+        open:true
+      })
+      handleChange(v!=''?moment(v, 'YYYY-MM-DD'):undefined);
     }
+     
     return (
       <Cell {...props} style={{ width: '100%' }}>
-          <DatePicker 
-          // renderExtraFooter={this.renderyear} //antd官网提供的加入额外页脚的方法
-          style={{width:'100%'}} 
-          value={value} 
-          onChange={returnValue}/>
+       <DatePicker 
+              allowClear={false}
+              bordered={false}
+              placeholder=""
+              open={this.state.open}
+              suffixIcon={<div style={{lineHeight:'33px',color:'#8b8c8d'}}>{this.state.addDateTime}</div>}
+              renderExtraFooter={this.renderDatePicker} //antd官网提供的加入额外页脚的方法
+              value={value?moment(value, 'YYYY-MM-DD'):undefined} 
+              onChange={returnValue}
+              onFocus={this.showDatePicker}
+            />
       </Cell>
     );
   }
