@@ -39,11 +39,17 @@ class TableCell extends React.Component{
 
 class DateCell extends React.Component { 
   state = {
+    value:undefined,
     open:false,
     addDateTime:'',
     addTimeStyle:{
       display:'none'
     }
+  }
+  closeDatePicker = () => {
+    this.setState({
+      open:false
+    })
   }
   showDatePicker = () => {
     this.setState({
@@ -63,7 +69,6 @@ class DateCell extends React.Component {
       addDateTime:o.children
     })
   }
-
   optionVals(Option) {
     const vals = [];
     for(let i = 1; i <= 24; i++) {
@@ -82,7 +87,12 @@ class DateCell extends React.Component {
         open:false
       })
     }
-
+    const clearDateTime = () => {
+      this.setState({
+        open:false,
+        value:undefined
+      })
+    }
     return (
       <div>
         <Row>
@@ -105,7 +115,7 @@ class DateCell extends React.Component {
             <Button type="primary" shape="round" size="small" style={{float:'left'}} onClick={saveDateTime}>保存</Button>
           </Col>
           <Col span={12}>
-            <Button size="small" shape="round" style={{float:'right'}}>清除</Button>
+            <Button size="small" shape="round" style={{float:'right'}} onClick={clearDateTime}>清除</Button>
           </Col>
         </Row>
       </div>
@@ -116,7 +126,8 @@ class DateCell extends React.Component {
     const {data, rowIndex, columnKey, collapsedRows, callback, value, handleChange, handleKey, ...props} = this.props;
     const returnValue = (e,v) => {
       this.setState({
-        open:true
+        open:true,
+        value:e
       })
       handleChange(v!=''?moment(v, 'YYYY-MM-DD'):undefined);
     }
@@ -124,6 +135,7 @@ class DateCell extends React.Component {
     return (
       <Cell {...props} style={{ width: '100%' }}>
        <DatePicker 
+              style={{ width: '100%' }}
               allowClear={false}
               bordered={false}
               placeholder=""
@@ -133,6 +145,7 @@ class DateCell extends React.Component {
               value={value?moment(value, 'YYYY-MM-DD'):undefined} 
               onChange={returnValue}
               onFocus={this.showDatePicker}
+              onBlur={this.closeDatePicker}
             />
       </Cell>
     );
