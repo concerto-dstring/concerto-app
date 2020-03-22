@@ -294,7 +294,7 @@ class MainTable extends React.Component {
 
     getColumnTemplate(columnKey) {
         let columns = this.state.columns;
-        let colTemplate = {};
+        let colTemplates = {};
         for (let i  = 0; i < columns.length; i ++) {
             let column = columns[i];
             if (columnKey === column.columnKey) {
@@ -306,12 +306,12 @@ class MainTable extends React.Component {
                 colTemplates.minWidth = 70;
                 colTemplates.isResizable = true;
                 if (column.type === ColumnType.LABEL) { 
-                    colTemplate.cell = DataTextCell;
-                    return colTemplate;
+                    colTemplates.cell = DataTextCell;
+                    return colTemplates;
                 }
                 if (column.type === ColumnType.EDITBOX) {
-                    colTemplate.cell = DataEditableCell;
-                    return colTemplate;
+                    colTemplates.cell = DataEditableCell;
+                    return colTemplates;
                 }
             }
         }
@@ -325,17 +325,17 @@ class MainTable extends React.Component {
      */
     getFixedColumnTemplate(column) {
       
-      let colTemplate = {};
+      let rowTemplates = {};
       const columnKey = column.columnKey
       if (columnKey == ColumnKey.ROWACTION) {
-        colTemplate.width = column.width;
-        colTemplate.columnKey = columnKey;
-        colTemplate.header = DropDownHeader;
-        colTemplate.footer = null;
-        colTemplate.isResizable = false;
-        colTemplate.cell = DropDownCell;
+        rowTemplates.width = column.width;
+        rowTemplates.columnKey = columnKey;
+        rowTemplates.header = DropDownHeader;
+        rowTemplates.footer = null;
+        rowTemplates.isResizable = false;
+        rowTemplates.cell = DropDownCell;
 
-        return colTemplate
+        return rowTemplates
       }
       else if (columnKey == ColumnKey.ROWSELECT) {
 
@@ -346,7 +346,7 @@ class MainTable extends React.Component {
         rowTemplates.isResizable = false;
         rowTemplates.cell = DataCheckBoxCell;
 
-        return colTemplate
+        return rowTemplates
       }
       else {
         rowTemplates.width = column.width;
@@ -356,18 +356,18 @@ class MainTable extends React.Component {
         rowTemplates.minWidth = 70;
         rowTemplates.isResizable = true;
         if (column.type === ColumnType.LABEL) {
-            colTemplate.cell = DataTextCell;
+            rowTemplates.cell = DataTextCell;
         }
         else if (column.type === ColumnType.EDITBOX) {
-            colTemplate.cell = DataEditableCell;
+            rowTemplates.cell = DataEditableCell;
         }
       }
 
-      if (Object.keys(colTemplate).length == 0) {
+      if (Object.keys(rowTemplates).length == 0) {
         return null
       }
       else {
-        return colTemplate;
+        return rowTemplates;
       }
     }
 
