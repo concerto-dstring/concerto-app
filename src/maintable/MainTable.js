@@ -10,7 +10,7 @@ import PropTypes from 'prop-types';
 import { Button } from 'semantic-ui-react';
 import { Table, Cell, Column } from './FixedDataTableRoot';
 import { ColumnType,  RowType, ColumnKey } from './data/MainTableType';
-import { TextCell, DropDownMenuCell, CheckBoxCell, CheckBoxHeader } from '../helpers/row/cells';
+import { TextCell, DropDownMenuCell, CheckBoxCell, CheckBoxHeader } from '../helpers/cells';
 import ReNameModal from '../helpers/section/modal/ReNameModal'
 import DeleteModal from '../helpers/section/modal/DeleteModal'
 import UndoMessage from '../helpers/section/modal/UndoMessage'

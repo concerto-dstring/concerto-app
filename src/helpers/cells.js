@@ -5,7 +5,7 @@
 "use strict";
 
 import ExampleImage from './ExampleImage';
-import { Cell } from '../../maintable/FixedDataTableRoot';
+import { Cell } from '../maintable/FixedDataTableRoot';
 import React from 'react';
 import ReactTooltip from 'react-tooltip';
 import { 
@@ -35,27 +35,27 @@ import {
   DELETE_SECTION,
   COLLAPSE_SECTION,
   EXPAND_SECTION
-} from '../../maintable/MainTableRowKeyAndDesc'
+} from '../maintable/MainTableRowKeyAndDesc'
 
 import {
   ColumnKey
-} from '../../maintable/data/MainTableType'
+} from '../maintable/data/MainTableType'
 
 import {
   VISIBILITY,
   DISPLAY,
   COLOR,
   ANTD_BTN_TYPE
-} from '../section/header/StyleValues'
+} from './section/header/StyleValues'
 
-import MoveToSectionMenu from '../section/header/MoveToSectionMenu'
+import MoveToSectionMenu from './section/header/MoveToSectionMenu'
 
-import '../../maintable/css/style/RowActionMenu.less'
-import '../../maintable/css/style/SectionMenu.less'
+import '../maintable/css/style/RowActionMenu.less'
+import '../maintable/css/style/SectionMenu.less'
 
 import { connect } from 'react-redux'
-import { dealRowRenameModal, dealRowDeleteModal,  } from '../../maintable/actions/rowActions'
-import { dealSectionRenameModal, dealSectionDeleteModal } from '../../maintable/actions/SectionActions'
+import { dealRowRenameModal, dealRowDeleteModal,  } from '../maintable/actions/rowActions'
+import { dealSectionRenameModal, dealSectionDeleteModal } from '../maintable/actions/SectionActions'
 
 const { SubMenu } = Menu;
 
