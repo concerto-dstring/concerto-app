@@ -1,17 +1,17 @@
 import React, { PureComponent } from 'react';
 import { Button } from 'antd';
 import { CloseOutlined } from '@ant-design/icons'
-import '../css/style/MoveToSectionMenu.less'
+import '../../../maintable/css/style/MoveToSectionMenu.less'
 import {
   VISIBILITY,
   COLOR,
   DISPLAY
-} from '../../helpers/StyleValues'
+} from '../header/StyleValues'
 
 import { connect } from 'react-redux'
-import { dealRowMoveModal } from '../actions/rowActions'
-import { dealSectionUndoDeleteMessage } from '../actions/SectionActions'
-import { mapRowActionStateToProps } from '../data/mapStateToProps'
+import { dealRowMoveModal } from '../../../maintable/actions/rowActions'
+import { dealSectionUndoDeleteMessage } from '../../../maintable/actions/SectionActions'
+import { mapRowActionStateToProps } from '../../../maintable/data/mapStateToProps'
 
 let intervalTimer
 

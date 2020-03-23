@@ -2,9 +2,9 @@ import React, { PureComponent, createRef } from 'react';
 import { Modal, Input, message } from 'antd';
 
 import { connect } from 'react-redux'
-import { dealRowRenameModal, } from '../actions/rowActions'
-import { dealSectionRenameModal, } from '../actions/SectionActions'
-import { mapRowActionStateToProps } from '../data/mapStateToProps'
+import { dealRowRenameModal, } from '../../../maintable/actions/rowActions'
+import { dealSectionRenameModal, } from '../../../maintable/actions/SectionActions'
+import { mapRowActionStateToProps } from '../../../maintable/data/mapStateToProps'
 
 @connect(mapRowActionStateToProps, { dealRowRenameModal, dealSectionRenameModal })
 class ReNameModal extends PureComponent {

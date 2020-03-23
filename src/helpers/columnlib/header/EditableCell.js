@@ -1,13 +1,11 @@
 import React from 'react';
 import { Overlay } from 'react-overlays';
-import {Button} from 'antd';
-import { Input } from 'semantic-ui-react';
 import styled from 'styled-components';
-import Keys from '../maintable/vendor_upstream/core/Keys';
+import Keys from '../../../maintable/vendor_upstream/core/Keys';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
-import { TableCell } from '../helpers/TableCell'
-import { TableContext } from '../maintable/data/DataContext';
+import { TableCell } from '../cell/TableCell'
+import { TableContext } from '../../../maintable/data/DataContext';
 const CellContainer = styled.div`
   display: flex;
   flex: 1 0 100%;
@@ -34,7 +32,7 @@ class EditableCell extends React.PureComponent {
             TEXT:true,
             NUMBER:true,
             SELECT:true,
-            DATE:true,
+            DATE:false,
             PEOPLE:false,
             STATUS:false
         }
@@ -142,6 +140,7 @@ class EditableCell extends React.PureComponent {
         const {container, data, rowIndex, columnKey, dataVersion, width, height,  ...props} = this.props;
         const { value, editing } = this.state;
         const type = this.state.type||'TEXT';
+        
         let v = (typeof value !='undefined'&&typeof value !='string')?moment(value).format('YYYY-MM-DD'):value;
         const inputStyle = {
             width: width - 10,

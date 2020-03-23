@@ -46,9 +46,9 @@ import {
   DISPLAY,
   COLOR,
   ANTD_BTN_TYPE
-} from './StyleValues'
+} from './section/header/StyleValues'
 
-import MoveToSectionMenu from '../maintable/helper/MoveToSectionMenu'
+import MoveToSectionMenu from './section/header/MoveToSectionMenu'
 
 import '../maintable/css/style/RowActionMenu.less'
 import '../maintable/css/style/SectionMenu.less'

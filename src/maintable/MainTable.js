@@ -11,11 +11,11 @@ import { Button } from 'semantic-ui-react';
 import { Table, Cell, Column } from './FixedDataTableRoot';
 import { ColumnType,  RowType, ColumnKey } from './data/MainTableType';
 import { TextCell, DropDownMenuCell, CheckBoxCell, CheckBoxHeader } from '../helpers/cells';
-import ReNameModal from './helper/ReNameModal'
-import DeleteModal from './helper/DeleteModal'
-import UndoMessage from './helper/UndoMessage'
-import { EditableCell } from '../helpers/EditableCell';
-import SectionHeader from '../helpers/SectionHeader';
+import ReNameModal from '../helpers/section/modal/ReNameModal'
+import DeleteModal from '../helpers/section/modal/DeleteModal'
+import UndoMessage from '../helpers/section/modal/UndoMessage'
+import { EditableCell } from '../helpers/columnlib/header/EditableCell';
+import SectionHeader from '../helpers/section/header/SectionHeader';
 import Dimensions from 'react-dimensions';
 import { Menu, Dropdown, message, Tooltip } from 'antd';
 import { DataContext, AddFilter } from './data/DataContext';
@@ -45,13 +45,17 @@ import {
 
 const DataEditableCell = function(props) {
     this.props = props;
+    const type = props.container.props.isHeaderOrFooter?
+                 'TEXT'
+                 :
+                 getColumnCompentByColumnKey(props.columnKey,this.container.props.dataset._columns);
     return (
         <DataVersionContext.Consumer>
             {({data, version}) => (
                 <EditableCell
                     data={data}
                     dataVersion={version}
-                    type={getColumnCompentByColumnKey(props.columnKey,this.container.props.dataset._columns)}
+                    type={type}
                     {...this.props}
                 />
             )}
@@ -367,6 +371,47 @@ class MainTable extends React.Component {
       }
     }
 
+    getColumnAddOptionTemplate(columnKey, width) {
+        const addColumnStyle = {
+            boxShadow: 'none',
+        };
+        const menu = (
+            <Menu onClick={this._onColumnAddCallback} style={{width:'100px'}}>
+                <Menu.Item key="DATE">
+                    <ScheduleOutlined />
+                    日期
+                </Menu.Item>
+                <Menu.Item key="NUMBER">
+                    <AccountBookOutlined />
+                    数字
+                </Menu.Item>
+                <Menu.Item key="TEXT">
+                    <FormOutlined />
+                    文本
+                </Menu.Item>
+                <Menu.Item key="SELECT">
+                    <CheckSquareOutlined />
+                    选择
+                </Menu.Item>
+                <Menu.Item key="PEOPLE">
+                    <UserOutlined />
+                    人员
+                </Menu.Item>
+                <Menu.Item key="STATUS">
+                    <StrikethroughOutlined />
+                    状态
+                </Menu.Item>
+            </Menu>
+        );
+        let colTemplate = {};
+        colTemplate.columnKey = columnKey;
+        colTemplate.header = <Dropdown overlay={menu} trigger={['click']}>
+                                <Button basic circular icon='plus circle' style={addColumnStyle} />
+                             </Dropdown>;
+        colTemplate.width = width;
+        return colTemplate;
+    }
+
     handleRef = component => {
         this.setState({ref: component});
     };
@@ -401,40 +446,9 @@ class MainTable extends React.Component {
 
     renderTable() {
         var { data, filters } = this.state;
-        const addColumnStyle = {
-            boxShadow: 'none',
-        };
-        
         const fixedColumns = this.state.columns.length > 0 ? this.state.columns.slice(0, 3) : [];
         const scrollColumns = this.state.columns.slice(3); 
-        const menu = (
-            <Menu onClick={this._onColumnAddCallback} style={{width:'100px'}}>
-                <Menu.Item key="DATE">
-                    <ScheduleOutlined />
-                    日期
-                </Menu.Item>
-                <Menu.Item key="NUMBER">
-                    <AccountBookOutlined />
-                    数字
-                </Menu.Item>
-                <Menu.Item key="TEXT">
-                    <FormOutlined />
-                    文本
-                </Menu.Item>
-                <Menu.Item key="SELECT">
-                    <CheckSquareOutlined />
-                    选择
-                </Menu.Item>
-                <Menu.Item key="PEOPLE">
-                    <UserOutlined />
-                    人员
-                </Menu.Item>
-                <Menu.Item key="STATUS">
-                    <StrikethroughOutlined />
-                    状态
-                </Menu.Item>
-            </Menu>
-        );
+ 
         return (
          <TableContext.Provider value={this.state}>
             <div id={'appTable'}>
@@ -461,17 +475,7 @@ class MainTable extends React.Component {
                         <Column {...this.getColumnTemplate(column.columnKey)} fixed={false} />
                     ))
                     }              
-                    <Column
-                        columnKey=""
-                        header={
-
-                            <Dropdown overlay={menu} trigger={['click']}>
-                            <Button basic circular icon='plus circle' style={addColumnStyle}/>
-                            </Dropdown>
-                            }
-
-                        width={40}
-                    />
+                    <Column {...this.getColumnAddOptionTemplate("", 40)}/>
                 </FilterableDataTable>
                 <ReNameModal 
                   isShowReNameModal={this.props.isShowReNameModal}

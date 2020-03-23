@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Overlay } from 'react-overlays';
 import { Input } from 'semantic-ui-react';
 import styled from 'styled-components';
-import Keys from '../maintable/vendor_upstream/core/Keys';
+import Keys from '../../../maintable/vendor_upstream/core/Keys';
 
 import {
   COLOR,

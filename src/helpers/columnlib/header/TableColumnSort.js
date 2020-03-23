@@ -2,6 +2,7 @@ import React from 'react';
 import { Button } from 'antd';
 import {SortAscendingOutlined,SortDescendingOutlined } from '@ant-design/icons'
 import PropTypes from 'prop-types';
+
 class TableColumnSort extends React.Component{
     static propTypes = {
         sortByColumn: PropTypes.func,

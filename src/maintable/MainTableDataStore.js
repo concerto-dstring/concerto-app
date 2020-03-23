@@ -9,7 +9,7 @@
 'use strict';
 
 import { ColumnType, ColumnKey } from './data/MainTableType';
-import { COLOR } from '../helpers/StyleValues'
+import { COLOR } from '../helpers/section/header/StyleValues'
 
 class MainTableDataStore {
 

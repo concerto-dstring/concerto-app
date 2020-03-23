@@ -1,0 +1,5 @@
+lang = {
+    maintable : {
+        Topic:"Topic"
+    }
+};

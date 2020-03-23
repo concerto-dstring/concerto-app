@@ -2,11 +2,11 @@ import React, { PureComponent } from 'react';
 import { Modal } from 'antd';
 
 import { connect } from 'react-redux'
-import { dealRowDeleteModal } from '../actions/rowActions'
-import { dealSectionDeleteModal, dealSectionUndoDeleteMessage } from '../actions/SectionActions'
-import { mapRowActionStateToProps } from '../data/mapStateToProps'
+import { dealRowDeleteModal } from '../../../maintable/actions/rowActions'
+import { dealSectionDeleteModal, dealSectionUndoDeleteMessage } from '../../../maintable/actions/SectionActions'
+import { mapRowActionStateToProps } from '../../../maintable/data/mapStateToProps'
 
-import '../css/style/SectionMenu.less'
+import '../../../maintable/css/style/SectionMenu.less'
 
 @connect(mapRowActionStateToProps, { dealRowDeleteModal, dealSectionDeleteModal, dealSectionUndoDeleteMessage })
 class DeleteModal extends PureComponent {
