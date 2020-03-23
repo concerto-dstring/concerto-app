@@ -8,6 +8,9 @@ import { Cell } from '../../../maintable/FixedDataTableRoot';
 class StatusCell extends React.Component {
     constructor(props){
       super(props);
+      this.state = {
+        value:props.value
+      }
       this.statusHashTable = {
         block:'阻塞',
         working:'进行中',
@@ -30,13 +33,15 @@ class StatusCell extends React.Component {
           }
        }
     }
-    returnValue(e){
-      return e.key!='null'?e.key:'';
-    }
     render() {
       const {data, rowIndex, columnKey, collapsedRows, callback, value, handleChange, handleKey, ...props} = this.props;
       const returnValue = (e) => {
-        return handleChange(e.key!='null'?e.item.props.children:'');
+        debugger
+        const statusValue = e.key!='null'?e.item.props.children:'';
+        this.setState({
+          value:statusValue
+        })
+        return handleChange(statusValue);
       }
       const menu = <Menu style={{textAlign:'center',fontWeight:'bold'}} onClick={returnValue}>
           <Menu.Item key="working" style={this.statusColorHashTable.working}>
@@ -58,8 +63,8 @@ class StatusCell extends React.Component {
       return (
         <Cell {...props} style={{ width: '100%' }}>
             <Dropdown overlay={menu} trigger={['click']}>
-              <Button style={this.getSelectedStatusColor(value)} className="statusWidth">
-                  {value}
+              <Button style={this.getSelectedStatusColor(this.state.value)} className="statusWidth">
+                  {this.state.value}
               </Button>
             </Dropdown>
         </Cell>

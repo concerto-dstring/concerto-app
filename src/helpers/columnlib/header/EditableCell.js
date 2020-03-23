@@ -36,14 +36,7 @@ class EditableCell extends React.PureComponent {
             PEOPLE:false,
             STATUS:false
         }
-        this.cellhideValues={
-            TEXT:true,
-            NUMBER:true,
-            SELECT:true,
-            DATE:true,
-            PEOPLE:true,
-            STATUS:false
-        }
+        
     }
     
     /**
@@ -101,10 +94,6 @@ class EditableCell extends React.PureComponent {
         if(type == 'DATE'){
           this.state.value = moment(this.state.value).format('YYYY-MM-DD');
         }
-        const hideValue = this.cellhideValues[type];
-        if(!hideValue){
-           return;
-        }
         this.setState({ editing: false });
     }
 
@@ -141,7 +130,7 @@ class EditableCell extends React.PureComponent {
         const { value, editing } = this.state;
         const type = this.state.type||'TEXT';
         
-        let v = (typeof value !='undefined'&&typeof value !='string')?moment(value).format('YYYY-MM-DD'):value;
+        let v = (typeof value !='object')?value:moment(value).format('YYYY-MM-DD');
         const inputStyle = {
             width: width - 10,
             height: height - 5,

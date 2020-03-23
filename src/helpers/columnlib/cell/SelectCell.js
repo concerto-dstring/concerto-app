@@ -10,8 +10,8 @@ class SelectCell extends React.Component {
     render() {
       const { Option } = Select;
       const {data, rowIndex, columnKey, collapsedRows, callback, value, handleChange, handleKey, ...props} = this.props;
-      const returnValue = (e) => {
-        return handleChange(e); 
+      const returnValue = (value,option) => {
+        return handleChange(option.children); 
       }
       return (
         <Cell {...props} style={{ width: '100%' }}>

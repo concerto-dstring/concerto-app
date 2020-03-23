@@ -86,7 +86,7 @@
  .moreUserAvatar{
     cursor: pointer;
     right:10px;
-    background:#333333;
+    background:#333333 !important;
     color:white;
  }
   

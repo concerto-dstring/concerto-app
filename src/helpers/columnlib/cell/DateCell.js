@@ -36,7 +36,8 @@ class DateCell extends React.Component {
     checkedAddTime = (v,o) => {
       var test = this;
       this.setState({
-        addDateTime:o.children
+        addDateTime:o.children,
+        open:true
       })
     }
     optionVals(Option) {
@@ -54,14 +55,18 @@ class DateCell extends React.Component {
       const { Option } = Select;
       const saveDateTime = () => {
         this.setState({
-          open:false
+          open:false,
+          value:this.state.value?this.state.value:moment()
         })
+        this.refs.datePicker.blur();
       }
       const clearDateTime = () => {
         this.setState({
           open:false,
-          value:undefined
+          addDateTime:'',
+          value:""
         })
+        this.refs.datePicker.blur();
       }
       return (
         <div>
@@ -105,6 +110,7 @@ class DateCell extends React.Component {
       return (
         <Cell {...props} style={{ width: '100%' }}>
          <DatePicker 
+                ref="datePicker"
                 style={{ width: '100%' }}
                 allowClear={false}
                 bordered={false}
@@ -112,7 +118,8 @@ class DateCell extends React.Component {
                 open={this.state.open}
                 suffixIcon={<div style={{lineHeight:'33px',color:'#8b8c8d'}}>{this.state.addDateTime}</div>}
                 renderExtraFooter={this.renderDatePicker} //antd官网提供的加入额外页脚的方法
-                value={value?moment(value, 'YYYY-MM-DD'):undefined} 
+                // value={value?moment(value, 'YYYY-MM-DD'):undefined} 
+                value={this.state.value}
                 onChange={returnValue}
                 onFocus={this.showDatePicker}
                 onBlur={this.closeDatePicker}

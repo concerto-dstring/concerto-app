@@ -14,6 +14,7 @@ class TableColumnMenu extends React.Component{
     }
     
     render(){
+        const { SubMenu } = Menu;
         const columnMenubarStyle = {
             position:'absolute',
             top:'8px',
@@ -28,12 +29,13 @@ class TableColumnMenu extends React.Component{
                     <div style={columnMenubarStyle}>
                         <Dropdown overlay={
                             <Menu style={{width:'100px'}}>
-                                <Menu.Item key="reName" onClick={table.handleClick}>
+                                <Menu.Item key="reName">
                                     重命名
                                 </Menu.Item>
-                                <Menu.Item key="sort">
-                                    排序
-                                </Menu.Item>
+                                <SubMenu title="排序">
+                                    <Menu.Item>升序</Menu.Item>
+                                    <Menu.Item>降序</Menu.Item>
+                                </SubMenu>
                                 <Menu.Item key="collpse" onClick={table._onCollpseColumnCallback.bind(this,columnKey,true)}>
                                     折叠
                                 </Menu.Item>
