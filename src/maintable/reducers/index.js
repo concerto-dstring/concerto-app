@@ -274,6 +274,11 @@ function reducers(state = getInitialState(), action) {
         groupIndex: action.modalData.groupIndex,
       })
 
+    case ActionTypes.DEAL_SECTION_COLOR_MENU:
+      return  Object.assign({}, state, {
+        curGroup: action.modalData.curGroup,
+      })
+
     default: {
       return state;
     }

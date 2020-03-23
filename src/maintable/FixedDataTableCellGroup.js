@@ -20,6 +20,7 @@ import cx from './vendor_upstream/stubs/cx';
 import { sumPropWidths } from './helper/widthHelper';
 
 import './css/layout/fixedDataTableCellGroupLayout.css';
+import { ColumnKey } from './data/MainTableType'
 
 class FixedDataTableCellGroupImpl extends React.Component {
   /**
@@ -224,16 +225,31 @@ class FixedDataTableCellGroup extends React.Component {
 
     var onColumnResize = props.onColumnResize ? this._onColumnResize : null;
 
-    return (
-      <div
-        style={style}
-        className={cx('fixedDataTableCellGroupLayout/cellGroupWrapper')}>
-        <FixedDataTableCellGroupImpl
-          {...props}
-          onColumnResize={onColumnResize}
-        />
-      </div>
-    );
+    let group = this.props.container.props.data.getGroupByRowIndex(this.props.rowIndex)
+    let columns = this.props.columns
+    if (columns && group.isCollapsed && columns.findIndex(column => column.props.columnKey === ColumnKey.ROWACTION) < 0) {
+      style.width = Math.floor(style.width)
+      style.top = 7.2
+      return (
+        <div
+          style={style}
+          className={cx('fixedDataTableCellGroupLayout/cellGroupWrapper')}>
+            <a style={{marginLeft: 10, whiteSpace: 'nowrap'}}>{group.rows.length + ' Items'}</a>
+        </div>
+      );
+    }
+    else {
+      return (
+        <div
+          style={style}
+          className={cx('fixedDataTableCellGroupLayout/cellGroupWrapper')}>
+          <FixedDataTableCellGroupImpl
+            {...props}
+            onColumnResize={onColumnResize}
+          />
+        </div>
+      );
+    }
   }
 
   _onColumnResize = (

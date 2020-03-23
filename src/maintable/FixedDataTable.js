@@ -718,6 +718,7 @@ class FixedDataTable extends React.Component {
       onColumnResizeEndCallback,
       elementHeights,
       scrollFlags,
+      siderWidth,
     } = this.props;
 
     const { ownerHeight, width } = tableSize;
@@ -777,7 +778,8 @@ class FixedDataTable extends React.Component {
         />;
     }
 
-    const rows = this._renderRows(ariaGroupHeaderIndex, ariaHeaderIndex, ariaFooterIndex, ariaRowIndexOffset, bodyHeight, componentHeight);
+    const rows = this._renderRows(ariaGroupHeaderIndex, ariaHeaderIndex, ariaFooterIndex, 
+      ariaRowIndexOffset, bodyHeight, componentHeight, siderWidth);
 
     var tabIndex = null;
     if (this.props.keyboardPageEnabled || this.props.keyboardScrollEnabled) {
@@ -876,7 +878,7 @@ class FixedDataTable extends React.Component {
   }
 
   _renderRows =  (/*number*/ ariaGroupHeaderIndex, /*number*/ ariaHeaderIndex, /*number*/ ariaFooterIndex, 
-    /*number*/ ariaRowIndexOffset, /*number*/ bodyHeight, /*number*/ componentHeight) /*object*/ => {
+    /*number*/ ariaRowIndexOffset, /*number*/ bodyHeight, /*number*/ componentHeight, siderWidth) /*object*/ => {
 
     const props = this.props;
     const { scrollEnabledY } = scrollbarsVisible(props);
@@ -944,6 +946,7 @@ class FixedDataTable extends React.Component {
         showScrollbarY={scrollEnabledY}
         container={this}
         isRTL={props.isRTL}
+        siderWidth={siderWidth}
       />
     );
   }
