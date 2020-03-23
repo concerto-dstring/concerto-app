@@ -7,17 +7,26 @@ import '../../../maintable/css/style/TableCellComponent.css'
 import { Cell } from '../../../maintable/FixedDataTableRoot';
 
 class SelectCell extends React.Component {
+    constructor(props){
+      super(props);
+      this.state = {
+        value:props.value
+      }
+    }
     render() {
       const { Option } = Select;
       const {data, rowIndex, columnKey, collapsedRows, callback, value, handleChange, handleKey, ...props} = this.props;
       const returnValue = (value,option) => {
+        this.setState({
+            value:option.children
+        });
         return handleChange(option.children); 
       }
       return (
         <Cell {...props} style={{ width: '100%' }}>
             <Select
                 showSearch
-                value={value}
+                value={this.state.value}
                 style={{ width: '100%' }}
                 placeholder="Select a option"
                 optionFilterProp="children"

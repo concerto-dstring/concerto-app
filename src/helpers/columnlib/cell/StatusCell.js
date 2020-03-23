@@ -36,7 +36,6 @@ class StatusCell extends React.Component {
     render() {
       const {data, rowIndex, columnKey, collapsedRows, callback, value, handleChange, handleKey, ...props} = this.props;
       const returnValue = (e) => {
-        debugger
         const statusValue = e.key!='null'?e.item.props.children:'';
         this.setState({
           value:statusValue
