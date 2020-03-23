@@ -23,6 +23,7 @@ import './css/layout/fixedDataTableCellLayout.css';
 import './css/style/fixedDataTableCell.css';
 import { TableContext } from './data/DataContext';
 import { ColumnWidthOutlined} from '@ant-design/icons';
+import {Tooltip } from 'antd';
 import {
   VISIBILITY,
   DISPLAY
@@ -142,11 +143,11 @@ class FixedDataTableCell extends React.Component {
   handleRef = component => (this.ref = component);
 
 
-  getColumnCollpseByColumnKey = (columns,columnKey) => {
+  getColumnCollpseByColumnInfo = (columns,columnKey) => {
     for(let i=0,len=columns.length;i<len;i++){
       let column = columns[i];
       if(columnKey === column.columnKey){
-          return column.collpse;
+          return column;
       } 
     }
   }
@@ -276,11 +277,16 @@ class FixedDataTableCell extends React.Component {
     const role = isHeaderOrFooter ? 'columnheader' : 'gridcell';
 
     const setTableColumn = (table)=>{
-      const collpse = this.getColumnCollpseByColumnKey(table.columns,columnKey)
-      if(collpse){
+      debugger
+      const column = this.getColumnCollpseByColumnInfo(table.columns,columnKey);
+      if(column&&column.collpse){
         return <div className={className} style={style} role={role}>
-                  <ColumnWidthOutlined style={{cursor:'pointer',lineHeight:'40px'}} 
-                  onClick={table._onCollpseColumnCallback.bind(this,columnKey,false)}/>
+                  {isHeaderOrFooter&&
+                  <Tooltip placement="top" title={<span>展开“{column.name}”列</span>}>
+                    <ColumnWidthOutlined 
+                    style={{cursor:'pointer',lineHeight:'45px'}}  
+                    onClick={table._onCollpseColumnCallback.bind(this,columnKey,false)}/>
+                  </Tooltip>}
                 </div>;
       }else{
         return <div className={className} style={style} role={role}>

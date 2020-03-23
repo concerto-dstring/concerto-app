@@ -275,7 +275,7 @@ class FixedDataTableBufferedRows extends React.Component {
                 index={rowIndex}
                 zIndex={0}
                 ariaRowIndex={ariaFooterIndex}
-                isHeaderOrFooter={true}
+                isHeaderOrFooter={false}
                 isScrolling={props.isScrolling}
                 isRowReordering={props.isRowReordering}
                 rowReorderingData={props.rowReorderingData}
