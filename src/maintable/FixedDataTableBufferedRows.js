@@ -167,6 +167,7 @@ class FixedDataTableBufferedRows extends React.Component {
       scrollableColumns,
       scrollEnabledY,
       onNewRowAdd,
+      siderWidth,
     } = props;
 
     const { footerHeight,  headerHeight, addRowHeight } = elementHeights;
@@ -238,8 +239,10 @@ class FixedDataTableBufferedRows extends React.Component {
                 columnReorderingData={columnReorderingData}
                 showScrollbarY={scrollEnabledY}
                 container={props.container}
-                isRTL={props.isRTL}>
-                </FixedDataTableRow>
+                isRTL={props.isRTL}
+                siderWidth={siderWidth}
+              >
+              </FixedDataTableRow>
             break;
           case RowType.ADDROW:
             row = 

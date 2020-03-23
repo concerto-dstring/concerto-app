@@ -55,7 +55,7 @@ import '../maintable/css/style/SectionMenu.less'
 
 import { connect } from 'react-redux'
 import { dealRowRenameModal, dealRowDeleteModal,  } from '../maintable/actions/rowActions'
-import { dealSectionRenameModal, dealSectionDeleteModal } from '../maintable/actions/SectionActions'
+import { dealSectionRenameModal, dealSectionDeleteModal, dealSectionColorMenu } from '../maintable/actions/SectionActions'
 
 const { SubMenu } = Menu;
 
@@ -174,8 +174,8 @@ class TextCell extends React.PureComponent {
   }
 }
 
-@connect(null, { dealRowRenameModal, dealRowDeleteModal, dealSectionRenameModal, dealSectionDeleteModal })
-class DropDownMenuCell extends React.PureComponent {
+@connect(null, { dealSectionRenameModal, dealSectionDeleteModal, dealSectionColorMenu })
+class DropDownMenuHeader extends React.PureComponent {
   constructor(props) {
     super(props)
     
@@ -186,15 +186,14 @@ class DropDownMenuCell extends React.PureComponent {
     let isCollapsed = data._indexMap[rowIndex].isCollapsed
     // 保存分区原有的颜色
     this.state = {
-      isShowRowActionBtn: VISIBILITY.HIDDEN,
       isBtnClicked: false,
-      isShowSubMenu: DISPLAY.NONE,
       headerBtnColor: groupColor,
       headerBtnBorderColor: groupColor,
       group: group,
       groupColor: groupColor,
       headerBtnType: ANTD_BTN_TYPE.PRIMARY,
-      isCollapsed
+      isCollapsed,
+      isShowHeaderMenu: false,
     }
   }
 
@@ -216,43 +215,18 @@ class DropDownMenuCell extends React.PureComponent {
       isCollapsed
     });
   }
-
-  // 行菜单
-  hanldeRowCellMenuClick = ({ item, key, keyPath, selectedKeys, domEvent }) => {
-    this.hiddenRowActionBtn()
-    this.hiddenSubMenu()
-    const { rowIndex, data } = this.props;
-    if (key == ADD_SUB_TABLE.key) {
-      // 添加子项
-
-
-    }
-    else if (key == RENAME_ROW.key) {
-      // 重命名行
-      this.props.dealRowRenameModal({rowIndex, columnKey: ColumnKey.NAME, isShowReNameModal: true, data})
-    }
-    else if (key == MOVE_TO_SECTION.key) {
-      // 移动至其他分区
-
-
-    }
-    else if (key == DELETE_ROW.key) {
-      // 删除行
-      this.props.dealRowDeleteModal({isShowDeleteModal: true, data, rowIndex})
-    }
-  }
   
   // 分区菜单
   hanldeRowHeaderMenuClick = ({ item, key, keyPath, selectedKeys, domEvent }) => {
-    this.hiddenRowActionBtn()
-    const { data, rowIndex } = this.props;
+    this.hiddenHeaderMenu()
+    const { data } = this.props;
     if (key == RENAME_SECTION.key) {
       // 重命名
       this.props.dealSectionRenameModal({isShowReNameModal: true, data, isSection: true, group: this.state.group})
     }
     else if (key == CHANGE_SECTION_COLOR.key) {
       // 改变分区颜色
-      
+      this.props.dealSectionColorMenu({curGroup: this.state.group})
     }
     else if (key == ADD_SECTION.key) {
       // 添加分区
@@ -272,94 +246,20 @@ class DropDownMenuCell extends React.PureComponent {
     }
   } 
 
-  // 显示按钮
-  showRowActionBtn = (e) => {
-    this.setState({
-      isShowRowActionBtn: VISIBILITY.VISIBLE
-    })
-  }
-
-  // 隐藏按钮
-  hiddenRowActionBtn = (e) => {
-    this.setState({
-      isShowRowActionBtn: VISIBILITY.HIDDEN,
-      isBtnClicked: false
-    })
-  }
-
-  showRowActionMenu = () => {
+  handleBtnClick = (e) => {
+    // 防止document事件的冒泡
+    e.nativeEvent.stopImmediatePropagation();
     this.setState({
       isBtnClicked: true
     })
   }
 
-  showSubMenu = () => {
+  // 隐藏菜单
+  hiddenHeaderMenu = (e) => {
     this.setState({
-      isShowSubMenu: DISPLAY.BLOCK
+      isBtnClicked: false,
+      isShowHeaderMenu: false
     })
-  }
-
-  hiddenSubMenu = () => {
-    this.setState({
-      isShowSubMenu: DISPLAY.NONE,
-      isShowRowActionBtn: VISIBILITY.HIDDEN,
-    })
-  }
-
-  getRowMenu = (data, rowIndex) => {
-
-    return (
-      <Menu 
-        onClick={this.hanldeRowCellMenuClick}
-        style={{width: 180, borderRadius: '8px', padding: '5px, 0px, 5px, 5px'}}
-      >
-        <Menu.Item 
-          key={ADD_SUB_TABLE.key}
-        >
-          <span>
-            {ADD_SUB_TABLE.desc}
-          </span>
-        </Menu.Item>
-
-        <Menu.Divider />
-
-        <Menu.Item 
-          key={RENAME_ROW.key}
-        >
-          <span>
-            {RENAME_ROW.desc}
-          </span>
-        </Menu.Item>
-        <SubMenu
-          key={MOVE_TO_SECTION.key}
-          title={
-            <span>
-              {MOVE_TO_SECTION.desc}
-            </span>
-          }
-          onMouseEnter={this.showSubMenu}
-        >
-          {
-            <MoveToSectionMenu 
-              data={data}
-              rowIndex={rowIndex}
-              isShowSubMenu={this.state.isShowSubMenu}
-              hiddenSubMenu={this.hiddenSubMenu}
-            />
-          }
-        </SubMenu>
-
-        <Menu.Divider />
-
-        <Menu.Item 
-          key={DELETE_ROW.key}
-        >
-          <span>
-            {DELETE_ROW.desc}
-          </span>
-        </Menu.Item>
-      </Menu>
-    )
   }
 
   getHeaderMenuData = (menuText) => {
@@ -454,71 +354,198 @@ class DropDownMenuCell extends React.PureComponent {
   }
 
   render() {
-    const { isHeader, data, rowIndex } = this.props
     
-    let returnMenu
+    const { groupColor, headerBtnColor, headerBtnBorderColor, headerBtnType, 
+      isShowHeaderMenu, isBtnClicked, isCollapsed } = this.state
 
-    if (isHeader) {
-      const { groupColor, headerBtnColor, headerBtnBorderColor, headerBtnType, isShowHeaderMenu, isBtnClicked, isCollapsed } = this.state
-
-      returnMenu = (
-        <div 
-          onMouseEnter={this.changeHeaderMenuBtnColor.bind(this, COLOR.WHITE, COLOR.DEFAULT, ANTD_BTN_TYPE.DEFAULT)}
-          onMouseLeave={this.changeHeaderMenuBtnColor.bind(this, groupColor, groupColor, ANTD_BTN_TYPE.PRIMARY)}
-          onWheel={this.changeHeaderMenuBtnColor.bind(this, groupColor, groupColor, ANTD_BTN_TYPE.PRIMARY)}
+    return (
+      <div 
+        onMouseEnter={this.changeHeaderMenuBtnColor.bind(this, COLOR.WHITE, COLOR.DEFAULT, ANTD_BTN_TYPE.DEFAULT)}
+        onMouseLeave={this.changeHeaderMenuBtnColor.bind(this, groupColor, groupColor, ANTD_BTN_TYPE.PRIMARY)}
+        onWheel={this.changeHeaderMenuBtnColor.bind(this, groupColor, groupColor, ANTD_BTN_TYPE.PRIMARY)}
+      >
+        <Dropdown 
+          overlay={this.getHeaderMenu(groupColor)}
+          overlayClassName='menu_item_bgcolor'
+          visible={isBtnClicked && isShowHeaderMenu}
+          getPopupContainer={triggerNode => triggerNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode}
         >
-          <Dropdown 
-            overlay={this.getHeaderMenu(groupColor)}
-            overlayClassName='menu_item_bgcolor'
-            visible={isBtnClicked && isShowHeaderMenu}
-            getPopupContainer={triggerNode => triggerNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode}
+          <AntdButton 
+            icon={<CaretDownOutlined />}
+            type={headerBtnType}
+            shape="circle"
+            size='small'
+            style={{
+                    margin: '8px 6px', 
+                    backgroundColor: headerBtnColor, 
+                    borderColor: headerBtnBorderColor,
+                    visibility: isCollapsed ? VISIBILITY.HIDDEN : VISIBILITY.VISIBLE
+                  }}
+            onClick={this.handleBtnClick}
           >
-            <AntdButton 
-              icon={<CaretDownOutlined />}
-              type={headerBtnType}
-              shape="circle"
-              size='small'
-              style={{
-                      margin: '8px 6px', 
-                      backgroundColor: headerBtnColor, 
-                      borderColor: headerBtnBorderColor,
-                      visibility: isCollapsed ? VISIBILITY.HIDDEN : VISIBILITY.VISIBLE
-                    }}
-              onClick={this.showRowActionMenu}
-            >
-            </AntdButton>
-          </Dropdown>
-          </div>
-      )
+          </AntdButton>
+        </Dropdown>
+      </div>
+    )
+  }
+}
+
+@connect(null, { dealRowRenameModal, dealRowDeleteModal })
+class DropDownMenuCell extends React.PureComponent {
+  constructor() {
+    super()
+    
+    this.state = {
+      isShowRowActionBtn: VISIBILITY.HIDDEN,
+      isBtnClicked: false,
+      isShowSubMenu: DISPLAY.NONE,
     }
-    else {
-      const { isBtnClicked, isShowRowActionBtn } = this.state
+  }
 
-      returnMenu = (
-        <div 
-          onMouseEnter={this.showRowActionBtn}
-          onMouseLeave={this.hiddenRowActionBtn}
-          onWheel={this.hiddenRowActionBtn}
+  // 行菜单
+  hanldeRowCellMenuClick = ({ item, key, keyPath, selectedKeys, domEvent }) => {
+    this.hiddenRowActionBtn()
+    this.hiddenSubMenu()
+    const { rowIndex, data } = this.props;
+    if (key == ADD_SUB_TABLE.key) {
+      // 添加子项
+
+
+    }
+    else if (key == RENAME_ROW.key) {
+      // 重命名行
+      this.props.dealRowRenameModal({rowIndex, columnKey: ColumnKey.NAME, isShowReNameModal: true, data})
+    }
+    else if (key == MOVE_TO_SECTION.key) {
+      // 移动至其他分区
+
+
+    }
+    else if (key == DELETE_ROW.key) {
+      // 删除行
+      this.props.dealRowDeleteModal({isShowDeleteModal: true, data, rowIndex})
+    }
+  }
+
+  // 显示按钮
+  showRowActionBtn = (e) => {
+    this.setState({
+      isShowRowActionBtn: VISIBILITY.VISIBLE
+    })
+  }
+
+  // 隐藏按钮
+  hiddenRowActionBtn = (e) => {
+    this.setState({
+      isShowRowActionBtn: VISIBILITY.HIDDEN,
+      isBtnClicked: false
+    })
+  }
+
+  showRowActionMenu = (e) => {
+    // 防止document事件的冒泡
+    e.nativeEvent.stopImmediatePropagation();
+    this.setState({
+      isBtnClicked: true
+    })
+  }
+
+  showSubMenu = () => {
+    this.setState({
+      isShowSubMenu: DISPLAY.BLOCK
+    })
+  }
+
+  hiddenSubMenu = () => {
+    this.setState({
+      isShowSubMenu: DISPLAY.NONE,
+      isShowRowActionBtn: VISIBILITY.HIDDEN,
+    })
+  }
+
+  getRowMenu = (data, rowIndex) => {
+
+    return (
+      <Menu 
+        onClick={this.hanldeRowCellMenuClick}
+        style={{width: 180, borderRadius: '8px', padding: '5px, 0px, 5px, 5px'}}
+      >
+        <Menu.Item 
+          key={ADD_SUB_TABLE.key}
         >
-          <Dropdown 
-            overlay={this.getRowMenu(data, rowIndex)} 
-            overlayClassName='menu_item_bgcolor'
-            visible={isBtnClicked ? (isShowRowActionBtn === VISIBILITY.HIDDEN ? false : true) : false}
-            getPopupContainer={triggerNode => triggerNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode}
-          >
-            <AntdButton
-              icon={<CaretDownOutlined />} 
-              shape='circle'
-              size='small'
-              style={{margin: '8px 6px', visibility: isShowRowActionBtn}}
-              onClick={this.showRowActionMenu}
+          <span>
+            {ADD_SUB_TABLE.desc}
+          </span>
+        </Menu.Item>
+
+        <Menu.Divider />
+
+        <Menu.Item 
+          key={RENAME_ROW.key}
+        >
+          <span>
+            {RENAME_ROW.desc}
+          </span>
+        </Menu.Item>
+        <SubMenu
+          key={MOVE_TO_SECTION.key}
+          title={
+            <span>
+              {MOVE_TO_SECTION.desc}
+            </span>
+          }
+          onMouseEnter={this.showSubMenu}
+        >
+          {
+            <MoveToSectionMenu 
+              data={data}
+              rowIndex={rowIndex}
+              isShowSubMenu={this.state.isShowSubMenu}
+              hiddenSubMenu={this.hiddenSubMenu}
             />
-          </Dropdown>
-        </div>
-      )
-    }
+          }
+        </SubMenu>
 
-    return returnMenu
+        <Menu.Divider />
+
+        <Menu.Item 
+          key={DELETE_ROW.key}
+        >
+          <span>
+            {DELETE_ROW.desc}
+          </span>
+        </Menu.Item>
+      </Menu>
+    )
+  }
+
+  render() {
+    const { data, rowIndex } = this.props
+    
+    const { isBtnClicked, isShowRowActionBtn } = this.state
+
+    return (
+      <div 
+        onMouseEnter={this.showRowActionBtn}
+        onMouseLeave={this.hiddenRowActionBtn}
+        onWheel={this.hiddenRowActionBtn}
+      >
+        <Dropdown 
+          overlay={this.getRowMenu(data, rowIndex)} 
+          overlayClassName='menu_item_bgcolor'
+          visible={isBtnClicked ? (isShowRowActionBtn === VISIBILITY.HIDDEN ? false : true) : false}
+          getPopupContainer={triggerNode => triggerNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode}
+        >
+          <AntdButton
+            icon={<CaretDownOutlined />} 
+            shape='circle'
+            size='small'
+            style={{margin: '8px 6px', visibility: isShowRowActionBtn}}
+            onClick={this.showRowActionMenu}
+          />
+        </Dropdown>
+      </div>
+    )
   }
 }
 
@@ -617,7 +644,8 @@ export {
   PagedCell, 
   RemovableHeaderCell, 
   TextCell, 
-  TooltipCell, 
+  TooltipCell,
+  DropDownMenuHeader, 
   DropDownMenuCell,
   CheckBoxCell,
   CheckBoxHeader 

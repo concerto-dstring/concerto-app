@@ -4,6 +4,7 @@ import {
   DEAL_SECTION_RENAME_MODAL,
   DEAL_SECTION_DELETE_MODAL,
   DEAL_SECTION_UNDO_DELETE_MESSAGE,
+  DEAL_SECTION_COLOR_MENU,
 } from './ActionTypes';
 
 
@@ -31,5 +32,14 @@ export const dealSectionDeleteModal = (modalData) => ({
  */
 export const dealSectionUndoDeleteMessage = (modalData) => ({
   type: DEAL_SECTION_UNDO_DELETE_MESSAGE,
+  modalData
+});
+
+/**
+ * 处理分区改变颜色菜单
+ * @param {*} modalData 
+ */
+export const dealSectionColorMenu = (modalData) => ({
+  type: DEAL_SECTION_COLOR_MENU,
   modalData
 });

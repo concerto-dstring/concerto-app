@@ -14,3 +14,9 @@ export const mapRowActionStateToProps = (state) => {
     targetGroupKey: state.targetGroupKey,
   }
 }
+
+export const mapSectionHeaderStateToProps = (state) => {
+  return {
+    curGroup: state.curGroup
+  }
+}
