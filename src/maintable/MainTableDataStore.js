@@ -51,7 +51,7 @@ class MainTableDataStore {
         this._sizeColumns = 6;
 
         // create groups 
-        this._groups.push({groupKey: '1', name: '分区1', rows:['1', '2', '3', '4'], color:'#7EC0EE', isCollapsed: false});
+        this._groups.push({groupKey: '1', name: '分区1', rows:['1', '2', '3', '4'], color:'#4682B4', isCollapsed: false});
         this._groups.push({groupKey: '2', name: '分区2', rows:['5', '6', '7', '8'], color:'#CD5C5C', isCollapsed: false});
         this._groups.push({groupKey: '3', name: '分区3', rows:['9', '10'], color:'#79CDCD', isCollapsed: false});
         this._sizeGroups = 3;
