@@ -277,7 +277,6 @@ class FixedDataTableCell extends React.Component {
     const role = isHeaderOrFooter ? 'columnheader' : 'gridcell';
 
     const setTableColumn = (table)=>{
-      debugger
       const column = this.getColumnCollpseByColumnInfo(table.columns,columnKey);
       if(column&&column.collpse){
         return <div className={className} style={style} role={role}>
