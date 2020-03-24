@@ -42,7 +42,7 @@ class MainTableDataStore {
         this._columns.push({columnKey: ColumnKey.ROWACTION, name:'', width: 36, type: ColumnType.DROPDOWN, columnComponentType:''});
         this._columns.push({columnKey: ColumnKey.ROWSELECT, name:'', width: 36, type: ColumnType.CHECKBOX, columnComponentType:''}); 
 
-        this._columns.push({columnKey: '1', name:'主题', width: 100, type: ColumnType.EDITBOX, columnComponentType:'TEXT',collpse:false});
+        this._columns.push({columnKey: '1', name:'主题', width: 120, type: ColumnType.EDITBOX, columnComponentType:'TEXT',collpse:false});
         this._columns.push({columnKey: '2', name:'备注', width: 200, type: ColumnType.EDITBOX, columnComponentType:'TEXT',collpse:false});
         this._columns.push({columnKey: '3', name:'分配', width: 200, type: ColumnType.EDITBOX, columnComponentType:'TEXT',collpse:false});
         this._columns.push({columnKey: '4', name:'日志', width: 200, type: ColumnType.LABEL, columnComponentType:'TEXT',collpse:false});
@@ -51,7 +51,7 @@ class MainTableDataStore {
         this._sizeColumns = 6;
 
         // create groups 
-        this._groups.push({groupKey: '1', name: '分区1', rows:['1', '2', '3', '4'], color:'#7EC0EE', isCollapsed: false});
+        this._groups.push({groupKey: '1', name: '分区1', rows:['1', '2', '3', '4'], color:'#4682B4', isCollapsed: false});
         this._groups.push({groupKey: '2', name: '分区2', rows:['5', '6', '7', '8'], color:'#CD5C5C', isCollapsed: false});
         this._groups.push({groupKey: '3', name: '分区3', rows:['9', '10'], color:'#79CDCD', isCollapsed: false});
         this._sizeGroups = 3;

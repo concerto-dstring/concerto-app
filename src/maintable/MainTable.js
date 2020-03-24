@@ -10,7 +10,7 @@ import PropTypes from 'prop-types';
 import { Button } from 'semantic-ui-react';
 import { Table, Cell, Column } from './FixedDataTableRoot';
 import { ColumnType,  RowType, ColumnKey } from './data/MainTableType';
-import { TextCell, DropDownMenuCell, CheckBoxCell, CheckBoxHeader } from '../helpers/cells';
+import { TextCell, DropDownMenuHeader, DropDownMenuCell, CheckBoxCell, CheckBoxHeader } from '../helpers/cells';
 import ReNameModal from '../helpers/section/modal/ReNameModal'
 import DeleteModal from '../helpers/section/modal/DeleteModal'
 import UndoMessage from '../helpers/section/modal/UndoMessage'
@@ -86,7 +86,6 @@ const DropDownCell = function(props) {
             <DropDownMenuCell
                 data={data}
                 dataVersion={version}
-                isHeader={false}
                 {...this.props}
             />
         )}
@@ -99,10 +98,9 @@ const DropDownHeader = function(props) {
   return (
     <DataVersionContext.Consumer>
         {({data, version}) => (
-            <DropDownMenuCell
+            <DropDownMenuHeader
                 data={data}
                 dataVersion={version}
-                isHeader={true}
                 {...this.props}
             />
         )}
@@ -448,7 +446,7 @@ class MainTable extends React.Component {
         var { data, filters } = this.state;
         const fixedColumns = this.state.columns.length > 0 ? this.state.columns.slice(0, 3) : [];
         const scrollColumns = this.state.columns.slice(3); 
- 
+      
         return (
          <TableContext.Provider value={this.state}>
             <div id={'appTable'}>
@@ -466,6 +464,7 @@ class MainTable extends React.Component {
                     height={this.props.containerHeight}
                     // 减去左侧Sider宽度 
                     width={this.props.containerWidth - this.props.siderWidth}
+                    siderWidth={this.props.siderWidth}
                     {...this.props}>
                     {/* {fixedColumn && <Column {...this.getColumnTemplate(fixedColumn.columnKey)} fixed={true} />} */}
                     {fixedColumns.map(column => (
