@@ -88,9 +88,18 @@ class EditableCell extends React.PureComponent {
 
     handleHide = () => {
         const type = this.state.type;
+        
         if (this.props.data) {
+          // 有行数据
+          if (this.props.data.getObjectAt(this.props.rowIndex)) {
             this.props.data.setObjectAt(this.props.rowIndex, this.props.columnKey, this.state.value);
+          }
+          else {
+            // 修改列名
+            this.props.data.setColumnData(this.props.columnKey, {name: this.state.value})
+          }
         }
+         
         if(type == 'DATE'){
           this.state.value = moment(this.state.value).format('YYYY-MM-DD');
         }
@@ -126,10 +135,10 @@ class EditableCell extends React.PureComponent {
     }
 
     render() {
+      
         const {container, data, rowIndex, columnKey, dataVersion, width, height,  ...props} = this.props;
         const { value, editing } = this.state;
         const type = this.state.type||'TEXT';
-        
         let v = (typeof value !='object')?value:moment(value).format('YYYY-MM-DD');
         const inputStyle = {
             width: width - 10,

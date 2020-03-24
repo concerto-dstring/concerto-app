@@ -27,6 +27,7 @@ class DataViewWrapper {
         this.changeGroupCollapseState = this.changeGroupCollapseState.bind(this)
         this.getCellValue = this.getCellValue.bind(this)
         this.undoRemoveGroup = this.undoRemoveGroup.bind(this)
+        this.setColumnData = this.setColumnData.bind(this)
     }
 
     /**
@@ -284,8 +285,17 @@ class DataViewWrapper {
       return null
     }
 
-    changeGroupCollapseState(groupKey) {
-      this._dataset.changeGroupCollapseState(groupKey)
+    changeGroupCollapseState(groupKey, isGroupCollapsed) {
+      this._dataset.changeGroupCollapseState(groupKey, isGroupCollapsed)
+    }
+
+    /**
+     * 
+     * @param {*} columnKey 
+     * @param {name, width等} columnData 对象
+     */
+    setColumnData(columnKey, columnData) {
+      this._dataset.setColumnData(columnKey, columnData)
     }
 }
 
