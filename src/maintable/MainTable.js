@@ -149,15 +149,6 @@ const DataSectionHeader = function(props) {
 }
 
 const FilterableDataTable = AddFilter(DataContext(Table));
-const getColumnCompentByColumnKey = function(columnKey,columns){
-    for(let i=0,len=columns.length;i<len;i++){
-        let column = columns[i];
-        if(columnKey === column.columnKey){
-            return column.columnComponentType;
-        } 
-    }
-}
-
 
 @connect(mapRowActionStateToProps)
 class MainTable extends React.Component {
