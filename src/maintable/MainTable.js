@@ -45,17 +45,12 @@ import {
 
 const DataEditableCell = function(props) {
     this.props = props;
-    const type = props.container.props.isHeaderOrFooter?
-                 'TEXT'
-                 :
-                 getColumnCompentByColumnKey(props.columnKey,this.container.props.dataset._columns);
     return (
         <DataVersionContext.Consumer>
             {({data, version}) => (
                 <EditableCell
                     data={data}
                     dataVersion={version}
-                    // type={type}
                     {...this.props}
                 />
             )}
