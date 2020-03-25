@@ -55,7 +55,7 @@ const DataEditableCell = function(props) {
                 <EditableCell
                     data={data}
                     dataVersion={version}
-                    type={type}
+                    // type={type}
                     {...this.props}
                 />
             )}
@@ -276,7 +276,7 @@ class MainTable extends React.Component {
 
     _onColumnAddCallback(t) {
         const columnComponentType = t.key;
-        this._dataset.addNewColumn('New Column', columnComponentType);
+        this._dataset.addNewColumn(t.item.node.innerText, columnComponentType);
     }
 
     _getColumnName(columnKey) {

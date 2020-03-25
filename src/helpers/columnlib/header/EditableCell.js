@@ -24,9 +24,11 @@ class EditableCell extends React.PureComponent {
             value: cellData.value,
             isCollapsed: cellData.isCollapsed,
             editing: false,
-            type:props.type,
+            type:'TEXT',
+            isHeaderOrFooter:false,
             handleChange:this.handleChange,
-            handleKey:this.handleKey
+            handleKey:this.handleKey,
+            handleHide:this.handleHide
         }
         this.cellRenderValues={
             TEXT:true,
@@ -75,6 +77,12 @@ class EditableCell extends React.PureComponent {
 
     getTargetRef = () => this.targetRef;
 
+    updateValue = () => {
+        if (this.props.data) {
+            this.props.data.setObjectAt(this.props.rowIndex, this.props.columnKey, this.state.value);
+        }
+    }
+
     handleClick = (type) => {
         if(type){
             const columnCanEditor = this.cellRenderValues[type] ;
@@ -86,37 +94,29 @@ class EditableCell extends React.PureComponent {
         }
     }
 
-    handleHide = () => {
-        const type = this.state.type;
-        if (this.props.data) {
-            this.props.data.setObjectAt(this.props.rowIndex, this.props.columnKey, this.state.value);
-        }
-        if(type == 'DATE'){
-          this.state.value = moment(this.state.value).format('YYYY-MM-DD');
-        }
+    handleHide = () => {        
         this.setState({ editing: false });
     }
+
 
     handleChange = (value)=>
     {
         this.setState({
             value: value,
-        });
+        },this.updateValue);
         
     }
 
     handleKey = e =>
     {
         if (e.keyCode == Keys.RETURN) {
+            this.updateValue()
             this.handleHide();
             return;
         }
     }
 
-    getColumnCompentTypeByColumnKey = (columnKey) => {
-        let parent = this.props.container;
-            parent = parent.props.container;
-        const columns = parent.props.dataset._columns
+    getColumnCompentTypeByColumnKey = (columnKey,columns) => {
         for(let i=0,len=columns.length;i<len;i++){
             let column = columns[i];
             if(columnKey === column.columnKey){
@@ -128,8 +128,12 @@ class EditableCell extends React.PureComponent {
     render() {
         const {container, data, rowIndex, columnKey, dataVersion, width, height,  ...props} = this.props;
         const { value, editing } = this.state;
-        const type = this.state.type||'TEXT';
-        
+        const isHeaderOrFooter = container.props.isHeaderOrFooter;
+        const type = isHeaderOrFooter?'TEXT':this.getColumnCompentTypeByColumnKey(columnKey,data._dataset._columns);
+        this.setState({
+            type:type,
+            isHeaderOrFooter:isHeaderOrFooter
+        })
         let v = (typeof value !='object')?value:moment(value).format('YYYY-MM-DD');
         const inputStyle = {
             width: width - 10,

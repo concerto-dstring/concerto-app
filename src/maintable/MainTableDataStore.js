@@ -210,8 +210,11 @@ class MainTableDataStore {
     addNewColumn(newItem, columnComponentType) {
         this._sizeColumns ++; 
         let id = this._sizeColumns.toString();
-        this._columns.push({columnKey: id, name:newItem, width: 200, type: ColumnType.EDITBOX, columnComponentType: columnComponentType});
-
+        this._columns.push({columnKey: id, name:newItem, width: 200, type: ColumnType.EDITBOX, columnComponentType: columnComponentType,collpse:false});
+        for(let key in this._rowData){
+            let row = this._rowData[key];
+            row[id] = "";
+        }
         //refresh
         this.runCallbacks();
 

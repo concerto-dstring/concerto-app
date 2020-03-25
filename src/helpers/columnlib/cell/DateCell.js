@@ -9,7 +9,7 @@ import { Cell } from '../../../maintable/FixedDataTableRoot';
 
 class DateCell extends React.Component { 
     state = {
-      value:undefined,
+      value:this.props.value!=""?this.props.vlaue:undefined,
       open:false,
       addDateTime:'',
       addTimeStyle:{
@@ -34,7 +34,6 @@ class DateCell extends React.Component {
       })
     }
     checkedAddTime = (v,o) => {
-      var test = this;
       this.setState({
         addDateTime:o.children,
         open:true
@@ -59,6 +58,8 @@ class DateCell extends React.Component {
           value:this.state.value?this.state.value:moment()
         })
         this.refs.datePicker.blur();
+        const dateValue = this.state.value!=''?moment(this.state.value, 'YYYY-MM-DD'):undefined;
+        this.props.handleChange(dateValue);
       }
       const clearDateTime = () => {
         this.setState({
@@ -104,9 +105,7 @@ class DateCell extends React.Component {
           open:true,
           value:e
         })
-        handleChange(v!=''?moment(v, 'YYYY-MM-DD'):undefined);
       }
-       
       return (
         <Cell {...props} style={{ width: '100%' }}>
          <DatePicker 
@@ -118,8 +117,7 @@ class DateCell extends React.Component {
                 open={this.state.open}
                 suffixIcon={<div style={{lineHeight:'33px',color:'#8b8c8d'}}>{this.state.addDateTime}</div>}
                 renderExtraFooter={this.renderDatePicker} //antd官网提供的加入额外页脚的方法
-                // value={value?moment(value, 'YYYY-MM-DD'):undefined} 
-                value={this.state.value}
+                value={value!=''?value:undefined}
                 onChange={returnValue}
                 onFocus={this.showDatePicker}
                 onBlur={this.closeDatePicker}
