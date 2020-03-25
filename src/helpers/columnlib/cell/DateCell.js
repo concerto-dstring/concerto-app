@@ -117,7 +117,7 @@ class DateCell extends React.Component {
                 open={this.state.open}
                 suffixIcon={<div style={{lineHeight:'33px',color:'#8b8c8d'}}>{this.state.addDateTime}</div>}
                 renderExtraFooter={this.renderDatePicker} //antd官网提供的加入额外页脚的方法
-                value={value!=''?value:undefined}
+                value={typeof value!='object'?undefined:value}
                 onChange={returnValue}
                 onFocus={this.showDatePicker}
                 onBlur={this.closeDatePicker}

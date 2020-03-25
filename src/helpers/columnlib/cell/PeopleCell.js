@@ -87,7 +87,7 @@ class PeopleCell extends React.Component {
       }
       return (
         <Cell {...props} style={{ width: '100%' }}>
-           <Popover  placement="bottom" trigger="click" content={
+           <Popover  placement="bottom" trigger="click" autoAdjustOverflow={false} content={
               <div>
                   {
                       this.getUserArray().map((v, i) => (
