@@ -134,7 +134,6 @@ class EditableCell extends React.PureComponent {
             type:type,
             isHeaderOrFooter:isHeaderOrFooter
         })
-        let v = (typeof value !='object')?value:moment(value).format('YYYY-MM-DD');
         const inputStyle = {
             width: width - 10,
             height: height - 5,
@@ -144,7 +143,7 @@ class EditableCell extends React.PureComponent {
         return (
 
             <CellContainer ref={this.setTargetRef} onClick={this.handleClick.bind(this,type)}>
-                {!editing && this.cellRenderValues[type] && v}
+                {!editing && this.cellRenderValues[type] && value}
                 {!editing && !this.cellRenderValues[type]&&
                 <TableContext.Provider value={this.state}>
                     <TableCell></TableCell>

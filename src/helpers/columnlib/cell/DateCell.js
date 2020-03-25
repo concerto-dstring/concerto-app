@@ -9,7 +9,7 @@ import { Cell } from '../../../maintable/FixedDataTableRoot';
 
 class DateCell extends React.Component { 
     state = {
-      value:this.props.value!=""?this.props.vlaue:undefined,
+      value:this.props.value,
       open:false,
       addDateTime:'',
       addTimeStyle:{
@@ -54,12 +54,10 @@ class DateCell extends React.Component {
       const { Option } = Select;
       const saveDateTime = () => {
         this.setState({
-          open:false,
-          value:this.state.value?this.state.value:moment()
+          open:false
         })
         this.refs.datePicker.blur();
-        const dateValue = this.state.value!=''?moment(this.state.value, 'YYYY-MM-DD'):undefined;
-        this.props.handleChange(dateValue);
+        this.props.handleChange(this.state.value);
       }
       const clearDateTime = () => {
         this.setState({
@@ -100,10 +98,11 @@ class DateCell extends React.Component {
     
     render() {
       const {data, rowIndex, columnKey, collapsedRows, callback, value, handleChange, handleKey, ...props} = this.props;
+      const dateValue = this.state.value!=''?moment(this.state.value,'YYYY-MM-DD'):undefined;
       const returnValue = (e,v) => {
         this.setState({
           open:true,
-          value:e
+          value:v
         })
       }
       return (
@@ -117,7 +116,7 @@ class DateCell extends React.Component {
                 open={this.state.open}
                 suffixIcon={<div style={{lineHeight:'33px',color:'#8b8c8d'}}>{this.state.addDateTime}</div>}
                 renderExtraFooter={this.renderDatePicker} //antd官网提供的加入额外页脚的方法
-                value={typeof value!='object'?undefined:value}
+                value={dateValue}
                 onChange={returnValue}
                 onFocus={this.showDatePicker}
                 onBlur={this.closeDatePicker}
