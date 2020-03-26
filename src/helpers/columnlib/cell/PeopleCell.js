@@ -8,7 +8,7 @@ import { Cell } from '../../../maintable/FixedDataTableRoot';
 
 class PeopleCell extends React.Component {
     state = {
-      selectedUsers:this.props.value!=''?this.props.value:[],
+      selectedUsers:(this.props.value&&this.props.value!='')?this.props.value:[],
       removeBar:{
         display:'none'
       }
