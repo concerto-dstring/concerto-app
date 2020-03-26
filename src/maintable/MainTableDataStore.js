@@ -171,6 +171,12 @@ class MainTableDataStore {
         this._sizeRows ++;
         let id = this._sizeRows.toString();
         this._rowData[id] = {'1':newItem};
+        for(var i=0;i<this._columns.length;i++){
+            const columnKey = this._columns[i]['columnKey'];
+            if(i>2){
+                this._rowData[id][columnKey]='';
+            }
+        }
         let rows = this._groups[index].rows;
         rows.push(id);
 
