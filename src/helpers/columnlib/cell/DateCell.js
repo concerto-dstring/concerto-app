@@ -10,7 +10,8 @@ import { Cell } from '../../../maintable/FixedDataTableRoot';
 class DateCell extends React.Component { 
     constructor(props){
       super(props);
-      const value = props.value;
+      debugger
+      const value = props.value||'';
       const date = value!=''?value.split('  ')[0]:'';
       const dateValue = date!=''?moment(date,'YYYY-MM-DD'):undefined;
       const addDateTime = value!=''?value.split('  ')[1]:'';
