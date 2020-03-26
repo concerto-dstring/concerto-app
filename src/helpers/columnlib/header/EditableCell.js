@@ -145,17 +145,14 @@ class EditableCell extends React.PureComponent {
       
         const {container, data, rowIndex, columnKey, dataVersion, width, height,  ...props} = this.props;
         const { value, editing } = this.state;
-<<<<<<< HEAD
         const isHeaderOrFooter = container.props.isHeaderOrFooter;
         const type = isHeaderOrFooter?'TEXT':this.getColumnCompentTypeByColumnKey(columnKey,data._dataset._columns);
         this.setState({
             type:type,
             isHeaderOrFooter:isHeaderOrFooter
         })
-=======
         const type = this.state.type||'TEXT';
         let v = (typeof value !='object')?value:moment(value).format('YYYY-MM-DD');
->>>>>>> master
         const inputStyle = {
             width: width - 10,
             height: height - 5,
