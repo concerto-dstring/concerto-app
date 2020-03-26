@@ -45,17 +45,12 @@ import {
 
 const DataEditableCell = function(props) {
     this.props = props;
-    const type = props.container.props.isHeaderOrFooter?
-                 'TEXT'
-                 :
-                 getColumnCompentByColumnKey(props.columnKey,this.container.props.dataset._columns);
     return (
         <DataVersionContext.Consumer>
             {({data, version}) => (
                 <EditableCell
                     data={data}
                     dataVersion={version}
-                    type={type}
                     {...this.props}
                 />
             )}
@@ -154,15 +149,6 @@ const DataSectionHeader = function(props) {
 }
 
 const FilterableDataTable = AddFilter(DataContext(Table));
-const getColumnCompentByColumnKey = function(columnKey,columns){
-    for(let i=0,len=columns.length;i<len;i++){
-        let column = columns[i];
-        if(columnKey === column.columnKey){
-            return column.columnComponentType;
-        } 
-    }
-}
-
 
 @connect(mapRowActionStateToProps)
 class MainTable extends React.Component {
@@ -276,7 +262,7 @@ class MainTable extends React.Component {
 
     _onColumnAddCallback(t) {
         const columnComponentType = t.key;
-        this._dataset.addNewColumn('New Column', columnComponentType);
+        this._dataset.addNewColumn(t.item.node.innerText, columnComponentType);
     }
 
     _getColumnName(columnKey) {
@@ -332,8 +318,6 @@ class MainTable extends React.Component {
         rowTemplates.footer = null;
         rowTemplates.isResizable = false;
         rowTemplates.cell = DropDownCell;
-
-        return rowTemplates
       }
       else if (columnKey == ColumnKey.ROWSELECT) {
 
@@ -343,8 +327,6 @@ class MainTable extends React.Component {
         rowTemplates.footer = null;
         rowTemplates.isResizable = false;
         rowTemplates.cell = DataCheckBoxCell;
-
-        return rowTemplates
       }
       else {
         rowTemplates.width = column.width;
@@ -360,13 +342,7 @@ class MainTable extends React.Component {
             rowTemplates.cell = DataEditableCell;
         }
       }
-
-      if (Object.keys(rowTemplates).length == 0) {
-        return null
-      }
-      else {
-        return rowTemplates;
-      }
+      return rowTemplates;
     }
 
     getColumnAddOptionTemplate(columnKey, width) {

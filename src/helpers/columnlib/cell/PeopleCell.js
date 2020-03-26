@@ -8,7 +8,7 @@ import { Cell } from '../../../maintable/FixedDataTableRoot';
 
 class PeopleCell extends React.Component {
     state = {
-      selectedUsers:[],
+      selectedUsers:this.props.value!=''?this.props.value:[],
       removeBar:{
         display:'none'
       }
@@ -49,8 +49,7 @@ class PeopleCell extends React.Component {
         this.setState({
           selectedUsers:someusers
         })
-        return handleChange(e.userName);
-        
+        handleChange(someusers);
       }
       const removeUser = (user) =>{
         const someusers = this.state.selectedUsers;
@@ -63,15 +62,13 @@ class PeopleCell extends React.Component {
         this.setState({
           selectedUsers:someusers
         })
-        if(someusers.length<1){
-          return handleChange("");
-        }
+        handleChange(someusers);
       }
       const memoveAllUsers = (e) => {
         this.setState({
           selectedUsers:[]
         })
-        return handleChange("");
+        handleChange(new Array());
       }
       const showRemoveUserBar = () => {
         const display = this.state.selectedUsers.length<1?'none':'block';
@@ -90,7 +87,7 @@ class PeopleCell extends React.Component {
       }
       return (
         <Cell {...props} style={{ width: '100%' }}>
-           <Popover  placement="bottom" trigger="click" content={
+           <Popover  placement="bottom" trigger="click" autoAdjustOverflow={false} content={
               <div>
                   {
                       this.getUserArray().map((v, i) => (

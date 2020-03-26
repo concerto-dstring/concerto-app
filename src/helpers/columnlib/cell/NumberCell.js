@@ -16,10 +16,14 @@ class NumberCell extends React.Component {
     render() {
       const {data, rowIndex, columnKey, collapsedRows, callback, value, handleChange, handleKey, ...props} = this.props;
       const returnValue = (e) => {
+        let numberValue = e;
+        if(typeof e != 'number'){
+          numberValue = "";
+        }
         this.setState({
-          value:e
+          value:numberValue
         })
-        return handleChange(e); 
+        return handleChange(numberValue); 
       }
       return (
         <Cell {...props} style={{ width: '100%' }}>
@@ -27,7 +31,8 @@ class NumberCell extends React.Component {
             style={{width:'100%'}} 
             value={this.state.value} 
             onChange={returnValue} 
-            onKeyDown={handleKey}/>
+            onPressEnter={handleKey}
+            />
         </Cell>
       );
     }

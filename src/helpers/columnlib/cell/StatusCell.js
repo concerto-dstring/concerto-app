@@ -16,7 +16,7 @@ class StatusCell extends React.Component {
         working:'进行中',
         finished:'已完成',
         todo:'To Do',
-        default:undefined
+        default:''
       }
       this.statusColorHashTable = {
         block:{background:'#d2515e',color:'white',margin:'5px'},
@@ -36,11 +36,11 @@ class StatusCell extends React.Component {
     render() {
       const {data, rowIndex, columnKey, collapsedRows, callback, value, handleChange, handleKey, ...props} = this.props;
       const returnValue = (e) => {
-        const statusValue = e.key!='null'?e.item.props.children:'';
+        const statusValue = e.key?e.item.props.children:'';
         this.setState({
           value:statusValue
         })
-        return handleChange(statusValue);
+        handleChange(statusValue);
       }
       const menu = <Menu style={{textAlign:'center',fontWeight:'bold'}} onClick={returnValue}>
           <Menu.Item key="working" style={this.statusColorHashTable.working}>
@@ -56,7 +56,6 @@ class StatusCell extends React.Component {
           {this.statusHashTable.todo}
           </Menu.Item>
           <Menu.Item key="default" style={this.statusColorHashTable.default}>
-          {undefined}
           </Menu.Item>
       </Menu>
       return (
