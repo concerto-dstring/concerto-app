@@ -79,8 +79,15 @@ class EditableCell extends React.PureComponent {
 
     updateValue = () => {
         if (this.props.data) {
-            this.props.data.setObjectAt(this.props.rowIndex, this.props.columnKey, this.state.value);
-        }
+            // 有行数据
+            if (this.props.data.getObjectAt(this.props.rowIndex)) {
+              this.props.data.setObjectAt(this.props.rowIndex, this.props.columnKey, this.state.value);
+            }
+            else {
+              // 修改列名
+              this.props.data.setColumnData(this.props.columnKey, {name: this.state.value})
+            }
+          }
     }
 
     handleClick = (type) => {
@@ -94,23 +101,7 @@ class EditableCell extends React.PureComponent {
         }
     }
       
-    handleHide = () => {
-        const type = this.state.type;
-        
-        if (this.props.data) {
-          // 有行数据
-          if (this.props.data.getObjectAt(this.props.rowIndex)) {
-            this.props.data.setObjectAt(this.props.rowIndex, this.props.columnKey, this.state.value);
-          }
-          else {
-            // 修改列名
-            this.props.data.setColumnData(this.props.columnKey, {name: this.state.value})
-          }
-        }
-         
-        if(type == 'DATE'){
-          this.state.value = moment(this.state.value).format('YYYY-MM-DD');
-        }
+    handleHide = () => {         
         this.setState({ editing: false });
     }
 
@@ -151,7 +142,6 @@ class EditableCell extends React.PureComponent {
             type:type,
             isHeaderOrFooter:isHeaderOrFooter
         })
-        let v = (typeof value !='object')?value:moment(value).format('YYYY-MM-DD');
         const inputStyle = {
             width: width - 10,
             height: height - 5,
