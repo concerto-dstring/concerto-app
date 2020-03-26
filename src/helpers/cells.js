@@ -234,11 +234,11 @@ class DropDownMenuHeader extends React.PureComponent {
     }
     else if (key == COLLAPSE_THIS_SECTION.key) {
       // 折叠当前分区
-      data.changeGroupCollapseState(this.state.group.groupKey)
+      data.changeGroupCollapseState(this.state.group.groupKey, true)
     }
     else if (key == COLLAPSE_ALL_SECTION.key) {
       // 折叠所有分区
-      data.changeGroupCollapseState()
+      data.changeGroupCollapseState(null, true)
     }
     else if (key == DELETE_SECTION.key) {
       // 删除分区
