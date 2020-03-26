@@ -38,7 +38,7 @@ class SectionHeader extends PureComponent {
 
   componentWillReceiveProps(props) {
 
-    const { data, rowIndex, isShowSectionColorMenu, curGroup } = props
+    const { data, rowIndex, curGroup } = props
     let group = data.getGroupByRowIndex(rowIndex)
     if (curGroup && group && curGroup.groupKey === group.groupKey) {
       this.setState({ 

@@ -320,20 +320,39 @@ class MainTableDataStore {
       this.runCallbacks();
     }
 
-    changeGroupCollapseState(groupKey) {
-      if (groupKey) {
+    changeGroupCollapseState(groupKey, isGroupCollapsed) {
+      // 都有值
+      if (groupKey && (null !== isGroupCollapsed && undefined !== isGroupCollapsed)) {
+        let group = this._groups.find(group => group.groupKey == groupKey);
+        group.isCollapsed = isGroupCollapsed
+      }
+      // key无值，折叠状态有值
+      else if (!groupKey && (null !== isGroupCollapsed && undefined !== isGroupCollapsed)) {
+        for (let i = 0; i < this._groups.length; i++) {
+          this._groups[i].isCollapsed = isGroupCollapsed
+        }
+      }
+      // key有值，折叠状态无值
+      else if (groupKey && (null === isGroupCollapsed || undefined === isGroupCollapsed)) {
         let group = this._groups.find(group => group.groupKey == groupKey);
         group.isCollapsed = !group.isCollapsed
       }
-      else {
-        for (let i = 0; i < this._groups.length; i++) {
-          this._groups[i].isCollapsed = !this._groups[i].isCollapsed
+
+      //refresh
+      this.runCallbacks();
+    }
+    
+    setColumnData(columnKey, columnData) {
+      let column = this._columns.find(column => column.columnKey === columnKey)
+      if (column) {
+        for (let key in columnData) {
+          column[key] = columnData[key]
         }
       }
 
       //refresh
       this.runCallbacks();
-    } 
+    }
 
     /**
     * The callbacks are used to trigger events as new data arrives.
