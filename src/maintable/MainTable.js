@@ -318,8 +318,6 @@ class MainTable extends React.Component {
         rowTemplates.footer = null;
         rowTemplates.isResizable = false;
         rowTemplates.cell = DropDownCell;
-
-        return rowTemplates
       }
       else if (columnKey == ColumnKey.ROWSELECT) {
 
@@ -329,8 +327,6 @@ class MainTable extends React.Component {
         rowTemplates.footer = null;
         rowTemplates.isResizable = false;
         rowTemplates.cell = DataCheckBoxCell;
-
-        return rowTemplates
       }
       else {
         rowTemplates.width = column.width;
@@ -346,13 +342,7 @@ class MainTable extends React.Component {
             rowTemplates.cell = DataEditableCell;
         }
       }
-
-      if (Object.keys(rowTemplates).length == 0) {
-        return null
-      }
-      else {
-        return rowTemplates;
-      }
+      return rowTemplates;
     }
 
     getColumnAddOptionTemplate(columnKey, width) {
