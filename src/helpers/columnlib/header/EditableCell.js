@@ -151,7 +151,6 @@ class EditableCell extends React.PureComponent {
             type:type,
             isHeaderOrFooter:isHeaderOrFooter
         })
-        const type = this.state.type||'TEXT';
         let v = (typeof value !='object')?value:moment(value).format('YYYY-MM-DD');
         const inputStyle = {
             width: width - 10,
