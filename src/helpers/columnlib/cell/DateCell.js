@@ -8,14 +8,22 @@ import '../../../maintable/css/style/TableCellComponent.css'
 import { Cell } from '../../../maintable/FixedDataTableRoot';
 
 class DateCell extends React.Component { 
-    state = {
-      value:this.props.value,
-      open:false,
-      addDateTime:'',
-      addTimeStyle:{
-        display:'none'
+    constructor(props){
+      super(props);
+      const value = props.value;
+      const date = value!=''?value.split('  ')[0]:'';
+      const dateValue = date!=''?moment(date,'YYYY-MM-DD'):undefined;
+      const addDateTime = value!=''?value.split('  ')[1]:'';
+      this.state = {
+        value:dateValue,
+        open:false,
+        addDateTime:addDateTime,
+        addTimeStyle:{
+          display:'none'
+        }
       }
     }
+    
     closeDatePicker = () => {
       this.setState({
         open:false
@@ -34,10 +42,12 @@ class DateCell extends React.Component {
       })
     }
     checkedAddTime = (v,o) => {
+      const addDateTime = o.children[0]+o.children[1];
       this.setState({
-        addDateTime:o.children,
+        addDateTime:addDateTime,
         open:true
       })
+
     }
     optionVals(Option) {
       const vals = [];
@@ -57,7 +67,7 @@ class DateCell extends React.Component {
           open:false
         })
         this.refs.datePicker.blur();
-        this.props.handleChange(this.state.value);
+        this.props.handleChange(moment(this.state.value).format('YYYY-MM-DD')+'  '+this.state.addDateTime);
       }
       const clearDateTime = () => {
         this.setState({
@@ -66,6 +76,8 @@ class DateCell extends React.Component {
           value:""
         })
         this.refs.datePicker.blur();
+        this.props.handleChange("");
+
       }
       return (
         <div>
@@ -98,11 +110,10 @@ class DateCell extends React.Component {
     
     render() {
       const {data, rowIndex, columnKey, collapsedRows, callback, value, handleChange, handleKey, ...props} = this.props;
-      const dateValue = this.state.value!=''?moment(this.state.value,'YYYY-MM-DD'):undefined;
       const returnValue = (e,v) => {
         this.setState({
           open:true,
-          value:v
+          value:e
         })
       }
       return (
@@ -116,7 +127,7 @@ class DateCell extends React.Component {
                 open={this.state.open}
                 suffixIcon={<div style={{lineHeight:'33px',color:'#8b8c8d'}}>{this.state.addDateTime}</div>}
                 renderExtraFooter={this.renderDatePicker} //antd官网提供的加入额外页脚的方法
-                value={dateValue}
+                value={this.state.value}
                 onChange={returnValue}
                 onFocus={this.showDatePicker}
                 onBlur={this.closeDatePicker}
