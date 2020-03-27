@@ -1,7 +1,12 @@
  .statusWidth{
-     min-width: 70px;
+     min-width: 50px !important;
      width: 100%;
      color:white;
+     margin:0px !important;
+     cursor: pointer;
+     height: 30px;
+     line-height: 30px;
+     text-align: center;
  }
  .status:after {
     content:"";

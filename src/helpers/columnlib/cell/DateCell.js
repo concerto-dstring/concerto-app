@@ -49,9 +49,11 @@ class DateCell extends React.Component {
       })
     }
     checkedAddTime = (v,o) => {
+      const date = this.state.value;
       const addDateTime = o.children[0]+o.children[1];
       this.setState({
         addDateTime:addDateTime,
+        value:date!=''?date:moment(),
         open:true
       })
 
