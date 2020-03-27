@@ -92,18 +92,6 @@ class ColoredTextCell extends React.PureComponent {
   }
 }
 
-class DateCell extends React.PureComponent {
-  render() {
-    const {data, rowIndex, columnKey, ...props} = this.props;
-    return (
-      <Cell {...props}>
-        {data.getCellValue(rowIndex, columnKey).toLocaleString()}
-      </Cell>
-    );
-  }
-}
-
-
 
 class ImageCell extends React.PureComponent {
   render() {
@@ -638,7 +626,6 @@ class CheckBoxHeader extends React.PureComponent {
 export { 
   CollapseCell, 
   ColoredTextCell, 
-  DateCell, 
   ImageCell, 
   LinkCell, 
   PagedCell, 
