@@ -8,16 +8,23 @@ import '../../../maintable/css/style/TableCellComponent.css'
 import { Cell } from '../../../maintable/FixedDataTableRoot';
 
 class DateCell extends React.Component { 
+    #date_time_delimit = '  ';
     constructor(props){
       super(props);
-      const value = props.value||'';
-      const date = value!=''?value.split('  ')[0]:'';
-      const dateValue = date!=''?moment(date,'YYYY-MM-DD'):undefined;
-      const addDateTime = value!=''?value.split('  ')[1]:'';
+      var dateValue;
+      var timeValue;
+      const valuestr = props.value.length||'';
+      if (valuestr) {
+          let dateValueStr = props.value.split(this.#date_time_delimit)[0];
+          dateValue = moment(dateValueStr,'YYYY-MM-DD')
+          timeValue = props.value.split(this.#date_time_delimit)[1];
+      } else {
+        dateValue = timeValue = '';
+      }
       this.state = {
         value:dateValue,
         open:false,
-        addDateTime:addDateTime,
+        addDateTime:timeValue,
         addTimeStyle:{
           display:'none'
         }
@@ -67,7 +74,7 @@ class DateCell extends React.Component {
           open:false
         })
         this.refs.datePicker.blur();
-        this.props.handleChange(moment(this.state.value).format('YYYY-MM-DD')+'  '+this.state.addDateTime);
+        this.props.handleChange(moment(this.state.value).format('YYYY-MM-DD')+this.#date_time_delimit+this.state.addDateTime);
       }
       const clearDateTime = () => {
         this.setState({
