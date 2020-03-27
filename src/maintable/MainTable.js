@@ -150,7 +150,7 @@ const DataSectionHeader = function(props) {
 
 const FilterableDataTable = AddFilter(DataContext(Table));
 
-@connect(mapRowActionStateToProps)
+@connect(mapRowActionStateToProps, null, null, { forwardRef: true })
 class MainTable extends React.Component {
 
     static propTypes = {
@@ -425,7 +425,7 @@ class MainTable extends React.Component {
       
         return (
          <TableContext.Provider value={this.state}>
-            <div id={'appTable'}>
+            <div>
                 <FilterableDataTable
                     ref={this.handleRef}
                     onColumnReorderEndCallback={this._onColumnReorderEndCallback}

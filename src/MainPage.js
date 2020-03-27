@@ -77,7 +77,6 @@ export default class MainPage extends React.Component {
               <Panel header={<h3 style={{fontWeight:"bold",color:'#767676'}}>工作板区</h3>} showArrow={false} key="1">
                 <Search
                   placeholder="搜索"
-                  bordered={false}
                   onSearch={value => console.log(value)}
                   style={{margin:'0 0 5px 0' }}
                 />

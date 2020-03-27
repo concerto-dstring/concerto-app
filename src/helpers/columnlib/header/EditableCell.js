@@ -22,6 +22,7 @@ class EditableCell extends React.PureComponent {
        let cellData = this.getCellData(props)
        this.state = {
             value: cellData.value,
+            oldValue: cellData.value, // 保留原值
             isCollapsed: cellData.isCollapsed,
             editing: false,
             type:'TEXT',
@@ -85,7 +86,12 @@ class EditableCell extends React.PureComponent {
             }
             else {
               // 修改列名
-              this.props.data.setColumnData(this.props.columnKey, {name: this.state.value})
+              if (this.state.value) {
+                this.props.data.setColumnData(this.props.columnKey, {name: this.state.value})
+              }
+              else {
+                this.props.data.setColumnData(this.props.columnKey, {name: this.state.oldValue})
+              }
             }
           }
     }
