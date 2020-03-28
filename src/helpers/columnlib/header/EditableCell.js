@@ -176,8 +176,7 @@ class EditableCell extends React.PureComponent {
                             <div
                                 {...props}
                                 style={{
-                                    ...props.style,
-                                    width: this.targetRef.offsetWidth,
+                                    width: '100%',
                                     top:
                                         placement === 'top'
                                             ? this.targetRef.offsetHeight

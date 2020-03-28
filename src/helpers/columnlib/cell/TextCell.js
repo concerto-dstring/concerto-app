@@ -13,7 +13,7 @@ class TextCell extends React.Component {
       }
     }
     render() {
-      const {data, rowIndex, columnKey, collapsedRows, callback, value, handleChange, handleKey, ...props} = this.props;
+      const {data, rowIndex, columnKey, collapsedRows, isHeaderOrFooter, callback, value, handleChange, handleKey, ...props} = this.props;
       const returnValue = (e) => {
         const inputValue = e.target.value;
         this.setState({
