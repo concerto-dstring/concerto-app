@@ -24,7 +24,7 @@ class TableColumnSort extends React.Component{
     }
     _onSortByColumn = () =>{
         this.setState({
-            sortBy:this.state.sortBy!='ASC'?'ASC':'DES'
+            sortBy:this.state.sortBy!=='ASC'?'ASC':'DES'
         })
         if(this.props.sortByColumn){
             this.props.sortByColumn(this.props.sortBy, this.state.columnKey);
@@ -37,7 +37,7 @@ class TableColumnSort extends React.Component{
                 <Button 
                     size="small"
                     shape="circle"
-                    icon={this.state.sortBy!='ASC'?<SortDescendingOutlined/>:<SortAscendingOutlined/> }
+                    icon={this.state.sortBy!=='ASC'?<SortDescendingOutlined/>:<SortAscendingOutlined/> }
                     onClick={this._onSortByColumn}
                 />
             </div>

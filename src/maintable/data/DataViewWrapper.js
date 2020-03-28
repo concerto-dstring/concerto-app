@@ -271,10 +271,6 @@ class DataViewWrapper {
       this._dataset.setGroupData(groupData)
     }
 
-    addNewGroup(groupKey) {
-      this._dataset.addNewGroup("新分区", groupKey)
-    }
-
     getColumn(columnKey) {
       let columns = this._dataset.getColumns()
       if (columns) {

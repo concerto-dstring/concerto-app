@@ -197,7 +197,6 @@ class DropDownMenuHeader extends React.PureComponent {
       group: group,
       headerBtnColor: groupColor,
       headerBtnBorderColor: groupColor,
-      group: group,
       groupColor: groupColor,
       version: props.dataVersion,
       isShowHeaderMenu: false,
@@ -209,31 +208,31 @@ class DropDownMenuHeader extends React.PureComponent {
   hanldeRowHeaderMenuClick = ({ item, key, keyPath, selectedKeys, domEvent }) => {
     this.hiddenHeaderMenu()
     const { data } = this.props;
-    if (key == RENAME_SECTION.key) {
+    if (key === RENAME_SECTION.key) {
       // 重命名
       this.props.dealSectionRenameModal({isShowReNameModal: true, data, isSection: true, group: this.state.group})
     }
-    else if (key == CHANGE_SECTION_COLOR.key) {
+    else if (key === CHANGE_SECTION_COLOR.key) {
       // 改变分区颜色
       this.props.dealSectionColorMenu({curGroup: this.state.group})
     }
-    else if (key == ADD_SECTION.key) {
+    else if (key === ADD_SECTION.key) {
       // 添加分区
       data.addNewGroup(this.state.group.groupKey)
     }
-    else if (key == COLLAPSE_THIS_SECTION.key) {
+    else if (key === COLLAPSE_THIS_SECTION.key) {
       // 折叠当前分区
       data.changeGroupCollapseState(this.state.group.groupKey, true)
     }
-    else if (key == COLLAPSE_ALL_SECTION.key) {
+    else if (key === COLLAPSE_ALL_SECTION.key) {
       // 折叠所有分区
       data.changeGroupCollapseState(null, true)
     }
-    else if (key == EXPAND_ALL_SECTION.key) {
+    else if (key === EXPAND_ALL_SECTION.key) {
       // 展开所有分区
       data.changeGroupCollapseState(null, false)
     }
-    else if (key == DELETE_SECTION.key) {
+    else if (key === DELETE_SECTION.key) {
       // 删除分区
       this.props.dealSectionDeleteModal({isShowDeleteModal: true, data, isSection: true, group: this.state.group})
     }
@@ -412,21 +411,21 @@ class DropDownMenuCell extends React.PureComponent {
     this.hiddenRowActionBtn()
     this.hiddenSubMenu()
     const { rowIndex, data } = this.props;
-    if (key == ADD_SUB_TABLE.key) {
+    if (key === ADD_SUB_TABLE.key) {
       // 添加子项
 
 
     }
-    else if (key == RENAME_ROW.key) {
+    else if (key === RENAME_ROW.key) {
       // 重命名行
       this.props.dealRowRenameModal({rowIndex, columnKey: ColumnKey.NAME, isShowReNameModal: true, data})
     }
-    else if (key == MOVE_TO_SECTION.key) {
+    else if (key === MOVE_TO_SECTION.key) {
       // 移动至其他分区
 
 
     }
-    else if (key == DELETE_ROW.key) {
+    else if (key === DELETE_ROW.key) {
       // 删除行
       this.props.dealRowDeleteModal({isShowDeleteModal: true, data, rowIndex})
     }

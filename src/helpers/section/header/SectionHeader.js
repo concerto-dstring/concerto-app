@@ -90,7 +90,7 @@ class SectionHeader extends PureComponent {
 
   handleKey = e =>
   {
-    if (e.keyCode == Keys.RETURN) {
+    if (e.keyCode === Keys.RETURN) {
       this.handleHide();
       return;
     }

@@ -122,7 +122,7 @@ class EditableCell extends React.PureComponent {
 
     handleKey = e =>
     {
-        if (e.keyCode == Keys.RETURN) {
+        if (e.keyCode === Keys.RETURN) {
             this.updateValue()
             this.handleHide();
             return;

@@ -311,7 +311,7 @@ class MainTable extends React.Component {
       
       let rowTemplates = {};
       const columnKey = column.columnKey
-      if (columnKey == ColumnKey.ROWACTION) {
+      if (columnKey === ColumnKey.ROWACTION) {
         rowTemplates.width = column.width;
         rowTemplates.columnKey = columnKey;
         rowTemplates.header = DropDownHeader;
@@ -319,7 +319,7 @@ class MainTable extends React.Component {
         rowTemplates.isResizable = false;
         rowTemplates.cell = DropDownCell;
       }
-      else if (columnKey == ColumnKey.ROWSELECT) {
+      else if (columnKey === ColumnKey.ROWSELECT) {
 
         rowTemplates.width = column.width;
         rowTemplates.columnKey = columnKey;

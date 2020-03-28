@@ -160,7 +160,12 @@ function AddFilter(TableComponent) {
     }
 
     render() {
-      const other = except(this.props, Object.keys(FilterTable.propTypes));
+      const propTypes = {
+        data: DataPropTypes.ContextDataListStore,
+        children: PropTypes.node,
+        filters: DataPropTypes.FilterObject
+      };
+      const other = except(this.props, Object.keys(propTypes));
       const filteredData = this.filter();
       return (
         <TableComponent
@@ -175,11 +180,7 @@ function AddFilter(TableComponent) {
     }
   }
 
-  FilterTable.propTypes = {
-    data: DataPropTypes.ContextDataListStore,
-    children: PropTypes.node,
-    filters: DataPropTypes.FilterObject
-  };
+
 
   return FilterTable;
 }
