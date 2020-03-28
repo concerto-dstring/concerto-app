@@ -57,3 +57,8 @@ export const EXPAND_SECTION = {
   key: 'EXPAND_SECTION',
   desc: '展开分区'
 }
+
+export const EXPAND_ALL_SECTION = {
+  key: 'EXPAND_ALL_SECTION',
+  desc: '展开所有分区'
+}

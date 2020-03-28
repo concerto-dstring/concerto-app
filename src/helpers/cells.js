@@ -34,7 +34,8 @@ import {
   COLLAPSE_ALL_SECTION,
   DELETE_SECTION,
   COLLAPSE_SECTION,
-  EXPAND_SECTION
+  EXPAND_SECTION,
+  EXPAND_ALL_SECTION
 } from '../maintable/MainTableRowKeyAndDesc'
 
 import {
@@ -228,6 +229,10 @@ class DropDownMenuHeader extends React.PureComponent {
       // 折叠所有分区
       data.changeGroupCollapseState(null, true)
     }
+    else if (key == EXPAND_ALL_SECTION.key) {
+      // 展开所有分区
+      data.changeGroupCollapseState(null, false)
+    }
     else if (key == DELETE_SECTION.key) {
       // 删除分区
       this.props.dealSectionDeleteModal({isShowDeleteModal: true, data, isSection: true, group: this.state.group})
@@ -276,6 +281,18 @@ class DropDownMenuHeader extends React.PureComponent {
   }
 
   getHeaderMenu = () => {
+
+    // 判断此时折叠的分区大于0且展开的分区只有1，折叠所有分区则要换成展开所有分区
+    let collapsedGroups = this.props.data.getGroups().filter(group => group.isCollapsed)
+    let notCollapsedGroups = this.props.data.getGroups().filter(group => !group.isCollapsed)
+
+    let sectionCollapsedMenuKey = COLLAPSE_ALL_SECTION.key
+    let sectionCollapsedMenuDesc = COLLAPSE_ALL_SECTION.desc
+    if (collapsedGroups.length > 0 && notCollapsedGroups.length === 1) {
+      sectionCollapsedMenuKey = EXPAND_ALL_SECTION.key
+      sectionCollapsedMenuDesc = EXPAND_ALL_SECTION.desc
+    }
+
     return (
       <Menu 
         onClick={this.hanldeRowHeaderMenuClick}
@@ -305,9 +322,9 @@ class DropDownMenuHeader extends React.PureComponent {
           {this.getHeaderMenuData(COLLAPSE_THIS_SECTION.desc)}
         </Menu.Item>
         <Menu.Item 
-          key={COLLAPSE_ALL_SECTION.key}
+          key={sectionCollapsedMenuKey}
         >
-          {this.getHeaderMenuData(COLLAPSE_ALL_SECTION.desc)}
+          {this.getHeaderMenuData(sectionCollapsedMenuDesc)}
         </Menu.Item>
 
         <Menu.Divider />
@@ -353,7 +370,7 @@ class DropDownMenuHeader extends React.PureComponent {
         onWheel={this.changeHeaderMenuBtnColor.bind(this, groupColor, groupColor, ANTD_BTN_TYPE.PRIMARY)}
       >
         <Dropdown 
-          overlay={this.getHeaderMenu(groupColor)}
+          overlay={this.getHeaderMenu()}
           overlayClassName='menu_item_bgcolor'
           visible={isBtnClicked && isShowHeaderMenu}
           getPopupContainer={triggerNode => triggerNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode}
