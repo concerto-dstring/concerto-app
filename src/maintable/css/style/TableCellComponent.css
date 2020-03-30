@@ -45,8 +45,8 @@
 }
 .user Avatar{
     vertical-align: middle;
-    font-weight: bold;
     cursor: pointer;
+    font-size: 13px !important;
 } 
 
 .userOptions{
@@ -97,15 +97,40 @@
  }
   
  .userTag{
-    border-radius:15px;
-    margin:3px
+    background: #e5f4ff !important;
+    border:none !important;
+    border-radius:30px !important;
+    margin: 5px !important;
+    font-weight: normal !important;
+    padding:0 7px 0 0px !important;
+
  }
  .ant-tag-hidden{
     display: block; 
  }
  .ant-popover-content{
-     width:250px;
+     width:300px;
  }
+ .ant-avatar-string {
+    position: absolute;
+    left: 50%;
+    font-size: 13px;
+    -webkit-transform-origin: 0 center;
+    transform-origin: 0 center;
+}
+.ant-popover-title {
+    border-bottom: none !important;
+}
+.dividerStyle{
+    display: table;
+    margin:0 !important;
+    color: #bfbfbf !important;
+    font-weight: normal !important;
+    font-size: 13px !important;
+    white-space: nowrap;
+    text-align: center;
+    background: transparent;
+}
  .longText{
     white-space: nowrap;
     text-overflow: ellipsis;
