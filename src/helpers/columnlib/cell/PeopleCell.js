@@ -8,10 +8,16 @@ import { Cell } from '../../../maintable/FixedDataTableRoot';
 
 class PeopleCell extends React.Component {
     state = {
+      visible:false,
       selectedUsers:(this.props.value&&this.props.value!='')?this.props.value:[],
       removeBar:{
         display:'none'
       }
+    }
+    showUserPanel = () => {
+      this.setState({
+        visible:true
+      })
     }
     getUserArray = () => {
       return [{
@@ -52,9 +58,11 @@ class PeopleCell extends React.Component {
           someusers.push(e);
         }
         this.setState({
+          visible:false,
           selectedUsers:someusers
         })
         handleChange(someusers);
+
       }
       const removeUser = (user) =>{
         const someusers = this.state.selectedUsers;
@@ -97,6 +105,8 @@ class PeopleCell extends React.Component {
               trigger="click" 
               autoAdjustOverflow={false} 
               style={{width:'300px'}}
+              visible={this.state.visible}
+              onClick={this.showUserPanel}
               content={
                 <div>
                   <Divider className="dividerStyle">People</Divider>
