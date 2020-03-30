@@ -4,6 +4,7 @@ import {Input } from 'antd';
 import 'moment/locale/zh-cn';
 import '../../../maintable/css/style/TableCellComponent.css'
 import { Cell } from '../../../maintable/FixedDataTableRoot';
+import './TextCell.less';
 
 class TextCell extends React.Component {
     constructor(props){
@@ -22,9 +23,8 @@ class TextCell extends React.Component {
         return handleChange(inputValue); 
       }
       return (
-        <Cell {...props} style={{ width: '100%' }}>
+        <Cell {...props} className='textCell'>
             <Input 
-            // style={style} 
             value={this.state.value} 
             onChange={returnValue} 
             onKeyDown={handleKey}/>
