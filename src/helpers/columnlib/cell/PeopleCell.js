@@ -104,8 +104,7 @@ class PeopleCell extends React.Component {
               placement="bottom" 
               trigger="click" 
               autoAdjustOverflow={false} 
-              style={{width:'300px'}}
-              visible={this.state.visible}
+              // visible={this.state.visible}
               onClick={this.showUserPanel}
               content={
                 <div>
