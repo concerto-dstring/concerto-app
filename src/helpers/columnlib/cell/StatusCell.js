@@ -4,6 +4,7 @@ import {Button ,Menu, Dropdown} from 'antd';
 import 'moment/locale/zh-cn';
 import '../../../maintable/css/style/TableCellComponent.css'
 import { Cell } from '../../../maintable/FixedDataTableRoot';
+import './StatusCell.less';
 
 class StatusCell extends React.Component {
     constructor(props){
@@ -18,51 +19,40 @@ class StatusCell extends React.Component {
         todo:'To Do',
         default:''
       }
-      this.statusColorHashTable = {
-        block:{background:'#d2515e',color:'white',margin:'5px'},
-        working:{background:'#fec06e',color:'white',margin:'5px'},
-        finished:{background:'#5ac47d',color:'white',margin:'5px'},
-        todo:{background:'#808080',color:'white',margin:'5px'},
-        default:{background:'#c4c4c4',color:'white',height:'31px',margin:'5px'}
-      }
-    }
-    getSelectedStatusColor(statusName){
-       for(let key in this.statusColorHashTable){
-          if(statusName === this.statusHashTable[key]){
-             return this.statusColorHashTable[key];
-          }
-       }
     }
     render() {
       const {data, rowIndex, columnKey, collapsedRows, callback, value, handleChange, handleKey, ...props} = this.props;
       const returnValue = (e) => {
         const selectedText = e.item.props.children;
+        const selectedStyle = e.item.props.className;
         const statusValue = selectedText?selectedText:'';
         this.setState({
-          value:statusValue
+          value:statusValue,
+          styleClassName:selectedStyle,
         })
         handleChange(statusValue);
       }
-      const menu = <Menu style={{textAlign:'center',fontWeight:'bold'}} onClick={returnValue}>
-          <Menu.Item key="working" style={this.statusColorHashTable.working}>
+      const menu = <Menu onClick={returnValue} className='statusCellMenu'>
+          <Menu.Item key="working" className='workingItem'>
           {this.statusHashTable.working}
           </Menu.Item>
-          <Menu.Item key="block" style={this.statusColorHashTable.block}>
+          <Menu.Item key="block" className='blockItem'>
           {this.statusHashTable.block}
           </Menu.Item>
-          <Menu.Item key="finished" style={this.statusColorHashTable.finished}>
+          <Menu.Item key="finished" className='finishedItem'>
           {this.statusHashTable.finished}
           </Menu.Item>
-          <Menu.Item key="todo" style={this.statusColorHashTable.todo}>
+          <Menu.Item key="todo" className='todoItem'>
           {this.statusHashTable.todo}
           </Menu.Item>
-          <Menu.Item key="default" style={this.statusColorHashTable.default}>
+          <Menu.Item key="default" className='defaultItem'>
           </Menu.Item>
       </Menu>
+      let cellStatusTextStyle = this.state.styleClassName + ' statusWidth longText';
       return (
-        <Cell {...props} style={{ width: '100%' }}>
+        <Cell {...props} className='statusCell'>
             <Dropdown overlay={menu} trigger={['click']}>
-              <div style={this.getSelectedStatusColor(this.state.value)} className="statusWidth longText">
+              <div className={cellStatusTextStyle}>
                   {this.state.value}
               </div>
             </Dropdown>
