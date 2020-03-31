@@ -53,8 +53,11 @@ function DataContext(Wrapped) {
         <Wrapped
           rowsCount={this.state.data.getSize()}
           rowHeightGetter={this.state.data.getRowHeight}
+          subRowHeightGetter={this.state.data.getSubRowHeight}
           rowTypeGetter={this.state.data.getRowType}
           rowKeyGetter={this.state.data.getRowKey}
+          subRowTotalHeightGetter={this.state.data.getSubRowTotalHeight}
+          subRowsGetter={this.state.data.getSubRows}
           {...this.props}
         />
         </DataVersionContext.Provider>
@@ -87,13 +90,14 @@ function AddFilter(TableComponent) {
     }
 
     _getDataWrapper(indexMap = null) {
-      const filteredData = new DataViewWrapper(this.props.dataset, indexMap);
+      const filteredData = new DataViewWrapper(this.props.data, indexMap);
       filteredData.setCallback(this.refresh, 'filter');
       return filteredData;
     }
 
     filter() {
       // Get and prep filters
+      // todo add filter here
       const filters = {};
       Object
         .keys(this.props.filters)
@@ -106,7 +110,7 @@ function AddFilter(TableComponent) {
       const match = (haystack, needle) =>
         haystack.toLowerCase().indexOf(needle) !== -1;
 
-      const dataset = this.props.dataset;
+      const dataset = this.props.data;
 
       let filteredIndexes = [];
       if (Object.keys(filters).length > 0) {

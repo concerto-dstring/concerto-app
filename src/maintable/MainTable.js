@@ -11,6 +11,7 @@ import { Button } from 'semantic-ui-react';
 import { Table, Cell, Column } from './FixedDataTableRoot';
 import { ColumnType,  RowType, ColumnKey } from './data/MainTableType';
 import { TextCell, DropDownMenuHeader, DropDownMenuCell, CheckBoxCell, CheckBoxHeader } from '../helpers/cells';
+import { RowHeaderCell } from '../helpers/RowHeaderCell';
 import ReNameModal from '../helpers/section/modal/ReNameModal'
 import DeleteModal from '../helpers/section/modal/DeleteModal'
 import UndoMessage from '../helpers/section/modal/UndoMessage'
@@ -42,6 +43,21 @@ import {
  * @param {number} version A number indicating the current version of the displayed data
  */
 
+const DataRowHeaderCell = function(props) {
+    this.props = props;
+    return (
+        <DataVersionContext.Consumer>
+            {({data, version}) => (
+                <RowHeaderCell
+                    data={data}
+                    dataVersion={version}
+                    type={'TEXT'}
+                    {...this.props}
+                />
+            )}
+        </DataVersionContext.Consumer>
+    );
+}
 
 const DataEditableCell = function(props) {
     this.props = props;
@@ -134,7 +150,7 @@ const DataCheckBoxHeader = function(props) {
 }
 
 const DataSectionHeader = function(props) {
-  this.props = props
+  this.props = props;
   return (
     <DataVersionContext.Consumer>
         {({data, version}) => (
@@ -154,12 +170,12 @@ const FilterableDataTable = AddFilter(DataContext(Table));
 class MainTable extends React.Component {
 
     static propTypes = {
-        dataset: PropTypes.object.isRequired,
+        data: PropTypes.object.isRequired,
     }
 
     constructor(props) {
         super(props);
-        this._dataset = props.dataset;
+        this._dataset = props.data;
 
         this._onAddNewGroupCallback = this._onAddNewGroupCallback.bind(this);
         this._onRemoveGroupCallback = this._onRemoveGroupCallback.bind(this);
@@ -208,7 +224,7 @@ class MainTable extends React.Component {
      * @param {*} event 
      */
     _onAddNewGroupCallback(event) {
-        this._dataset.addNewGroup("新分区")
+        this._dataset.addNewGroup("新分区");
         this.refresh()
     }
 
@@ -217,7 +233,7 @@ class MainTable extends React.Component {
       * @param {*} groupKey 
       */
      _onRemoveGroupCallback(groupKey){
-        this._dataset.removeGroup(groupKey)
+        this._dataset.removeGroup(groupKey);
      }
 
     _onColumnReorderEndCallback(event) {
@@ -246,7 +262,7 @@ class MainTable extends React.Component {
                 column.width = width;
             }
         }
-        this.setState({columns: columns})
+        this.setState({columns: columns});
     }
 
     setColumnCollpse(columnKey, width) {
@@ -257,12 +273,12 @@ class MainTable extends React.Component {
                 column.collpse = !column.collpse;
             }
         }
-        this.setState({columns: columns})
+        this.setState({columns: columns});
     }
 
-    _onColumnAddCallback(t) {
-        const columnComponentType = t.key;
-        this._dataset.addNewColumn(t.item.node.innerText, columnComponentType);
+    _onColumnAddCallback(e) {
+        const [columnComponentType, level] = e.key.split('-');
+        this._dataset.addNewColumn('New Column', level * 1, columnComponentType);
     }
 
     _getColumnName(columnKey) {
@@ -289,6 +305,7 @@ class MainTable extends React.Component {
                 colTemplates.width = this.getColumnWidth(columnKey);
                 colTemplates.minWidth = 70;
                 colTemplates.isResizable = true;
+                colTemplates.level = column.level;
                 if (column.type === ColumnType.LABEL) { 
                     colTemplates.cell = DataTextCell;
                     return colTemplates;
@@ -310,68 +327,72 @@ class MainTable extends React.Component {
     getFixedColumnTemplate(column) {
       
       let rowTemplates = {};
-      const columnKey = column.columnKey
-      if (columnKey === ColumnKey.ROWACTION) {
+      const columnKey = column.columnKey;
+      if (column.type === ColumnType.ROWACTION) {
         rowTemplates.width = column.width;
         rowTemplates.columnKey = columnKey;
         rowTemplates.header = DropDownHeader;
         rowTemplates.footer = null;
         rowTemplates.isResizable = false;
         rowTemplates.cell = DropDownCell;
+        rowTemplates.level = column.level;
       }
-      else if (columnKey === ColumnKey.ROWSELECT) {
-
+      else if (column.type === ColumnType.ROWSELECT) {
         rowTemplates.width = column.width;
         rowTemplates.columnKey = columnKey;
         rowTemplates.header = DataCheckBoxHeader;
         rowTemplates.footer = null;
         rowTemplates.isResizable = false;
         rowTemplates.cell = DataCheckBoxCell;
+        rowTemplates.level = column.level;
       }
       else {
         rowTemplates.width = column.width;
         rowTemplates.columnKey = columnKey;
+        if (column.level == 0)
+            rowTemplates.header = DataSectionHeader;
         rowTemplates.header = DataSectionHeader;
-        rowTemplates.footer = <Cell>summary</Cell>;
+        rowTemplates.footer = <Cell>总计</Cell>;
         rowTemplates.minWidth = 70;
         rowTemplates.isResizable = true;
+        rowTemplates.level = column.level;
         if (column.type === ColumnType.LABEL) {
             rowTemplates.cell = DataTextCell;
         }
         else if (column.type === ColumnType.EDITBOX) {
-            rowTemplates.cell = DataEditableCell;
+            rowTemplates.cell = DataRowHeaderCell;
         }
       }
       return rowTemplates;
     }
 
-    getColumnAddOptionTemplate(columnKey, width) {
+    getColumnAddOptionTemplate(columnKey, level, width) {
         const addColumnStyle = {
             boxShadow: 'none',
         };
         const menu = (
             <Menu onClick={this._onColumnAddCallback} style={{width:'100px'}}>
-                <Menu.Item key="DATE">
+            <Menu.Item key={"DATE-"+level}>
                     <ScheduleOutlined />
                     日期
                 </Menu.Item>
-                <Menu.Item key="NUMBER">
+                <Menu.Item key={"NUMBER-"+level}>
                     <AccountBookOutlined />
                     数字
                 </Menu.Item>
-                <Menu.Item key="TEXT">
+                <Menu.Item key={"TEXT-"+level}>
                     <FormOutlined />
                     文本
                 </Menu.Item>
-                <Menu.Item key="SELECT">
+                <Menu.Item key={"SELECT-"+level}>
                     <CheckSquareOutlined />
                     选择
                 </Menu.Item>
-                <Menu.Item key="PEOPLE">
+                <Menu.Item key={"PEOPLE-"+level}>
                     <UserOutlined />
                     人员
                 </Menu.Item>
-                <Menu.Item key="STATUS">
+                <Menu.Item key={"STATUS-"+level}>
                     <StrikethroughOutlined />
                     状态
                 </Menu.Item>
@@ -379,6 +400,7 @@ class MainTable extends React.Component {
         );
         let colTemplate = {};
         colTemplate.columnKey = columnKey;
+        colTemplate.level = level;
         colTemplate.header = <Dropdown overlay={menu} trigger={['click']}>
                                 <Button basic circular icon='plus circle' style={addColumnStyle} />
                              </Dropdown>;
@@ -420,8 +442,8 @@ class MainTable extends React.Component {
 
     renderTable() {
         var { data, filters } = this.state;
-        const fixedColumns = this.state.columns.length > 0 ? this.state.columns.slice(0, 3) : [];
-        const scrollColumns = this.state.columns.slice(3); 
+        const fixedColumns = this.state.columns.filter(c => c.fixed); 
+        const scrollColumns = this.state.columns.filter(c => !c.fixed);
       
         return (
          <TableContext.Provider value={this.state}>
@@ -449,8 +471,9 @@ class MainTable extends React.Component {
                     {scrollColumns.map(column => (
                         <Column {...this.getColumnTemplate(column.columnKey)} fixed={false} />
                     ))
-                    }              
-                    <Column {...this.getColumnAddOptionTemplate("", 40)}/>
+                    }
+                    <Column {...this.getColumnAddOptionTemplate("", 0, 40)}/>
+                    <Column {...this.getColumnAddOptionTemplate("", 1, 40)}/>
                 </FilterableDataTable>
                 <ReNameModal 
                   isShowReNameModal={this.props.isShowReNameModal}

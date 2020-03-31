@@ -38,9 +38,6 @@ import {
   EXPAND_ALL_SECTION
 } from '../maintable/MainTableRowKeyAndDesc'
 
-import {
-  ColumnKey
-} from '../maintable/data/MainTableType'
 
 import {
   VISIBILITY,
@@ -55,7 +52,7 @@ import '../maintable/css/style/RowActionMenu.less'
 import '../maintable/css/style/SectionMenu.less'
 
 import { connect } from 'react-redux'
-import { dealRowRenameModal, dealRowDeleteModal,  } from '../maintable/actions/rowActions'
+import { dealRowRenameModal, dealRowDeleteModal} from '../maintable/actions/rowActions';
 import { dealSectionRenameModal, dealSectionDeleteModal, dealSectionColorMenu } from '../maintable/actions/SectionActions'
 
 const { SubMenu } = Menu;
@@ -172,7 +169,12 @@ class DropDownMenuHeader extends React.PureComponent {
 
     let group = data.getGroupByRowIndex(rowIndex)
     let groupColor = group ? group.color : COLOR.DEFAULT
-    let isCollapsed = data._indexMap[rowIndex].isCollapsed
+    let isCollapsed;
+    if (typeof rowIndex === 'string') {
+      isCollapsed = false;
+    } else {
+      isCollapsed = data._indexMap[props.rowIndex].isCollapsed;
+    }
     // 保存分区原有的颜色
     this.state = {
       isBtnClicked: false,
@@ -191,7 +193,12 @@ class DropDownMenuHeader extends React.PureComponent {
     const { data, rowIndex } = props
     let group = data.getGroupByRowIndex(rowIndex)
     let groupColor = group ? group.color : COLOR.DEFAULT
-    let isCollapsed = data._indexMap[rowIndex].isCollapsed
+    let isCollapsed;
+    if (typeof rowIndex === 'string') {
+      isCollapsed = false;
+    } else {
+      isCollapsed = data._indexMap[props.rowIndex].isCollapsed;
+    }
 
     this.setState({ 
       group: group,
@@ -418,7 +425,7 @@ class DropDownMenuCell extends React.PureComponent {
     }
     else if (key === RENAME_ROW.key) {
       // 重命名行
-      this.props.dealRowRenameModal({rowIndex, columnKey: ColumnKey.NAME, isShowReNameModal: true, data})
+      this.props.dealRowRenameModal({rowIndex, columnKey: '1', isShowReNameModal: true, data});
     }
     else if (key === MOVE_TO_SECTION.key) {
       // 移动至其他分区
@@ -427,7 +434,7 @@ class DropDownMenuCell extends React.PureComponent {
     }
     else if (key === DELETE_ROW.key) {
       // 删除行
-      this.props.dealRowDeleteModal({isShowDeleteModal: true, data, rowIndex})
+      this.props.dealRowDeleteModal({isShowDeleteModal: true, data, rowIndex});
     }
   }
 
@@ -594,7 +601,12 @@ class CheckBoxHeader extends React.PureComponent {
 
   getBtnIcon = () => {
     const { data, rowIndex } = this.props;
-    let isCollapsed = data._indexMap[rowIndex].isCollapsed
+    let isCollapsed;
+    if (typeof rowIndex === 'string') {
+      isCollapsed = false;
+    } else {
+      isCollapsed = data._indexMap[rowIndex].isCollapsed;
+    }
     this.setState({
       tipText: isCollapsed ? EXPAND_SECTION.desc : COLLAPSE_SECTION.desc
     })

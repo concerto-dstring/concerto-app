@@ -14,6 +14,8 @@
 /*eslint no-bitwise:1*/
 import React from 'react';
 import PropTypes from 'prop-types';
+import FixedDataTableRow from './FixedDataTableRow';
+import MainTableAddRow from './MainTableAddRow';
 import { events, getPosition } from './helper/utils'
 import FixedDataTableBufferedRows from './FixedDataTableBufferedRows';
 import FixedDataTableEventHelper from './FixedDataTableEventHelper';
@@ -28,7 +30,7 @@ import isNaN from 'lodash/isNaN';
 import joinClasses from './vendor_upstream/core/joinClasses';
 import scrollbarsVisible from './selectors/scrollbarsVisible';
 import tableHeightsSelector from './selectors/tableHeights';
-import { RowType } from './data/MainTableType';
+import { RowType, getSubLevel, getRootRowIndex } from './data/MainTableType';
 import ColumnResizerLine from './ColumnResizerLine';
 
 import './css/layout/fixedDataTableLayout.css';
@@ -199,6 +201,22 @@ class FixedDataTable extends React.Component {
      */
     subRowHeight: PropTypes.number,
 
+    /**
+     * If specified, `subRowHeightGetter(index)` is called for each subrow.
+     */
+    subRowHeightGetter: PropTypes.func,
+
+    /**
+     * If specified, `subrowsGetter(index)` is called for each row and the
+     * returned value all `subRow` for particular row.
+     */
+    subRowsGetter: PropTypes.func,
+
+    /**
+     * If specified, `subRowTotalHeightGetter(index)` is called for all sub rows.
+     */
+    subRowTotalHeightGetter: PropTypes.func,
+
     // TODO (jordan) Remove propType of subRowHeightGetter without losing documentation (moved to rowSettings)
     /**
      * If specified, `subRowHeightGetter(index)` is called for each row and the
@@ -206,8 +224,6 @@ class FixedDataTable extends React.Component {
      */
     subRowHeightGetter: PropTypes.func,
     
-
-    rowDropIndexGetter: PropTypes.func,
 
     /**
      * The row expanded for table row.
@@ -877,7 +893,7 @@ class FixedDataTable extends React.Component {
     );
   }
 
-  _renderRows =  (/*number*/ ariaGroupHeaderIndex, /*number*/ ariaHeaderIndex, /*number*/ ariaFooterIndex, 
+  _renderRows = (/*number*/ ariaGroupHeaderIndex, /*number*/ ariaHeaderIndex, /*number*/ ariaFooterIndex, 
     /*number*/ ariaRowIndexOffset, /*number*/ bodyHeight, /*number*/ componentHeight, siderWidth) /*object*/ => {
 
     const props = this.props;
@@ -890,7 +906,7 @@ class FixedDataTable extends React.Component {
       fixedRightColumns,
       scrollableColumnGroups,
       scrollableColumns,
-    } = columnTemplatesSelector(props);
+    } = columnTemplatesSelector({props:props, level:0});
 
     const onColumnReorder = props.onColumnReorderEndCallback ? this._onColumnReorder : null;
 
@@ -932,7 +948,7 @@ class FixedDataTable extends React.Component {
         onRowTouchEnd={props.touchScrollEnabled ? props.onRowTouchEnd : null}
         onRowTouchMove={props.touchScrollEnabled ? props.onRowTouchMove : null}
         rowClassNameGetter={props.rowClassNameGetter}
-        rowExpanded={props.rowExpanded}
+        rowExpanded={this._rowExpanded}
         rowKeyGetter={props.rowKeyGetter}
         rowSettings={props.rowSettings}
         scrollLeft={props.scrollX}
@@ -991,21 +1007,80 @@ class FixedDataTable extends React.Component {
     });
   }
 
+
+  _getRowTopOffset = (rowIndex, y = 0) => {
+    if (getSubLevel(rowIndex) === 0) {
+      return this.props.rowOffsets[rowIndex];
+    } else {
+      let rootRowIndex = getRootRowIndex(rowIndex);
+      let topOffset = 0;
+      let subRows = this.props.subRowsGetter(rootRowIndex);
+      let height = this.props.rowHeightGetter(rootRowIndex);          
+      topOffset += height;
+      for (let i = 0; i < subRows.length; i++) {
+        const indexString = `${rootRowIndex}.${i}`;
+        if (indexString === rowIndex) {
+          return y ? 2 * topOffset - (y - (this.props.rowOffsets[rootRowIndex] - this.props.scrollY)) 
+                    : topOffset + this.props.rowOffsets[rootRowIndex];
+        }
+        let height = this.props.rowHeightGetter(indexString);          
+        topOffset += height;
+      }
+      return y ? 2 * topOffset - (y - (this.props.rowOffsets[rootRowIndex] - this.props.scrollY)) 
+                : topOffset + this.props.rowOffsets[rootRowIndex];
+    }
+  }
+
+  _getDropRowIndex = (y) => {
+    let { firstRowIndex, rowOffsets, endRowIndex, storedHeights } = this.props;
+    for (let rowIndex = firstRowIndex; rowIndex < endRowIndex; rowIndex++) {
+      let offset = rowOffsets[rowIndex];
+      if (y >= offset && y <= offset + storedHeights[rowIndex]) {
+        let type = this.props.rowTypeGetter(rowIndex);
+        let dropRowIndex = rowIndex;
+        switch (type) {
+          case RowType.HEADER:
+            if (this._draggingRowIndex > rowIndex)
+              dropRowIndex++;
+            break;
+          case RowType.ADDROW:
+            if (this._draggingRowIndex < rowIndex)
+              dropRowIndex --;
+            break;
+          case RowType.FOOTER:
+            if (this._draggingRowIndex < rowIndex)
+              dropRowIndex -= 2;
+            else
+              dropRowIndex--;
+            break;
+          case RowType.SUBROW: // drag subrow item
+            // Todo will add sub row logic here            
+
+            break;
+        }
+        return dropRowIndex;
+      }
+    }
+    return null;
+  }
+
   _onColumnReorder = (
     /*number*/ rowIndex,
     /*string*/ columnKey,
     /*number*/ width,
     /*object*/ event,
   ) => {
+    let topOffset = this._getRowTopOffset(rowIndex);
     this.props.columnActions.startColumnReorder({
       scrollStart: this.props.scrollX,
       rowIndex,
       columnKey,
       width,
-      top: this.props.rowOffsets[rowIndex],
+      top: topOffset,
       event,
     });
   }
+
 
   _onColumnReorderMove = (/*number*/ deltaX, /*number*/ deltaY) => {
     this.props.columnActions.moveColumnReorder(deltaX, deltaY);
@@ -1043,17 +1118,15 @@ class FixedDataTable extends React.Component {
   }
 
   _onRowReorderStart = (event, rowIndex) => {
-
     let { rowOffsets, storedHeights, rowSettings } = this.props; 
-
     this._position = getPosition(event, this._divRef);
-    
     let type = rowSettings.rowTypeGetter(rowIndex); 
-
     if (type === RowType.ROW) {
       this._draggingRowIndex = rowIndex;
       this._draggingHeight = storedHeights[rowIndex];
       this._originalTop = rowOffsets[rowIndex];
+    } else if (type === RowType.SUBROW) {
+      // Todo add subrow logic here
     }
   }
 
@@ -1063,7 +1136,7 @@ class FixedDataTable extends React.Component {
       return;
     }
 
-    let { firstRowIndex, rowOffsets, endRowIndex, scrollX, scrollY, storedHeights } = this.props; 
+    let { scrollX, scrollY } = this.props; 
     const position = getPosition(event, this._divRef);
     const delta = {
       x: this._position.x - position.x,
@@ -1075,50 +1148,29 @@ class FixedDataTable extends React.Component {
       ///here find a place to drop the dragging row
       if (position.x > this.props.width - DRAG_SCROLL_BUFFER) {
         this._onScroll(DRAG_SCROLL_SPEED, 0);
-      } else if (position.x  <= DRAG_SCROLL_BUFFER) {
+      } else if (position.x <= DRAG_SCROLL_BUFFER) {
         this._onScroll(DRAG_SCROLL_SPEED * -1, 0);
       }
   
       if (position.y > this.props.height - DRAG_SCROLL_BUFFER) {
         this._onScroll(0, DRAG_SCROLL_SPEED);
-      } else if (position.y  <= DRAG_SCROLL_BUFFER) {
+      } else if (position.y <= DRAG_SCROLL_BUFFER) {
         this._onScroll(0, DRAG_SCROLL_SPEED * -1);
       }
 
       const y = Math.min(position.y + scrollY, this.props.scrollContentHeight);
-      for (let rowIndex = firstRowIndex; rowIndex < endRowIndex; rowIndex ++) {
-        let offset = rowOffsets[rowIndex];
+      const dropRowIndex = this._getDropRowIndex(y);
 
-        if (y >= offset && y <= offset + storedHeights[rowIndex]) {
-          let type = this.props.rowTypeGetter(rowIndex);
-          let dropRowIndex = rowIndex;
-          switch (type) {
-            case RowType.HEADER:
-              if (this._draggingRowIndex > rowIndex)
-                dropRowIndex ++;
-              break;
-            case RowType.ADDROW:
-              if (this._draggingRowIndex < rowIndex)
-                dropRowIndex --;
-              break;
-            case RowType.FOOTER:
-              if (this._draggingRowIndex < rowIndex)
-                dropRowIndex -= 2;
-              else 
-                dropRowIndex --;
-              break;
-          }
-          this.props.rowActions.moveRowReorder({
-            deltaX: delta.x,
-            deltaY: delta.y,
-            newRowIndex: dropRowIndex,
-          });
- 
-          this._dropRowIndex = dropRowIndex;
-          break;
-        }
+      if (dropRowIndex) { 
+        this.props.rowActions.moveRowReorder({
+          deltaX: delta.x,
+          deltaY: delta.y,
+          newRowIndex: dropRowIndex,
+        });
+
+        this._dropRowIndex = dropRowIndex;
+        event.preventDefault();
       }
-      event.preventDefault();
       return;
     }
 
@@ -1228,6 +1280,175 @@ class FixedDataTable extends React.Component {
     if (onVerticalScroll ? onVerticalScroll(scrollPos) : true) {
       scrollActions.scrollToY(scrollPos);
     }
+  }
+
+  _rowExpanded = ({ rowIndex, height, width }) => {
+    let props = this.props;
+    let subRows = props.subRowsGetter(rowIndex);
+    const onColumnReorder = props.onColumnReorderEndCallback ? this._onColumnReorder : null;
+    if (subRows.length == 0) {
+      return null;
+    }
+    const style = {
+      paddingTop: '3px',
+      height: height,
+      width: width,
+      overflow: 'hidden', 
+    }
+    const {
+      fixedColumns,
+      fixedRightColumns,
+      scrollableColumns,
+    } = columnTemplatesSelector({props:props, level:1});
+
+    //sum up width of all columns
+    let subwidth = 0;
+    fixedColumns.cell.forEach(c=> subwidth += c.props.width);
+    fixedRightColumns.cell.forEach(c=> subwidth += c.props.width);
+    scrollableColumns.cell.forEach(c=> subwidth += c.props.width);
+    let rows = [];
+    let offset = 0;
+    let subRowIndex = 0;
+    for (let i = 0; i < subRows.length; i++) {
+      let type = subRows[i].rowType;
+      let rowHeight = props.subRowHeightGetter(type);
+      let indexString = `${rowIndex}.${subRowIndex}`;
+      let rowProps = {};
+      rowProps.height = rowHeight;
+      rowProps.offsetTop = offset;
+
+      rowProps.rowKey = props.rowKeyGetter ? props.rowKeyGetter(indexString) : i;
+
+      rowProps.attributes = props.rowSettings.rowAttributesGetter && props.rowSettings.rowAttributesGetter(rowIndex);
+      let row;
+      switch (type) {
+        case RowType.SUBHEADER:
+          row =
+            <FixedDataTableRow
+              key={i}
+              index={indexString}
+              isHeaderOrFooter={true}
+              isScrolling={props.isScrolling}
+              isRowReordering={props.isRowReordering}
+              rowReorderingData={props.rowReorderingData}
+              className={joinClasses(
+                cx('fixedDataTableLayout/header'),
+                cx('public/fixedDataTable/header'),
+              )}
+              width={subwidth}
+              height={rowHeight}
+              offsetTop={offset}
+              scrollLeft={Math.round(props.scrollX)}
+              visible={true}
+              fixedColumns={fixedColumns.header}
+              fixedRightColumns={fixedRightColumns.header}
+              scrollableColumns={scrollableColumns.header}
+              touchEnabled={props.touchScrollEnabled}
+              onColumnResize={this._onColumnResize}
+              onColumnReorderMove={this._onColumnReorderMove}
+              onColumnReorderEnd={this._onColumnReorderEnd}
+              onColumnReorder={onColumnReorder}
+              isColumnReordering={!!props.isColumnReordering}
+              columnReorderingData={props.columnReorderingData}
+              showScrollbarY={props.scrollEnabledY}
+              container={this}
+              isRTL={props.isRTL}>
+            </FixedDataTableRow>
+          break;
+        case RowType.SUBADDROW:
+          row =
+            <MainTableAddRow
+              key={i}
+              index={indexString}
+              isScrolling={props.isScrolling}
+              isRowReordering={props.isRowReordering}
+              rowReorderingData={props.rowReorderingData}
+              height={rowHeight}
+              width={subwidth}
+              rowReorderingData={props.rowReorderingData}
+              offsetTop={offset}
+              scrollLeft={Math.round(props.scrollX)}
+              fixedColumns={fixedColumns.cell}
+              fixedRightColumns={fixedRightColumns.cell}
+              scrollableColumns={scrollableColumns.cell}
+              showScrollbarY={props.scrollEnabledY}
+              isRTL={props.isRTL}
+              container={this}
+              visible={true}
+              onNewRowAdd={props.onNewRowAddCallback}
+            />;
+          break;
+
+        case RowType.SUBFOOTER:
+          row =
+            <FixedDataTableRow
+              key={i}
+              index={indexString}
+              isHeaderOrFooter={true}
+              isScrolling={props.isScrolling}
+              isRowReordering={props.isRowReordering}
+              rowReorderingData={props.rowReorderingData}
+              className={joinClasses(
+                cx('fixedDataTableLayout/footer'),
+                cx('public/fixedDataTable/footer'),
+              )}
+              width={subwidth}
+              height={rowHeight}
+              offsetTop={offset}
+              visible={true}
+              fixedColumns={fixedColumns.footer}
+              fixedRightColumns={fixedRightColumns.footer}
+              scrollableColumns={scrollableColumns.footer}
+              scrollLeft={Math.round(props.scrollX)}
+              showScrollbarY={props.scrollEnabledY}
+              container={this}
+              isRTL={props.isRTL}
+            />;
+          break;
+
+        default:
+          row =
+            <FixedDataTableRow
+              index={indexString}
+              key={i}
+              isHeaderOrFooter={false}
+              zIndex={2}
+              isScrolling={props.isScrolling}
+              width={subwidth}
+              height={rowHeight}
+              scrollLeft={Math.round(props.scrollX)}
+              scrollTop={Math.round(props.scrollTop)}
+              fixedColumns={fixedColumns.cell}
+              fixedRightColumns={fixedRightColumns.cell}
+              scrollableColumns={scrollableColumns.cell}
+              onClick={props.onRowClick}
+              isRowReordering={props.isRowReordering}
+              rowReorderingData={props.rowReorderingData}
+              onContextMenu={props.onRowContextMenu}
+              onDoubleClick={props.onRowDoubleClick}
+              onMouseDown={this._onRowReorderStart}
+              onMouseUp={props.onRowMouseUp}
+              onMouseEnter={props.onRowMouseEnter}
+              onMouseLeave={props.onRowMouseLeave}
+              onTouchStart={props.onRowTouchStart}
+              onTouchEnd={props.onRowTouchEnd}
+              onTouchMove={props.onRowTouchMove}
+              showScrollbarY={props.showScrollbarY}
+              isRTL={props.isRTL}
+              visible={true}
+              container={this}
+              {...rowProps}
+            />
+      }
+      rows.push(row);
+      offset += rowHeight;
+      subRowIndex ++;
+    }
+    return (
+      <div style={style}>
+        {rows}
+      </div>
+    );
   }
 
   /**

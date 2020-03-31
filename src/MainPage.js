@@ -159,7 +159,7 @@ export default class MainPage extends React.Component {
             </Breadcrumb>
             <Content>
               <MainTable 
-                dataset={this.dataset} 
+                data={this.dataset} 
                 siderWidth={this.state.siderWidth} 
               />
             </Content>

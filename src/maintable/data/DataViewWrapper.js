@@ -1,33 +1,52 @@
 "use strict";
 
-import { RowType } from './MainTableType';
+import { RowType, getSubLevel, getRootRowIndex } from './MainTableType';
 
 class DataViewWrapper {
     constructor(dataset, indexMap = null) {
-
         this._indexMap = this.getIndexMap(dataset, indexMap);
+        this._subRowMap = {};
         this._dataset = dataset;
+        this._indexMap.forEach((r, i) => {
+          if (this._dataset.isSubRowExpanded(r.rowKey)) {
+              let rows = this._dataset.getSubRows(r.rowKey);
+              if (rows.length > 0) {      
+                  let k;      
+                  for (k = 0; k < rows.length; k ++) {
+                      const indexString = `${i}.${k + 1}`;
+                      this._subRowMap[indexString] = rows[k];
+                  }
+                  const indexString = `${i}.${k + 1}`;
+                  this._subRowMap[indexString] = r.rowKey;
+              }
+          }
+        });
         this.getSize = this.getSize.bind(this);
         this.getRowType = this.getRowType.bind(this);
         this.addNewRow = this.addNewRow.bind(this);
         this.getRowKey = this.getRowKey.bind(this);
         this.getRowHeight = this.getRowHeight.bind(this);
         this.getRowMap = this.getRowMap.bind(this);
+        this.getSubRowHeight = this.getSubRowHeight.bind(this);
         this.removeRow = this.removeRow.bind(this);
         this.removeRows = this.removeRows.bind(this);
         this.reorderRow = this.reorderRow.bind(this);
         this.setObjectAt = this.setObjectAt.bind(this);
         this.getObjectAt = this.getObjectAt.bind(this);
-        this.getGroups = this.getGroups.bind(this)
-        this.moveRow = this.moveRow.bind(this)
-        this.getGroupByRowIndex = this.getGroupByRowIndex.bind(this)
-        this.setGroupData = this.setGroupData.bind(this)
-        this.addNewGroup = this.addNewGroup.bind(this)
-        this.getColumn = this.getColumn.bind(this)
-        this.changeGroupCollapseState = this.changeGroupCollapseState.bind(this)
-        this.getCellValue = this.getCellValue.bind(this)
-        this.undoRemoveGroup = this.undoRemoveGroup.bind(this)
-        this.setColumnData = this.setColumnData.bind(this)
+        this.getGroups = this.getGroups.bind(this);
+        this.moveRow = this.moveRow.bind(this);
+        this.getGroupByRowIndex = this.getGroupByRowIndex.bind(this);
+        this.setGroupData = this.setGroupData.bind(this);
+        this.addNewGroup = this.addNewGroup.bind(this);
+        this.getColumn = this.getColumn.bind(this);
+        this.changeGroupCollapseState = this.changeGroupCollapseState.bind(this);
+        this.getCellValue = this.getCellValue.bind(this);
+        this.undoRemoveGroup = this.undoRemoveGroup.bind(this);
+        this.setColumnData = this.setColumnData.bind(this);
+        this.toggleSubRows = this.toggleSubRows.bind(this);
+        this.getSubRowTotalHeight = this.getSubRowTotalHeight.bind(this);
+        this.getSubRows = this.getSubRows.bind(this);
+        this.getSubRowCount = this.getSubRowCount.bind(this);
     }
 
     /**
@@ -90,6 +109,7 @@ class DataViewWrapper {
     }
 
     getObjectAt(index) {
+      if (getSubLevel(index) === 0) {
         if (this._indexMap === null) {
             return this._data.getObjectAt(index);
         }
@@ -99,6 +119,75 @@ class DataViewWrapper {
         }
         let rowkey = this._indexMap[index].rowKey;
         return rowkey ? this._dataset.getObjectAt(rowkey) : null;
+      }
+      let rowKey = this._subRowMap[index];
+      return rowKey ? this._dataset.getObjectAt(rowKey) : null;
+    }
+
+    toggleSubRows(rowIndex) {
+      let rowKey = this._indexMap[rowIndex].rowKey;
+      this._dataset.toggleExpandSubRows(rowKey);
+    }
+
+    getSubRowTotalHeight(rowIndex) {
+      let rowKey = this._indexMap[rowIndex].rowKey;
+      if (!this._dataset.isSubRowExpanded(rowKey)) {
+          return 0;
+      }
+      let rows = this._dataset.getSubRows(rowKey);
+      if (rows.length == 0)
+          return 0;
+      return (rows.length + 3) * 40;
+    }
+
+    getSubRowCount(rowIndex) {
+      if (getSubLevel(rowIndex) === 0) {
+          let rowKey = this._indexMap[rowIndex].rowKey;
+          let rows = this._dataset.getSubRows(rowKey);
+          return rows.length;
+      }
+      return 0;
+    }
+
+    getSubRows(rowIndex) {
+      let rowKey = this._indexMap[rowIndex].rowKey;
+      if (!this._dataset.isSubRowExpanded(rowKey)) {
+          return [];
+      }
+      let indexes = [];
+      let offset = 0;
+      let rows = this._dataset.getSubRows(rowKey);
+      if (rows.length > 0) {
+          indexes.push({rowType:RowType.SUBHEADER, rowKey:'', parentRowKey: rowKey});
+          offset ++;
+          for (let k = 0; k < rows.length; k ++) {
+              const indexString = `${rowIndex}.${offset}`;
+              this._subRowMap[indexString] = rows[k];
+              indexes.push({ rowType:RowType.SUBROW, rowKey:rows[k], parentRowKey: rowKey});
+              offset ++;
+          }
+          const indexString = `${rowIndex}.${offset}`;
+          this._subRowMap[indexString] = rowKey;
+          indexes.push({rowType:RowType.SUBADDROW, rowKey:'', parentRowKey: rowKey});
+          offset ++;
+          indexes.push({rowType:RowType.SUBFOOTER, rowKey:'', parentRowKey: rowKey});
+      }
+      return indexes;
+    }
+
+    getRowKey(rowIndex) {
+      if (getSubLevel(rowIndex) === 0) {
+          if (rowIndex < this._indexMap.length && rowIndex >= 0 ) {
+              return this._indexMap[rowIndex].rowKey;
+          }
+      } else if (this._subRowMap[rowIndex]) {
+          return this._subRowMap[rowIndex];
+      }
+      return '';
+    }
+
+    getColumns() {
+      return this._dataset.getColumns();
     }
 
     getCellValue(rowIndex, columnKey) {
@@ -111,30 +200,42 @@ class DataViewWrapper {
     }
 
     getRowType(index) {
-        if (this._indexMap === null) {
-            return RowType.ROW;
-        }
-        if (index === undefined || index > this._indexMap.length - 1 || index < 0 ) {
-            return null;
-        }
-        return this._indexMap[index].rowType;
+      if (typeof index === 'string') {
+        return RowType.SUBROW;
+      }
+      if (this._indexMap === null) {
+          return null;
+      }
+      if (index === undefined || index > this._indexMap.length - 1 || index < 0 ) {
+          return null;
+      }
+      return this._indexMap[index].rowType;
     }
 
-    getRowKey(index) {
-        if (index > this._indexMap.length - 1 && index < 0 ) {
-            return null;
-        }
-        return this._indexMap[index].rowKey;
-    }
+    getRowKey(rowIndex) {
+      if (getSubLevel(rowIndex) === 0) {
+          if (rowIndex < this._indexMap.length && rowIndex >= 0 ) {
+              return this._indexMap[rowIndex].rowKey;
+          }
+      } else if (this._subRowMap[rowIndex]) {
+          return this._subRowMap[rowIndex];
+      }
+      return '';
+  }
 
     addNewRow(rowIndex, newItem) {
         if (newItem !== '') {
+          if (getSubLevel(rowIndex) === 0) {
             let row = this._indexMap[rowIndex];
             let rowKey = this._dataset.addNewRow(row.groupKey, newItem);
             for (let row = this._indexMap.length; row > rowIndex; row--) {
                 this._indexMap[row] = this._indexMap[row-1]; 
             }
             this._indexMap[rowIndex] = {rowType:RowType.ROW, groupKey:row.groupKey, rowKey:rowKey};
+          } else {
+            let row = this._subRowMap[rowIndex];
+            this._dataset.addNewSubRow(row, newItem);
+          } 
         }
     }
     
@@ -164,7 +265,9 @@ class DataViewWrapper {
     }
 
     reorderRow(oldRowIndex, newRowIndex) {
-        if (oldRowIndex !== newRowIndex) {    
+        if (oldRowIndex !== newRowIndex 
+          && getSubLevel(oldRowIndex) === 0 
+          && getSubLevel(newRowIndex) === 0 ) {    
             let rows = this.getRowMap();
             let oldrow = rows[oldRowIndex];
             let oldGroupKey = oldrow.groupKey;
@@ -172,9 +275,15 @@ class DataViewWrapper {
             let newrow = rows[oldRowIndex < newRowIndex ? newRowIndex : newRowIndex - 1];
             let newGroupKey = newrow.groupKey; 
             let rowAfter = newrow.rowKey;
-            
-            this._dataset.reorderRow(oldGroupKey, rowKey, newGroupKey, rowAfter, oldRowIndex < newRowIndex);
+            this._dataset.reorderRow(oldGroupKey, rowKey, newGroupKey, rowAfter);
         }
+    }
+
+    // add subrow to subtable
+    addSubRow(rowIndex, parentRowIndex) {
+      let rows = this.getRowMap();
+      let row = rows[parentRowIndex];
+      this._dataset.addSubrow(rowIndex, row.groupKey);
     }
 
     getRowHeight(index) {
@@ -194,11 +303,24 @@ class DataViewWrapper {
         return 40;
     }
 
+    getSubRowHeight(rowtype) {
+      switch (rowtype) {
+          case RowType.SUBHEADER:
+              return 35;
+          case RowType.SUBROW:
+              return 40;
+          case RowType.SUBFOOTER:
+              return 40;
+      }
+      return 40;
+    }
+
     getRowMap() {
         return this._indexMap;
     }
 
     setObjectAt(rowIndex, columnKey, value) {
+      if (getSubLevel(rowIndex) === 0) {
         if (this._indexMap === null) {
             this._dataset.setObjectAt(rowIndex, columnKey, value);
             return;
@@ -207,6 +329,10 @@ class DataViewWrapper {
             return;
         }
         this._dataset.setObjectAt(this._indexMap[rowIndex].rowKey, columnKey, value);
+      } else {
+          let rowKey = this._subRowMap[rowIndex];
+          this._dataset.setObjectAt(rowKey, columnKey, value);
+      }
     }
 
     /**
@@ -235,7 +361,7 @@ class DataViewWrapper {
     
     moveRow(sourceGroupKey, targetGroupKey, rowKey, rowIndex) {
 
-      let moveRow
+      let moveRow;
       for  (let ridx = 0; ridx < this._indexMap.length; ridx ++) {
         let row = this._indexMap[ridx];
         if (row && row.rowKey === rowKey) {
@@ -260,11 +386,9 @@ class DataViewWrapper {
     }
 
     getGroupByRowIndex(rowIndex) {
-      if (rowIndex === undefined || null === rowIndex) return null
-      let row = this._indexMap[rowIndex]
-      let group = this._dataset.getGroups().find(group => group.groupKey === row.groupKey)
-
-      return group ? group : null
+      let root = getRootRowIndex(rowIndex);
+      let row = this._indexMap[root];
+      return this._dataset.getGroups().find(group => group.groupKey === row.groupKey)
     }
 
     setGroupData(groupData) {

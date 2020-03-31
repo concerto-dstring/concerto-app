@@ -24,9 +24,9 @@
  */
 export default function updateRowHeight(state, rowIdx) {
   const { storedHeights, rowOffsetIntervalTree, rowSettings } = state;
-  const { rowHeightGetter, subRowHeightGetter } = rowSettings;
+  const { rowHeightGetter, subRowTotalHeightGetter } = rowSettings;
 
-  const newHeight = rowHeightGetter(rowIdx) + subRowHeightGetter(rowIdx);
+  const newHeight = rowHeightGetter(rowIdx) + subRowTotalHeightGetter(rowIdx);
   const oldHeight = storedHeights[rowIdx];
   if (newHeight !== oldHeight) {
     rowOffsetIntervalTree.set(rowIdx, newHeight);

@@ -15,6 +15,7 @@ import emptyFunction from '../vendor_upstream/core/emptyFunction';
 import isNil from 'lodash/isNil';
 import columnWidths from '../selectors/columnWidths';
 import clamp from 'lodash/clamp';
+import { getSubLevel } from '../data/MainTableType';
 
 const DRAG_SCROLL_SPEED = 15;
 const DRAG_SCROLL_BUFFER = 50;
@@ -157,12 +158,16 @@ function resizeColumn(state, resizeData) {
 
 function reorderColumn(state, reorderData) {
   let { columnKey, rowIndex, top, scrollStart, width, event } = reorderData;
+  let level = getSubLevel(rowIndex);
   const { fixedColumns, columnProps} = columnWidths(state);
   const isFixed = fixedColumns.some(function(column) {
     return column.columnKey === columnKey;
   });
   let left = 0;
   for(let i = 0; i < columnProps.length; i ++) {
+    if (level !== columnProps[i].level) {
+      continue;
+    }
     if (columnProps[i].columnKey === columnKey) {
       break;
     }
@@ -190,8 +195,9 @@ function reorderColumn(state, reorderData) {
 }
 
 function reorderColumnMove(state, deltaX, deltaY) {
-  const { isFixed, originalLeft, scrollStart } = state.columnReorderingData;
+  const { isFixed, originalLeft } = state.columnReorderingData;
   let { columnReorderingData, maxScrollX, scrollX } = state;
+  let level = getSubLevel(columnReorderingData.rowIndex);
   if (!isFixed) {
     // Relative dragX position on scroll
     const dragX = originalLeft + deltaX;
@@ -200,6 +206,9 @@ function reorderColumnMove(state, deltaX, deltaY) {
     let x = columnReorderingData.originalLeft + deltaX + columnReorderingData.locationInElement + scrollX;
     var columnAfter, left = 0;
     for(let i = 0; i < columnProps.length; i ++) {
+      if (level !== columnProps[i].level) {
+        continue;
+      }
       let columnKey = columnProps[i].columnKey;
       let width = columnProps[i].width;
       if (columnKey !== '' && columnKey !== columnReorderingData.columnKey 

@@ -20,7 +20,7 @@ import cx from './vendor_upstream/stubs/cx';
 import { sumPropWidths } from './helper/widthHelper';
 
 import './css/layout/fixedDataTableCellGroupLayout.css';
-import { ColumnKey } from './data/MainTableType'
+import { ColumnType } from './data/MainTableType'
 
 class FixedDataTableCellGroupImpl extends React.Component {
   /**
@@ -227,7 +227,7 @@ class FixedDataTableCellGroup extends React.Component {
 
     let group = this.props.container.props.data.getGroupByRowIndex(this.props.rowIndex)
     let columns = this.props.columns
-    if (columns && group.isCollapsed && columns.findIndex(column => column.props.columnKey === ColumnKey.ROWACTION) < 0) {
+    if (columns && group.isCollapsed && columns.findIndex(column => column.props.columnKey === ColumnType.ROWACTION) < 0) {
       style.width = Math.floor(style.width)
       style.top = 7.2
       return (

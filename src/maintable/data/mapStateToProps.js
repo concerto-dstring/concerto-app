@@ -7,7 +7,6 @@ export const mapRowActionStateToProps = (state) => {
     columnKey: state.columnKey,
     rowIndex: state.rowIndex,
     rowKey: state.rowKey,
-    data: state.data,
     group: state.group,
     groupIndex: state.groupIndex,
     sourceGroupKey: state.sourceGroupKey,

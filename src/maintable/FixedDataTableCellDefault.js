@@ -67,13 +67,17 @@ class FixedDataTableCellDefault extends React.Component {
 
     /**
      * Optional prop that represents the rows index in the table.
+     * it can be string or int type 
      * For the 'cell' prop of a Column, this parameter will exist for any
      * cell in a row with a positive index.
      *
      * Below that entry point the user is welcome to consume or
      * pass the prop through at their discretion.
-     */
-    rowIndex: PropTypes.number
+     */   
+    rowIndex: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.number,
+    ]),
   };
 
   render() {
