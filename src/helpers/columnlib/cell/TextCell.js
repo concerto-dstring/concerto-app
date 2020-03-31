@@ -2,7 +2,6 @@ import React from 'react';
 import 'antd/dist/antd.css'
 import {Input } from 'antd';
 import 'moment/locale/zh-cn';
-import '../../../maintable/css/style/TableCellComponent.css'
 import { Cell } from '../../../maintable/FixedDataTableRoot';
 import './TextCell.less';
 
