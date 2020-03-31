@@ -14,6 +14,12 @@ class PeopleCell extends React.Component {
         display:'none'
       }
     }
+    componentWillReceiveProps(nextProps) {
+      const value = nextProps.value!=''?nextProps.value:[];
+      this.setState({
+        selectedUsers: value
+      });
+    }
     showUserPanel = () => {
       this.setState({
         visible:true

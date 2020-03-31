@@ -10,26 +10,35 @@ class DateCell extends React.Component {
     #date_time_delimit = '  ';
     constructor(props){
       super(props);
-      var dateValue;
-      var timeValue;
-      const valuestr = props.value.length||'';
-      if (valuestr) {
-          let dateValueStr = props.value.split(this.#date_time_delimit)[0];
-          dateValue = moment(dateValueStr,'YYYY-MM-DD')
-          timeValue = props.value.split(this.#date_time_delimit)[1];
-      } else {
-        dateValue = timeValue = '';
-      }
+      const valueObj = this.fomartRenderDateValue(props.value);
       this.state = {
-        value:dateValue,
+        value:valueObj.dateValue,
         open:false,
-        addDateTime:timeValue,
+        addDateTime:valueObj.timeValue,
         addTimeStyle:{
           display:'none'
         }
       }
     }
-    
+    componentWillReceiveProps(nextProps) {
+      this.setState({
+        value: this.fomartRenderDateValue(nextProps.value)['dateValue'],
+        addDateTime:this.fomartRenderDateValue(nextProps.value)['timeValue'],
+      });
+    }
+    fomartRenderDateValue = (value) => {
+      let dateValue = undefined;
+      let timeValue = '';
+      const dateTimeValue = value?value.split(this.#date_time_delimit):'';
+      if(value&&value!=''){
+        dateValue = moment(dateTimeValue[0],'YYYY-MM-DD');
+        timeValue = dateTimeValue[1];
+      }
+      return {
+        dateValue:dateValue,
+        timeValue:timeValue
+      }
+    }
     closeDatePicker = () => {
       this.setState({
         open:false
@@ -122,13 +131,14 @@ class DateCell extends React.Component {
     };
    
     render() {
-      const {data, rowIndex, columnKey, collapsedRows, callback, value, handleChange, handleKey, ...props} = this.props;
+      const {data, rowIndex, columnKey, collapsedRows, callback, value, handleChange, handleKey, editing, ...props} = this.props;
       const returnValue = (e,v) => {
         this.setState({
           open:true,
           value:e
         })
       }
+      
       return (
         <Cell {...props} className="DateCell">
          <DatePicker 
@@ -146,6 +156,7 @@ class DateCell extends React.Component {
                 onBlur={this.closeDatePicker}
               />
         </Cell>
+        
       );
     }
   }
