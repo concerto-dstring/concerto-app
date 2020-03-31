@@ -278,7 +278,7 @@ class MainTable extends React.Component {
 
     _onColumnAddCallback(e) {
         const [columnComponentType, level] = e.key.split('-');
-        this._dataset.addNewColumn('New Column', level * 1, columnComponentType);
+        this._dataset.addNewColumn(e.item.node.innerText, level * 1, columnComponentType);
     }
 
     _getColumnName(columnKey) {

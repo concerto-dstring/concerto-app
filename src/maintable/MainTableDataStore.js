@@ -292,22 +292,22 @@ class MainTableDataStore {
     }
 
     removeColumn(columnKey) {
-        let index = this._subColumns.findIndex(column => column.columnKey === columnKey);
+        let index = this._columns.findIndex(column => column.columnKey === columnKey);
         if (index < 0) {
             return;
         }
-        this._subColumns.splice(index, 1);
+        this._columns.splice(index, 1);
         // push undo stack
         //refresh
         this.runCallbacks(); 
     }
 
     removeSubColumn(columnKey) {
-        let index = this._columns.findIndex(column => column.columnKey === columnKey);
+        let index = this._subColumns.findIndex(column => column.columnKey === columnKey);
         if (index < 0) {
             return;
         }
-        this._columns.splice(index, 1);
+        this._subColumns.splice(index, 1);
         // push undo stack
         //refresh
         this.runCallbacks(); 
