@@ -1,7 +1,6 @@
 import React from 'react';
 import 'antd/dist/antd.css'
 import 'moment/locale/zh-cn';
-import '../../../maintable/css/style/TableCellComponent.css'
 import { TableContext } from '../../../maintable/data/DataContext';
 import {PeopleCell} from './PeopleCell'
 import {TextCell} from './TextCell'

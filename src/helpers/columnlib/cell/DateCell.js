@@ -4,9 +4,8 @@ import {Button, DatePicker,Select, Switch, Row, Col } from 'antd';
 import {ClockCircleOutlined,} from '@ant-design/icons';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
-import '../../../maintable/css/style/TableCellComponent.css'
 import { Cell } from '../../../maintable/FixedDataTableRoot';
-
+import './DateCell.less'
 class DateCell extends React.Component { 
     #date_time_delimit = '  ';
     constructor(props){
@@ -96,8 +95,13 @@ class DateCell extends React.Component {
               </div>
             </Col>
             <Col span={12}>
-              <div style={{float:'right',marginTop:'7px'}}>
-                <Select placeholder="选择时间" size="small" suffixIcon={<ClockCircleOutlined />} style={this.state.addTimeStyle} onSelect={this.checkedAddTime}> 
+              <div className="timeSelect">
+                <Select 
+                  placeholder="选择时间" 
+                  size="small"
+                  suffixIcon={<ClockCircleOutlined />}
+                  style={this.state.addTimeStyle}
+                  onSelect={this.checkedAddTime}> 
                   {
                     this.optionVals(Option)
                   }
@@ -116,7 +120,7 @@ class DateCell extends React.Component {
         </div>
       );
     };
-    
+   
     render() {
       const {data, rowIndex, columnKey, collapsedRows, callback, value, handleChange, handleKey, ...props} = this.props;
       const returnValue = (e,v) => {
@@ -126,10 +130,10 @@ class DateCell extends React.Component {
         })
       }
       return (
-        <Cell {...props} style={{ width: '100%' }}>
+        <Cell {...props} className="DateCell">
          <DatePicker 
                 ref="datePicker"
-                style={{ width: '100%' }}
+                className="DateCell"
                 allowClear={false}
                 bordered={false}
                 placeholder=""
