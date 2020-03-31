@@ -2,9 +2,8 @@ import React from 'react';
 import 'antd/dist/antd.css'
 import {InputNumber} from 'antd';
 import 'moment/locale/zh-cn';
-import '../../../maintable/css/style/TableCellComponent.css'
 import { Cell } from '../../../maintable/FixedDataTableRoot';
-
+import './NumberCell.less'
 
 class NumberCell extends React.Component {
     constructor(props){
@@ -26,9 +25,9 @@ class NumberCell extends React.Component {
         return handleChange(numberValue); 
       }
       return (
-        <Cell {...props} style={{ width: '100%' }}>
+        <Cell {...props} className="NumberCell">
             <InputNumber 
-            style={{width:'100%'}} 
+            className="NumberCell" 
             value={this.state.value} 
             onChange={returnValue} 
             onPressEnter={handleKey}

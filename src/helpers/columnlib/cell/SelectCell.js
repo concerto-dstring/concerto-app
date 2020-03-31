@@ -3,9 +3,8 @@ import React from 'react';
 import 'antd/dist/antd.css'
 import {Select} from 'antd';
 import 'moment/locale/zh-cn';
-import '../../../maintable/css/style/TableCellComponent.css'
 import { Cell } from '../../../maintable/FixedDataTableRoot';
-
+import './SelectCell.less'
 class SelectCell extends React.Component {
     constructor(props){
       super(props);
@@ -23,11 +22,11 @@ class SelectCell extends React.Component {
         return handleChange(option.children); 
       }
       return (
-        <Cell {...props} style={{ width: '100%' }}>
+        <Cell {...props} className="SelectCell">
             <Select
                 showSearch
                 value={this.state.value}
-                style={{ width: '100%' }}
+                className="SelectCell"
                 placeholder="Select a option"
                 optionFilterProp="children"
                 filterOption={(input, option) =>

@@ -2,7 +2,6 @@ import React from 'react';
 import 'antd/dist/antd.css'
 import {Button ,Menu, Dropdown} from 'antd';
 import 'moment/locale/zh-cn';
-import '../../../maintable/css/style/TableCellComponent.css'
 import { Cell } from '../../../maintable/FixedDataTableRoot';
 import './StatusCell.less';
 
@@ -10,15 +9,23 @@ class StatusCell extends React.Component {
     constructor(props){
       super(props);
       this.state = {
-        value:props.value||''
+        value:props.value||'',
+        styleClassName:this.renderStatusStyle(props.value)
       }
-      this.statusHashTable = {
-        block:'阻塞',
-        working:'进行中',
-        finished:'已完成',
-        todo:'To Do',
-        default:''
-      }
+    }
+    statusHashTable = {
+      block:'阻塞',
+      working:'进行中',
+      finished:'已完成',
+      todo:'To Do',
+      default:''
+    }
+    renderStatusStyle = (value) => {
+       for(let key in this.statusHashTable){
+         if(value === this.statusHashTable[key]){
+            return key+'Item';
+         }
+       }
     }
     render() {
       const {data, rowIndex, columnKey, collapsedRows, callback, value, handleChange, handleKey, ...props} = this.props;

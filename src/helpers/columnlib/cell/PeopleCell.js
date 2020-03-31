@@ -3,8 +3,8 @@ import 'antd/dist/antd.css'
 import {Avatar,Button,Input, Popover, Tag, Divider } from 'antd';
 import {CloseCircleFilled,UserOutlined,PlusCircleFilled } from '@ant-design/icons';
 import 'moment/locale/zh-cn';
-import '../../../maintable/css/style/TableCellComponent.css'
 import { Cell } from '../../../maintable/FixedDataTableRoot';
+import './PeopleCell.less';
 
 class PeopleCell extends React.Component {
     state = {
@@ -99,7 +99,7 @@ class PeopleCell extends React.Component {
         })
       }
       return (
-        <Cell {...props} style={{ width: '100%' }}>
+        <Cell {...props}  className="PeopleCell">
            <Popover  
               placement="bottom" 
               trigger="click" 
@@ -113,7 +113,7 @@ class PeopleCell extends React.Component {
                   {
                     this.getUserArray().map((v, i) => (
                       <div key={i} className="user" onClick={returnValue.bind(this,v)}>
-                          <div style={{padding:'5px',fontSize:'13px'}}>&nbsp;
+                          <div className="faceAvatar">&nbsp;
                           <Avatar size={25} 
                             style={{background:v.faceColor}}>
                             {v.smallName}
@@ -151,7 +151,7 @@ class PeopleCell extends React.Component {
                         placeholder="Enter name"
                         bordered={false}
                         onSearch={value => console.log(value)}
-                        style={{margin:'0 0 5px 0',border:'none' }}
+                        className="searchInput"
                     />
                   </div>
               }>
