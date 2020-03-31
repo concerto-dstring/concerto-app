@@ -14,7 +14,6 @@ import {
   DEAL_ROW_RENAME_MODAL,
   DEAL_ROW_DELETE_MODAL,
   DEAL_ROW_MOVE_MODAL,
-  DEAL_SECTION_RENAME_MODAL,
 } from './ActionTypes';
 
 /**

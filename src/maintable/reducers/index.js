@@ -79,7 +79,7 @@ function getInitialState() {
      */
     columnReorderingData: {},
     columnResizingData: {},
-    RowReorderingData: {},
+    rowReorderingData: {},
     firstRowIndex: 0,
     firstRowOffset: 0,
     isColumnReordering: false,
@@ -335,8 +335,10 @@ function setStateFromProps(state, props) {
   const { rowHeight, subRowHeight } = newState.rowSettings;
   newState.rowSettings.rowHeightGetter =
     props.rowHeightGetter || (() => rowHeight);
-  newState.rowSettings.subRowHeightGetter =
-    props.subRowHeightGetter || (() => subRowHeight || 0);
+  newState.rowSettings.subRowHeightGetter = props.subRowHeightGetter;
+  newState.rowSettings.subRowTotalHeightGetter =
+    props.subRowTotalHeightGetter || (() => subRowHeight || 0);
+    
   newState.rowSettings.rowAttributesGetter = props.rowAttributesGetter;
   newState.rowSettings.rowTypeGetter = props.rowTypeGetter;
 

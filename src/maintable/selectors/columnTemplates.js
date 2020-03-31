@@ -43,6 +43,9 @@ let columnDetails;
  *   groupHeader !Array.<ReactElement>,
  *   header !Array.<ReactElement>,
  * }} elementTemplates
+* @param {{
+ *  level: number
+ * }}
  * @return {{
  *   fixedColumnGroups: !Array.<cellDetails>,
  *   fixedRightColumnGroups: !Array.<cellDetails>,
@@ -52,7 +55,7 @@ let columnDetails;
  *   scrollableColumns: !Array.<columnDetails>,
  * }}
  */
-function columnTemplates(columnWidths, elementTemplates) {
+function columnTemplates(columnWidths, elementTemplates, level) {
   const { columnGroupProps, columnProps } = columnWidths;
 
   // Ugly transforms to extract data into a row consumable format.
@@ -91,6 +94,9 @@ function columnTemplates(columnWidths, elementTemplates) {
     footer: [],
   };
   forEach(columnProps, (column, index) => {
+    if (column.level !== level) {
+      return;
+    }
     let columnContainer = scrollableColumns;
     if (column.fixed) {
       columnContainer = fixedColumns;
@@ -123,6 +129,7 @@ function columnTemplates(columnWidths, elementTemplates) {
 }
 
 export default shallowEqualSelector([
-  state => columnWidths(state),
-  state => state.elementTemplates,
+  state => columnWidths(state.props),
+  state => state.props.elementTemplates,
+  state => state.level,
 ], columnTemplates);

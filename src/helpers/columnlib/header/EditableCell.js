@@ -47,7 +47,12 @@ class EditableCell extends React.PureComponent {
      */
     getCellData = (props) => {
       let cellData = {}
-      let isCollapsed = props.data._indexMap[props.rowIndex].isCollapsed
+      let isCollapsed;
+      if (typeof props.rowIndex === 'string') {
+        isCollapsed = false;
+      } else {
+        isCollapsed = props.data._indexMap[props.rowIndex].isCollapsed;
+      }
       let value = props.data.getObjectAt(props.rowIndex) 
                   ? 
                   props.data.getObjectAt(props.rowIndex)[props.columnKey] 
@@ -59,7 +64,7 @@ class EditableCell extends React.PureComponent {
                     :
                     props.data.getColumn(props.columnKey).name
                   )
-      cellData.isCollapsed =isCollapsed
+      cellData.isCollapsed =isCollapsed;
       cellData.value = value
 
       return cellData

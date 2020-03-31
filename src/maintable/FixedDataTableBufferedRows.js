@@ -17,7 +17,7 @@ import emptyFunction from './vendor_upstream/core/emptyFunction';
 import joinClasses from './vendor_upstream/core/joinClasses';
 import inRange from 'lodash/inRange';
 import MainTableAddRow from './MainTableAddRow';
-import { RowType } from './data/MainTableType';
+import { RowType, getSubLevel } from './data/MainTableType';
 
 //import FixedDataTableTranslateDOMPosition from './FixedDataTableTranslateDOMPosition';
 
@@ -59,6 +59,7 @@ class FixedDataTableBufferedRows extends React.Component {
       rowHeightGetter: PropTypes.func,
       rowsCount: PropTypes.number.isRequired,
       subRowHeightGetter: PropTypes.func,
+      subRowTotalHeightGetter: PropTypes.func,
     }),
     rowsToRender: PropTypes.array.isRequired,
     scrollLeft: PropTypes.number.isRequired,
@@ -124,11 +125,13 @@ class FixedDataTableBufferedRows extends React.Component {
     }
 
     if (!found) {
-      this._staticRowArray[i + 1] = this.renderRow({
-        rowIndex: rowReorderingData.oldRowIndex,
-        key: i + 1,
-        baseOffsetTop,
-      });
+      if (getSubLevel(rowReorderingData.oldRowIndex) === 0) {
+        this._staticRowArray[i] = this.renderRow({
+          rowIndex: rowReorderingData.oldRowIndex,
+          key: i,
+          baseOffsetTop,
+        });
+      }
     }
 
     return <div>{this._staticRowArray}</div>;
@@ -185,7 +188,7 @@ class FixedDataTableBufferedRows extends React.Component {
     // if row exists, then calculate row specific props
     if (!fake) {
       rowProps.height = props.rowSettings.rowHeightGetter(rowIndex);
-      rowProps.subRowHeight = props.rowSettings.subRowHeightGetter(rowIndex);
+      rowProps.subRowHeight = props.rowSettings.subRowTotalHeightGetter(rowIndex);
       rowProps.offsetTop = Math.round(baseOffsetTop + props.rowOffsets[rowIndex]);
       rowProps.rowKey = props.rowKeyGetter ? props.rowKeyGetter(rowIndex) : key;
       rowProps.attributes = props.rowSettings.rowAttributesGetter && props.rowSettings.rowAttributesGetter(rowIndex);

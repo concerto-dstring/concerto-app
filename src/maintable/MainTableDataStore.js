@@ -8,7 +8,7 @@
 
 'use strict';
 
-import { ColumnType, ColumnKey } from './data/MainTableType';
+import { ColumnType } from './data/MainTableType';
 import { COLOR } from '../helpers/section/header/StyleValues'
 
 class MainTableDataStore {
@@ -18,11 +18,15 @@ class MainTableDataStore {
 
     constructor() {
         this._sizeRows = 0;
+        this._sizeSubrows = 0;
         this._columns= [];
+        this._subColumns = [];
         this._sizeColumns = 0;
         this._rowData = {};
+        this._subRowData = {};
         this._groups = [];
         this._sizeGroups = 0;
+        this._subRows = {};
         this.getSize = this.getSize.bind(this);
         this.addNewRow = this.addNewRow.bind(this);
         this.addNewColumn = this.addNewColumn.bind(this);
@@ -32,6 +36,9 @@ class MainTableDataStore {
         this.reorderColumn = this.reorderColumn.bind(this);
         this.addNewGroup = this.addNewGroup.bind(this);
         this.removeGroup = this.removeGroup.bind(this);
+        this.isSubRowExpanded = this.isSubRowExpanded.bind(this);
+        this.getSubRows = this.getSubRows.bind(this);
+        this.toggleExpandSubRows = this.toggleExpandSubRows.bind(this);
         this._callbacks = [];
         this.runCallbacks = this.runCallbacks.bind(this);
     }
@@ -39,16 +46,22 @@ class MainTableDataStore {
     createFakeObjectData() {
         // create columns
         // 增加行操作列和行复选框列
-        this._columns.push({columnKey: ColumnKey.ROWACTION, name:'', width: 36, type: ColumnType.DROPDOWN, columnComponentType:''});
-        this._columns.push({columnKey: ColumnKey.ROWSELECT, name:'', width: 36, type: ColumnType.CHECKBOX, columnComponentType:''}); 
+        this._columns.push({columnKey: '1000', name:'', width: 36, type: ColumnType.ROWACTION, columnComponentType:'', fixed:true, level: 0});
+        this._columns.push({columnKey: '1001', name:'', width: 36, type: ColumnType.ROWSELECT, columnComponentType:'', fixed:true, level: 0}); 
 
-        this._columns.push({columnKey: '1', name:'主题', width: 120, type: ColumnType.EDITBOX, columnComponentType:'TEXT',collpse:false});
-        this._columns.push({columnKey: '2', name:'备注', width: 200, type: ColumnType.EDITBOX, columnComponentType:'TEXT',collpse:false});
-        this._columns.push({columnKey: '3', name:'分配', width: 200, type: ColumnType.EDITBOX, columnComponentType:'TEXT',collpse:false});
-        this._columns.push({columnKey: '4', name:'日志', width: 200, type: ColumnType.LABEL, columnComponentType:'TEXT',collpse:false});
-        this._columns.push({columnKey: '5', name:'文件', width: 200, type: ColumnType.EDITBOX, columnComponentType:'TEXT',collpse:false});
-        this._columns.push({columnKey: '6', name:'补充说明', width: 200, type: ColumnType.EDITBOX, columnComponentType:'TEXT',collpse:false});
-        this._sizeColumns = 6;
+        this._columns.push({columnKey: '1', name:'主题', width: 100, type: ColumnType.EDITBOX, columnComponentType:'TEXT', collpse:false, fixed:true, level: 0});
+        this._columns.push({columnKey: '2', name:'备注', width: 200, type: ColumnType.EDITBOX, columnComponentType:'TEXT', collpse:false, level: 0});
+        this._columns.push({columnKey: '3', name:'分配', width: 200, type: ColumnType.EDITBOX, columnComponentType:'TEXT', collpse:false, level: 0});
+        this._columns.push({columnKey: '4', name:'日志', width: 200, type: ColumnType.LABEL, columnComponentType:'TEXT', collpse:false, level: 0});
+        this._columns.push({columnKey: '5', name:'文件', width: 200, type: ColumnType.EDITBOX, columnComponentType:'TEXT', collpse:false, level: 0});
+        this._columns.push({columnKey: '6', name:'补充说明', width: 200, type: ColumnType.EDITBOX, columnComponentType:'TEXT', collpse:false, level: 0});
+
+        this._columns.push({columnKey: '1002', name:'', width: 36, type: ColumnType.ROWACTION, columnComponentType:'', fixed:true, level: 1});
+        this._columns.push({columnKey: '1003', name:'', width: 36, type: ColumnType.ROWSELECT, columnComponentType:'', fixed:true, level: 1}); 
+        this._columns.push({columnKey: '1', name:'子题', width: 100, type: ColumnType.EDITBOX, columnComponentType:'TEXT', collpse:false, fixed:true, level: 1});
+        this._columns.push({columnKey: '11', name:'分配', width: 200, type: ColumnType.EDITBOX, columnComponentType:'TEXT', collpse:false, level: 1});
+        this._columns.push({columnKey: '12', name:'日志', width: 200, type: ColumnType.EDITBOX, columnComponentType:'TEXT', collpse:false, level: 1});
+        this._sizeColumns = 12;
 
         // create groups 
         this._groups.push({groupKey: '1', name: '分区1', rows:['1', '2', '3', '4'], color:'#4682B4', isCollapsed: false});
@@ -87,7 +100,12 @@ class MainTableDataStore {
         this._rowData['10'] = {'1': '主题 10','2': '备注 10', '3': '分配 10', '4': '日志 10',
         '5': '文件 10', '6': '补充说明 10'};
 
-        this._sizeRows = 10;
+        this._rowData['11'] = {'1': '子题 1', '11': '分配 6', '12': '日志 1'};
+        this._rowData['12'] = {'1': '子题 2', '11': '分配 6', '12': '日志 2'};
+
+        this._sizeRows = 12;
+
+        this._subRows['2'] = {rows:['11', '12'], isExpanded:false};
     }
 
     getSize() {
@@ -107,6 +125,24 @@ class MainTableDataStore {
 
     getGroups() {
         return this._groups;
+    }
+
+    getSubRows(rowKey) {
+        if (this._subRows[rowKey])
+            return this._subRows[rowKey].rows || [];
+        return [];
+    }
+
+    isSubRowExpanded(rowKey) {
+        if (this._subRows[rowKey])
+            return this._subRows[rowKey].isExpanded;
+        return false;
+    }
+
+    toggleExpandSubRows(rowKey) {
+        this._subRows[rowKey].isExpanded = !this.isSubRowExpanded(rowKey);
+        //refresh
+        this.runCallbacks();
     }
 
     addNewGroup(groupName, groupKey) {
@@ -156,7 +192,7 @@ class MainTableDataStore {
         if (index < 0) {
             return null;
         }
-        return this._groups[index]
+        return this._groups[index];
     }
 
     getColumns() {
@@ -211,12 +247,29 @@ class MainTableDataStore {
       this.runCallbacks();
 
       return sourceRowIndex;
-  }
+    }
 
-    addNewColumn(newItem, columnComponentType) {
+    addNewSubRow(rowKey, newItem) {
+        let rows = this._subRows[rowKey].rows;
+        if (!rows) {
+            rows = [];
+            this._subRows[rowKey].rows = rows;
+        }
+        this._sizeRows ++;
+        let id = this._sizeRows.toString();
+        rows.push(id);
+        this._rowData[id] = {'1':newItem};
+
+        //refresh
+        this.runCallbacks();
+
+        return id;
+    }
+
+    addNewColumn(newItem, level, columnComponentType) {
         this._sizeColumns ++; 
         let id = this._sizeColumns.toString();
-        this._columns.push({columnKey: id, name:newItem, width: 200, type: ColumnType.EDITBOX, columnComponentType: columnComponentType,collpse:false});
+        this._columns.push({columnKey: id, name:newItem, width: 200, type: ColumnType.EDITBOX, columnComponentType: columnComponentType, collpse:false, level: level});
         for(let key in this._rowData){
             let row = this._rowData[key];
             row[id] = "";
@@ -227,7 +280,29 @@ class MainTableDataStore {
         return id;
     }
 
+    addNewSubcolumn(newItem, columnComponentType) {
+        this._sizeSubcolumns ++; 
+        let id = this._sizeSubcolumns.toString();
+        this._subColumns.push({columnKey: id, name:newItem, width: 200, type: ColumnType.EDITBOX, columnComponentType: columnComponentType});
+
+        //refresh
+        this.runCallbacks();
+
+        return id;
+    }
+
     removeColumn(columnKey) {
+        let index = this._subColumns.findIndex(column => column.columnKey === columnKey);
+        if (index < 0) {
+            return;
+        }
+        this._subColumns.splice(index, 1);
+        // push undo stack
+        //refresh
+        this.runCallbacks(); 
+    }
+
+    removeSubColumn(columnKey) {
         let index = this._columns.findIndex(column => column.columnKey === columnKey);
         if (index < 0) {
             return;

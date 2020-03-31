@@ -181,6 +181,12 @@ class FixedDataTableColumn extends React.Component {
     * rendering if none of it's passed in props have changed
     */
    pureRendering: PropTypes.bool,
+
+    /**
+    * Tell the column at certain level
+    * 0 - first level and so on
+    */
+   level: PropTypes.number,
  };
 
  static defaultProps = {

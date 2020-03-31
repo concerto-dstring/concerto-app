@@ -37,10 +37,13 @@ class FixedDataTableColumnReorderHandle extends React.PureComponent {
       PropTypes.number
     ]),
 
-     /**
+    /**
      * RowIndex for the header being reordered.
      */
-    rowIndex: PropTypes.number,
+    rowIndex: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.number
+    ]),
 
     /**
      * Whether the reorder handle should respond to touch events or not.
@@ -113,13 +116,15 @@ class FixedDataTableColumnReorderHandle extends React.PureComponent {
     this._animating = true;
     this._cumulativeX = 0;
     this._cumulativeY = 0;
+
+    event.stopPropagation();
     /**
      * This prevents the rows from moving around when we drag the
      * headers on touch devices.
      */
-    if(this.props.touchEnabled) {
-      event.stopPropagation();
-    }
+    // if(this.props.touchEnabled) {
+    //   event.stopPropagation();
+    // }
   }
 
   _onMove = (/*number*/ deltaX, /*number*/ deltaY) => {

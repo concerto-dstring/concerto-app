@@ -318,14 +318,17 @@ class FixedDataTableCell extends React.Component {
       this.props.columnKey,
       event
     );
+
+    event.preventDefault();
+    event.stopPropagation();
     /**
      * This prevents the rows from moving around when we resize the
      * headers on touch devices.
      */
-    if (this.props.touchEnabled) {
-      event.preventDefault();
-      event.stopPropagation();
-    }
+    // if (this.props.touchEnabled) {
+    //   event.preventDefault();
+    //   event.stopPropagation();
+    // }
   }
 
   _onColumnReorderMouseDown = (/*object*/ event) => {

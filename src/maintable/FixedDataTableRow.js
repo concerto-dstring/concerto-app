@@ -20,6 +20,8 @@ import Scrollbar from './Scrollbar';
 import cx from './vendor_upstream/stubs/cx';
 import joinClasses from './vendor_upstream/core/joinClasses';
 import { sumPropWidths } from './helper/widthHelper';
+import { compareSubLevel, getLeafRowIndex, getSubLevel } from './data/MainTableType';
+
 
 import './css/layout/fixedDataTableRowLayout.css';
 import './css/style/fixedDataTableRow.css';
@@ -82,7 +84,10 @@ class FixedDataTableRowImpl extends React.Component {
     /**
      * The row index.
      */
-    index: PropTypes.number.isRequired,
+    index: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.number,
+    ]),
 
     /**
      * Array of data for the scrollable columns.
@@ -214,9 +219,9 @@ class FixedDataTableRowImpl extends React.Component {
     var className = cx({
       'fixedDataTableRowLayout/main': true,
       'public/fixedDataTableRow/main': true,
-      'public/fixedDataTableRow/highlighted': (this.props.index % 2 === 1),
-      'public/fixedDataTableRow/odd': (this.props.index % 2 === 1),
-      'public/fixedDataTableRow/even': (this.props.index % 2 === 0),
+      'public/fixedDataTableRow/highlighted': (getLeafRowIndex(this.props.index) % 2 === 1),
+      'public/fixedDataTableRow/odd': (getLeafRowIndex(this.props.index) % 2 === 1),
+      'public/fixedDataTableRow/even': (getLeafRowIndex(this.props.index) % 2 === 0),
     });
     var fixedColumnsWidth = sumPropWidths(this.props.fixedColumns);
     var fixedRightColumnsWidth = sumPropWidths(this.props.fixedRightColumns);
@@ -445,18 +450,22 @@ class FixedDataTableRowImpl extends React.Component {
 
   _onClick = (/*object*/ event) => {
     this.props.onClick(event, this.props.index);
+    event.stopPropagation();
   };
 
   _onContextMenu = (/*object*/ event) => {
-    this.props.onContextMenu(event, this.props.index)
+    this.props.onContextMenu(event, this.props.index);
+    event.stopPropagation();
   };
 
   _onDoubleClick = (/*object*/ event) => {
     this.props.onDoubleClick(event, this.props.index);
+    event.stopPropagation();
   };
 
   _onMouseUp = (/*object*/ event) => {
     this.props.onMouseUp(event, this.props.index);
+    event.stopPropagation();
   };
 
   _onMouseDown = (/*object*/ event) => {
@@ -473,6 +482,7 @@ class FixedDataTableRowImpl extends React.Component {
     if (this.props.onMouseEnter) {
       this.props.onMouseEnter(event, this.props.index);
     }
+    event.stopPropagation();
   };
 
   _onMouseLeave = (/*object*/ event) => {
@@ -481,6 +491,7 @@ class FixedDataTableRowImpl extends React.Component {
     }
     this.props.onMouseLeave(event, this.mouseLeaveIndex);
     this.mouseLeaveIndex = null;
+    event.stopPropagation();
   };
 
   _onTouchStart = (/*object*/ event) => {
@@ -548,7 +559,11 @@ class FixedDataTableRow extends React.Component {
     };
     let top = offsetTop;
     if (isMovingRow) {
-      top = this.props.rowReorderingData.top - this.props.rowReorderingData.dragDistanceY - this.props.rowReorderingData.oldScrollTop; 
+      if (getSubLevel(rowProps.index) ===0) {
+        top = this.props.rowReorderingData.top - this.props.rowReorderingData.dragDistanceY - this.props.rowReorderingData.oldScrollTop; 
+      } else {
+        //todo add subitem top calculation
+      }
     }
 
     let dropPlace;
@@ -561,7 +576,11 @@ class FixedDataTableRow extends React.Component {
         marginBottom: '-3px',
         border: '1px dashed gray',
       }
-      FixedDataTableTranslateDOMPosition(placeStyle, 0, offsetTop, this._initialRender, this.props.isRTL);
+      let height = 0;
+      if (rowProps.index > this.props.rowReorderingData.oldRowIndex) {
+        height = this.props.rowReorderingData.height - this.props.height;
+      }
+      FixedDataTableTranslateDOMPosition(placeStyle, 0, offsetTop - height, this._initialRender, this.props.isRTL);
 
       dropPlace = <div style={placeStyle}></div>;
     }  
