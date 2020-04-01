@@ -13,6 +13,12 @@ class StatusCell extends React.Component {
         styleClassName:this.renderStatusStyle(props.value)
       }
     }
+    componentWillReceiveProps(nextProps) {
+      this.setState({
+        value: nextProps.value,
+        styleClassName:this.renderStatusStyle(nextProps.value)
+      });
+    }
     statusHashTable = {
       block:'阻塞',
       working:'进行中',
