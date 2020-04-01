@@ -18,11 +18,12 @@ import UndoMessage from '../helpers/section/modal/UndoMessage'
 import { EditableCell } from '../helpers/columnlib/header/EditableCell';
 import SectionHeader from '../helpers/section/header/SectionHeader';
 import Dimensions from 'react-dimensions';
-import { Menu, Dropdown, message, Tooltip } from 'antd';
+import { Menu, Dropdown, message, Tooltip, Row, Col} from 'antd';
 import { DataContext, AddFilter } from './data/DataContext';
 import { DataVersionContext, TableContext } from './data/DataContext';
 import { connect } from 'react-redux'
 import { mapRowActionStateToProps } from './data/mapStateToProps'
+import PeopleFilter from '../helpers/filter/PeopleFilter'
 
 import {
     UserOutlined,
@@ -434,9 +435,21 @@ class MainTable extends React.Component {
 
     renderControls() {
         return (
-            <div id="addGroupBtn" className='autoScrollControls'>
-              <Button primary onClick={this._onAddNewGroupCallback} >添加新分区</Button>
-            </div>
+            <Row>
+                <Col span={20}>
+                    <div id="addGroupBtn" className='autoScrollControls'>
+                        <Button primary onClick={this._onAddNewGroupCallback} >添加新分区</Button>
+                    </div>
+                </Col>
+                <Col span={4}>
+                    <div id="filterPeople">
+                        <PeopleFilter></PeopleFilter>
+                    </div>
+                </Col>
+            </Row>
+              
+              
+            
           )
     }
 
