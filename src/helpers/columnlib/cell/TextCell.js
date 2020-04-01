@@ -17,9 +17,12 @@ class TextCell extends React.Component {
       const returnValue = (e) => {
         const inputValue = e.target.value;
         this.setState({
-           value:inputValue
+          value:inputValue
         })
-        return handleChange(inputValue); 
+        handleChange(inputValue); 
+        if(isHeaderOrFooter&&inputValue==''){
+          handleChange(this.state.value);
+        }
       }
       return (
         <Cell {...props} className='textCell'>
