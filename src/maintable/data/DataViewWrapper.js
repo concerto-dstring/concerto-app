@@ -47,6 +47,7 @@ class DataViewWrapper {
         this.getSubRowTotalHeight = this.getSubRowTotalHeight.bind(this);
         this.getSubRows = this.getSubRows.bind(this);
         this.getSubRowCount = this.getSubRowCount.bind(this);
+        this.addNewSubSection = this.addNewSubSection.bind(this)
     }
 
     /**
@@ -339,8 +340,8 @@ class DataViewWrapper {
      * add a new group to the backend dataset 
      * @param {*} groupName 
      */
-    addNewGroup(groupName) {
-        return this._dataset.addNewGroup(groupName);
+    addNewGroup(groupName, groupKey) {
+        return this._dataset.addNewGroup(groupName, groupKey);
     }
 
     /**
@@ -416,6 +417,16 @@ class DataViewWrapper {
      */
     setColumnData(columnKey, columnData) {
       this._dataset.setColumnData(columnKey, columnData)
+    }
+
+    /**
+     * 添加子项(给个空行)
+     */
+    addNewSubSection(parentRowIndex, newItem) {
+      let row = this._indexMap[parentRowIndex]
+      if (row) {
+        this._dataset.addNewSubSection(row.rowKey, newItem)
+      }
     }
 }
 

@@ -49,7 +49,7 @@ class MainTableDataStore {
         this._columns.push({columnKey: '1000', name:'', width: 36, type: ColumnType.ROWACTION, columnComponentType:'', fixed:true, level: 0});
         this._columns.push({columnKey: '1001', name:'', width: 36, type: ColumnType.ROWSELECT, columnComponentType:'', fixed:true, level: 0}); 
 
-        this._columns.push({columnKey: '1', name:'主题', width: 100, type: ColumnType.EDITBOX, columnComponentType:'TEXT', collpse:false, fixed:true, level: 0});
+        this._columns.push({columnKey: '1', name:'主题', width: 120, type: ColumnType.EDITBOX, columnComponentType:'TEXT', collpse:false, fixed:true, level: 0});
         this._columns.push({columnKey: '2', name:'备注', width: 200, type: ColumnType.EDITBOX, columnComponentType:'TEXT', collpse:false, level: 0});
         this._columns.push({columnKey: '3', name:'分配', width: 200, type: ColumnType.EDITBOX, columnComponentType:'TEXT', collpse:false, level: 0});
         this._columns.push({columnKey: '4', name:'日志', width: 200, type: ColumnType.LABEL, columnComponentType:'TEXT', collpse:false, level: 0});
@@ -58,7 +58,7 @@ class MainTableDataStore {
 
         this._columns.push({columnKey: '1002', name:'', width: 36, type: ColumnType.ROWACTION, columnComponentType:'', fixed:true, level: 1});
         this._columns.push({columnKey: '1003', name:'', width: 36, type: ColumnType.ROWSELECT, columnComponentType:'', fixed:true, level: 1}); 
-        this._columns.push({columnKey: '1', name:'子题', width: 100, type: ColumnType.EDITBOX, columnComponentType:'TEXT', collpse:false, fixed:true, level: 1});
+        this._columns.push({columnKey: '1', name:'子题', width: 120, type: ColumnType.EDITBOX, columnComponentType:'TEXT', collpse:false, fixed:true, level: 1});
         this._columns.push({columnKey: '11', name:'分配', width: 200, type: ColumnType.EDITBOX, columnComponentType:'TEXT', collpse:false, level: 1});
         this._columns.push({columnKey: '12', name:'日志', width: 200, type: ColumnType.EDITBOX, columnComponentType:'TEXT', collpse:false, level: 1});
         this._sizeColumns = 12;
@@ -137,6 +137,19 @@ class MainTableDataStore {
         if (this._subRows[rowKey])
             return this._subRows[rowKey].isExpanded;
         return false;
+    }
+
+    addNewSubSection(parentRowKey, newItem) {
+      // 添加空白行
+      this._sizeRows ++;
+      let id = this._sizeRows.toString();
+      this._rowData[id] = newItem;
+
+      // 添加子项
+      this._subRows[parentRowKey] = {rows:[id], isExpanded: true}
+
+      // 刷新
+      this.runCallbacks();
     }
 
     toggleExpandSubRows(rowKey) {

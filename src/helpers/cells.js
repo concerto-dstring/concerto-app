@@ -225,7 +225,7 @@ class DropDownMenuHeader extends React.PureComponent {
     }
     else if (key === ADD_SECTION.key) {
       // 添加分区
-      data.addNewGroup(this.state.group.groupKey)
+      data.addNewGroup('新分区', this.state.group.groupKey)
     }
     else if (key === COLLAPSE_THIS_SECTION.key) {
       // 折叠当前分区
@@ -249,7 +249,8 @@ class DropDownMenuHeader extends React.PureComponent {
     // 防止document事件的冒泡
     e.nativeEvent.stopImmediatePropagation();
     this.setState({
-      isBtnClicked: true
+      isBtnClicked: true,
+      isShowHeaderMenu: true
     })
   }
 
@@ -369,6 +370,10 @@ class DropDownMenuHeader extends React.PureComponent {
     const { groupColor, headerBtnColor, headerBtnBorderColor, headerBtnType, 
       isShowHeaderMenu, isBtnClicked, isCollapsed } = this.state
 
+      // 子阶菜单暂时不返回
+    let rowIndexStr = String(this.props.rowIndex)
+    if (rowIndexStr.indexOf('.') !== -1) return null
+
     return (
       <div 
         onMouseEnter={this.changeHeaderMenuBtnColor.bind(this, COLOR.WHITE, COLOR.DEFAULT, ANTD_BTN_TYPE.DEFAULT)}
@@ -420,8 +425,7 @@ class DropDownMenuCell extends React.PureComponent {
     const { rowIndex, data } = this.props;
     if (key === ADD_SUB_TABLE.key) {
       // 添加子项
-
-
+      data.addNewSubSection(rowIndex, {})
     }
     else if (key === RENAME_ROW.key) {
       // 重命名行
@@ -535,6 +539,10 @@ class DropDownMenuCell extends React.PureComponent {
     
     const { isBtnClicked, isShowRowActionBtn } = this.state
 
+    // 子阶菜单暂时不返回
+    let rowIndexStr = String(rowIndex)
+    if (rowIndexStr.indexOf('.') !== -1) return null
+
     return (
       <div 
         onMouseEnter={this.showRowActionBtn}
@@ -631,6 +639,11 @@ class CheckBoxHeader extends React.PureComponent {
   }
 
   render() {
+    
+    // 子阶不显示展开折叠图标
+    let rowIndex = String(this.props.rowIndex)
+    if (rowIndex.indexOf('.') !== -1) return null
+
     return (
       <Tooltip
         arrowPointAtCenter={true}

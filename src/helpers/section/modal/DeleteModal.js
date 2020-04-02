@@ -27,11 +27,11 @@ class DeleteModal extends PureComponent {
 
   handleOKClick = () => {
 
-    const { data, rowIndex, isSection, group } = this.props
+    const { tableData, rowIndex, isSection, group } = this.props
     
     if (isSection) {
       // 删除分区
-      let groupIndex = data.removeGroup(group.groupKey)
+      let groupIndex = tableData.removeGroup(group.groupKey)
       this.handleCancelClick(isSection)
 
       // 显示撤销窗口
@@ -40,12 +40,12 @@ class DeleteModal extends PureComponent {
         groupIndex,
         group,
         isSection,
-        data
+        data: tableData
       }) 
     }
     else {
       // 删除行
-      data.removeRow(rowIndex)
+      tableData.removeRow(rowIndex)
 
       this.handleCancelClick(isSection)
     }
