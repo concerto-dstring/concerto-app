@@ -443,7 +443,9 @@ class MainTable extends React.Component {
                 </Col>
                 <Col span={4}>
                     <div id="filterPeople">
-                        <PeopleFilter></PeopleFilter>
+                        <TableContext.Provider value={this.state}>
+                            <PeopleFilter></PeopleFilter>
+                        </TableContext.Provider>
                     </div>
                 </Col>
             </Row>

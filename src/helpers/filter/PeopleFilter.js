@@ -1,8 +1,9 @@
 import React from 'react';
 import 'antd/dist/antd.css'
 import { Popover, Button, Avatar } from 'antd';
-import {UserOutlined,CloseCircleOutlined,SaveOutlined} from '@ant-design/icons';
+import {UserOutlined,CloseCircleOutlined,SaveOutlined,CloseCircleFilled} from '@ant-design/icons';
 import './PeopleFilter.less'
+import { TableContext } from '../../maintable/data/DataContext';
 
 class PeopleFilter extends React.Component {
   constructor(props){
@@ -36,14 +37,14 @@ class PeopleFilter extends React.Component {
       peopleAvatar:<UserOutlined />
     });
   }
-  checkPeople = (people) => {
+  checkPeople = (people,data) => {
     const peopleAvatar = 
       <Avatar 
         size={30} 
         className="peopleAvatarIcon"
         style={{background:people.faceColor}}>
         <span>{people.smallName}</span>
-      </Avatar>
+      </Avatar>;
     this.setState({
       visible:false,
       shape:'round',
@@ -51,7 +52,8 @@ class PeopleFilter extends React.Component {
       hasCheckPeople:true,
       checkedPeople:people,
       peopleAvatar:peopleAvatar
-    })
+    });
+    this.doFilterByPeople(people,data)
   }
   visibleChange = (status) => {
     if(!status&&!this.state.hasCheckPeople){
@@ -69,6 +71,10 @@ class PeopleFilter extends React.Component {
         buttonType:'primary'
       })
     }
+  }
+  doFilterByPeople = (people,tableObj) => {
+    //TODO  
+    const tableData = tableObj._rowData;
   }
   render = () => {
     const persons = [{
@@ -94,29 +100,32 @@ class PeopleFilter extends React.Component {
     }]
     const content = <div>
     {
-      <div>
-         {
-           persons.map((people, i) => (
-             <Button 
-                shape="circle"
-                className="peopleAvatar"
-                onClick={this.checkPeople.bind(this,people)}
-                style={{
-                    background:people.faceColor,
-                    boxShadow:this.state.checkedPeople.userName == people.userName?'#cce9ff 0px 0px 5px 5px':'none',
-                }}
-             >
-             {people.smallName}
-             </Button>
-           ))
-         }
-         <Button 
-           className="saveView"
-           disabled={true}>
-           <SaveOutlined className="saveViewBtn"/>保存视图
-         </Button> 
-      </div>                
-        
+       <TableContext.Consumer>
+          {(table) => (
+            <div>
+                {
+                persons.map((people, i) => (
+                    <Button 
+                        shape="circle"
+                        className="peopleAvatar"
+                        onClick={this.checkPeople.bind(this,people,table.data)}
+                        style={{
+                            background:people.faceColor,
+                            boxShadow:this.state.checkedPeople.userName == people.userName?'#cce9ff 0px 0px 5px 5px':'none',
+                        }}
+                    >
+                    {people.smallName}
+                    </Button>
+                ))
+                }
+                <Button 
+                className="saveView"
+                disabled={true}>
+                <SaveOutlined className="saveViewBtn"/>保存视图
+                </Button> 
+            </div>   
+          )}             
+       </TableContext.Consumer> 
     }
     </div>;
     const removeIconStyle = {
@@ -135,9 +144,10 @@ class PeopleFilter extends React.Component {
                 shape={this.state.shape}
                 icon={this.state.peopleAvatar}
                 onClick={this.showPeople}
+                className="filterButton"
             >
                 {this.state.buttonText}
-                <CloseCircleOutlined 
+                <CloseCircleFilled 
                     style={removeIconStyle} 
                     className="removeIcon"
                     onClick={this.removePeople}
