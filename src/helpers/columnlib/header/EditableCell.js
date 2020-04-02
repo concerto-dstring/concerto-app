@@ -6,6 +6,8 @@ import moment from 'moment';
 import 'moment/locale/zh-cn';
 import { TableCell } from '../cell/TableCell'
 import { TableContext } from '../../../maintable/data/DataContext';
+import './EditableCell.less'
+
 const CellContainer = styled.div`
   display: flex;
   flex: 1 0 100%;
@@ -25,6 +27,7 @@ class EditableCell extends React.PureComponent {
             oldValue: cellData.value, // 保留原值
             isCollapsed: cellData.isCollapsed,
             editing: false,
+            mouseIn:false,
             type:'TEXT',
             isHeaderOrFooter:false,
             handleChange:this.handleChange,
@@ -143,6 +146,12 @@ class EditableCell extends React.PureComponent {
         }
     }
 
+    setMouseIn(mouseIn) {
+        this.setState({
+            mouseIn: mouseIn,
+        });
+    }
+
     render() {
       
         const {container, data, rowIndex, columnKey, dataVersion, width, height,  ...props} = this.props;
@@ -158,10 +167,14 @@ class EditableCell extends React.PureComponent {
             height: height - 5,
             borderRadius: '0px',
         }
-       
+        let classNameStr =  'editableCell ' + (this.state.mouseIn ? 'mouseIn':'mouseOut');
         return (
 
-            <CellContainer ref={this.setTargetRef} onClick={this.handleClick.bind(this,type)}>
+            <CellContainer ref={this.setTargetRef}
+              onClick={this.handleClick.bind(this,type)}
+              onMouseEnter={()=>this.setMouseIn(true)}
+              onMouseLeave={()=>this.setMouseIn(false)}
+              className={classNameStr}>
                 {!editing && this.cellRenderValues[type] && value}
                 {!editing && !this.cellRenderValues[type]&&
                 <TableContext.Provider value={this.state}>
