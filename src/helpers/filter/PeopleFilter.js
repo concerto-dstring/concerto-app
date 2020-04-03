@@ -18,7 +18,7 @@ class PeopleFilter extends React.Component {
       peopleAvatar:<UserOutlined />
     }
   }
-  showPeople = () => {
+  showPeople = (e) => {
     this.setState({
       visible:true,
       shape:'round',
@@ -26,7 +26,7 @@ class PeopleFilter extends React.Component {
       buttonType:'primary'
     })
   }
-  removePeople = () => {
+  removePeople = (e) => {
     this.setState({
       visible:false,
       hasCheckPeople:false,
@@ -36,6 +36,7 @@ class PeopleFilter extends React.Component {
       checkedPeople:{},
       peopleAvatar:<UserOutlined />
     });
+    e.stopPropagation();
   }
   checkPeople = (people,data) => {
     const peopleAvatar = 
@@ -106,6 +107,7 @@ class PeopleFilter extends React.Component {
                 {
                 persons.map((people, i) => (
                     <Button 
+                        key={i}
                         shape="circle"
                         className="peopleAvatar"
                         onClick={this.checkPeople.bind(this,people,table.data)}
@@ -119,9 +121,9 @@ class PeopleFilter extends React.Component {
                 ))
                 }
                 <Button 
-                className="saveView"
-                disabled={true}>
-                <SaveOutlined className="saveViewBtn"/>保存视图
+                    className="saveView"
+                    disabled={true}>
+                    <SaveOutlined className="saveViewBtn"/>保存视图
                 </Button> 
             </div>   
           )}             
@@ -147,11 +149,17 @@ class PeopleFilter extends React.Component {
                 className="filterButton"
             >
                 {this.state.buttonText}
-                <CloseCircleFilled 
+                <Button
                     style={removeIconStyle} 
                     className="removeIcon"
+                    shape="circle"
+                    size="small"
                     onClick={this.removePeople}
-                />
+                    icon={
+                        <CloseCircleFilled className="removeBtn"/>
+                    }
+                >
+                </Button>
             </Button>
         </Popover>
     )
