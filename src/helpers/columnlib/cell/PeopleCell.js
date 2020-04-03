@@ -9,24 +9,7 @@ import './PeopleCell.less';
 class PeopleCell extends React.Component {
     state = {
       visible:false,
-      selectedUsers:(this.props.value&&this.props.value!='')?this.props.value:[],
-      removeBar:{
-        display:'none'
-      }
-    }
-    componentWillReceiveProps(nextProps) {
-      const value = nextProps.value!=''?nextProps.value:[];
-      this.setState({
-        selectedUsers: value
-      });
-    }
-    showUserPanel = () => {
-      this.setState({
-        visible:true
-      })
-    }
-    getUserArray = () => {
-      return [{
+      allPeoples:[{
           smallName:'Z',
           userName:'ZhangTao',
           faceColor:'#f4617f'
@@ -46,12 +29,28 @@ class PeopleCell extends React.Component {
           smallName:'W',
           userName:'Civen Wang',
           faceColor:'#f4617f'
-      }]
+      }],
+      selectedUsers:(this.props.value&&this.props.value!='')?this.props.value:[],
+      removeBar:{
+        display:'none'
+      }
+    }
+    componentWillReceiveProps(nextProps) {
+      const value = nextProps.value!=''?nextProps.value:[];
+      this.setState({
+        selectedUsers: value
+      });
+    }
+    showUserPanel = () => {
+      this.setState({
+        visible:true
+      })
     }
     render() {
       const {Search} = Input;
       const {data, rowIndex, columnKey, collapsedRows, callback, value, handleChange, handleKey, ...props} = this.props;
       const someusers = this.state.selectedUsers;
+      const allPeoples = this.state.allPeoples;
       const returnValue = (e) => {
         let isHas = false;
         for(let i=0,len=someusers.length;i<len;i++){
@@ -62,6 +61,14 @@ class PeopleCell extends React.Component {
         }
         if(!isHas){
           someusers.push(e);
+          for(let j=0;j<allPeoples.length;j++){
+            if(e.userName === allPeoples[j].userName){
+              allPeoples.splice(j,1);
+              this.setState({
+                allPeoples:allPeoples
+              })
+            }
+          }
         }
         this.setState({
           visible:false,
@@ -72,14 +79,17 @@ class PeopleCell extends React.Component {
       }
       const removeUser = (user) =>{
         const someusers = this.state.selectedUsers;
+        const allPeoples = this.state.allPeoples;
         for(let j=0,len2=someusers.length;j<len2;j++){
             if(user.userName === someusers[j].userName){
               someusers.splice(j,1);
+              allPeoples.push(user)
               break;
             }
         }
         this.setState({
-          selectedUsers:someusers
+          selectedUsers:someusers,
+          allPeoples:allPeoples
         })
         handleChange(someusers);
       }
@@ -117,7 +127,7 @@ class PeopleCell extends React.Component {
                   <Divider className="dividerStyle">People</Divider>
                   <div>
                   {
-                    this.getUserArray().map((v, i) => (
+                    this.state.allPeoples.map((v, i) => (
                       <div key={i} className="user" onClick={returnValue.bind(this,v)}>
                           <div className="faceAvatar">&nbsp;
                           <Avatar size={25} 
