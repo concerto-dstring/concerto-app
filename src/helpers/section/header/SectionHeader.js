@@ -28,35 +28,31 @@ class SectionHeader extends PureComponent {
 
   constructor(props) {
     super(props)
-    const { data, rowIndex, isShowSectionColorMenu } = props
+    const { data, rowIndex, isShowSectionColorMenu, columnKey } = props
     this.state = {
       group: data.getGroupByRowIndex(rowIndex),
       editing: isShowSectionColorMenu,
       isShowSectionColorMenu: isShowSectionColorMenu,
+      isSubSection: String(rowIndex).indexOf('.') !== -1,
+      subSectionName: data.getColumn(columnKey).name
     }
   }
 
   componentWillReceiveProps(props) {
 
-    const { data, rowIndex, curGroup } = props
+    const { data, rowIndex, curGroup, columnKey } = props
     let group = data.getGroupByRowIndex(rowIndex)
-    if (curGroup && group && curGroup.groupKey === group.groupKey) {
-      this.setState({ 
-        group: data.getGroupByRowIndex(rowIndex),
-        version: props.dataVersion,
-        editing: true,
-        isShowSectionColorMenu: true,
-      });
-    }
-    else {
-      this.setState({ 
-        group: data.getGroupByRowIndex(rowIndex),
-        version: props.dataVersion,
-        editing: false,
-        isShowSectionColorMenu: false,
-      });
-    }
-    
+    let isSubSection = String(rowIndex).indexOf('.') !== -1
+    let subSectionName = data.getColumn(columnKey).name
+    this.setState({ 
+      group: data.getGroupByRowIndex(rowIndex),
+      oldNameValue: isSubSection ? subSectionName : group.name,
+      version: props.dataVersion,
+      editing: (curGroup && group && curGroup.groupKey === group.groupKey),
+      isShowSectionColorMenu: (curGroup && group && curGroup.groupKey === group.groupKey),
+      isSubSection: isSubSection,
+      subSectionName: subSectionName,
+    })
   }
 
   setTargetRef = ref => (this.targetRef = ref);
@@ -74,7 +70,30 @@ class SectionHeader extends PureComponent {
       editing: false,
     });
     if (this.props.data) {
-      this.props.data.setGroupData(this.state.group);
+      if (this.state.isSubSection) {
+        // 子分区
+        if (this.state.subSectionName) {
+          // 有值
+          this.props.data.setColumnData(this.props.columnKey, {name: this.state.subSectionName})
+        }
+        else {
+          // 无值则恢复上一次的值
+          this.props.data.setColumnData(this.props.columnKey, {name: this.state.oldNameValue})
+        }
+      }
+      else {
+        // 主分区
+        let group = this.state.group
+        if (group.name) {
+          // 有值
+          this.props.data.setGroupData(group);
+        }
+        else {
+          // 无值则恢复上一次的值
+          group.name = this.state.oldNameValue
+          this.props.data.setGroupData(group);
+        }
+      }
     }
 
     // 设置菜单消失
@@ -83,9 +102,18 @@ class SectionHeader extends PureComponent {
 
   handleChange = e =>
   {
-    this.setState({
-      group: {...this.state.group, name: e.target.value},
-    });
+    // 子分区
+    if (this.state.isSubSection) {
+      this.setState({
+        subSectionName: e.target.value,
+      });
+    }
+    // 主分区
+    else {
+      this.setState({
+        group: {...this.state.group, name: e.target.value},
+      });
+    }
   }
 
   handleKey = e =>
@@ -144,9 +172,9 @@ class SectionHeader extends PureComponent {
 
   render() {
     const { width, height } = this.props;
-    const { group, editing, isShowSectionColorMenu, } = this.state;
+    const { group, editing, isShowSectionColorMenu, isSubSection, subSectionName } = this.state;
 
-    let groupName = group ? group.name : ''
+    let inputValue = isSubSection ? subSectionName : (group ? group.name : '')
     let groupColor = group ? group.color : COLOR.SECTION_DEFAULT
 
     const inputStyle = {
@@ -154,14 +182,33 @@ class SectionHeader extends PureComponent {
       height: height - 5,
       borderRadius: '0px',
     }
-    
+
+    // 子分区没有菜单
+    let dropdownMenu
+    if (!isSubSection) {
+      dropdownMenu = (
+        <Dropdown
+          overlay={this.getSectionColorMenu(groupColor)}
+          overlayClassName='section_menu_change_color_menu'
+          visible={isShowSectionColorMenu}
+          getPopupContainer={triggerNode => triggerNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode}
+        >
+          <div 
+            className='section_menu_change_color'
+            style={{backgroundColor: groupColor,  margin: 'auto 5px'}}
+            onClick={this.showSectionColorMenu}
+          />
+        </Dropdown>
+      )
+    }
+
     return (
       <CellContainer 
         ref={this.setTargetRef} 
         onClick={this.handleClick}
-        style={{color: groupColor}}
+        style={{color: isSubSection ? '' : groupColor}}
       >
-        {!editing && groupName}
+        {!editing && inputValue}
         {editing && this.targetRef && (
           <Overlay
             show
@@ -185,19 +232,8 @@ class SectionHeader extends PureComponent {
                 }}
                 onWheel={this.hiddenSectionColorMenu}
               >
-                <Dropdown
-                  overlay={this.getSectionColorMenu(groupColor)}
-                  overlayClassName='section_menu_change_color_menu'
-                  visible={isShowSectionColorMenu}
-                  getPopupContainer={triggerNode => triggerNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode}
-                >
-                  <div 
-                    className='section_menu_change_color'
-                    style={{backgroundColor: groupColor,  margin: 'auto 5px'}}
-                    onClick={this.showSectionColorMenu}
-                  />
-                </Dropdown>
-                <Input autoFocus value={groupName} onChange={this.handleChange} style={inputStyle}     
+                {dropdownMenu}
+                <Input autoFocus value={inputValue} onChange={this.handleChange} style={inputStyle}     
                       onKeyDown={this.handleKey} />
               </div>
             )}

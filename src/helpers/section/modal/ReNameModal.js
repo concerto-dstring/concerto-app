@@ -29,22 +29,22 @@ class ReNameModal extends PureComponent {
   }
 
   handleOkClick = () => {
-    const {data, rowIndex, columnKey, isSection, group} = this.props
+    const {tableData, rowIndex, columnKey, isSection, group} = this.props
     
     const inputValue = this.inputDom.current.input.value
     if (!inputValue) {
       message.warning('名称不能为空!', 1)
       return
     }
-
+    
     if (isSection) {
       // 更新分区标题 真实项目应该请求后台方法更新数据
       group.name = inputValue
-      data.setGroupData(group)
+      tableData.setGroupData(group)
     }
     else {
       // 更新行标题 真实项目应该请求后台方法更新数据
-      data.setObjectAt(rowIndex, columnKey, inputValue)
+      tableData.setObjectAt(rowIndex, columnKey, inputValue)
     }
     
     this.handleCancelClick(isSection)
@@ -53,7 +53,7 @@ class ReNameModal extends PureComponent {
   render() {
     const {
       isShowReNameModal,
-      data, 
+      tableData, 
       rowIndex, 
       columnKey,
       isSection,
@@ -68,7 +68,7 @@ class ReNameModal extends PureComponent {
     }
     else {
       // 行重命名
-      defaultInputValue = rowIndex&&columnKey ? data.getObjectAt(rowIndex)[columnKey] : ''
+      defaultInputValue = rowIndex&&columnKey ? tableData.getObjectAt(rowIndex)[columnKey] : ''
     }
     
     return (

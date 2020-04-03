@@ -59,15 +59,15 @@ class UndoMessage extends PureComponent {
 
   // 撤销相关操作
   cancelAction = () => {
-    const { data, sourceGroupKey, targetGroupKey, rowKey, rowIndex, isSection, group, groupIndex  } = this.props
+    const { tableData, sourceGroupKey, targetGroupKey, rowKey, rowIndex, isSection, group, groupIndex  } = this.props
 
     if (isSection) {
       // 撤销删除分区
-      data.undoRemoveGroup(groupIndex, group)
+      tableData.undoRemoveGroup(groupIndex, group)
     }
     else {
       // 撤销移动行
-      data.moveRow(targetGroupKey, sourceGroupKey, rowKey, rowIndex)
+      tableData.moveRow(targetGroupKey, sourceGroupKey, rowKey, rowIndex)
     }
 
     this.handleCancelClick()
