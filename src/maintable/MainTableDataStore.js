@@ -451,6 +451,88 @@ class MainTableDataStore {
     }
 
     /**
+     * 过滤数据（包含子项）
+     * @param {*} value 
+     */
+    filterTableData(value) {
+
+      const highlightStart = '<span style="background-color: #1890ff; color: #FFFFFF">'
+      const highlightEnd = '</span>'
+
+      let filterData = {}
+      // 过滤后的行
+      filterData.rowKeys = []
+      // 不需要显示的分区
+      filterData.notGroupKeys = []
+
+      if (value) {
+        // 先过滤非日期的columnKey
+        let filterColumns = this._columns.filter(column => column.columnComponentType !== '' && column.columnComponentType !== 'DATE')
+        let filterColumnKeys = []
+        if (filterColumns) {
+          filterColumns.map(column => {
+            if (filterColumnKeys.indexOf(column.columnKey) === -1) {
+              filterColumnKeys.push(column.columnKey)
+            }
+          })
+          
+          // 遍历行数据
+          for (let key in this._rowData) {
+            let row = this._rowData[key]
+            for (let subKey in row) {
+              // 如果此列的值在过滤范围内再判断是否包含值
+              if (!row[subKey]) continue
+              let rowCellValue = row[subKey].replace(new RegExp(highlightStart,"gm"), "").replace(new RegExp(highlightEnd,"gm"), "")
+              if (filterColumnKeys.indexOf(subKey) !== -1 && rowCellValue.toLowerCase().indexOf(value) !== -1) {
+                if (filterData.rowKeys.indexOf(key) === -1) {
+                  filterData.rowKeys.push(key)
+                }
+
+                // row[subKey] = this.getHighlightedText(rowCellValue, value, highlightStart, highlightEnd)
+              }
+            }
+          }
+          console.log(filterData)
+          this._groups.map(group => {
+            if (group.rows) {
+              let count = 0 // 计算分区里面的行有多少可以显示
+              for (let i = 0; i < group.rows.length; i++) {
+                // 如果分区的行都不在过滤后的行里面则该分区不显示
+                if (filterData.rowKeys.indexOf(group.rows[i]) !== -1) {
+                  count++
+                }
+              }
+              if (count === 0) {
+                filterData.notGroupKeys.push(group.groupKey)
+              }
+            }
+            else {
+              filterData.notGroupKeys.push(group.groupKey)
+            }
+          })
+        }
+      }
+
+      return filterData
+    }
+
+    getHighlightedText(text, highlight, highlightStart, highlightEnd) {
+      // Split on highlight term and include term into parts, ignore case
+      const parts = text.split(new RegExp(`(${highlight})`, 'gi'));
+      let returnValuie = ''
+      parts.map(part => {
+        if (part.toLowerCase() === highlight.toLowerCase()) {
+          returnValuie = returnValuie + highlightStart + part + highlightEnd
+        }
+        else {
+          returnValuie = returnValuie + part
+        }
+      })
+
+      return returnValuie
+    }
+
+    /**
     * The callbacks are used to trigger events as new data arrives.
     *
     * In most cases the callback is a method that updates the state, e.g.

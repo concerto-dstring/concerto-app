@@ -160,7 +160,31 @@ function AddFilter(TableComponent) {
             filteredIndexes.push({rowType:RowType.FOOTER, groupKey:group.groupKey, rowKey:''});
         }
       }
-      return (this._getDataWrapper(filteredIndexes));
+
+      let filteredIndexesMap = []
+      if (this.props.filterValue) {
+        let filterData = dataset.filterTableData(this.props.filterValue)
+        // 过滤后无数据
+        if (filterData.rowKeys) {
+          for (let i = 0; i < filteredIndexes.length; i++) {
+            // 不显示分区中不包含该Index并且如果rowKey不为空需要在rowKeys中
+            if (filterData.notGroupKeys.indexOf(filteredIndexes[i].groupKey) === -1 
+              ) {
+                if (filteredIndexes[i].rowKey === '') {
+                  filteredIndexesMap.push(filteredIndexes[i])
+                }
+                else if (filterData.rowKeys.indexOf(filteredIndexes[i].rowKey) !== -1) {
+                  filteredIndexesMap.push(filteredIndexes[i])
+                }
+            }
+          }
+        }
+      }
+      else {
+        filteredIndexesMap = filteredIndexes
+      }
+
+      return (this._getDataWrapper(filteredIndexesMap));
     }
 
     render() {

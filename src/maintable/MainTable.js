@@ -18,7 +18,7 @@ import UndoMessage from '../helpers/section/modal/UndoMessage'
 import { EditableCell } from '../helpers/columnlib/header/EditableCell';
 import SectionHeader from '../helpers/section/header/SectionHeader';
 import Dimensions from 'react-dimensions';
-import { Menu, Dropdown, message, Tooltip, Row, Col} from 'antd';
+import { Menu, Dropdown, message, Tooltip, Row, Col, Input} from 'antd';
 import { DataContext, AddFilter } from './data/DataContext';
 import { DataVersionContext, TableContext } from './data/DataContext';
 import { connect } from 'react-redux'
@@ -433,16 +433,33 @@ class MainTable extends React.Component {
         );
     }
 
+    /**
+     * 查询/过滤数据
+     */
+    filterTableData = (e) => {
+      this.setState({
+        filterValue: e.target.value.trim()
+      })
+    }
+
     renderControls() {
         return (
             <Row>
-                <Col span={20}>
+                <Col span={16}>
                     <div id="addGroupBtn" className='autoScrollControls'>
                         <Button primary onClick={this._onAddNewGroupCallback} >添加新分区</Button>
                     </div>
                 </Col>
                 <Col span={4}>
-                    <div id="filterPeople">
+                  <Input 
+                    style={{height: 32, borderRadius: 16}} 
+                    allowClear={true}
+                    placeholder={'查询/过滤'}
+                    onChange={this.filterTableData}
+                  />
+                </Col>
+                <Col span={4}>
+                    <div id="filterPeople" style={{marginLeft: 10}} >
                         <TableContext.Provider value={this.state}>
                             <PeopleFilter></PeopleFilter>
                         </TableContext.Provider>
@@ -456,7 +473,7 @@ class MainTable extends React.Component {
     }
 
     renderTable() {
-        var { data, filters } = this.state;
+        var { data, filters, filterValue } = this.state;
         const fixedColumns = this.state.columns.filter(c => c.fixed); 
         const scrollColumns = this.state.columns.filter(c => !c.fixed);
       
@@ -473,7 +490,8 @@ class MainTable extends React.Component {
                     isColumnResizing={false}
                     addRowHeight={35}
                     footerHeight={40}
-                    filters={filters}                
+                    filters={filters}
+                    filterValue={filterValue}                
                     height={this.props.containerHeight}
                     // 减去左侧Sider宽度 
                     width={this.props.containerWidth - this.props.siderWidth}
