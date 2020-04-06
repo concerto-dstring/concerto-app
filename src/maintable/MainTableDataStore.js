@@ -41,6 +41,7 @@ class MainTableDataStore {
         this.toggleExpandSubRows = this.toggleExpandSubRows.bind(this);
         this._callbacks = [];
         this.runCallbacks = this.runCallbacks.bind(this);
+        this.filterInputValue = ''
     }
     
     createFakeObjectData() {
@@ -121,6 +122,8 @@ class MainTableDataStore {
         if (!rowKey || !columnKey) 
             return;
         this._rowData[rowKey][columnKey] = value;
+
+        this.runCallbacks();
     }
 
     getGroups() {
@@ -455,16 +458,13 @@ class MainTableDataStore {
      * @param {*} value 
      */
     filterTableData(value) {
-
-      const highlightStart = '<span style="background-color: #1890ff; color: #FFFFFF">'
-      const highlightEnd = '</span>'
-
+      this.filterInputValue = value
       let filterData = {}
       // 过滤后的行
       filterData.rowKeys = []
       // 不需要显示的分区
       filterData.notGroupKeys = []
-
+      
       if (value) {
         // 先过滤非日期的columnKey
         let filterColumns = this._columns.filter(column => column.columnComponentType !== '' && column.columnComponentType !== 'DATE')
@@ -482,17 +482,30 @@ class MainTableDataStore {
             for (let subKey in row) {
               // 如果此列的值在过滤范围内再判断是否包含值
               if (!row[subKey]) continue
-              let rowCellValue = row[subKey].replace(new RegExp(highlightStart,"gm"), "").replace(new RegExp(highlightEnd,"gm"), "")
-              if (filterColumnKeys.indexOf(subKey) !== -1 && rowCellValue.toLowerCase().indexOf(value) !== -1) {
-                if (filterData.rowKeys.indexOf(key) === -1) {
+
+              // 单元格数据为数组--人员
+              if (row[subKey] instanceof Array) {
+                let users = row[subKey]
+                users.map(user => {
+                  if (user.userName && user.userName.toLowerCase().indexOf(value.toLowerCase()) !== -1 && filterData.rowKeys.indexOf(key) === -1) {
+                    filterData.rowKeys.push(key)
+                    return
+                  }
+                })
+              }
+              // 单元格数据为对象
+              else if (row[subKey] instanceof Object) {
+
+              }
+              else {
+                if (filterColumnKeys.indexOf(subKey) !== -1 && String(row[subKey]).toLowerCase().indexOf(value.toLowerCase()) !== -1
+                  && filterData.rowKeys.indexOf(key) === -1) {
                   filterData.rowKeys.push(key)
                 }
-
-                // row[subKey] = this.getHighlightedText(rowCellValue, value, highlightStart, highlightEnd)
               }
             }
           }
-          console.log(filterData)
+          
           this._groups.map(group => {
             if (group.rows) {
               let count = 0 // 计算分区里面的行有多少可以显示
@@ -516,20 +529,8 @@ class MainTableDataStore {
       return filterData
     }
 
-    getHighlightedText(text, highlight, highlightStart, highlightEnd) {
-      // Split on highlight term and include term into parts, ignore case
-      const parts = text.split(new RegExp(`(${highlight})`, 'gi'));
-      let returnValuie = ''
-      parts.map(part => {
-        if (part.toLowerCase() === highlight.toLowerCase()) {
-          returnValuie = returnValuie + highlightStart + part + highlightEnd
-        }
-        else {
-          returnValuie = returnValuie + part
-        }
-      })
-
-      return returnValuie
+    getFilterInputValue() {
+      return this.filterInputValue
     }
 
     /**

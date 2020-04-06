@@ -48,6 +48,7 @@ class DataViewWrapper {
         this.getSubRows = this.getSubRows.bind(this);
         this.getSubRowCount = this.getSubRowCount.bind(this);
         this.addNewSubSection = this.addNewSubSection.bind(this)
+        this.getFilterInputValue = this.getFilterInputValue.bind(this)
     }
 
     /**
@@ -427,6 +428,10 @@ class DataViewWrapper {
       if (row) {
         this._dataset.addNewSubSection(row.rowKey, newItem)
       }
+    }
+
+    getFilterInputValue() {
+      return this._dataset.getFilterInputValue()
     }
 }
 

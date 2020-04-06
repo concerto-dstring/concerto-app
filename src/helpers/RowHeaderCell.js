@@ -4,6 +4,7 @@ import { Badge } from 'antd';
 import { Input } from 'semantic-ui-react';
 import Keys from '../maintable/vendor_upstream/core/Keys';
 import styled from 'styled-components';
+import getHighlightText from '../maintable/getHighlightText'
 
 const CellContainer = styled.div`
   display: flex;
@@ -18,8 +19,10 @@ const CellContainer = styled.div`
 class RowHeaderCell extends React.PureComponent {
     constructor(props){
        super(props)
+       let value = props.data ? props.data.getObjectAt(props.rowIndex)[props.columnKey] : props.value
        this.state = {
-            value: props.data ? props.data.getObjectAt(props.rowIndex)[props.columnKey] : props.value,
+            value: value,
+            displayValue: getHighlightText(value, props.data.getFilterInputValue()),
             count: props.data ? props.data.getSubRowCount(props.rowIndex) : 0,
             editing: false,
             handleChange:this.handleChange,
@@ -28,8 +31,10 @@ class RowHeaderCell extends React.PureComponent {
     }
     
     componentWillReceiveProps(props) {
+        let value = props.data ? props.data.getObjectAt(props.rowIndex)[props.columnKey] : props.value
         this.setState({ 
-            value: props.data ? props.data.getObjectAt(props.rowIndex)[props.columnKey] : props.value,
+            value: value,
+            displayValue: getHighlightText(value, props.data.getFilterInputValue()),
             count: props.data ? props.data.getSubRowCount(props.rowIndex) : 0,
             version: props.dataVersion,
         });
@@ -70,7 +75,7 @@ class RowHeaderCell extends React.PureComponent {
 
     render() {
         const {container, data, rowIndex, columnKey, dataVersion, width, height,  ...props} = this.props;
-        const { value, editing, count } = this.state;
+        const { value, editing, count, displayValue } = this.state;
         const inputStyle = {
             width: width - 10,
             height: height - 5,
@@ -82,7 +87,7 @@ class RowHeaderCell extends React.PureComponent {
                     <div style={{width:50}}>
                     {count != 0 && <a onClick={this.toggleSubRows}><Badge count={count+'+'} /></a>}
                     </div>
-                    {!editing && value}
+                    {!editing && displayValue}
                     {editing && this.targetRef && (
                         <Overlay
                             show

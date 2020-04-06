@@ -182,6 +182,7 @@ function AddFilter(TableComponent) {
       }
       else {
         filteredIndexesMap = filteredIndexes
+        dataset.filterTableData(this.props.filterValue)
       }
 
       return (this._getDataWrapper(filteredIndexesMap));
