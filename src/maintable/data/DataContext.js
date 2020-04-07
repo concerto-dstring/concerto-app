@@ -98,15 +98,14 @@ function AddFilter(TableComponent) {
     doFilterByPeople(filteredIndexes,people,columnPeople){
         
         const updateFilteredIndexes = (filteredIndexes,rowKeysArray) => {
-          debugger;
           let newFilteredIndexes = [];
           for(var x=0;x<filteredIndexes.length;x++){
               const thisRowKey = filteredIndexes[x].rowKey;
               if(thisRowKey===''){
                 newFilteredIndexes.push(filteredIndexes[x]);
               }else{
-                for(let z=0;z<rowKeysArray.length;z++){
-                  if(thisRowKey === rowKeysArray[z]){
+                for(let y=0;y<rowKeysArray.length;y++){
+                  if(thisRowKey === rowKeysArray[y]){
                     newFilteredIndexes.push(filteredIndexes[x]);
                   }
                 }
@@ -212,9 +211,7 @@ function AddFilter(TableComponent) {
       }
       let oldFilteredIndexes = JSON.parse(JSON.stringify(filteredIndexes));
       if(this.props.filterPeople){
-        debugger;
         filteredIndexes = this.doFilterByPeople(filteredIndexes,this.props.filterPeople,'PEOPLE');
-        debugger;
       }else{
         filteredIndexes = oldFilteredIndexes;
       }
