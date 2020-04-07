@@ -3,20 +3,31 @@
 import { RowType, getSubLevel, getRootRowIndex } from './MainTableType';
 
 class DataViewWrapper {
-    constructor(dataset, indexMap = null) {
+    constructor(dataset, indexMap = null, subRowKeys) {
         this._indexMap = this.getIndexMap(dataset, indexMap);
         this._subRowMap = {};
         this._dataset = dataset;
+        this._subRowKeys = subRowKeys
         this._indexMap.forEach((r, i) => {
           if (this._dataset.isSubRowExpanded(r.rowKey)) {
               let rows = this._dataset.getSubRows(r.rowKey);
               if (rows.length > 0) {      
-                  let k;      
-                  for (k = 0; k < rows.length; k ++) {
-                      const indexString = `${i}.${k + 1}`;
+                  let j = 0;      
+                  for (let k = 0; k < rows.length; k ++) {
+                    if (this._subRowKeys) {
+                      if (this._subRowKeys.indexOf(rows[k]) !== -1) {
+                        j += 1 
+                        const indexString = `${i}.${j}`;
+                        this._subRowMap[indexString] = rows[k];
+                      }
+                    }
+                    else {
+                      j += 1
+                      const indexString = `${i}.${j}`;
                       this._subRowMap[indexString] = rows[k];
+                    }  
                   }
-                  const indexString = `${i}.${k + 1}`;
+                  const indexString = `${i}.${j + 1}`;
                   this._subRowMap[indexString] = r.rowKey;
               }
           }
@@ -48,7 +59,6 @@ class DataViewWrapper {
         this.getSubRows = this.getSubRows.bind(this);
         this.getSubRowCount = this.getSubRowCount.bind(this);
         this.addNewSubSection = this.addNewSubSection.bind(this)
-        this.getFilterInputValue = this.getFilterInputValue.bind(this)
     }
 
     /**
@@ -145,7 +155,7 @@ class DataViewWrapper {
     getSubRowCount(rowIndex) {
       if (getSubLevel(rowIndex) === 0) {
           let rowKey = this._indexMap[rowIndex].rowKey;
-          let rows = this._dataset.getSubRows(rowKey);
+          let rows = this._dataset.getSubRows(rowKey, this._subRowKeys);
           return rows.length;
       }
       return 0;
@@ -158,7 +168,7 @@ class DataViewWrapper {
       }
       let indexes = [];
       let offset = 0;
-      let rows = this._dataset.getSubRows(rowKey);
+      let rows = this._dataset.getSubRows(rowKey, this._subRowKeys);
       if (rows.length > 0) {
           indexes.push({rowType:RowType.SUBHEADER, rowKey:'', parentRowKey: rowKey});
           offset ++;
@@ -428,10 +438,6 @@ class DataViewWrapper {
       if (row) {
         this._dataset.addNewSubSection(row.rowKey, newItem)
       }
-    }
-
-    getFilterInputValue() {
-      return this._dataset.getFilterInputValue()
     }
 }
 

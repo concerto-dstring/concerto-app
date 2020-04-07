@@ -63,7 +63,7 @@ class EditableCell extends React.PureComponent {
       let displayValue = ''
       if (props.data.getObjectAt(props.rowIndex)) {
         value = props.data.getObjectAt(props.rowIndex)[props.columnKey] 
-        displayValue = getHighlightText(value, props.data.getFilterInputValue())
+        displayValue = getHighlightText(value, props.filterInputValue)
       }
       else {
         if (isCollapsed) {
@@ -164,8 +164,8 @@ class EditableCell extends React.PureComponent {
 
     getPeopleFilterStyle = (type, editing, value) => {
       let style = {}
-      if (type === 'PEOPLE' && !editing && value && this.props.data.getFilterInputValue()) {
-        let filterInputValue = this.props.data.getFilterInputValue().toLowerCase()
+      if (type === 'PEOPLE' && !editing && value && this.props.filterInputValue) {
+        let filterInputValue = this.props.filterInputValue.toLowerCase()
         value.map(user => {
           if (user.userName && user.userName.toLowerCase().indexOf(filterInputValue) !== -1) {
             style = { backgroundColor: '#CCE9FF' }
@@ -186,7 +186,7 @@ class EditableCell extends React.PureComponent {
         this.setState({
             type:type,
             isHeaderOrFooter:isHeaderOrFooter,
-            filterInputValue: this.props.data.getFilterInputValue()
+            filterInputValue: this.props.filterInputValue
         })
         const inputStyle = {
             width: width - 10,

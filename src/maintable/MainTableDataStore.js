@@ -41,7 +41,6 @@ class MainTableDataStore {
         this.toggleExpandSubRows = this.toggleExpandSubRows.bind(this);
         this._callbacks = [];
         this.runCallbacks = this.runCallbacks.bind(this);
-        this.filterInputValue = ''
     }
     
     createFakeObjectData() {
@@ -117,6 +116,10 @@ class MainTableDataStore {
         return this._rowData[rowKey];
     }
 
+    getRowData() {
+      return this._rowData
+    }
+
     setObjectAt(rowKey, columnKey, value) {
         // skip the group row 
         if (!rowKey || !columnKey) 
@@ -130,10 +133,32 @@ class MainTableDataStore {
         return this._groups;
     }
 
-    getSubRows(rowKey) {
-        if (this._subRows[rowKey])
+    getSubRows(rowKey, subRowKeys) {
+        if (this._subRows[rowKey]) {
+          if (subRowKeys && subRowKeys.length > 0) {
+            if (this._subRows[rowKey].rows) {
+              let rows = []
+              this._subRows[rowKey].rows.map(row => {
+                if (subRowKeys.indexOf(row) !== -1) {
+                  rows.push(row)
+                }
+              })
+              return rows
+            }
+            else {
+              return []
+            }
+          }
+          else {
             return this._subRows[rowKey].rows || [];
+          }
+        }
+
         return [];
+    }
+
+    getSubRowData() {
+      return this._subRows
     }
 
     isSubRowExpanded(rowKey) {
@@ -451,86 +476,6 @@ class MainTableDataStore {
 
       //refresh
       this.runCallbacks();
-    }
-
-    /**
-     * 过滤数据（包含子项）
-     * @param {*} value 
-     */
-    filterTableData(value) {
-      this.filterInputValue = value
-      let filterData = {}
-      // 过滤后的行
-      filterData.rowKeys = []
-      // 不需要显示的分区
-      filterData.notGroupKeys = []
-      
-      if (value) {
-        // 先过滤非日期的columnKey
-        let filterColumns = this._columns.filter(column => column.columnComponentType !== '' && column.columnComponentType !== 'DATE')
-        let filterColumnKeys = []
-        if (filterColumns) {
-          filterColumns.map(column => {
-            if (filterColumnKeys.indexOf(column.columnKey) === -1) {
-              filterColumnKeys.push(column.columnKey)
-            }
-          })
-          
-          // 遍历行数据
-          for (let key in this._rowData) {
-            let row = this._rowData[key]
-            for (let subKey in row) {
-              // 如果此列的值在过滤范围内再判断是否包含值
-              if (!row[subKey]) continue
-
-              // 单元格数据为数组--人员
-              if (row[subKey] instanceof Array) {
-                let users = row[subKey]
-                users.map(user => {
-                  if (user.userName && user.userName.toLowerCase().indexOf(value.toLowerCase()) !== -1 && filterData.rowKeys.indexOf(key) === -1) {
-                    filterData.rowKeys.push(key)
-                    return
-                  }
-                })
-              }
-              // 单元格数据为对象
-              else if (row[subKey] instanceof Object) {
-
-              }
-              else {
-                if (filterColumnKeys.indexOf(subKey) !== -1 && String(row[subKey]).toLowerCase().indexOf(value.toLowerCase()) !== -1
-                  && filterData.rowKeys.indexOf(key) === -1) {
-                  filterData.rowKeys.push(key)
-                }
-              }
-            }
-          }
-          
-          this._groups.map(group => {
-            if (group.rows) {
-              let count = 0 // 计算分区里面的行有多少可以显示
-              for (let i = 0; i < group.rows.length; i++) {
-                // 如果分区的行都不在过滤后的行里面则该分区不显示
-                if (filterData.rowKeys.indexOf(group.rows[i]) !== -1) {
-                  count++
-                }
-              }
-              if (count === 0) {
-                filterData.notGroupKeys.push(group.groupKey)
-              }
-            }
-            else {
-              filterData.notGroupKeys.push(group.groupKey)
-            }
-          })
-        }
-      }
-
-      return filterData
-    }
-
-    getFilterInputValue() {
-      return this.filterInputValue
     }
 
     /**

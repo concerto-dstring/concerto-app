@@ -4,7 +4,6 @@ import {Button ,Menu, Dropdown} from 'antd';
 import 'moment/locale/zh-cn';
 import { Cell } from '../../../maintable/FixedDataTableRoot';
 import './StatusCell.less';
-import getHighlightText from '../../../maintable/getHighlightText'
 
 class StatusCell extends React.Component {
     constructor(props){
@@ -67,7 +66,7 @@ class StatusCell extends React.Component {
         <Cell {...props} className='statusCell'>
             <Dropdown overlay={menu} trigger={['click']}>
               <div className={cellStatusTextStyle}>
-                {getHighlightText(this.state.value, this.props.filterInputValue)}
+                {this.props.displayValue}
               </div>
             </Dropdown>
         </Cell>

@@ -12,13 +12,14 @@ const TableContext = React.createContext();
 const DataVersionContext = React.createContext({
   data: null,
   version: 0,
+  filterInputValue: null
 });
 
 function DataContext(Wrapped) {
   class ContextClass extends React.Component {
     constructor(props) {
       super(props);
-
+      
       this.refresh = this.refresh.bind(this);
       const data = this.props.data;
       data.setCallback(this.refresh, 'data');
@@ -26,6 +27,7 @@ function DataContext(Wrapped) {
       this.state = {
         data: props.data,
         version: 0,
+        filterInputValue: props.filterInputValue
       };
     }
 
@@ -33,6 +35,7 @@ function DataContext(Wrapped) {
       if (JSON.stringify(nextProps.data) !== JSON.stringify(this.state.data)) {
         this.setState({
           data: nextProps.data,
+          filterInputValue: nextProps.filterInputValue
         });
       }
     }
@@ -89,8 +92,8 @@ function AddFilter(TableComponent) {
       });
     }
 
-    _getDataWrapper(indexMap = null) {
-      const filteredData = new DataViewWrapper(this.props.data, indexMap);
+    _getDataWrapper(indexMap = null, subRowKeys) {
+      const filteredData = new DataViewWrapper(this.props.data, indexMap, subRowKeys);
       filteredData.setCallback(this.refresh, 'filter');
       return filteredData;
     }
@@ -162,8 +165,10 @@ function AddFilter(TableComponent) {
       }
 
       let filteredIndexesMap = []
-      if (this.props.filterValue) {
-        let filterData = dataset.filterTableData(this.props.filterValue)
+      let subRowKeys = []
+      if (this.props.filterInputValue) {
+        let filterData = this.filterTableData(dataset, this.props.filterInputValue.toLowerCase())
+        subRowKeys = filterData.subRowKeys
         // 过滤后无数据
         if (filterData.rowKeys) {
           for (let i = 0; i < filteredIndexes.length; i++) {
@@ -182,10 +187,104 @@ function AddFilter(TableComponent) {
       }
       else {
         filteredIndexesMap = filteredIndexes
-        dataset.filterTableData(this.props.filterValue)
       }
 
-      return (this._getDataWrapper(filteredIndexesMap));
+      return (this._getDataWrapper(filteredIndexesMap, subRowKeys));
+    }
+
+    /**
+     * 过滤数据（包含子项）
+     * @param {*} value 
+     */
+    filterTableData(dataset, value) {
+      let filterData = {}
+      // 过滤后的行
+      filterData.rowKeys = []
+
+      // 过滤后的子项行
+      filterData.subRowKeys = []
+
+      // 不需要显示的分区
+      filterData.notGroupKeys = []
+      
+      if (value) {
+        // 先过滤非日期的columnKey
+        let filterColumns = dataset.getColumns().filter(column => column.columnComponentType !== '' && column.columnComponentType !== 'DATE')
+        let filterColumnKeys = []
+        if (filterColumns) {
+          filterColumns.map(column => {
+            if (filterColumnKeys.indexOf(column.columnKey) === -1) {
+              filterColumnKeys.push(column.columnKey)
+            }
+          })
+          
+          // 遍历行数据
+          for (let key in dataset.getRowData()) {
+            let row = dataset.getRowData()[key]
+            for (let subKey in row) {
+              // 如果此列的值在过滤范围内再判断是否包含值
+              if (!row[subKey]) continue
+
+              // 单元格数据为数组--人员
+              if (row[subKey] instanceof Array) {
+                let users = row[subKey]
+                users.map(user => {
+                  if (user.userName && user.userName.toLowerCase().indexOf(value) !== -1 && filterData.rowKeys.indexOf(key) === -1) {
+                    filterData.rowKeys.push(key)
+                    return
+                  }
+                })
+              }
+              // 单元格数据为对象
+              else if (row[subKey] instanceof Object) {
+
+              }
+              else {
+                if (filterColumnKeys.indexOf(subKey) !== -1 && String(row[subKey]).toLowerCase().indexOf(value) !== -1
+                  && filterData.rowKeys.indexOf(key) === -1) {
+                  filterData.rowKeys.push(key)
+                  break
+                }
+              }
+            }
+          }
+
+          // 判断行数据是否为子项数据,若为子项行数据则需要带出父数据
+          for (let rowKey in dataset.getSubRowData()) {
+            let rows = dataset.getSubRowData()[rowKey].rows
+            if (rows) {
+              rows.map(row => {
+                if (filterData.rowKeys.indexOf(row) !== -1) {
+                  filterData.subRowKeys.push(row)
+                  if (filterData.rowKeys.indexOf(rowKey) === -1) {
+                    filterData.rowKeys.push(rowKey)
+                  }
+                }
+              })
+            }
+          }
+          
+          dataset.getGroups().map(group => {
+            if (group.rows) {
+              let count = 0 // 计算分区里面的行有多少可以显示
+              for (let i = 0; i < group.rows.length; i++) {
+                // 如果分区的行都不在过滤后的行里面则该分区不显示
+                if (filterData.rowKeys.indexOf(group.rows[i]) !== -1) {
+                  count++
+                }
+              }
+              if (count === 0) {
+                filterData.notGroupKeys.push(group.groupKey)
+              }
+            }
+            else {
+              filterData.notGroupKeys.push(group.groupKey)
+            }
+          })
+        }
+      }
+
+      return filterData
     }
 
     render() {

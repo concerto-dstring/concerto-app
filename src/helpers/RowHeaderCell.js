@@ -22,7 +22,7 @@ class RowHeaderCell extends React.PureComponent {
        let value = props.data ? props.data.getObjectAt(props.rowIndex)[props.columnKey] : props.value
        this.state = {
             value: value,
-            displayValue: getHighlightText(value, props.data.getFilterInputValue()),
+            displayValue: getHighlightText(value, props.filterInputValue),
             count: props.data ? props.data.getSubRowCount(props.rowIndex) : 0,
             editing: false,
             handleChange:this.handleChange,
@@ -34,7 +34,7 @@ class RowHeaderCell extends React.PureComponent {
         let value = props.data ? props.data.getObjectAt(props.rowIndex)[props.columnKey] : props.value
         this.setState({ 
             value: value,
-            displayValue: getHighlightText(value, props.data.getFilterInputValue()),
+            displayValue: getHighlightText(value, props.filterInputValue),
             count: props.data ? props.data.getSubRowCount(props.rowIndex) : 0,
             version: props.dataVersion,
         });

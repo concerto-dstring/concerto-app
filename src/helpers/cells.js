@@ -153,11 +153,11 @@ class RemovableHeaderCell extends React.PureComponent {
 
 class TextCell extends React.PureComponent {
   render() {
-    const {data, rowIndex, columnKey, dataVersion, ...props} = this.props;
+    const {data, rowIndex, columnKey, dataVersion,  filterInputValue, ...props} = this.props;
    
     return (
       <Cell {...props}>
-        {getHighlightText(data.getCellValue(rowIndex, columnKey), data.getFilterInputValue())}
+        {getHighlightText(data.getCellValue(rowIndex, columnKey), filterInputValue)}
       </Cell>
     );
   }

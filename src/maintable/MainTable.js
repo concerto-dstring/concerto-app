@@ -48,11 +48,12 @@ const DataRowHeaderCell = function(props) {
     this.props = props;
     return (
         <DataVersionContext.Consumer>
-            {({data, version}) => (
+            {({data, version, filterInputValue}) => (
                 <RowHeaderCell
                     data={data}
                     dataVersion={version}
                     type={'TEXT'}
+                    filterInputValue={filterInputValue}
                     {...this.props}
                 />
             )}
@@ -64,10 +65,11 @@ const DataEditableCell = function(props) {
     this.props = props;
     return (
         <DataVersionContext.Consumer>
-            {({data, version}) => (
+            {({data, version, filterInputValue}) => (
                 <EditableCell
                     data={data}
                     dataVersion={version}
+                    filterInputValue={filterInputValue}
                     {...this.props}
                 />
             )}
@@ -79,10 +81,11 @@ const DataTextCell = function(props) {
     this.props = props;
     return (
         <DataVersionContext.Consumer>
-            {({data, version}) => (
+            {({data, version, filterInputValue}) => (
                 <TextCell
                     data={data}
                     dataVersion={version}
+                    filterInputValue={filterInputValue}
                     {...this.props}
                 />
             )}
@@ -438,7 +441,7 @@ class MainTable extends React.Component {
      */
     filterTableData = (e) => {
       this.setState({
-        filterValue: e.target.value.trim()
+        filterInputValue: e.target.value.trim()
       })
     }
 
@@ -473,7 +476,7 @@ class MainTable extends React.Component {
     }
 
     renderTable() {
-        var { data, filters, filterValue } = this.state;
+        var { data, filters, filterInputValue } = this.state;
         const fixedColumns = this.state.columns.filter(c => c.fixed); 
         const scrollColumns = this.state.columns.filter(c => !c.fixed);
       
@@ -491,7 +494,7 @@ class MainTable extends React.Component {
                     addRowHeight={35}
                     footerHeight={40}
                     filters={filters}
-                    filterValue={filterValue}                
+                    filterInputValue={filterInputValue}                
                     height={this.props.containerHeight}
                     // 减去左侧Sider宽度 
                     width={this.props.containerWidth - this.props.siderWidth}
