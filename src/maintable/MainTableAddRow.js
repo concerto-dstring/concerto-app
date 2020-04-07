@@ -107,6 +107,12 @@ class MainTableAddRow extends React.Component {
     }
   }
 
+  _onNewrowButton(props){
+    if (props.onNewRowAdd) {
+      props.onNewRowAdd(props.index, this.state.newItem);
+    }
+  }
+
   handleChange(event) {
     this.setState({newItem: event.target.value});
   }
@@ -198,7 +204,8 @@ class MainTableAddRow extends React.Component {
           <div> 
             {dropPlace}
             <div style={style} className={className} >
-              <Input style={inputStyle} action='添加' placeholder='+ 添加' onKeyPress={this._onKeyPress} value={this.state.newItem} onChange={this.handleChange} />
+              <Input style={inputStyle} action= {{content:'添加', onClick:() => this._onNewrowButton(this.props) }} placeholder='+ 添加' 
+                onKeyPress={this._onKeyPress} value={this.state.newItem} onChange={this.handleChange} />
               {scrollbarSpacer}
             </div>
           </div>
