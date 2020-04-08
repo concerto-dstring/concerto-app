@@ -196,6 +196,7 @@ class MainTable extends React.Component {
         this.state = {
             data: this._dataset,
             filters: {'rowKey' : ''},
+            filterPeople:null,
             columns: this._dataset.getColumns(),
             version: 0,
             isShowAddSubRowModal: false,
@@ -426,6 +427,12 @@ class MainTable extends React.Component {
         });
     }
 
+    doFilter = (people) => {
+        this.setState({
+         filterPeople:people
+        });
+    }
+
     render() {
         return (
           <div className='autoScrollContainer'>
@@ -463,8 +470,8 @@ class MainTable extends React.Component {
                 </Col>
                 <Col span={4}>
                     <div id="filterPeople" style={{marginLeft: 10}} >
-                        <TableContext.Provider value={this.state}>
-                            <PeopleFilter></PeopleFilter>
+                       <TableContext.Provider value={this.state}> 
+                            <PeopleFilter doFilter={this.doFilter}></PeopleFilter>
                         </TableContext.Provider>
                     </div>
                 </Col>
@@ -474,9 +481,9 @@ class MainTable extends React.Component {
             
           )
     }
-
+   
     renderTable() {
-        var { data, filters, filterInputValue } = this.state;
+        var { data, filters, filterInputValue, filterPeople } = this.state;
         const fixedColumns = this.state.columns.filter(c => c.fixed); 
         const scrollColumns = this.state.columns.filter(c => !c.fixed);
       
@@ -494,7 +501,8 @@ class MainTable extends React.Component {
                     addRowHeight={35}
                     footerHeight={40}
                     filters={filters}
-                    filterInputValue={filterInputValue}                
+                    filterInputValue={filterInputValue}  
+                    filterPeople={filterPeople}              
                     height={this.props.containerHeight}
                     // 减去左侧Sider宽度 
                     width={this.props.containerWidth - this.props.siderWidth}

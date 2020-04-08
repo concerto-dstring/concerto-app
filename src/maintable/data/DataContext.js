@@ -98,6 +98,55 @@ function AddFilter(TableComponent) {
       return filteredData;
     }
 
+    doFilterByPeople(filteredIndexes,people,columnPeople){
+        
+        const updateFilteredIndexes = (filteredIndexes,rowKeysArray) => {
+          let newFilteredIndexes = [];
+          for(var x=0;x<filteredIndexes.length;x++){
+              const thisRowKey = filteredIndexes[x].rowKey;
+              if(thisRowKey===''){
+                newFilteredIndexes.push(filteredIndexes[x]);
+              }else{
+                for(let y=0;y<rowKeysArray.length;y++){
+                  if(thisRowKey === rowKeysArray[y]){
+                    newFilteredIndexes.push(filteredIndexes[x]);
+                  }
+                }
+              }
+          }
+          return newFilteredIndexes;
+        }
+
+        const updateTableRows = (filteredIndexes) => {
+          const tableData   = this.props.data._rowData;
+          const tableColumn = this.props.data._columns;
+          let rowKeysArray  = [];
+          for(let i=0;i<tableColumn.length;i++){
+            const column = tableColumn[i];
+            const columnKey = column.columnKey;
+            if(columnPeople === column.columnComponentType){
+              for(var rowIndex in tableData){
+                  const row = tableData[rowIndex];
+                  for(var key in row){
+                    if(columnKey === key){
+                      if(row[key].length>0){
+                        for(let j=0;j<row[key].length;j++){
+                          const thePeople = row[key][j];
+                          if(people.userName === thePeople.userName&&rowKeysArray.indexOf(rowIndex)<0){
+                            rowKeysArray.push(rowIndex);
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+            return updateFilteredIndexes(filteredIndexes,rowKeysArray);
+        } 
+        return updateTableRows(filteredIndexes);
+    }
+
     filter() {
       // Get and prep filters
       // todo add filter here
@@ -184,6 +233,10 @@ function AddFilter(TableComponent) {
             }
           }
         }
+      }
+      else if (this.props.filterPeople){
+        filteredIndexes = this.doFilterByPeople(filteredIndexes,this.props.filterPeople,'PEOPLE');
+        return (this._getDataWrapper(filteredIndexes));
       }
       else {
         filteredIndexesMap = filteredIndexes

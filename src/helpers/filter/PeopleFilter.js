@@ -3,7 +3,6 @@ import 'antd/dist/antd.css'
 import { Popover, Button, Avatar } from 'antd';
 import {UserOutlined,CloseCircleOutlined,SaveOutlined,CloseCircleFilled} from '@ant-design/icons';
 import './PeopleFilter.less'
-import { TableContext } from '../../maintable/data/DataContext';
 
 class PeopleFilter extends React.Component {
   constructor(props){
@@ -37,8 +36,9 @@ class PeopleFilter extends React.Component {
       peopleAvatar:<UserOutlined />
     });
     e.stopPropagation();
+    this.props.doFilter(null);
   }
-  checkPeople = (people,data) => {
+  checkPeople = (people) => {
     const peopleAvatar = 
       <Avatar 
         size={30} 
@@ -54,7 +54,7 @@ class PeopleFilter extends React.Component {
       checkedPeople:people,
       peopleAvatar:peopleAvatar
     });
-    this.doFilterByPeople(people,data)
+    this.props.doFilter(people);
   }
   visibleChange = (status) => {
     if(!status&&!this.state.hasCheckPeople){
@@ -73,10 +73,7 @@ class PeopleFilter extends React.Component {
       })
     }
   }
-  doFilterByPeople = (people,tableObj) => {
-    //TODO  
-    const tableData = tableObj._rowData;
-  }
+   
   render = () => {
     const persons = [{
         smallName:'Z',
@@ -99,36 +96,28 @@ class PeopleFilter extends React.Component {
         userName:'Civen Wang',
         faceColor:'#f4617f'
     }]
-    const content = <div>
-    {
-       <TableContext.Consumer>
-          {(table) => (
-            <div>
-                {
-                persons.map((people, i) => (
-                    <Button 
-                        key={i}
-                        shape="circle"
-                        className="peopleAvatar"
-                        onClick={this.checkPeople.bind(this,people,table.data)}
-                        style={{
-                            background:people.faceColor,
-                            boxShadow:this.state.checkedPeople.userName == people.userName?'#cce9ff 0px 0px 5px 5px':'none',
-                        }}
-                    >
-                    {people.smallName}
-                    </Button>
-                ))
-                }
-                <Button 
-                    className="saveView"
-                    disabled={true}>
-                    <SaveOutlined className="saveViewBtn"/>保存视图
-                </Button> 
-            </div>   
-          )}             
-       </TableContext.Consumer> 
-    }
+    const content =  <div>
+        {
+        persons.map((people, i) => (
+            <Button 
+                key={i}
+                shape="circle"
+                className="peopleAvatar"
+                onClick={this.checkPeople.bind(this,people)}
+                style={{
+                    background:people.faceColor,
+                    boxShadow:this.state.checkedPeople.userName == people.userName?'#cce9ff 0px 0px 5px 5px':'none',
+                }}
+            >
+            {people.smallName}
+            </Button>
+        ))
+        }
+        <Button 
+            className="saveView"
+            disabled={true}>
+            <SaveOutlined className="saveViewBtn"/>保存视图
+        </Button> 
     </div>;
     const removeIconStyle = {
         display:this.state.hasCheckPeople?'inline':'none'
