@@ -126,7 +126,6 @@ function AddFilter(TableComponent) {
                 }
               }
           }
-          debugger;
           return {
             newFilteredIndexes:newFilteredIndexes,
             newSubRowKeys:newSubRowKeys
@@ -252,7 +251,6 @@ function AddFilter(TableComponent) {
       }
       else if (this.props.filterPeople){
         const filteredIndexesAndSubRowkeys = this.doFilterByPeople(filteredIndexes,this.props.filterPeople,'PEOPLE');
-        // filteredIndexes = this.doFilterByPeople(filteredIndexes,this.props.filterPeople,'PEOPLE');
         return (this._getDataWrapper(filteredIndexesAndSubRowkeys.newFilteredIndexes,filteredIndexesAndSubRowkeys.newSubRowKeys));
       }
       else {
