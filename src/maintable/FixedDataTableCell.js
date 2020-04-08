@@ -104,6 +104,7 @@ class FixedDataTableCell extends React.Component {
 
   state = {
     isReorderingThisColumn: false,
+    mouseIn: false,
     menuBar: DISPLAY.BLOCK,
   }
 
@@ -155,6 +156,12 @@ class FixedDataTableCell extends React.Component {
   showMenuBar = () => {
     this.setState({
       menuBar: DISPLAY.BLOCK
+    })
+  }
+
+  setMouseIn = (mouseIn) => {
+    this.setState({
+      mouseIn: mouseIn
     })
   }
 
@@ -288,10 +295,21 @@ class FixedDataTableCell extends React.Component {
                   </Tooltip>}
                 </div>;
       }else{
-        return <div className={className} style={style} role={role}>
-                  {!replacingColumn && columnResizerComponent}
-                  {!replacingColumn && columnReorderComponent}
-                  {!replacingColumn && tableColumnMenu}
+        let resizer = null;
+        let reorderer = null;
+        let tableMenu = null;
+        if (this.state.mouseIn && !replacingColumn) {
+          resizer = columnResizerComponent;
+          reorderer = columnReorderComponent;
+          tableMenu = tableColumnMenu;
+        }
+        return <div className={className} style={style} role={role}
+                onMouseEnter={()=>this.setMouseIn(true)}
+                onMouseLeave={()=>this.setMouseIn(false)}
+                >
+                  {resizer}
+                  {reorderer}
+                  {tableMenu}
                   {content}
                 </div>;
       }
