@@ -116,21 +116,49 @@ class MainTableDataStore {
         return this._rowData[rowKey];
     }
 
+    getRowData() {
+      return this._rowData
+    }
+
     setObjectAt(rowKey, columnKey, value) {
         // skip the group row 
         if (!rowKey || !columnKey) 
             return;
         this._rowData[rowKey][columnKey] = value;
+
+        this.runCallbacks();
     }
 
     getGroups() {
         return this._groups;
     }
 
-    getSubRows(rowKey) {
-        if (this._subRows[rowKey])
+    getSubRows(rowKey, subRowKeys) {
+        if (this._subRows[rowKey]) {
+          if (subRowKeys && subRowKeys.length > 0) {
+            if (this._subRows[rowKey].rows) {
+              let rows = []
+              this._subRows[rowKey].rows.map(row => {
+                if (subRowKeys.indexOf(row) !== -1) {
+                  rows.push(row)
+                }
+              })
+              return rows
+            }
+            else {
+              return []
+            }
+          }
+          else {
             return this._subRows[rowKey].rows || [];
+          }
+        }
+
         return [];
+    }
+
+    getSubRowData() {
+      return this._subRows
     }
 
     isSubRowExpanded(rowKey) {

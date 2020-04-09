@@ -1,10 +1,9 @@
 
 import React from 'react';
 import MainTable from './maintable/MainTable';
- 
-import { Layout, Menu, Breadcrumb, Input, Collapse, Button } from 'antd';
+import './MainPage.less'
+import { Layout, Menu, Breadcrumb, Input, Collapse, Button, Avatar } from 'antd';
 import { 
-    LeftOutlined,
     SearchOutlined,
     UserOutlined,
     LaptopOutlined,
@@ -15,8 +14,15 @@ import {
     SettingOutlined,
     MenuUnfoldOutlined,
     MenuFoldOutlined,
-    LeftCircleOutlined,
-    RightCircleOutlined 
+    LeftCircleFilled,
+    RightCircleFilled,
+    LeftOutlined,
+    RightOutlined,
+    DownloadOutlined,
+    CarryOutOutlined,
+    UserAddOutlined,
+    QuestionOutlined,
+    HomeOutlined
    } from '@ant-design/icons';
 
 const { Panel } = Collapse;
@@ -47,23 +53,72 @@ export default class MainPage extends React.Component {
   render(){
     return (
       <Layout>
-        <Header className="header" style={{background:'#3f51b5',padding:'0 0 0 15px'}} >
+        <Header className="header" style={{background:'#3f51b5',padding:'0 0 0 15px',display:'none'}} >
           
           <h2 style={{fontWeight:'bold',lineHeight:'64px',color:'#cccccc'}}>
             Concerto Dstring   
-            {React.createElement(this.state.collapsed ? RightCircleOutlined : LeftCircleOutlined , {
-              className: 'trigger',
-              onClick: this.toggle,
-              style:{
-                paddingLeft:'37px',
-                color:'white'
-              }
-            })}
-          
           </h2>
           
         </Header>
         <Layout>
+          <div className='leftBar'>
+            <div className='topDiv'>
+              <br/>
+              <Avatar
+                  size="large"
+                  className='logoIcon'
+              >
+                Concerto
+              </Avatar>
+              <Button
+                  size="large"
+                  shape="circle"
+                  className='barIcon'
+                  icon={<NotificationOutlined />}>
+              </Button>
+              <Button
+                  size="large"
+                  shape="circle"
+                  className='barIcon'
+                  icon={<DownloadOutlined />}>
+              </Button>
+            </div>
+            <div className='bottomDiv'>
+              <Button
+                  size="large"
+                  shape="circle"
+                  className='barIcon'
+                  icon={<CarryOutOutlined />}>
+              </Button>
+              <Button
+                  size="large"
+                  shape="circle"
+                  className='barIcon'
+                  icon={<UserAddOutlined />}>
+              </Button>
+              <Button
+                  size="large"
+                  shape="circle"
+                  className='barIcon'
+                  icon={<SearchOutlined />}>
+              </Button>
+              <Button
+                  size="large"
+                  shape="circle"
+                  className='barIcon'
+                  icon={<QuestionOutlined />}>
+              </Button>
+              <Avatar
+                  size="large"
+                  className='userFaceIcon'
+              >
+                Admin
+              </Avatar>
+              <div className='markIcon'></div>
+              <HomeOutlined className='homeIcon'/>
+            </div>
+            
+          </div>
           <Sider 
             style={{background:'white'}} 
             collapsible={true} 
@@ -148,10 +203,26 @@ export default class MainPage extends React.Component {
             </Collapse>
             
           </Sider>
-          <Layout style={{ padding: '0 0 16px 16px' }}>
+          <div style={{width:'20px',maxHeight:'100%',textAlign:'center',margin:'0 5px'}}>
+            <div className="collpseBarTop"></div>
+            <Button 
+              shape='circle'
+              size='small'
+              className="collpseBar"
+              onClick={this.toggle}
+              icon={React.createElement(this.state.collapsed ? RightOutlined : LeftOutlined , {
+                className: 'trigger',
+                style:{
+                  fontSize:'15px'
+                }
+              })}
+            ></Button>
+            <div className="collpseBarBottom"></div>
+          </div>
+          <Layout>
             <Breadcrumb 
               id="appBread"
-              style={{ margin: '16px 0' }}
+              style={{ margin: '16px' }}
             >
               <Breadcrumb.Item>主页</Breadcrumb.Item>
               <Breadcrumb.Item>部门</Breadcrumb.Item>

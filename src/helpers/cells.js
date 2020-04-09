@@ -55,6 +55,8 @@ import { connect } from 'react-redux'
 import { dealRowRenameModal, dealRowDeleteModal} from '../maintable/actions/rowActions';
 import { dealSectionRenameModal, dealSectionDeleteModal, dealSectionColorMenu } from '../maintable/actions/SectionActions'
 
+import getHighlightText from '../maintable/getHighlightText'
+
 const { SubMenu } = Menu;
 
 class CollapseCell extends React.PureComponent {
@@ -151,10 +153,11 @@ class RemovableHeaderCell extends React.PureComponent {
 
 class TextCell extends React.PureComponent {
   render() {
-    const {data, rowIndex, columnKey, dataVersion, ...props} = this.props;
+    const {data, rowIndex, columnKey, dataVersion,  filterInputValue, ...props} = this.props;
+   
     return (
       <Cell {...props}>
-        {data.getCellValue(rowIndex, columnKey)}
+        {getHighlightText(data.getCellValue(rowIndex, columnKey), filterInputValue)}
       </Cell>
     );
   }

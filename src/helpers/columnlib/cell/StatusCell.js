@@ -66,7 +66,7 @@ class StatusCell extends React.Component {
         <Cell {...props} className='statusCell'>
             <Dropdown overlay={menu} trigger={['click']}>
               <div className={cellStatusTextStyle}>
-                  {this.state.value}
+                {this.props.displayValue}
               </div>
             </Dropdown>
         </Cell>

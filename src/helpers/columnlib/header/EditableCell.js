@@ -7,6 +7,7 @@ import 'moment/locale/zh-cn';
 import { TableCell } from '../cell/TableCell'
 import { TableContext } from '../../../maintable/data/DataContext';
 import './EditableCell.less'
+import getHighlightText from '../../../maintable/getHighlightText'
 
 const CellContainer = styled.div`
   display: flex;
@@ -24,6 +25,7 @@ class EditableCell extends React.PureComponent {
        let cellData = this.getCellData(props)
        this.state = {
             value: cellData.value,
+            displayValue: cellData.displayValue,
             oldValue: cellData.value, // 保留原值
             isCollapsed: cellData.isCollapsed,
             editing: false,
@@ -56,27 +58,35 @@ class EditableCell extends React.PureComponent {
       } else {
         isCollapsed = props.data._indexMap[props.rowIndex].isCollapsed;
       }
-      let value = props.data.getObjectAt(props.rowIndex) 
-                  ? 
-                  props.data.getObjectAt(props.rowIndex)[props.columnKey] 
-                  : 
-                  (
-                    isCollapsed
-                    ?
-                    ''
-                    :
-                    props.data.getColumn(props.columnKey).name
-                  )
+
+      let value = ''
+      let displayValue = ''
+      if (props.data.getObjectAt(props.rowIndex)) {
+        value = props.data.getObjectAt(props.rowIndex)[props.columnKey] 
+        displayValue = getHighlightText(value, props.filterInputValue)
+      }
+      else {
+        if (isCollapsed) {
+          value = ''
+          displayValue = ''
+        }
+        else {
+          value = props.data.getColumn(props.columnKey).name
+          displayValue = value
+        }
+      }
+
       cellData.isCollapsed =isCollapsed;
       cellData.value = value
+      cellData.displayValue = displayValue
 
       return cellData
     }
 
     componentWillReceiveProps(props) {
-        // this.setState({ value: props.data ? props.data.getObjectAt(props.rowIndex)[props.columnKey] : props.value});
         let cellData = this.getCellData(props)
         this.setState({ value: cellData.value,
+                        displayValue: cellData.displayValue,
                         isCollapsed: cellData.isCollapsed
                       });
         this.setState({ version: props.dataVersion });
@@ -152,15 +162,31 @@ class EditableCell extends React.PureComponent {
         });
     }
 
+    getPeopleFilterStyle = (type, editing, value) => {
+      let style = {}
+      if (type === 'PEOPLE' && !editing && value && this.props.filterInputValue) {
+        let filterInputValue = this.props.filterInputValue.toLowerCase()
+        value.map(user => {
+          if (user.userName && user.userName.toLowerCase().indexOf(filterInputValue) !== -1) {
+            style = { backgroundColor: '#CCE9FF' }
+            return
+          }
+        })
+      }
+
+      return style
+    }
+
     render() {
       
         const {container, data, rowIndex, columnKey, dataVersion, width, height,  ...props} = this.props;
-        const { value, editing } = this.state;
+        const { value, editing, displayValue } = this.state;
         const isHeaderOrFooter = container.props.isHeaderOrFooter;
         const type = isHeaderOrFooter?'TEXT':this.getColumnCompentTypeByColumnKey(columnKey,data._dataset._columns);
         this.setState({
             type:type,
-            isHeaderOrFooter:isHeaderOrFooter
+            isHeaderOrFooter:isHeaderOrFooter,
+            filterInputValue: this.props.filterInputValue
         })
         const inputStyle = {
             width: width - 10,
@@ -174,8 +200,10 @@ class EditableCell extends React.PureComponent {
               onClick={this.handleClick.bind(this,type)}
               onMouseEnter={()=>this.setMouseIn(true)}
               onMouseLeave={()=>this.setMouseIn(false)}
-              className={classNameStr}>
-                {!editing && this.cellRenderValues[type] && value}
+              className={classNameStr}
+              style={this.getPeopleFilterStyle(type, editing, value)}
+            >
+                {!editing && this.cellRenderValues[type] && displayValue}
                 {!editing && !this.cellRenderValues[type]&&
                 <TableContext.Provider value={this.state}>
                     <TableCell></TableCell>

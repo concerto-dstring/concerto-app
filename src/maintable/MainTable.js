@@ -18,7 +18,7 @@ import UndoMessage from '../helpers/section/modal/UndoMessage'
 import { EditableCell } from '../helpers/columnlib/header/EditableCell';
 import SectionHeader from '../helpers/section/header/SectionHeader';
 import Dimensions from 'react-dimensions';
-import { Menu, Dropdown, message, Tooltip, Row, Col} from 'antd';
+import { Menu, Dropdown, message, Tooltip, Row, Col, Input} from 'antd';
 import { DataContext, AddFilter } from './data/DataContext';
 import { DataVersionContext, TableContext } from './data/DataContext';
 import { connect } from 'react-redux'
@@ -48,11 +48,12 @@ const DataRowHeaderCell = function(props) {
     this.props = props;
     return (
         <DataVersionContext.Consumer>
-            {({data, version}) => (
+            {({data, version, filterInputValue}) => (
                 <RowHeaderCell
                     data={data}
                     dataVersion={version}
                     type={'TEXT'}
+                    filterInputValue={filterInputValue}
                     {...this.props}
                 />
             )}
@@ -64,10 +65,11 @@ const DataEditableCell = function(props) {
     this.props = props;
     return (
         <DataVersionContext.Consumer>
-            {({data, version}) => (
+            {({data, version, filterInputValue}) => (
                 <EditableCell
                     data={data}
                     dataVersion={version}
+                    filterInputValue={filterInputValue}
                     {...this.props}
                 />
             )}
@@ -79,10 +81,11 @@ const DataTextCell = function(props) {
     this.props = props;
     return (
         <DataVersionContext.Consumer>
-            {({data, version}) => (
+            {({data, version, filterInputValue}) => (
                 <TextCell
                     data={data}
                     dataVersion={version}
+                    filterInputValue={filterInputValue}
                     {...this.props}
                 />
             )}
@@ -440,17 +443,36 @@ class MainTable extends React.Component {
         );
     }
 
+    /**
+     * 查询/过滤数据
+     */
+    filterTableData = (e) => {
+      this.setState({
+        filterInputValue: e.target.value.trim()
+      })
+    }
+
     renderControls() {
         return (
             <Row>
-                <Col span={20}>
+                <Col span={16}>
                     <div id="addGroupBtn" className='autoScrollControls'>
                         <Button primary onClick={this._onAddNewGroupCallback} >添加新分区</Button>
                     </div>
                 </Col>
                 <Col span={4}>
-                    <div id="filterPeople">
-                        <PeopleFilter doFilter={this.doFilter}></PeopleFilter>
+                  <Input 
+                    style={{height: 32, borderRadius: 16}} 
+                    allowClear={true}
+                    placeholder={'查询/过滤'}
+                    onChange={this.filterTableData}
+                  />
+                </Col>
+                <Col span={4}>
+                    <div id="filterPeople" style={{marginLeft: 10}} >
+                       <TableContext.Provider value={this.state}> 
+                            <PeopleFilter doFilter={this.doFilter}></PeopleFilter>
+                        </TableContext.Provider>
                     </div>
                 </Col>
             </Row>
@@ -461,7 +483,7 @@ class MainTable extends React.Component {
     }
    
     renderTable() {
-        var { data, filters,filterPeople } = this.state;
+        var { data, filters, filterInputValue, filterPeople } = this.state;
         const fixedColumns = this.state.columns.filter(c => c.fixed); 
         const scrollColumns = this.state.columns.filter(c => !c.fixed);
       
@@ -478,8 +500,9 @@ class MainTable extends React.Component {
                     isColumnResizing={false}
                     addRowHeight={35}
                     footerHeight={40}
-                    filters={filters}   
-                    filterPeople={filterPeople}             
+                    filters={filters}
+                    filterInputValue={filterInputValue}  
+                    filterPeople={filterPeople}              
                     height={this.props.containerHeight}
                     // 减去左侧Sider宽度 
                     width={this.props.containerWidth - this.props.siderWidth}
@@ -514,9 +537,9 @@ class MainTable extends React.Component {
 export default Dimensions({
     getHeight: function(element) {
       // 减去上面面包屑的高度
-      return window.innerHeight - 152 - document.getElementById("appBread").clientHeight;
+      return window.innerHeight - 152 - document.getElementById("appBread").clientHeight + 64;
     },
     getWidth: function(element) {
-      return window.innerWidth - 16;
+      return window.innerWidth - 101;
     }
   })(MainTable);

@@ -34,7 +34,7 @@ class SectionHeader extends PureComponent {
       editing: isShowSectionColorMenu,
       isShowSectionColorMenu: isShowSectionColorMenu,
       isSubSection: String(rowIndex).indexOf('.') !== -1,
-      subSectionName: data.getColumn(columnKey).name
+      subItemName: data.getColumn(columnKey).name
     }
   }
 
@@ -43,15 +43,15 @@ class SectionHeader extends PureComponent {
     const { data, rowIndex, curGroup, columnKey } = props
     let group = data.getGroupByRowIndex(rowIndex)
     let isSubSection = String(rowIndex).indexOf('.') !== -1
-    let subSectionName = data.getColumn(columnKey).name
+    let subItemName = data.getColumn(columnKey).name
     this.setState({ 
       group: data.getGroupByRowIndex(rowIndex),
-      oldNameValue: isSubSection ? subSectionName : group.name,
+      oldNameValue: isSubSection ? subItemName : group.name,
       version: props.dataVersion,
       editing: (curGroup && group && curGroup.groupKey === group.groupKey),
       isShowSectionColorMenu: (curGroup && group && curGroup.groupKey === group.groupKey),
       isSubSection: isSubSection,
-      subSectionName: subSectionName,
+      subItemName: subItemName,
     })
   }
 
@@ -72,9 +72,9 @@ class SectionHeader extends PureComponent {
     if (this.props.data) {
       if (this.state.isSubSection) {
         // 子分区
-        if (this.state.subSectionName) {
+        if (this.state.subItemName) {
           // 有值
-          this.props.data.setColumnData(this.props.columnKey, {name: this.state.subSectionName})
+          this.props.data.setColumnData(this.props.columnKey, {name: this.state.subItemName})
         }
         else {
           // 无值则恢复上一次的值
@@ -105,7 +105,7 @@ class SectionHeader extends PureComponent {
     // 子分区
     if (this.state.isSubSection) {
       this.setState({
-        subSectionName: e.target.value,
+        subItemName: e.target.value,
       });
     }
     // 主分区
@@ -172,9 +172,9 @@ class SectionHeader extends PureComponent {
 
   render() {
     const { width, height } = this.props;
-    const { group, editing, isShowSectionColorMenu, isSubSection, subSectionName } = this.state;
+    const { group, editing, isShowSectionColorMenu, isSubSection, subItemName } = this.state;
 
-    let inputValue = isSubSection ? subSectionName : (group ? group.name : '')
+    let inputValue = isSubSection ? subItemName : (group ? group.name : '')
     let groupColor = group ? group.color : COLOR.SECTION_DEFAULT
 
     const inputStyle = {
