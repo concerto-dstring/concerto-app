@@ -6,6 +6,9 @@ import moment from 'moment';
 import 'moment/locale/zh-cn';
 import { TableCell } from '../cell/TableCell'
 import { TableContext } from '../../../maintable/data/DataContext';
+import './EditableCell.less'
+import getHighlightText from '../../../maintable/getHighlightText'
+
 const CellContainer = styled.div`
   display: flex;
   flex: 1 0 100%;
@@ -26,6 +29,7 @@ class EditableCell extends React.PureComponent {
             oldValue: cellData.value, // 保留原值
             isCollapsed: cellData.isCollapsed,
             editing: false,
+            mouseIn:false,
             type:'TEXT',
             isHeaderOrFooter:false,
             handleChange:this.handleChange,
@@ -152,6 +156,27 @@ class EditableCell extends React.PureComponent {
         }
     }
 
+    setMouseIn(mouseIn) {
+        this.setState({
+            mouseIn: mouseIn,
+        });
+    }
+
+    getPeopleFilterStyle = (type, editing, value) => {
+      let style = {}
+      if (type === 'PEOPLE' && !editing && value && this.props.filterInputValue) {
+        let filterInputValue = this.props.filterInputValue.toLowerCase()
+        value.map(user => {
+          if (user.userName && user.userName.toLowerCase().indexOf(filterInputValue) !== -1) {
+            style = { backgroundColor: '#CCE9FF' }
+            return
+          }
+        })
+      }
+
+      return style
+    }
+
     render() {
       
         const {container, data, rowIndex, columnKey, dataVersion, width, height,  ...props} = this.props;
@@ -168,11 +193,17 @@ class EditableCell extends React.PureComponent {
             height: height - 5,
             borderRadius: '0px',
         }
-       
+        let classNameStr =  'editableCell ' + (this.state.mouseIn ? 'mouseIn':'mouseOut');
         return (
 
-            <CellContainer ref={this.setTargetRef} onClick={this.handleClick.bind(this,type)}>
-                {!editing && this.cellRenderValues[type] && value}
+            <CellContainer ref={this.setTargetRef}
+              onClick={this.handleClick.bind(this,type)}
+              onMouseEnter={()=>this.setMouseIn(true)}
+              onMouseLeave={()=>this.setMouseIn(false)}
+              className={classNameStr}
+              style={this.getPeopleFilterStyle(type, editing, value)}
+            >
+                {!editing && this.cellRenderValues[type] && displayValue}
                 {!editing && !this.cellRenderValues[type]&&
                 <TableContext.Provider value={this.state}>
                     <TableCell></TableCell>
