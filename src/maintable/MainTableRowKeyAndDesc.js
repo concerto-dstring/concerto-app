@@ -62,3 +62,18 @@ export const EXPAND_ALL_SECTION = {
   key: 'EXPAND_ALL_SECTION',
   desc: '展开所有分区'
 }
+
+export const ROW_HEADER_UPDATE = {
+  key: 'ROW_HEADER_UPDATE',
+  desc: 'Updates'
+}
+
+export const ROW_HEADER_INFO_BOX = {
+  key: 'ROW_HEADER_INFO_BOX',
+  desc: 'Info Boxes'
+}
+
+export const ROW_HEADER_ACTIVITY_LOG = {
+  key: 'ROW_HEADER_ACTIVITY_LOG',
+  desc: 'Activity Log'
+}

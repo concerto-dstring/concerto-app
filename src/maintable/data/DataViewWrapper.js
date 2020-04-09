@@ -14,7 +14,7 @@ class DataViewWrapper {
               if (rows.length > 0) {      
                   let j = 0;      
                   for (let k = 0; k < rows.length; k ++) {
-                    if (this._subRowKeys) {
+                    if (this._subRowKeys && this._subRowKeys.length > 0) {
                       if (this._subRowKeys.indexOf(rows[k]) !== -1) {
                         j += 1 
                         const indexString = `${i}.${j}`;

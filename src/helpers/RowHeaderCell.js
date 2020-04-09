@@ -5,10 +5,14 @@ import { Input } from 'semantic-ui-react';
 import Keys from '../maintable/vendor_upstream/core/Keys';
 import styled from 'styled-components';
 import getHighlightText from '../maintable/getHighlightText'
+import {
+  MessageOutlined
+} from '@ant-design/icons'
+import '../maintable/css/style/RowHeaderCell.less'
+import RowHeaderDrawer from './RowHeaderDrawer'
 
 const CellContainer = styled.div`
   display: flex;
-  flex: 1 0 100%;
   align-items: center;
   height: 100%;
   overflow: hidden;
@@ -73,6 +77,21 @@ class RowHeaderCell extends React.PureComponent {
         event.stopPropagation();
     }
 
+    // 显示右侧滑窗
+    showRowDrawer = (event) => {
+      this.setState({
+        isShowRowHeaderDrawer: true
+      })
+      event.stopPropagation();
+    }
+
+    // 关闭右侧滑窗
+    closeRowDrawer = () => {
+      this.setState({
+        isShowRowHeaderDrawer: false
+      })
+    }
+
     render() {
         const {container, data, rowIndex, columnKey, dataVersion, width, height,  ...props} = this.props;
         const { value, editing, count, displayValue } = this.state;
@@ -87,7 +106,12 @@ class RowHeaderCell extends React.PureComponent {
                     <div style={{width:50}}>
                     {count != 0 && <a onClick={this.toggleSubRows}><Badge count={count+'+'} /></a>}
                     </div>
-                    {!editing && displayValue}
+                    {!editing && <div className="row_header_cell_text">{displayValue}</div>}
+                    {!editing && <div className="row_header_cell_update">
+                                   <a onClick={this.showRowDrawer}>
+                                     <MessageOutlined style={{fontSize: 24, color: '#d3d3d3'}} />
+                                    </a>
+                                 </div>}
                     {editing && this.targetRef && (
                         <Overlay
                             show
@@ -116,6 +140,13 @@ class RowHeaderCell extends React.PureComponent {
                         </Overlay>
                     )}
                 </CellContainer>
+                <RowHeaderDrawer 
+                  isShowRowHeaderDrawer={this.state.isShowRowHeaderDrawer}
+                  value={this.state.value}
+                  rowIndex={this.props.rowIndex}
+                  data={this.props.data}
+                  closeRowDrawer={this.closeRowDrawer}
+                />
             </>
         )
     }

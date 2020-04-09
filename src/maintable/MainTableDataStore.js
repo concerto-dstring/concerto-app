@@ -49,7 +49,7 @@ class MainTableDataStore {
         this._columns.push({columnKey: '1000', name:'', width: 36, type: ColumnType.ROWACTION, columnComponentType:'', fixed:true, level: 0});
         this._columns.push({columnKey: '1001', name:'', width: 36, type: ColumnType.ROWSELECT, columnComponentType:'', fixed:true, level: 0}); 
 
-        this._columns.push({columnKey: '1', name:'主题', width: 120, type: ColumnType.EDITBOX, columnComponentType:'TEXT', collpse:false, fixed:true, level: 0});
+        this._columns.push({columnKey: '1', name:'主题', width: 240, type: ColumnType.EDITBOX, columnComponentType:'TEXT', collpse:false, fixed:true, level: 0});
         this._columns.push({columnKey: '2', name:'备注', width: 200, type: ColumnType.EDITBOX, columnComponentType:'TEXT', collpse:false, level: 0});
         this._columns.push({columnKey: '3', name:'分配', width: 200, type: ColumnType.EDITBOX, columnComponentType:'TEXT', collpse:false, level: 0});
         this._columns.push({columnKey: '4', name:'日志', width: 200, type: ColumnType.LABEL, columnComponentType:'TEXT', collpse:false, level: 0});
@@ -58,7 +58,7 @@ class MainTableDataStore {
 
         this._columns.push({columnKey: '1002', name:'', width: 36, type: ColumnType.ROWACTION, columnComponentType:'', fixed:true, level: 1});
         this._columns.push({columnKey: '1003', name:'', width: 36, type: ColumnType.ROWSELECT, columnComponentType:'', fixed:true, level: 1}); 
-        this._columns.push({columnKey: '1', name:'子题', width: 120, type: ColumnType.EDITBOX, columnComponentType:'TEXT', collpse:false, fixed:true, level: 1});
+        this._columns.push({columnKey: '1', name:'子题', width: 240, type: ColumnType.EDITBOX, columnComponentType:'TEXT', collpse:false, fixed:true, level: 1});
         this._columns.push({columnKey: '11', name:'分配', width: 200, type: ColumnType.EDITBOX, columnComponentType:'TEXT', collpse:false, level: 1});
         this._columns.push({columnKey: '12', name:'日志', width: 200, type: ColumnType.EDITBOX, columnComponentType:'TEXT', collpse:false, level: 1});
         this._sizeColumns = 12;
