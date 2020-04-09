@@ -35,7 +35,7 @@ class RowHeaderCell extends React.PureComponent {
     }
     
     componentWillReceiveProps(props) {
-        let value = props.data ? props.data.getObjectAt(props.rowIndex)[props.columnKey] : props.value
+        let value = (props.data &&props.data.getObjectAt(props.rowIndex))? props.data.getObjectAt(props.rowIndex)[props.columnKey] : props.value
         this.setState({ 
             value: value,
             displayValue: getHighlightText(value, props.filterInputValue),

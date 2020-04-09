@@ -101,8 +101,9 @@ function AddFilter(TableComponent) {
     doFilterByPeople(filteredIndexes,people,columnPeople){
         
         const updateFilteredIndexes = (filteredIndexes,rowKeysArray) => {
-          let newFilteredIndexes = [];
-          for(var x=0;x<filteredIndexes.length;x++){
+          let newFilteredIndexes = [],newSubRowKeys=[];
+          const subRows = this.props.data._subRows;
+          for(let x=0;x<filteredIndexes.length;x++){
               const thisRowKey = filteredIndexes[x].rowKey;
               if(thisRowKey===''){
                 newFilteredIndexes.push(filteredIndexes[x]);
@@ -111,10 +112,24 @@ function AddFilter(TableComponent) {
                   if(thisRowKey === rowKeysArray[y]){
                     newFilteredIndexes.push(filteredIndexes[x]);
                   }
+                  for(var rowKey in subRows){
+                    const subRowArray = subRows[rowKey].rows;
+                    for(let z=0;z<subRowArray.length;z++){
+                       if(subRowArray[z] == rowKeysArray[y]&&newSubRowKeys.indexOf(subRowArray[z])<0){
+                         newSubRowKeys.push(subRowArray[z]);
+                       }
+                       if(thisRowKey === rowKey&&newFilteredIndexes.indexOf(filteredIndexes[x])<0){
+                         newFilteredIndexes.push(filteredIndexes[x]);
+                       }
+                    }
+                  }
                 }
               }
           }
-          return newFilteredIndexes;
+          return {
+            newFilteredIndexes:newFilteredIndexes,
+            newSubRowKeys:newSubRowKeys
+          };
         }
 
         const updateTableRows = (filteredIndexes) => {
@@ -235,8 +250,8 @@ function AddFilter(TableComponent) {
         }
       }
       else if (this.props.filterPeople){
-        filteredIndexes = this.doFilterByPeople(filteredIndexes,this.props.filterPeople,'PEOPLE');
-        return (this._getDataWrapper(filteredIndexes));
+        const filteredIndexesAndSubRowkeys = this.doFilterByPeople(filteredIndexes,this.props.filterPeople,'PEOPLE');
+        return (this._getDataWrapper(filteredIndexesAndSubRowkeys.newFilteredIndexes,filteredIndexesAndSubRowkeys.newSubRowKeys));
       }
       else {
         filteredIndexesMap = filteredIndexes

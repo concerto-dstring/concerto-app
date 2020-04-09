@@ -49,8 +49,8 @@ class PeopleCell extends React.Component {
     render() {
       const {Search} = Input;
       const {data, rowIndex, columnKey, collapsedRows, callback, value, handleChange, handleKey, ...props} = this.props;
-      const someusers = this.state.selectedUsers;
-      const allPeoples = this.state.allPeoples;
+      const someusers = this.state.selectedUsers||[];
+      const allPeoples = this.state.allPeoples||[];
       const returnValue = (e) => {
         let isHas = false;
         for(let i=0,len=someusers.length;i<len;i++){
