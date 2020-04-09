@@ -5,24 +5,17 @@ import './MainPage.less'
 import { Layout, Menu, Breadcrumb, Input, Collapse, Button, Avatar } from 'antd';
 import { 
     SearchOutlined,
-    UserOutlined,
-    LaptopOutlined,
     NotificationOutlined,
     MailOutlined,
     CalendarOutlined,
     AppstoreOutlined,
-    SettingOutlined,
-    MenuUnfoldOutlined,
-    MenuFoldOutlined,
-    LeftCircleFilled,
-    RightCircleFilled,
     LeftOutlined,
     RightOutlined,
     DownloadOutlined,
     CarryOutOutlined,
     UserAddOutlined,
     QuestionOutlined,
-    HomeOutlined
+    HomeFilled
    } from '@ant-design/icons';
 
 const { Panel } = Collapse;
@@ -115,7 +108,7 @@ export default class MainPage extends React.Component {
                 Admin
               </Avatar>
               <div className='markIcon'></div>
-              <HomeOutlined className='homeIcon'/>
+              <HomeFilled className='homeIcon'/>
             </div>
             
           </div>
