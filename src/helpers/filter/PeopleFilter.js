@@ -138,17 +138,11 @@ class PeopleFilter extends React.Component {
                 className="filterButton"
             >
                 {this.state.buttonText}
-                <Button
-                    style={removeIconStyle} 
-                    className="removeIcon"
-                    shape="circle"
-                    size="small"
-                    onClick={this.removePeople}
-                    icon={
-                        <CloseCircleFilled className="removeBtn"/>
-                    }
-                >
-                </Button>
+                <a 
+                  style={removeIconStyle}
+                  onClick={this.removePeople}>
+                  <CloseCircleFilled className="removeBtn"/>
+                </a>
             </Button>
         </Popover>
     )

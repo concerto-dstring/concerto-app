@@ -165,7 +165,7 @@ class PeopleCell extends React.Component {
                     </div>
                     <Search
                         placeholder="Enter name"
-                        bordered={false}
+                        bordered="false"
                         onSearch={value => console.log(value)}
                         className="searchInput"
                     />
