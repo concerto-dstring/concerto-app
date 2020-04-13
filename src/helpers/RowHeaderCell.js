@@ -145,6 +145,7 @@ class RowHeaderCell extends React.PureComponent {
                   value={this.state.value}
                   rowIndex={this.props.rowIndex}
                   data={this.props.data}
+                  updateInfo={this.props.data ? (this.props.data.getObjectAt(this.props.rowIndex)['updateInfo'] ? this.props.data.getObjectAt(this.props.rowIndex)['updateInfo'] : []) : []}
                   closeRowDrawer={this.closeRowDrawer}
                 />
             </>

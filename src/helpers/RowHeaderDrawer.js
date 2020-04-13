@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { PureComponent, createRef } from 'react';
 import { Drawer, Menu, Button, Upload, Modal, Progress, message } from 'antd';
 import {
   ROW_HEADER_UPDATE,
@@ -17,12 +17,10 @@ import {
 } from '@ant-design/icons'
 import '../maintable/css/style/RowHeaderCell.less'
 import PeopleModal from './section/modal/PeopleModal'
-
-function getBase64(img, callback) {
-  const reader = new FileReader();
-  reader.addEventListener('load', () => callback(reader.result));
-  reader.readAsDataURL(img);
-}
+import RowHeaderDrawerUpdate from './section/modal/RowHeaderDrawerUpdate'
+import { getBase64, isImageFile } from './section/modal/UploadFun'
+import moment from 'moment';
+import 'moment/locale/zh-cn';
 
 class RowHeaderDrawer extends PureComponent {
 
@@ -51,13 +49,14 @@ class RowHeaderDrawer extends PureComponent {
       filePercent: 0,
       fileUrl: '',
       isShowPeopleModal: false,
-      isShowRowHeaderDrawer: props.isShowRowHeaderDrawer
+      isShowRowHeaderDrawer: props.isShowRowHeaderDrawer,
+      currentUser: props.data.getCurrentUser()
     }
   }
 
   componentWillReceiveProps(props) {
     this.setState({
-      isShowRowHeaderDrawer: props.isShowRowHeaderDrawer
+      isShowRowHeaderDrawer: props.isShowRowHeaderDrawer,
     })
   }
 
@@ -92,7 +91,7 @@ class RowHeaderDrawer extends PureComponent {
   uploadFile = (info) => {
     if (info.file.status === 'uploading' && !this.state.isUploading) {
       // 先默认设置一个文件url和一个图片url
-      let isImage = this.isImageFile(info.file.name)
+      let isImage = isImageFile(info.file.name)
       this.setState({
         fileName: info.file.name,
         isUploading: true,
@@ -129,17 +128,6 @@ class RowHeaderDrawer extends PureComponent {
     //     filePercent: 0 
     //   });
     // }
-  }
-
-  /**
-   * 判断是否为图片文件
-   */
-  isImageFile = (fileName) => {
-    if (!/\.(jpg|jpeg|png|gif|bmp)$/.test(fileName.toLowerCase()) ) { 
-      return  false;     
-    }else{
-        return true; 
-    }
   }
 
   /**
@@ -216,62 +204,125 @@ class RowHeaderDrawer extends PureComponent {
     })
   }
 
+  /**
+   * 保存消息
+   */
+  saveUpdateInfo = () => {
+    if (this.state.editorState) {
+      const emptyHtml = BraftEditor.createEditorState(null).toHTML();
+      let infoHtml = this.state.editorState.toHTML()
+
+      // 无有效字符
+      if (infoHtml.replace(new RegExp(`(${emptyHtml})`, "gm"), "").length === 0) {
+        message.warning('请输入内容!')
+      }
+      else {
+        infoHtml = infoHtml.replace(new RegExp("<p>", "gm"), "").replace(new RegExp("</p>", "gm"), "<br>")
+        const { updateInfo, data, rowIndex } = this.props
+        let updateInfoData = {}
+        let id = 'u_' + String(data.getRowMap()[rowIndex].rowKey) +  '_' + String(updateInfo.length + 1)
+        updateInfoData = {
+          id: id,
+          author: this.state.currentUser,
+          createTime: moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
+          content: infoHtml,
+          seen: 0,
+          isLiked: false,
+          replyList: []
+        }
+
+        // 设置值
+        data.setObjectAt(rowIndex, 'updateInfo', updateInfoData, 'add')
+
+        // 清除值
+        this.setState({
+          editorState: ContentUtils.clear(this.state.editorState)
+        })
+      }
+    }
+  }
+
   getMenuContent = (key) => {
     let menuContent
     switch (key) {
       case ROW_HEADER_UPDATE.key:
         menuContent = (
-          <div >
-            <div className="row_header_drawer_editor">
-              <BraftEditor 
-                value={this.state.editorState}
-                onChange={this.handleEditorChange}
-                controls={this.state.editorControls}
-                contentClassName="row_header_drawer_editor_content"
-              />
-            </div>
-            <div className="row_header_drawer_editor_bottom">
-              <span className="row_header_drawer_editor_bottom_content">
-                {
-                  this.getUploadContent()
-                }
-                <span className="row_header_drawer_editor_bottom_content_span row_header_drawer_editor_bottom_content_span_margin"> 
-                  <SmileOutlined />表情
-                </span>
-                <span 
-                  className="row_header_drawer_editor_bottom_content_span row_header_drawer_editor_bottom_content_span_margin"
-                >
-                  <PeopleModal 
-                    visible={this.state.isShowPeopleModal}
-                    handlePeopleModalVisible={this.handlePeopleModalVisible}
-                    insertPeople={this.insertPeople}
-                  >
-                    @
-                  </PeopleModal>  
-                </span>
-              </span>
-              <Button
-                style={{width: 80}}
-                shape='round'
-                type='primary '
-              >
-                保存
-              </Button>
-            </div>
-            <Modal
-              visible={this.state.isUploading}
-              cancelButtonProps={{style:{visibility: 'hidden'}}}
-              okText='取消上传'
-              closable={false}
-              bodyStyle={{height: 160}}
-              centered={true}
-              onOk={this.cancelUpload}
+          <div className="row_header_drawer" >
+            <div 
+              className="row_header_drawer_container"
             >
-              <div style={{display: 'flex'}}>
-                <span style={{width: 420}}>{this.state.fileName}</span>
-                <Progress style={{marginLeft: 50}} percent={this.state.filePercent} />
+              <div className="row_header_drawer_padding">
+                <div className="row_header_drawer_editor">
+                  <BraftEditor 
+                    value={this.state.editorState}
+                    onChange={this.handleEditorChange}
+                    controls={this.state.editorControls}
+                    contentClassName="row_header_drawer_editor_content"
+                  />
+                </div>
+                <div className="row_header_drawer_editor_bottom">
+                  <span className="row_header_drawer_editor_bottom_content">
+                    {
+                      this.getUploadContent()
+                    }
+                    <span className="row_header_drawer_editor_bottom_content_span row_header_drawer_editor_bottom_content_span_margin"> 
+                      <SmileOutlined />表情
+                    </span>
+                    <span 
+                      className="row_header_drawer_editor_bottom_content_span row_header_drawer_editor_bottom_content_span_margin"
+                    >
+                      <PeopleModal 
+                        visible={this.state.isShowPeopleModal}
+                        handlePeopleModalVisible={this.handlePeopleModalVisible}
+                        insertPeople={this.insertPeople}
+                      >
+                        @
+                      </PeopleModal>  
+                    </span>
+                  </span>
+                  <Button
+                    style={{width: 80}}
+                    shape='round'
+                    type='primary'
+                    onClick={this.saveUpdateInfo}
+                  >
+                    保存
+                  </Button>
+                </div>
               </div>
-            </Modal>
+              <Modal
+                visible={this.state.isUploading}
+                cancelButtonProps={{style:{visibility: 'hidden'}}}
+                okText='取消上传'
+                closable={false}
+                bodyStyle={{height: 160}}
+                centered={true}
+                onOk={this.cancelUpload}
+              >
+                <div style={{display: 'flex'}}>
+                  <span style={{width: 300, position: 'fixed'}}>{this.state.fileName}</span>
+                  <Progress style={{left:300, right: 0, width: 180}} percent={this.state.filePercent} />
+                </div>
+              </Modal>
+              <div className="row_header_drawer_padding">
+                {
+                  this.props.updateInfo.length > 0
+                  ?
+                  this.props.updateInfo.map(info => {
+                    return (
+                      <RowHeaderDrawerUpdate 
+                        rowIndex={this.props.rowIndex}
+                        data={this.props.data}
+                        updateInfo={info}
+                        currentUser={this.state.currentUser}
+                      />
+                    )
+                  })
+                  :
+                  null
+                }
+              </div>
+            </div>
           </div>
         )
         break;
@@ -289,6 +340,10 @@ class RowHeaderDrawer extends PureComponent {
     this.props.closeRowDrawer()
   }
 
+  handleRowMove = (e) => {
+    e.stopPropagation()
+  }
+
   render() {
     return (
       <Drawer
@@ -297,9 +352,17 @@ class RowHeaderDrawer extends PureComponent {
         closable={true}
         onClose={this.onClose}
         visible={this.state.isShowRowHeaderDrawer}
-        width={544}
+        width={600}
+        onMouseDown={this.handleRowMove}
+        headerStyle={{padding: 16}}
+        bodyStyle={{padding: 0, overflow: 'hidden'}}
       >
-        <Menu onClick={this.handleMenuClick} selectedKeys={[this.state.current]} mode="horizontal">
+        <Menu
+          style={{padding: '0px 16px'}} 
+          onClick={this.handleMenuClick} 
+          selectedKeys={[this.state.current]} 
+          mode="horizontal"
+        >
           <Menu.Item key={ROW_HEADER_UPDATE.key}>
             {ROW_HEADER_UPDATE.desc}
           </Menu.Item>

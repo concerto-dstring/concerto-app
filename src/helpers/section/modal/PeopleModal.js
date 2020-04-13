@@ -32,7 +32,7 @@ class PeopleModal extends PureComponent {
   render() {
     return (
       <Popover  
-        placement="bottom" 
+        placement={this.props.placement ? this.props.placement : 'bottom' }
         trigger="click"
         autoAdjustOverflow={false}
         visible={this.props.visible}
