@@ -193,7 +193,11 @@ class EditableCell extends React.PureComponent {
             height: height - 5,
             borderRadius: '0px',
         }
-        let classNameStr =  'editableCell ' + (this.state.mouseIn ? 'mouseIn':'mouseOut');
+
+        let classNameStr;
+        if (!isHeaderOrFooter) {
+            classNameStr =  'editableCell ' + (this.state.mouseIn ? 'mouseIn':'mouseOut');
+        }
         return (
 
             <CellContainer ref={this.setTargetRef}

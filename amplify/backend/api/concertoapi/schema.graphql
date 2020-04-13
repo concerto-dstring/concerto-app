@@ -1,0 +1,99 @@
+## organization
+## ============
+## organization: company is the tenant unit, managed by one admin User
+##               so a Company + one admin User once created
+type Company @model {
+  id: ID!
+  name: String!
+  email: String!
+  phone: String!
+  admin: User
+  teams: [Team] @connection(name: "CompanyTeams")
+}
+
+## organization: company has multiple teams
+type Team @model {
+  id: ID!
+  name: String!
+  admin: User!
+  company: Company @connection(name: "CompanyTeams")
+  users: [TeamUser] @connection(keyName: "byTeam", fields: ["id"])
+  upteam: ID
+  downteams: [ID]
+}
+
+## organization: team has multiple users, user can belong to multiple teams
+type TeamUser
+  @model(queries: null)
+  @key(name: "byTeam", fields: ["teamID", "userID"])
+  @key(name: "byUser", fields: ["userID", "teamID"]) {
+  id: ID!
+  teamID: ID!
+  userID: ID!
+  team: Team! @connection(fields: ["teamID"])
+  user: User! @connection(fields: ["userID"])
+}
+
+## organization: user
+type User @model {
+  id: ID!
+  email: String!
+  fname: String!
+  lname: String!
+  usertype : UserType!
+  title: String
+  phone: String
+  teams: [TeamUser] @connection(keyName: "byUser", fields: ["id"])
+}
+
+enum UserType {
+	  ADMIN
+    NORMAL
+	  VISITOR
+}
+
+## UI
+## ==
+## UI: board is the main container of UI for the maintable view
+type Board @model {
+  id: ID!
+  name: String!
+  groups: [Group] @connection(name: "BoardGroups")
+  columns: [Column]
+  creator: User!
+  subscribers: [User]
+}
+
+## basic element of board, a group of rows
+type Group @model {
+  id: ID!
+  name: String!
+  board: Board! @connection(name: "BoardGroups")
+  rows: [Row] @connection(name: "GroupRows")
+  creator: User!
+  rank: String!
+}
+
+## one task per row
+type Row @model {
+  id: ID!
+  group: Group! @connection(name: "GroupRows")
+  data: [Data]
+  creator: User!
+  rank: String!
+}
+
+## column library 
+type Column @model{
+  id: ID!
+  name: String!
+  columntype: String!
+  creator: User!
+}
+
+## object instance of one column type
+type Data @model{
+  id: ID!
+  column: Column!
+  value: String   
+}
