@@ -27,8 +27,9 @@ class TableColumnMenu extends React.Component{
             <TableContext.Consumer>
                 {(table) => (
                     <div style={columnMenubarStyle}>
-                        <Dropdown overlay={
-                            <Menu style={{width:'100px'}}>
+                        <Dropdown 
+                            overlay={
+                            <Menu style={{width:'100px', position:'fixed', zIndex:99}}>
                                 <Menu.Item key="reName">
                                     重命名
                                 </Menu.Item>
@@ -43,7 +44,7 @@ class TableColumnMenu extends React.Component{
                                     删除
                                 </Menu.Item>
                             </Menu>
-                        } trigger={['click']}>
+                        } trigger={['click']} getPopupContainer={() => this.props.container}>
                             <Button 
                                 size="small"
                                 shape="circle"

@@ -960,7 +960,8 @@ class FixedDataTable extends React.Component {
         rowsToRender={props.rows}
         rowOffsets={props.rowOffsets}
         showScrollbarY={scrollEnabledY}
-        container={this}
+        container={this._divRef}
+        data={props.data}
         isRTL={props.isRTL}
         siderWidth={siderWidth}
       />
@@ -1351,7 +1352,8 @@ class FixedDataTable extends React.Component {
               isColumnReordering={!!props.isColumnReordering}
               columnReorderingData={props.columnReorderingData}
               showScrollbarY={props.scrollEnabledY}
-              container={this}
+              container={this._divRef}
+              data={props.data}
               isRTL={props.isRTL}>
             </FixedDataTableRow>
           break;
@@ -1373,7 +1375,8 @@ class FixedDataTable extends React.Component {
               scrollableColumns={scrollableColumns.cell}
               showScrollbarY={props.scrollEnabledY}
               isRTL={props.isRTL}
-              container={this}
+              container={this._divRef}
+              data={props.data}
               visible={true}
               onNewRowAdd={props.onNewRowAddCallback}
             />;
@@ -1401,7 +1404,8 @@ class FixedDataTable extends React.Component {
               scrollableColumns={scrollableColumns.footer}
               scrollLeft={Math.round(props.scrollX)}
               showScrollbarY={props.scrollEnabledY}
-              container={this}
+              container={this._divRef}
+              data={props.data}
               isRTL={props.isRTL}
             />;
           break;
@@ -1436,7 +1440,8 @@ class FixedDataTable extends React.Component {
               showScrollbarY={props.showScrollbarY}
               isRTL={props.isRTL}
               visible={true}
-              container={this}
+              container={this._divRef}
+              data={props.data}
               {...rowProps}
             />
       }

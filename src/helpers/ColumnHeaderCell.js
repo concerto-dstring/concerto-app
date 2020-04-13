@@ -1,13 +1,12 @@
 import React from 'react';
 import { Overlay } from 'react-overlays';
 import styled from 'styled-components';
-import Keys from '../../../maintable/vendor_upstream/core/Keys';
+import Keys from '../maintable/vendor_upstream/core/Keys';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
-import { TableCell } from '../cell/TableCell'
-import { TableContext } from '../../../maintable/data/DataContext';
-import './EditableCell.less'
-import getHighlightText from '../../../maintable/getHighlightText'
+import { TableCell } from './columnlib/cell/TableCell'
+import { TableContext } from '../maintable/data/DataContext';
+import getHighlightText from '../maintable/getHighlightText';
 
 const CellContainer = styled.div`
   display: flex;
@@ -19,7 +18,7 @@ const CellContainer = styled.div`
   padding: 5px;
 `
 
-class EditableCell extends React.PureComponent {
+class ColumnHeaderCell extends React.PureComponent {
     constructor(props){
        super(props)
        let cellData = this.getCellData(props)
@@ -181,7 +180,7 @@ class EditableCell extends React.PureComponent {
       
         const {container, data, rowIndex, columnKey, dataVersion, width, height,  ...props} = this.props;
         const { value, editing, displayValue } = this.state;
-        const isHeaderOrFooter = false;
+        const isHeaderOrFooter = true;
         const type = isHeaderOrFooter?'TEXT':this.getColumnCompentTypeByColumnKey(columnKey,data._dataset._columns);
         this.setState({
             type:type,
@@ -204,7 +203,7 @@ class EditableCell extends React.PureComponent {
               onClick={this.handleClick.bind(this,type)}
               onMouseEnter={()=>this.setMouseIn(true)}
               onMouseLeave={()=>this.setMouseIn(false)}
-              //className={classNameStr}  // disable for timebeing
+              //className={classNameStr}
               style={this.getPeopleFilterStyle(type, editing, value)}
             >
                 {!editing && this.cellRenderValues[type] && displayValue}
@@ -244,4 +243,4 @@ class EditableCell extends React.PureComponent {
     }
 }
 
-export { EditableCell };
+export { ColumnHeaderCell };
