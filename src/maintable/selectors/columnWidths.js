@@ -54,9 +54,14 @@ function columnWidths(columnGroupProps, columnProps, scrollEnabledY, width) {
     scrollableColumns,
   } = groupColumns(newColumnProps);
 
-  const availableScrollWidth = viewportWidth - getTotalWidth(fixedColumns) - getTotalWidth(fixedRightColumns);
-  const maxScrollX = Math.max(0, getTotalWidth(newColumnProps) - viewportWidth);
-  const availableScrollStart = getTotalWidth(fixedColumns);
+  const newColumnProps0 = newColumnProps.filter(e => e.level === 0);
+  const newColumnProps1 = newColumnProps.filter(e => e.level === 1);
+  const fixedColumns0 = fixedColumns.filter(e => e.level === 0);
+  const fixedRightColumns0 = fixedRightColumns.filter(e => e.level === 0);
+
+  const availableScrollWidth = viewportWidth - getTotalWidth(fixedColumns0) - getTotalWidth(fixedRightColumns0);
+  const maxScrollX = Math.max(0, Math.max(getTotalWidth(newColumnProps0), getTotalWidth(newColumnProps1))  - viewportWidth);
+  const availableScrollStart = getTotalWidth(fixedColumns0);
   return {
     columnGroupProps: newColumnGroupProps,
     columnProps: newColumnProps,

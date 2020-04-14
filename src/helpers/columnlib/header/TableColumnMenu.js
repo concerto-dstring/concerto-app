@@ -19,7 +19,8 @@ class TableColumnMenu extends React.Component{
             position:'absolute',
             top:'8px',
             right:'5px',
-            display:'none'
+            display:'none',
+            zIndex:99
         }
         const columnKey = this.props.columnKey;
         columnMenubarStyle.display = this.props.menuBarStyle;
@@ -28,6 +29,7 @@ class TableColumnMenu extends React.Component{
                 {(table) => (
                     <div style={columnMenubarStyle}>
                         <Dropdown 
+                            style= {{zIndex:99}}
                             overlay={
                             <Menu style={{width:'100px', position:'fixed', zIndex:99}}>
                                 <Menu.Item key="reName">
