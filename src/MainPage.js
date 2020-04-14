@@ -17,6 +17,7 @@ import {
     QuestionOutlined,
     HomeFilled
    } from '@ant-design/icons';
+import MainTableDataStore from './maintable/MainTableDataStore';
 
 const { Panel } = Collapse;
 const { SubMenu } = Menu;
@@ -33,7 +34,12 @@ export default class MainPage extends React.Component {
     this.state = {
       siderWidth: defaultSiderWidth,
       collapsed: false,
+      dataset:{}
     };
+  }
+
+  componentWillMount(){
+    this.nativeGetTableStore("board");
   }
 
   toggle = () => {
@@ -42,7 +48,20 @@ export default class MainPage extends React.Component {
       collapsed: !this.state.collapsed,
     });
   };
-   
+  
+  nativeGetTableStore = (type) => {
+    const storeUrl = {
+      "board":"/store/board.json",
+      "dashboard":"/store/dashboard.json"
+    }
+    const dataset = new MainTableDataStore();
+    const a = dataset.createFakeObjectData(storeUrl[type]);
+    debugger;
+    this.setState({
+      dataset:dataset
+    })
+  }
+
   render(){
     return (
       <Layout>
@@ -135,11 +154,11 @@ export default class MainPage extends React.Component {
                 >
                   <Menu.Item key="1">
                     <MailOutlined />
-                    邮件工作板
+                    <a onClick={this.nativeGetTableStore.bind(this,'board')}>邮件工作板</a>
                   </Menu.Item>
                   <Menu.Item key="2">
                     <CalendarOutlined />
-                    进度工作板
+                    <a onClick={this.nativeGetTableStore.bind(this,'dashboard')}>进度工作板</a>
                   </Menu.Item>
                   <SubMenu
                     key="sub1"
@@ -150,11 +169,11 @@ export default class MainPage extends React.Component {
                       </span>
                     }
                   >
-                    <Menu.Item key="3">开发组1</Menu.Item>
-                    <Menu.Item key="4">开发组2</Menu.Item>
+                    <Menu.Item key="3"><a onClick={this.nativeGetTableStore.bind(this,'dashboard')}>开发组1</a></Menu.Item>
+                    <Menu.Item key="4"><a onClick={this.nativeGetTableStore.bind(this,'board')}>开发组2</a></Menu.Item>
                     <SubMenu key="sub1-2" title="开发组3">
-                      <Menu.Item key="5">设计</Menu.Item>
-                      <Menu.Item key="6">测试</Menu.Item>
+                      <Menu.Item key="5"><a onClick={this.nativeGetTableStore.bind(this,'dashboard')}>设计</a></Menu.Item>
+                      <Menu.Item key="6"><a onClick={this.nativeGetTableStore.bind(this,'board')}>测试</a></Menu.Item>
                     </SubMenu>
                   </SubMenu>
                   
@@ -168,11 +187,11 @@ export default class MainPage extends React.Component {
                 >
                   <Menu.Item key="1">
                     <MailOutlined />
-                    邮件统计仪表板
+                    <a onClick={this.nativeGetTableStore.bind(this,'board')}>邮件统计仪表板</a>
                   </Menu.Item>
                   <Menu.Item key="2">
                     <CalendarOutlined />
-                    进度仪表板
+                    <a onClick={this.nativeGetTableStore.bind(this,'dashboard')}>进度仪表板</a>
                   </Menu.Item>
                   <SubMenu
                     key="sub1"
@@ -183,11 +202,11 @@ export default class MainPage extends React.Component {
                       </span>
                     }
                   >
-                    <Menu.Item key="3">开发组1</Menu.Item>
-                    <Menu.Item key="4">开发组2</Menu.Item>
+                    <Menu.Item key="3"><a onClick={this.nativeGetTableStore.bind(this,'board')}>开发组1</a></Menu.Item>
+                    <Menu.Item key="4"><a onClick={this.nativeGetTableStore.bind(this,'dashboard')}>开发组2</a></Menu.Item>
                     <SubMenu key="sub1-2" title="开发组3">
-                      <Menu.Item key="5">设计</Menu.Item>
-                      <Menu.Item key="6">测试</Menu.Item>
+                      <Menu.Item key="5"><a onClick={this.nativeGetTableStore.bind(this,'board')}>设计</a></Menu.Item>
+                      <Menu.Item key="6"><a onClick={this.nativeGetTableStore.bind(this,'dashboard')}>测试</a></Menu.Item>
                     </SubMenu>
                   </SubMenu>
                 
@@ -223,7 +242,7 @@ export default class MainPage extends React.Component {
             </Breadcrumb>
             <Content>
               <MainTable 
-                data={this.dataset} 
+                data={this.state.dataset} 
                 siderWidth={this.state.siderWidth} 
               />
             </Content>
