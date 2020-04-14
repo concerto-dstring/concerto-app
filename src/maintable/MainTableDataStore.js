@@ -45,7 +45,7 @@ class MainTableDataStore {
     }
     
     createFakeObjectData(url) {
-        const self = this;       
+        const self = this;
         $.ajax({
             url : url,
             data:{},

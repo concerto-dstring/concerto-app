@@ -55,6 +55,7 @@ export default class MainPage extends React.Component {
       "dashboard":"/store/dashboard.json"
     }
     const dataset = new MainTableDataStore();
+    dataset.createFakeObjectData(storeUrl[type]);
     this.setState({
       dataset:dataset
     })
