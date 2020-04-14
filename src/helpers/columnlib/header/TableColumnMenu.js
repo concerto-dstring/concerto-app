@@ -3,6 +3,7 @@ import {Button, Menu, Dropdown, message, Tooltip } from 'antd';
 import { CaretDownOutlined, DeleteOutlined} from '@ant-design/icons';
 import PropTypes from 'prop-types';
 import { TableContext } from '../../../maintable/data/DataContext';
+import FixedDataTableTranslateDOMPosition from '../../../maintable/FixedDataTableTranslateDOMPosition';
 
 class TableColumnMenu extends React.Component{
     static propTypes = {
@@ -20,18 +21,24 @@ class TableColumnMenu extends React.Component{
             top:'8px',
             right:'5px',
             display:'none',
-            zIndex:99
         }
         const columnKey = this.props.columnKey;
         columnMenubarStyle.display = this.props.menuBarStyle;
+
+        const menuStyle = {
+            width:'100px',
+            position:'fixed',
+            zIndex:3,
+        }
+        //FixedDataTableTranslateDOMPosition(menuStyle, 0, 50, true);
+
         return(
             <TableContext.Consumer>
                 {(table) => (
                     <div style={columnMenubarStyle}>
-                        <Dropdown 
-                            style= {{zIndex:99}}
+                        <Dropdown
                             overlay={
-                            <Menu style={{width:'100px', position:'fixed', zIndex:99}}>
+                            <Menu style={menuStyle}>
                                 <Menu.Item key="reName">
                                     重命名
                                 </Menu.Item>
@@ -46,7 +53,7 @@ class TableColumnMenu extends React.Component{
                                     删除
                                 </Menu.Item>
                             </Menu>
-                        } trigger={['click']} getPopupContainer={() => this.props.container}>
+                        } trigger={["click"]} getPopupContainer={() => this.props.container}>
                             <Button 
                                 size="small"
                                 shape="circle"
