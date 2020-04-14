@@ -251,13 +251,13 @@ export default class MainPage extends React.Component {
                   />
                   <Route exact path="/borad" component={()=>
                     <MainTable
-                      data={this.dataset} 
+                      data={this.state.dataset} 
                       siderWidth={this.state.siderWidth} 
                     />}
                   />
                   <Route exact path="/dashborad" component={()=>
                     <MainTable
-                      data={this.dataset} 
+                      data={this.state.dataset} 
                       siderWidth={this.state.siderWidth} 
                     />}
                   />
