@@ -1,23 +1,38 @@
 const users = [{
-  smallName:'Z',
-  userName:'ZhangTao',
-  faceColor:'#f4617f'
+  smallName:'ZT',
+  userName:'Zhang Tao',
+  faceColor:'#f4617f',
+  userUrl: 'https://www.baidu.com?zhangtao'
 },{
-  smallName:'C',
+  smallName:'LC',
   userName:'Lucy Chen',
-  faceColor:'#66cdff'
+  faceColor:'#66cdff',
+  userUrl: 'https://www.baidu.com?lucychen'
 },{
   smallName:'L',
   userName:'Leo',
-  faceColor:'#f49642'
+  faceColor:'#f49642',
+  userUrl: 'https://www.baidu.com?leo'
 },{
-  smallName:'M',
+  smallName:'JM',
   userName:'Jack Ma',
-  faceColor:'#79cdcd'
+  faceColor:'#79cdcd',
+  userUrl: 'https://www.baidu.com?jackma'
 },{
-  smallName:'W',
+  smallName:'CW',
   userName:'Civen Wang',
-  faceColor:'#f4617f'
+  faceColor:'#f4617f',
+  userUrl: 'https://www.baidu.com?civenwang'
+}, {
+  smallName:'LW',
+  userName:'Li Wei',
+  faceColor:'#9370DB',
+  userUrl: 'https://www.baidu.com?liwei',
+}, {
+  smallName:'JGZ',
+  userName:'Jiang Guangzhou',
+  faceColor:'#AFEEEE',
+  userUrl: 'https://www.baidu.com?jiangguangzhou',
 }]
 
 export const getPeople = (userName) => {

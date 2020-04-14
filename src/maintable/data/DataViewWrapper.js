@@ -59,6 +59,7 @@ class DataViewWrapper {
         this.getSubRows = this.getSubRows.bind(this);
         this.getSubRowCount = this.getSubRowCount.bind(this);
         this.addNewSubSection = this.addNewSubSection.bind(this)
+        this.getCurrentUser = this.getCurrentUser.bind(this)
     }
 
     /**
@@ -331,19 +332,19 @@ class DataViewWrapper {
         return this._indexMap;
     }
 
-    setObjectAt(rowIndex, columnKey, value) {
+    setObjectAt(rowIndex, columnKey, value, type) {
       if (getSubLevel(rowIndex) === 0) {
         if (this._indexMap === null) {
-            this._dataset.setObjectAt(rowIndex, columnKey, value);
+            this._dataset.setObjectAt(rowIndex, columnKey, value, type);
             return;
         } 
         if (rowIndex < 0 || rowIndex >= this._indexMap.length) {
             return;
         }
-        this._dataset.setObjectAt(this._indexMap[rowIndex].rowKey, columnKey, value);
+        this._dataset.setObjectAt(this._indexMap[rowIndex].rowKey, columnKey, value, type);
       } else {
           let rowKey = this._subRowMap[rowIndex];
-          this._dataset.setObjectAt(rowKey, columnKey, value);
+          this._dataset.setObjectAt(rowKey, columnKey, value, type);
       }
     }
 
@@ -438,6 +439,13 @@ class DataViewWrapper {
       if (row) {
         this._dataset.addNewSubSection(row.rowKey, newItem)
       }
+    }
+
+    /**
+     * 获取当前用户
+     */
+    getCurrentUser() {
+      return this._dataset.getCurrentUser()
     }
 }
 

@@ -10,6 +10,7 @@
 
 import { ColumnType } from './data/MainTableType';
 import { COLOR } from '../helpers/section/header/StyleValues'
+import { getPeople } from '../helpers/section/modal/PeopleName';
 
 class MainTableDataStore {
 
@@ -98,7 +99,36 @@ class MainTableDataStore {
         '5': '文件 9', '6': '补充说明 9'};
 
         this._rowData['10'] = {'1': '主题 10','2': '备注 10', '3': '分配 10', '4': '日志 10',
-        '5': '文件 10', '6': '补充说明 10'};
+        '5': '文件 10', '6': '补充说明 10', 
+        'updateInfo': [{
+          'id': 'u_10_1',
+          'author': getPeople('Jiang Guangzhou')[0],
+          'createTime': '2020-04-01 10:09:24',
+          'content': '测试一下',
+          'seen': 6,
+          'isLiked': true,
+          'replyList': [{
+            'id': 'u_10_1_1',
+            'replyMsg': '这个问题怎么解决呢？',
+            'replyUser': getPeople('Li Wei')[0],
+            'isLiked': false,
+            'createTime': '2020-04-05 10:09:24'
+          }, {
+            'id': 'u_10_1_2',
+            'replyMsg': '回复<a href="https://www.baidu.com?liwei" target="_blank">@LiWei :</a>解决这个问题，就要先这样，再那样，就解决了',
+            'replyUser': getPeople('Zhang Tao')[0],
+            'isLiked': true,
+            'createTime': '2020-04-08 20:09:24'
+          }]
+        }, {
+          'id': 'u_10_2',
+          'author': getPeople('Leo')[0],
+          'createTime': '2020-04-12 14:09:24',
+          'content': '测试一下是否存在问腿',
+          'seen': 5,
+          'isLiked': false,
+          'replyList': []
+        }]};
 
         this._rowData['11'] = {'1': '子题 1', '11': '分配 6', '12': '日志 1'};
         this._rowData['12'] = {'1': '子题 2', '11': '分配 6', '12': '日志 2'};
@@ -106,6 +136,10 @@ class MainTableDataStore {
         this._sizeRows = 12;
 
         this._subRows['2'] = {rows:['11', '12'], isExpanded:false};
+    }
+
+    getCurrentUser() {
+      return getPeople('Jiang Guangzhou')[0]
     }
 
     getSize() {
@@ -120,11 +154,38 @@ class MainTableDataStore {
       return this._rowData
     }
 
-    setObjectAt(rowKey, columnKey, value) {
+    setObjectAt(rowKey, columnKey, value, type) {
         // skip the group row 
         if (!rowKey || !columnKey) 
             return;
-        this._rowData[rowKey][columnKey] = value;
+
+        if (columnKey === 'updateInfo') {
+          if (type === 'update') {
+            // 更新
+            let updateInfo = this._rowData[rowKey][columnKey]
+            let infoIndex = updateInfo.findIndex(info => info.id === value.id)
+            updateInfo[infoIndex] = value
+          }
+          else if (type === 'add') {
+            // 新增
+            let updateInfo = this._rowData[rowKey][columnKey]
+            if (updateInfo && updateInfo.length > 0) {
+              updateInfo.unshift(value)
+            }
+            else {
+              updateInfo = []
+              updateInfo.push(value)
+            }
+
+            this._rowData[rowKey][columnKey] = updateInfo
+          }
+          else {
+
+          }
+        }
+        else {
+          this._rowData[rowKey][columnKey] = value;
+        }
 
         this.runCallbacks();
     }
