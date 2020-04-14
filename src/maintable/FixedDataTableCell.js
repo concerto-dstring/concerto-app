@@ -142,7 +142,6 @@ class FixedDataTableCell extends React.Component {
 
   handleRef = component => (this.ref = component);
 
-
   getColumnCollpseByColumnInfo = (columns,columnKey) => {
     for(let i=0,len=columns.length;i<len;i++){
       let column = columns[i];
@@ -244,7 +243,7 @@ class FixedDataTableCell extends React.Component {
       );
       
       tableColumnMenu = (
-        <TableColumnMenu columnKey={columnKey} menuBarStyle={this.state.menuBar}/>
+        <TableColumnMenu columnKey={columnKey} menuBarStyle={this.state.menuBar} container={this.props.container}/>
       )
     }
 
@@ -252,7 +251,7 @@ class FixedDataTableCell extends React.Component {
       columnKey,
       height,
       width,
-      container: this,
+      container: this.props.container,
     };
 
     if (props.rowIndex >= 0) {
@@ -288,7 +287,7 @@ class FixedDataTableCell extends React.Component {
                   </Tooltip>}
                 </div>;
       }else{
-        return <div className={className} style={style} role={role}>
+        return <div className={className} style={style} role={role} ref={this.handleRef}>
                   {!replacingColumn && columnResizerComponent}
                   {!replacingColumn && columnReorderComponent}
                   {!replacingColumn && tableColumnMenu}

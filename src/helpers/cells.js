@@ -387,7 +387,7 @@ class DropDownMenuHeader extends React.PureComponent {
           overlay={this.getHeaderMenu()}
           overlayClassName='menu_item_bgcolor'
           visible={isBtnClicked && isShowHeaderMenu}
-          getPopupContainer={triggerNode => triggerNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode}
+          getPopupContainer={() => this.props.container}
         >
           <AntdButton 
             icon={<CaretDownOutlined />}
@@ -556,7 +556,7 @@ class DropDownMenuCell extends React.PureComponent {
           overlay={this.getRowMenu(data, rowIndex)} 
           overlayClassName='menu_item_bgcolor'
           visible={isBtnClicked ? (isShowRowActionBtn === VISIBILITY.HIDDEN ? false : true) : false}
-          getPopupContainer={triggerNode => triggerNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode}
+          getPopupContainer={() => this.props.container}
         >
           <AntdButton
             icon={<CaretDownOutlined />} 
