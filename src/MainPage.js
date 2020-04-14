@@ -1,5 +1,6 @@
 
 import React from 'react';
+import {BrowserRouter as Router, Route, Link} from 'react-router-dom'
 import MainTable from './maintable/MainTable';
 import './MainPage.less'
 import { Layout, Menu, Breadcrumb, Input, Collapse, Button, Avatar } from 'antd';
@@ -17,6 +18,7 @@ import {
     QuestionOutlined,
     HomeFilled
    } from '@ant-design/icons';
+import MainTableDataStore from './maintable/MainTableDataStore';
 
 const { Panel } = Collapse;
 const { SubMenu } = Menu;
@@ -33,7 +35,12 @@ export default class MainPage extends React.Component {
     this.state = {
       siderWidth: defaultSiderWidth,
       collapsed: false,
+      dataset:{}
     };
+  }
+
+  componentWillMount(){
+    this.nativeGetTableStore("board");
   }
 
   toggle = () => {
@@ -42,9 +49,23 @@ export default class MainPage extends React.Component {
       collapsed: !this.state.collapsed,
     });
   };
-   
+  
+  nativeGetTableStore = (type) => {
+    const storeUrl = {
+      "board":"/store/board.json",
+      "dashboard":"/store/dashboard.json"
+    }
+    const dataset = new MainTableDataStore();
+    dataset.createFakeObjectData(storeUrl[type]);
+    this.setState({
+      dataset:dataset
+    })
+  }
+
   render(){
     return (
+      <Router>
+
       <Layout>
         <Header className="header" style={{background:'#3f51b5',padding:'0 0 0 15px',display:'none'}} >
           
@@ -135,11 +156,11 @@ export default class MainPage extends React.Component {
                 >
                   <Menu.Item key="1">
                     <MailOutlined />
-                    邮件工作板
+                    <Link to="/board" onClick={this.nativeGetTableStore.bind(this,'board')}>邮件工作板</Link>
                   </Menu.Item>
                   <Menu.Item key="2">
                     <CalendarOutlined />
-                    进度工作板
+                    <Link to="/dashboard" onClick={this.nativeGetTableStore.bind(this,'dashboard')}>进度工作板</Link>
                   </Menu.Item>
                   <SubMenu
                     key="sub1"
@@ -150,11 +171,11 @@ export default class MainPage extends React.Component {
                       </span>
                     }
                   >
-                    <Menu.Item key="3">开发组1</Menu.Item>
-                    <Menu.Item key="4">开发组2</Menu.Item>
+                    <Menu.Item key="3"><Link to="/dashboard" onClick={this.nativeGetTableStore.bind(this,'dashboard')}>开发组1</Link></Menu.Item>
+                    <Menu.Item key="4"><Link to="/board" onClick={this.nativeGetTableStore.bind(this,'board')}>开发组2</Link></Menu.Item>
                     <SubMenu key="sub1-2" title="开发组3">
-                      <Menu.Item key="5">设计</Menu.Item>
-                      <Menu.Item key="6">测试</Menu.Item>
+                      <Menu.Item key="5"><Link to="/dashboard" onClick={this.nativeGetTableStore.bind(this,'dashboard')}>设计</Link></Menu.Item>
+                      <Menu.Item key="6"><Link to="/board" onClick={this.nativeGetTableStore.bind(this,'board')}>测试</Link></Menu.Item>
                     </SubMenu>
                   </SubMenu>
                   
@@ -168,11 +189,11 @@ export default class MainPage extends React.Component {
                 >
                   <Menu.Item key="1">
                     <MailOutlined />
-                    邮件统计仪表板
+                    <Link to="/board" onClick={this.nativeGetTableStore.bind(this,'board')}>邮件统计仪表板</Link>
                   </Menu.Item>
                   <Menu.Item key="2">
                     <CalendarOutlined />
-                    进度仪表板
+                    <Link to="/dashboard" onClick={this.nativeGetTableStore.bind(this,'dashboard')}>进度仪表板</Link>
                   </Menu.Item>
                   <SubMenu
                     key="sub1"
@@ -183,11 +204,11 @@ export default class MainPage extends React.Component {
                       </span>
                     }
                   >
-                    <Menu.Item key="3">开发组1</Menu.Item>
-                    <Menu.Item key="4">开发组2</Menu.Item>
+                    <Menu.Item key="3"><Link to="/board" onClick={this.nativeGetTableStore.bind(this,'board')}>开发组1</Link></Menu.Item>
+                    <Menu.Item key="4"><Link to="/dashboard" onClick={this.nativeGetTableStore.bind(this,'dashboard')}>开发组2</Link></Menu.Item>
                     <SubMenu key="sub1-2" title="开发组3">
-                      <Menu.Item key="5">设计</Menu.Item>
-                      <Menu.Item key="6">测试</Menu.Item>
+                      <Menu.Item key="5"><Link to="/board" onClick={this.nativeGetTableStore.bind(this,'board')}>设计</Link></Menu.Item>
+                      <Menu.Item key="6"><Link to="/dashboard" onClick={this.nativeGetTableStore.bind(this,'dashboard')}>测试</Link></Menu.Item>
                     </SubMenu>
                   </SubMenu>
                 
@@ -222,15 +243,29 @@ export default class MainPage extends React.Component {
               <Breadcrumb.Item>工作区</Breadcrumb.Item>
             </Breadcrumb>
             <Content>
-              <MainTable 
-                data={this.dataset} 
-                siderWidth={this.state.siderWidth} 
-              />
+                 <Route exact component={()=>
+                    <MainTable
+                      data={this.state.dataset} 
+                      siderWidth={this.state.siderWidth} 
+                    />}
+                  />
+                  <Route exact path="/borad" component={()=>
+                    <MainTable
+                      data={this.state.dataset} 
+                      siderWidth={this.state.siderWidth} 
+                    />}
+                  />
+                  <Route exact path="/dashborad" component={()=>
+                    <MainTable
+                      data={this.state.dataset} 
+                      siderWidth={this.state.siderWidth} 
+                    />}
+                  />
             </Content>
           </Layout>
         </Layout>
       </Layout>
-     
+     </Router>
     );
   }
 }
