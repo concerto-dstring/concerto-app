@@ -21,7 +21,7 @@
         {
             "columnKey": "1",
             "name": "Bug名称",
-            "width": 120,
+            "width": 220,
             "type": "EDITBOX",
             "columnComponentType": "TEXT",
             "collpse": false,
