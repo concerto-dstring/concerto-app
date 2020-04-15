@@ -37,7 +37,8 @@ class RowHeaderDrawerUpdate extends PureComponent {
       isShowPeopleModal: false,
       isShowReplyInput: false,
       isShowReplyUserInput: false,
-      isLiked: false 
+      isLiked: false,
+      isExpandReplyList: props.updateInfo.replyList ? (props.updateInfo.replyList.length > 1 ? false : true) : true 
     }
 
     this.replyEditor = createRef()
@@ -297,72 +298,116 @@ class RowHeaderDrawerUpdate extends PureComponent {
     }
   }
 
+  getReplyList = () => {
+    const { replyList } = this.props.updateInfo
+    if (replyList) {
+      if (replyList.length <= 1) {
+        // 回复数小于等于1
+        return this.getReplyMsg(replyList, replyList.length)
+      }
+      else {
+        // 回复数大于1（若回复列表展开为false则只显示第一条，剩下的用共几条回复显示，否则显示全部回复列表）
+        if (this.state.isExpandReplyList) {
+          return this.getReplyMsg(replyList, 1)
+        }
+        else {
+          return this.getReplyMsg(new Array(replyList[0]), replyList.length)
+        }
+      } 
+    } 
+  }
+
+  expandReplyList = () => {
+    this.setState({
+      isExpandReplyList: true
+    })
+  }
+
+  getReplyMsg = (replyList, replyCount) => {
+    return (
+      replyList.map(reply => {
+        return (
+          <div
+            key={reply.id} 
+            className="reply_body_component"
+          >
+            <Avatar 
+              size={36} 
+              style={{background: reply.replyUser.faceColor, position: 'absolute'}}
+            >
+              {reply.replyUser.smallName}
+            </Avatar>
+            <div className="reply_body_data">
+              <div className="reply_body_data_wrapper">
+                <a href={reply.replyUser.userUrl} target="_blank">{reply.replyUser.userName}:</a>
+                &nbsp;
+                <span dangerouslySetInnerHTML={{__html: reply.replyMsg}} />
+              </div>
+              <div className="reply_body_data_tool">
+                <div>
+                  <span>
+                    {moment(reply.createTime, "YYYY-MM-DD HH:mm:ss").fromNow()}
+                  </span>
+                </div>
+                <div className="reply_body_data_tool_reply">
+                  <span className="reply_body_data_tool_reply_btn">
+                    <EyeOutlined /> 3
+                  </span>
+                  {
+                    reply.isLiked
+                    ?
+                    <span 
+                      className="reply_body_data_tool_reply_btn not_allow_select_text" 
+                      style={{color: '#009AFF'}}
+                      onClick={this.handleReplyMsgLike.bind(this, reply.id)}
+                    >
+                      <LikeFilled  />
+                    </span>
+                    :
+                    <span 
+                      className="reply_body_data_tool_reply_btn not_allow_select_text" 
+                      style={{color: '#AAAAAA'}}
+                      onClick={this.handleReplyMsgLike.bind(this, reply.id)}
+                    >
+                      <LikeOutlined  />
+                    </span>
+                  }
+                  <span 
+                    className="reply_body_data_tool_reply_btn"
+                    onClick={this.replyMsg.bind(this, reply.replyUser.userName, reply.replyUser.userUrl)}
+                  >
+                    <SendOutlined />
+                  </span>
+                </div>
+              </div>
+              {
+                replyCount > 1
+                ?
+                <div className="reply_body_data_show_reply_count">
+                  <span
+                    className="reply_body_data_show_reply_count_span"
+                    onClick={this.expandReplyList}
+                  >
+                    共{replyCount}条回复
+                  </span>
+                </div>
+                :
+                null
+              }
+            </div>
+          </div>
+        )
+      })
+    )
+  }
+
   getCardReplyData = () => {
     const { currentUser, isShowReplyInput, isShowReplyUserInput, editorState, editorControls } = this.state
-    const { replyList } = this.props.updateInfo
     return (
       <div className="reply_area" ref={this.replyArea}>
         <div className="reply_list_component">
           {
-            replyList.map(reply => {
-              return (
-                <div
-                  key={reply.id} 
-                  className="reply_body_component"
-                >
-                  <Avatar 
-                    size={36} 
-                    style={{background: reply.replyUser.faceColor, position: 'absolute'}}
-                  >
-                    {reply.replyUser.smallName}
-                  </Avatar>
-                  <div className="reply_body_data">
-                    <div className="reply_body_data_wrapper">
-                      <a href={reply.replyUser.userUrl} target="_blank">{reply.replyUser.userName}:</a>
-                      &nbsp;
-                      <span dangerouslySetInnerHTML={{__html: reply.replyMsg}} />
-                    </div>
-                    <div className="reply_body_data_tool">
-                      <div>
-                        <span>
-                          {moment(reply.createTime, "YYYY-MM-DD HH:mm:ss").fromNow()}
-                        </span>
-                      </div>
-                      <div className="reply_body_data_tool_reply">
-                        <span className="reply_body_data_tool_reply_btn">
-                          <EyeOutlined /> 3
-                        </span>
-                        {
-                          reply.isLiked
-                          ?
-                          <span 
-                            className="reply_body_data_tool_reply_btn not_allow_select_text" 
-                            style={{color: '#009AFF'}}
-                            onClick={this.handleReplyMsgLike.bind(this, reply.id)}
-                          >
-                            <LikeFilled  />&nbsp;赞
-                          </span>
-                          :
-                          <span 
-                            className="reply_body_data_tool_reply_btn not_allow_select_text" 
-                            style={{color: '#333333'}}
-                            onClick={this.handleReplyMsgLike.bind(this, reply.id)}
-                          >
-                            <LikeOutlined  />&nbsp;赞
-                          </span>
-                        }
-                        <span 
-                          className="reply_body_data_tool_reply_btn"
-                          onClick={this.replyMsg.bind(this, reply.replyUser.userName, reply.replyUser.userUrl)}
-                        >
-                          <SendOutlined />
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )
-            })
+            this.getReplyList()
           }
         </div>
         <div 

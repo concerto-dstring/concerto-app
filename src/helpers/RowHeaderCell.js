@@ -100,6 +100,11 @@ class RowHeaderCell extends React.PureComponent {
             height: height - 5,
             borderRadius: '0px',
         }
+
+        // 滑窗里信息
+        let updateInfo = this.props.data ? (this.props.data.getObjectAt(this.props.rowIndex)['updateInfo'] ? this.props.data.getObjectAt(this.props.rowIndex)['updateInfo'] : []) : []
+        let countColor = updateInfo.length > 0 ? '#009AFF' : '#D3D3D3'
+
         return (
             <>
                 <CellContainer ref={this.setTargetRef} onClick={this.handleClick.bind(this)}>
@@ -107,10 +112,16 @@ class RowHeaderCell extends React.PureComponent {
                     {count != 0 && <a onClick={this.toggleSubRows}><Badge count={count+'+'} /></a>}
                     </div>
                     {!editing && <div className="row_header_cell_text">{displayValue}</div>}
-                    {!editing && <div className="row_header_cell_update">
-                                   <a onClick={this.showRowDrawer}>
-                                     <MessageOutlined style={{fontSize: 24, color: '#d3d3d3'}} />
-                                    </a>
+                    {!editing && <div 
+                                  className="row_header_cell_update"
+                                  onClick={this.showRowDrawer}
+                                 >
+                                   <span>
+                                      <MessageOutlined style={{fontSize: 24, color: countColor}} />
+                                    </span>
+                                    <span>
+                                      <Badge count={updateInfo.length} style={{fontSize: 10, marginLeft: -15, width: 14, height: 14, padding: '0px 0px 4px', minWidth: 'unset', lineHeight: '14px', backgroundColor: countColor}} />
+                                    </span>
                                  </div>}
                     {editing && this.targetRef && (
                         <Overlay
@@ -145,7 +156,7 @@ class RowHeaderCell extends React.PureComponent {
                   value={this.state.value}
                   rowIndex={this.props.rowIndex}
                   data={this.props.data}
-                  updateInfo={this.props.data ? (this.props.data.getObjectAt(this.props.rowIndex)['updateInfo'] ? this.props.data.getObjectAt(this.props.rowIndex)['updateInfo'] : []) : []}
+                  updateInfo={updateInfo}
                   closeRowDrawer={this.closeRowDrawer}
                 />
             </>
