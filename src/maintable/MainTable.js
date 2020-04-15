@@ -12,6 +12,7 @@ import { Table, Cell, Column } from './FixedDataTableRoot';
 import { ColumnType,  RowType, ColumnKey } from './data/MainTableType';
 import { TextCell, DropDownMenuHeader, DropDownMenuCell, CheckBoxCell, CheckBoxHeader } from '../helpers/cells';
 import { RowHeaderCell } from '../helpers/RowHeaderCell';
+import { ColumnHeaderCell } from '../helpers/ColumnHeaderCell';
 import ReNameModal from '../helpers/section/modal/ReNameModal'
 import DeleteModal from '../helpers/section/modal/DeleteModal'
 import UndoMessage from '../helpers/section/modal/UndoMessage'
@@ -67,6 +68,22 @@ const DataEditableCell = function(props) {
         <DataVersionContext.Consumer>
             {({data, version, filterInputValue}) => (
                 <EditableCell
+                    data={data}
+                    dataVersion={version}
+                    filterInputValue={filterInputValue}
+                    {...this.props}
+                />
+            )}
+        </DataVersionContext.Consumer>
+    );
+}
+
+const DataColumnHeaderCell = function(props) {
+    this.props = props;
+    return (
+        <DataVersionContext.Consumer>
+            {({data, version, filterInputValue}) => (
+                <ColumnHeaderCell
                     data={data}
                     dataVersion={version}
                     filterInputValue={filterInputValue}
@@ -189,7 +206,7 @@ class MainTable extends React.Component {
         this._onRemoveColumnCallback = this._onRemoveColumnCallback.bind(this);
         this._onCollpseColumnCallback = this._onCollpseColumnCallback.bind(this);
 
-        this._getColumnName = this._getColumnName(this);
+        this._getColumnName = this._getColumnName.bind(this);
         this.refresh = this.refresh.bind(this);
         this._dataset.setCallback(this.refresh, 'main');
 
@@ -305,7 +322,7 @@ class MainTable extends React.Component {
             if (columnKey === column.columnKey) {
                 colTemplates.width = column.width;
                 colTemplates.columnKey = columnKey;
-                colTemplates.header = DataEditableCell;
+                colTemplates.header = DataColumnHeaderCell;
                 colTemplates.footer = <Cell>summary</Cell>;
                 colTemplates.width = this.getColumnWidth(columnKey);
                 colTemplates.minWidth = 70;
@@ -494,6 +511,7 @@ class MainTable extends React.Component {
                     ref={this.handleRef}
                     onColumnReorderEndCallback={this._onColumnReorderEndCallback}
                     onColumnResizeEndCallback={this._onColumnResizeEndCallback}
+                    columnNameGetter={this._getColumnName}
                     data={data}
                     headerHeight={40}
                     rowHeight={40}

@@ -75,7 +75,6 @@ function DataContext(Wrapped) {
   return ContextClass;
 }
 
-
 function AddFilter(TableComponent) {
   class FilterTable extends React.Component {
     constructor(props) {
