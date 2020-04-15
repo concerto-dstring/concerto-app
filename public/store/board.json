@@ -94,7 +94,7 @@
         {
           "columnKey": "1",
           "name": "子题",
-          "width": 120,
+          "width": 220,
           "type": "EDITBOX",
           "columnComponentType": "TEXT",
           "collpse": false,
