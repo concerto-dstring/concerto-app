@@ -1388,6 +1388,7 @@ class FixedDataTable extends React.Component {
               key={i}
               index={indexString}
               isHeaderOrFooter={true}
+              isTableFooter={true}
               isScrolling={props.isScrolling}
               isRowReordering={props.isRowReordering}
               rowReorderingData={props.rowReorderingData}

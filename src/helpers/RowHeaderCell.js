@@ -102,7 +102,13 @@ class RowHeaderCell extends React.PureComponent {
         }
 
         // 滑窗里信息
-        let updateInfo = this.props.data ? (this.props.data.getObjectAt(this.props.rowIndex)['updateInfo'] ? this.props.data.getObjectAt(this.props.rowIndex)['updateInfo'] : []) : []
+        let updateInfo 
+        if (!this.props.data || !this.props.data.getObjectAt(this.props.rowIndex) || !this.props.data.getObjectAt(this.props.rowIndex)['updateInfo']) {
+          updateInfo = []
+        }
+        else {
+          updateInfo = this.props.data.getObjectAt(this.props.rowIndex)['updateInfo']
+        }
         let countColor = updateInfo.length > 0 ? '#009AFF' : '#D3D3D3'
 
         return (

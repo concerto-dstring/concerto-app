@@ -33,6 +33,7 @@ import {
     CheckSquareOutlined,
     StrikethroughOutlined,
     AccountBookOutlined } from '@ant-design/icons';
+import SummaryCell from '../helpers/columnlib/cell/SummaryCell';
 
 /**
  * A cell that is aware of its context
@@ -185,6 +186,21 @@ const DataSectionHeader = function(props) {
   )
 }
 
+const DataSummaryCell = function(props) {
+  this.props = props;
+  return (
+    <DataVersionContext.Consumer>
+        {({data, version}) => (
+            <SummaryCell
+                data={data}
+                dataVersion={version}
+                {...this.props}
+            />
+        )}
+    </DataVersionContext.Consumer>
+  )
+}
+
 const FilterableDataTable = AddFilter(DataContext(Table));
 
 @connect(mapRowActionStateToProps, null, null, { forwardRef: true })
@@ -323,7 +339,7 @@ class MainTable extends React.Component {
                 colTemplates.width = column.width;
                 colTemplates.columnKey = columnKey;
                 colTemplates.header = DataColumnHeaderCell;
-                colTemplates.footer = <Cell>summary</Cell>;
+                colTemplates.footer = DataSummaryCell;
                 colTemplates.width = this.getColumnWidth(columnKey);
                 colTemplates.minWidth = 70;
                 colTemplates.isResizable = true;
@@ -354,7 +370,7 @@ class MainTable extends React.Component {
         rowTemplates.width = column.width;
         rowTemplates.columnKey = columnKey;
         rowTemplates.header = DropDownHeader;
-        rowTemplates.footer = null;
+        rowTemplates.footer = DataSummaryCell;
         rowTemplates.isResizable = false;
         rowTemplates.cell = DropDownCell;
         rowTemplates.level = column.level;
@@ -363,7 +379,7 @@ class MainTable extends React.Component {
         rowTemplates.width = column.width;
         rowTemplates.columnKey = columnKey;
         rowTemplates.header = DataCheckBoxHeader;
-        rowTemplates.footer = null;
+        rowTemplates.footer = DataSummaryCell;
         rowTemplates.isResizable = false;
         rowTemplates.cell = DataCheckBoxCell;
         rowTemplates.level = column.level;
@@ -374,7 +390,7 @@ class MainTable extends React.Component {
         if (column.level == 0)
             rowTemplates.header = DataSectionHeader;
         rowTemplates.header = DataSectionHeader;
-        rowTemplates.footer = <Cell>总计</Cell>;
+        rowTemplates.footer = DataSummaryCell;
         rowTemplates.minWidth = 70;
         rowTemplates.isResizable = true;
         rowTemplates.level = column.level;

@@ -447,6 +447,127 @@ class DataViewWrapper {
     getCurrentUser() {
       return this._dataset.getCurrentUser()
     }
+
+    /**
+     * 获取状态列每个状态占用的比列
+     */
+    getStatusPercent(rowIndex, columnKey) {
+      const status = {
+        block:'阻塞',
+        working:'进行中',
+        finished:'已完成',
+        todo:'To Do',
+        default:''
+      }
+
+      let statusPercent = []
+      let rows
+      if (getSubLevel(rowIndex) === 0) {
+
+        let group = this.getGroupByRowIndex(rowIndex)
+        if (group) {
+          rows = group.rows
+        }
+      }
+      else {
+        let rootRowIndex = getRootRowIndex(rowIndex)
+        rows = this._dataset.getSubRows(this._indexMap[rootRowIndex].rowKey)
+      }
+
+      if (rows) {
+
+        let finishedCount = 0
+        let workingCount = 0
+        let blockCount = 0
+        let todoCount = 0
+        let defaultCount = 0
+
+        rows.map(rowKey => {
+          let statusValue = this._dataset.getObjectAt(rowKey)[columnKey]
+          switch (statusValue) {
+            case status.finished:
+              finishedCount += 1
+              break;
+            
+            case status.working:
+              workingCount += 1
+              break;
+
+            case status.block:
+              blockCount += 1
+              break;
+
+            case status.todo:
+              todoCount += 1
+              break;
+
+            default:
+              defaultCount += 1
+              break;
+          }
+        })
+
+        let finishedPercent = Number((finishedCount / rows.length).toFixed(2))
+        let workingPercent = Number((workingCount / rows.length).toFixed(2))
+        let blockPercent = Number((blockCount / rows.length).toFixed(2))
+        let todoPercent = Number((todoCount / rows.length).toFixed(2))
+        let defaultPercent = defaultCount === 0 ? 0 : ( 1 - finishedPercent - workingPercent - blockPercent - todoPercent )
+
+        if (finishedPercent !== 0) {
+          statusPercent.push({
+            style: {
+              width: String(finishedPercent * 100) + '%',
+              background: '#5ac47d'
+            }
+          })
+        }
+
+        if (workingPercent !== 0) {
+          statusPercent.push({
+            style: {
+              width: String(workingPercent * 100) + '%',
+              background: '#fec06e'}
+          })
+        }
+
+        if (blockPercent !== 0) {
+          statusPercent.push({
+            style: {
+              width: String(blockPercent * 100) + '%',
+              background: '#d2515e'
+            }
+          })
+        }
+
+        if (todoPercent != 0) {
+          statusPercent.push({
+            style: {
+              width: String(todoPercent * 100) + '%',
+              background: '#808080'
+            }
+          })
+        }
+
+        if (defaultPercent != 0) {
+          statusPercent.push({
+            style: {
+              width: String(defaultPercent * 100) + '%',
+              background: '#c4c4c4'
+            }
+          })
+        }
+
+        return statusPercent
+      }
+
+      statusPercent.push({
+        style: {
+          width: '100%',
+          background: '#c4c4c4'
+        }
+      })
+      return statusPercent
+    }
 }
 
 export {

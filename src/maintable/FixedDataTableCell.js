@@ -95,6 +95,7 @@ class FixedDataTableCell extends React.Component {
      * Whether the cell group is part of the header or footer
      */
     isHeaderOrFooter: PropTypes.bool,
+    isTableFooter: PropTypes.bool,
 
     /**
      * If the component should render for RTL direction
@@ -175,6 +176,12 @@ class FixedDataTableCell extends React.Component {
       style.right = props.left;
     } else {
       style.left = props.left;
+    }
+
+    if (this.props.isTableFooter) {
+      // 统计行去除边框,背景白色
+      style.borderRightStyle = 'none'
+      style.backgroundColor = '#FFFFFF'
     }
 
     let replacingColumn = false;

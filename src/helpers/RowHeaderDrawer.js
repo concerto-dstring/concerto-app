@@ -310,7 +310,8 @@ class RowHeaderDrawer extends PureComponent {
                   ?
                   this.props.updateInfo.map(info => {
                     return (
-                      <RowHeaderDrawerUpdate 
+                      <RowHeaderDrawerUpdate
+                        key={info.id} 
                         rowIndex={this.props.rowIndex}
                         data={this.props.data}
                         updateInfo={info}

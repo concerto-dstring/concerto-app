@@ -34,7 +34,7 @@ class StatusCell extends React.Component {
        }
     }
     render() {
-      const {data, rowIndex, columnKey, collapsedRows, callback, value, handleChange, handleKey, ...props} = this.props;
+      const {data, rowIndex, columnKey, collapsedRows, callback, value, handleChange, handleKey, displayValue, ...props} = this.props;
       const returnValue = (e) => {
         const selectedText = e.item.props.children;
         const selectedStyle = e.item.props.className;
@@ -66,7 +66,7 @@ class StatusCell extends React.Component {
         <Cell {...props} className='statusCell'>
             <Dropdown overlay={menu} trigger={['click']}>
               <div className={cellStatusTextStyle}>
-                {this.props.displayValue}
+                {displayValue}
               </div>
             </Dropdown>
         </Cell>

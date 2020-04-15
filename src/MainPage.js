@@ -212,7 +212,7 @@ export default class MainPage extends React.Component {
             ></Button>
             <div className="collpseBarBottom"></div>
           </div>
-          <Layout>
+          <Layout style={{backgroundColor: '#FFFFFF'}}>
             <Breadcrumb 
               id="appBread"
               style={{ margin: '16px' }}
