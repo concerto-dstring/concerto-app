@@ -1,6 +1,8 @@
 "use strict";
 
 import { RowType, getSubLevel, getRootRowIndex } from './MainTableType';
+import moment from 'moment';
+import 'moment/locale/zh-cn';
 
 class DataViewWrapper {
     constructor(dataset, indexMap = null, subRowKeys) {
@@ -587,11 +589,54 @@ class DataViewWrapper {
     getDateSummary(rowIndex, columnKey) {
       let rows = this.getColumnRows(rowIndex)
 
+      let dateText = '-'
+      let dateDiff
+      let datePercent = '0%'
+      let minDate
+      let maxDate
+
       if (rows) {
         rows.map(rowKey => {
           let dateValue = this._dataset.getObjectAt(rowKey)[columnKey]
+          
+          if (dateValue) {
+            // 只要日期不要时间
+            dateValue = dateValue.substring(0, 10)
+
+            minDate = minDate ? (minDate > dateValue ? dateValue : minDate) : dateValue
+            maxDate = maxDate ? (maxDate > dateValue ? maxDate : dateValue) : dateValue
+          }
+
+          if (minDate && maxDate) {
+            let currentDate =  moment(new Date()).format('YYYY-MM-DD')
+            if (minDate === maxDate) {
+              dateText = minDate.replace(new RegExp('-', 'gm'), '/')
+              dateDiff = '1天'
+              datePercent = minDate <= currentDate ? '100%' : '0%'
+            }
+            else {
+              dateText = minDate.replace(new RegExp('-', 'gm'), '/') + ' - ' + maxDate.replace(new RegExp('-', 'gm'), '/')
+              let days = moment(maxDate).diff(moment(minDate), 'days')
+              dateDiff = String(days + 1) + '天'
+              if (maxDate <= currentDate) {
+                datePercent = '100%'
+              }
+              else if (minDate >= currentDate) {
+                datePercent = '0%'
+              }
+              else {
+                let minToNow = moment(currentDate).diff(moment(minDate), 'days')
+                datePercent = String(Math.floor((minToNow / days) * 100)) + '%'
+              }
+            }
+          }
         })
       }
+      let dateSummary = {}
+      dateSummary.dateText = dateText
+      dateSummary.dateDiff = dateDiff
+      dateSummary.datePercent = datePercent
+      return dateSummary
     }
 }
 

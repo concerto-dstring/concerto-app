@@ -40,13 +40,28 @@
   flex: 1;
   position: relative;
   background: #C4C4C4;
-  height: 24px;
-  line-height: 24px;
-  border-radius: 12px;
+  height: 26px;
+  line-height: 26px;
+  border-radius: 13px;
   margin: 8px 16px;
   color: white;
   text-overflow: ellipsis;
   overflow: hidden;
   text-align: center;
   white-space: nowrap;
+  cursor: pointer;
+}
+
+.summary_cell_date_container_span {
+  line-height: 22px;
+  font-size: 13px;
+  height: 22px;
+}
+
+.summary_cell_date_container:hover .summary_cell_date_container_span:after {
+  content: attr(hovercontents);
+}
+
+.summary_cell_date_container .summary_cell_date_container_span:after {
+  content: attr(contents);
 }

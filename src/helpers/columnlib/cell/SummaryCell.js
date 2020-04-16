@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import './SummaryCell.less'
 
-class SummaryCell extends Component {
+class SummaryCell extends PureComponent {
 
   constructor(props) {
     super(props)
@@ -61,12 +61,26 @@ class SummaryCell extends Component {
         // 日期列
 
         // 获取最小和最大日期及相差天数
-        data.getDateSummary(rowIndex, columnKey)
+        let dateSummary = data.getDateSummary(rowIndex, columnKey)
 
         summaryCell = (
           <div className="summary_cell">
             <div className="summary_cell_date_container">
-              
+              {
+                dateSummary.dateDiff
+                ?
+                <div style={{background: `linear-gradient(to right, rgb(120, 75, 209) ${dateSummary.datePercent}, rgb(28, 31, 59) ${dateSummary.datePercent})`}}>
+                  <span
+                    className="summary_cell_date_container_span" 
+                    contents={dateSummary.dateText} 
+                    hovercontents={dateSummary.dateDiff}
+                  />
+                </div>
+                :
+                <span className="summary_cell_date_container_span" >
+                  {dateSummary.dateText} 
+                </span>
+              }
             </div>
           </div>
         )
