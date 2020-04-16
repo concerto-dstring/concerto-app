@@ -60,6 +60,8 @@ class DataViewWrapper {
         this.getSubRowCount = this.getSubRowCount.bind(this);
         this.addNewSubSection = this.addNewSubSection.bind(this)
         this.getCurrentUser = this.getCurrentUser.bind(this)
+        this.getStatusSummary = this.getStatusSummary.bind(this)
+        this.getDateSummary = this.getDateSummary.bind(this)
     }
 
     /**
@@ -448,10 +450,29 @@ class DataViewWrapper {
       return this._dataset.getCurrentUser()
     }
 
+    getColumnRows(rowIndex) {
+      let rows
+      if (getSubLevel(rowIndex) === 0) {
+
+        let group = this.getGroupByRowIndex(rowIndex)
+        if (group) {
+          rows = group.rows
+          return rows
+        }
+      }
+      else {
+        let rootRowIndex = getRootRowIndex(rowIndex)
+        rows = this._dataset.getSubRows(this._indexMap[rootRowIndex].rowKey)
+        return rows
+      }
+
+      return null
+    }
+
     /**
      * 获取状态列每个状态占用的比列
      */
-    getStatusPercent(rowIndex, columnKey) {
+    getStatusSummary(rowIndex, columnKey) {
       const status = {
         block:'阻塞',
         working:'进行中',
@@ -461,18 +482,7 @@ class DataViewWrapper {
       }
 
       let statusPercent = []
-      let rows
-      if (getSubLevel(rowIndex) === 0) {
-
-        let group = this.getGroupByRowIndex(rowIndex)
-        if (group) {
-          rows = group.rows
-        }
-      }
-      else {
-        let rootRowIndex = getRootRowIndex(rowIndex)
-        rows = this._dataset.getSubRows(this._indexMap[rootRowIndex].rowKey)
-      }
+      let rows = this.getColumnRows(rowIndex)
 
       if (rows) {
 
@@ -567,6 +577,21 @@ class DataViewWrapper {
         }
       })
       return statusPercent
+    }
+
+    /**
+     * 获取日期列的统计
+     * @param {*} rowIndex 
+     * @param {*} columnKey 
+     */
+    getDateSummary(rowIndex, columnKey) {
+      let rows = this.getColumnRows(rowIndex)
+
+      if (rows) {
+        rows.map(rowKey => {
+          let dateValue = this._dataset.getObjectAt(rowKey)[columnKey]
+        })
+      }
     }
 }
 

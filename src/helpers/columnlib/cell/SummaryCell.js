@@ -1,7 +1,7 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import './SummaryCell.less'
 
-class SummaryCell extends PureComponent {
+class SummaryCell extends Component {
 
   constructor(props) {
     super(props)
@@ -36,7 +36,7 @@ class SummaryCell extends PureComponent {
         // 状态列
 
         // 获取每个状态占的百分比
-        let statusPercent = data.getStatusPercent(rowIndex, columnKey)
+        let statusPercent = data.getStatusSummary(rowIndex, columnKey)
 
         summaryCell = (
           <div className="summary_cell">
@@ -52,6 +52,21 @@ class SummaryCell extends PureComponent {
                   )
                 })
               }
+            </div>
+          </div>
+        )
+        break;
+
+      case 'DATE':
+        // 日期列
+
+        // 获取最小和最大日期及相差天数
+        data.getDateSummary(rowIndex, columnKey)
+
+        summaryCell = (
+          <div className="summary_cell">
+            <div className="summary_cell_date_container">
+              
             </div>
           </div>
         )
