@@ -8,6 +8,7 @@
 
 'use strict';
 
+import $ from 'jquery';
 import { ColumnType } from './data/MainTableType';
 import { COLOR } from '../helpers/section/header/StyleValues'
 import { getPeople } from '../helpers/section/modal/PeopleName';
@@ -44,98 +45,25 @@ class MainTableDataStore {
         this.runCallbacks = this.runCallbacks.bind(this);
     }
     
-    createFakeObjectData() {
-        // create columns
-        // 增加行操作列和行复选框列
-        this._columns.push({columnKey: '1000', name:'', width: 36, type: ColumnType.ROWACTION, columnComponentType:'', fixed:true, level: 0});
-        this._columns.push({columnKey: '1001', name:'', width: 36, type: ColumnType.ROWSELECT, columnComponentType:'', fixed:true, level: 0}); 
-
-        this._columns.push({columnKey: '1', name:'主题', width: 240, type: ColumnType.EDITBOX, columnComponentType:'TEXT', collpse:false, fixed:true, level: 0});
-        this._columns.push({columnKey: '2', name:'备注', width: 200, type: ColumnType.EDITBOX, columnComponentType:'TEXT', collpse:false, level: 0});
-        this._columns.push({columnKey: '3', name:'分配', width: 200, type: ColumnType.EDITBOX, columnComponentType:'TEXT', collpse:false, level: 0});
-        this._columns.push({columnKey: '4', name:'日志', width: 200, type: ColumnType.LABEL, columnComponentType:'TEXT', collpse:false, level: 0});
-        this._columns.push({columnKey: '5', name:'文件', width: 200, type: ColumnType.EDITBOX, columnComponentType:'TEXT', collpse:false, level: 0});
-        this._columns.push({columnKey: '6', name:'补充说明', width: 200, type: ColumnType.EDITBOX, columnComponentType:'TEXT', collpse:false, level: 0});
-
-        this._columns.push({columnKey: '1002', name:'', width: 36, type: ColumnType.ROWACTION, columnComponentType:'', fixed:true, level: 1});
-        this._columns.push({columnKey: '1003', name:'', width: 36, type: ColumnType.ROWSELECT, columnComponentType:'', fixed:true, level: 1}); 
-        this._columns.push({columnKey: '1', name:'子题', width: 240, type: ColumnType.EDITBOX, columnComponentType:'TEXT', collpse:false, fixed:true, level: 1});
-        this._columns.push({columnKey: '11', name:'分配', width: 200, type: ColumnType.EDITBOX, columnComponentType:'TEXT', collpse:false, level: 1});
-        this._columns.push({columnKey: '12', name:'日志', width: 200, type: ColumnType.EDITBOX, columnComponentType:'TEXT', collpse:false, level: 1});
-        this._sizeColumns = 12;
-
-        // create groups 
-        this._groups.push({groupKey: '1', name: '分区1', rows:['1', '2', '3', '4'], color:'#4682B4', isCollapsed: false});
-        this._groups.push({groupKey: '2', name: '分区2', rows:['5', '6', '7', '8'], color:'#CD5C5C', isCollapsed: false});
-        this._groups.push({groupKey: '3', name: '分区3', rows:['9', '10'], color:'#79CDCD', isCollapsed: false});
-        this._sizeGroups = 3;
-        
-        // create row data
-        this._rowData['1'] = {'1': '主题 1','2': '备注 1', '3': '分配 1', '4': '日志 1',
-        '5': '文件 1', '6': '补充说明 1'};
-
-        this._rowData['2'] = {'1': '主题 2','2': '备注 2', '3': '分配 2', '4': '日志 2',
-        '5': '文件 2', '6': '补充说明 2'};
-        
-        this._rowData['3'] = {'1': '主题 3','2': '备注 3', '3': '分配 3', '4': '日志 3',
-        '5': '文件 3', '6': '补充说明 3'};  
-
-        this._rowData['4'] = {'1': '主题 4','2': '备注 4', '3': '分配 4', '4': '日志 4',
-        '5': '文件 4', '6': '补充说明 4'}; 
-
-        this._rowData['5'] = {'1': '主题 5','2': '备注 5', '3': '分配 5', '4': '日志 5',
-        '5': '文件 5', '6': '补充说明 5'}; 
-
-        this._rowData['6'] = {'1': '主题 6','2': '备注 6', '3': '分配 6', '4': '日志 6',
-        '5': '文件 6', '6': '补充说明 6'}; 
-
-        this._rowData['7'] = {'1': '主题 7','2': '备注 7', '3': '分配 7', '4': '日志 7',
-        '5': '文件 7', '6': '补充说明 7'};
-
-        this._rowData['8'] = {'1': '主题 8','2': '备注 8', '3': '分配 8', '4': '日志 8',
-        '5': '文件 8', '6': '补充说明 8'};
-
-        this._rowData['9'] = {'1': '主题 9','2': '备注 9', '3': '分配 9', '4': '日志 9',
-        '5': '文件 9', '6': '补充说明 9'};
-
-        this._rowData['10'] = {'1': '主题 10','2': '备注 10', '3': '分配 10', '4': '日志 10',
-        '5': '文件 10', '6': '补充说明 10', 
-        'updateInfo': [{
-          'id': 'u_10_1',
-          'author': getPeople('Jiang Guangzhou')[0],
-          'createTime': '2020-04-01 10:09:24',
-          'content': '测试一下',
-          'seen': 6,
-          'isLiked': true,
-          'replyList': [{
-            'id': 'u_10_1_1',
-            'replyMsg': '这个问题怎么解决呢？',
-            'replyUser': getPeople('Li Wei')[0],
-            'isLiked': false,
-            'createTime': '2020-04-05 10:09:24'
-          }, {
-            'id': 'u_10_1_2',
-            'replyMsg': '回复<a href="https://www.baidu.com?liwei" target="_blank">@LiWei :</a>解决这个问题，就要先这样，再那样，就解决了',
-            'replyUser': getPeople('Zhang Tao')[0],
-            'isLiked': true,
-            'createTime': '2020-04-08 20:09:24'
-          }]
-        }, {
-          'id': 'u_10_2',
-          'author': getPeople('Leo')[0],
-          'createTime': '2020-04-12 14:09:24',
-          'content': '测试一下是否存在问腿',
-          'seen': 5,
-          'isLiked': false,
-          'replyList': []
-        }]};
-
-        this._rowData['11'] = {'1': '子题 1', '11': '分配 6', '12': '日志 1'};
-        this._rowData['12'] = {'1': '子题 2', '11': '分配 6', '12': '日志 2'};
-
-        this._sizeRows = 12;
-
-        this._subRows['2'] = {rows:['11', '12'], isExpanded:false};
+    createFakeObjectData(url) {
+      const self = this;
+      $.ajax({
+        url : url,
+        data:{},
+        cache : false, 
+        async : false,
+        type : "GET",
+        dataType : 'json',
+        success : function(data){
+          self._columns = data.columns;
+          self._groups  = data.groups;
+          self._rowData = data.rowData;
+          self._subRows = data.subRows;
+          self._sizeColumns = self._columns.length;
+          self._sizeGroups  = self._groups.length;
+          self._sizeRows    = Object.keys(self._rowData).length;   
+        }
+      });
     }
 
     getCurrentUser() {
