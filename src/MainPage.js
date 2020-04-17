@@ -156,13 +156,13 @@ export default class MainPage extends React.Component {
                 >
                   <Menu.Item key="1">
                     <MailOutlined />
-                    <Link to="/board" onClick={this.nativeGetTableStore.bind(this,'board')}>邮件工作板</Link>
+                    <Link to="/board" onClick={this.nativeGetTableStore.bind(this,'board')}>Concerto RD sprint</Link>
                   </Menu.Item>
                   <Menu.Item key="2">
                     <CalendarOutlined />
-                    <Link to="/dashboard" onClick={this.nativeGetTableStore.bind(this,'dashboard')}>进度工作板</Link>
+                    <Link to="/dashboard" onClick={this.nativeGetTableStore.bind(this,'dashboard')}>Bugs Queue</Link>
                   </Menu.Item>
-                  <SubMenu
+                  {/* <SubMenu
                     key="sub1"
                     title={
                       <span>
@@ -177,7 +177,7 @@ export default class MainPage extends React.Component {
                       <Menu.Item key="5"><Link to="/dashboard" onClick={this.nativeGetTableStore.bind(this,'dashboard')}>设计</Link></Menu.Item>
                       <Menu.Item key="6"><Link to="/board" onClick={this.nativeGetTableStore.bind(this,'board')}>测试</Link></Menu.Item>
                     </SubMenu>
-                  </SubMenu>
+                  </SubMenu> */}
                   
                 </Menu>
               </Panel>
@@ -189,13 +189,13 @@ export default class MainPage extends React.Component {
                 >
                   <Menu.Item key="1">
                     <MailOutlined />
-                    <Link to="/board" onClick={this.nativeGetTableStore.bind(this,'board')}>邮件统计仪表板</Link>
+                    <Link to="/board" onClick={this.nativeGetTableStore.bind(this,'board')}>Concerto RD sprint</Link>
                   </Menu.Item>
                   <Menu.Item key="2">
                     <CalendarOutlined />
-                    <Link to="/dashboard" onClick={this.nativeGetTableStore.bind(this,'dashboard')}>进度仪表板</Link>
+                    <Link to="/dashboard" onClick={this.nativeGetTableStore.bind(this,'dashboard')}>Bugs Queue</Link>
                   </Menu.Item>
-                  <SubMenu
+                  {/* <SubMenu
                     key="sub1"
                     title={
                       <span>
@@ -210,7 +210,7 @@ export default class MainPage extends React.Component {
                       <Menu.Item key="5"><Link to="/board" onClick={this.nativeGetTableStore.bind(this,'board')}>设计</Link></Menu.Item>
                       <Menu.Item key="6"><Link to="/dashboard" onClick={this.nativeGetTableStore.bind(this,'dashboard')}>测试</Link></Menu.Item>
                     </SubMenu>
-                  </SubMenu>
+                  </SubMenu> */}
                 
                 </Menu>
               </Panel>

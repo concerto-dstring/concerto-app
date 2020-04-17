@@ -29,6 +29,18 @@ class PeopleCell extends React.Component {
           smallName:'W',
           userName:'Civen Wang',
           faceColor:'#f4617f'
+      },{
+          smallName:'Z',
+          userName:'ZhangGuoLi',
+          faceColor:'#66cdff'
+      },{
+          smallName:'J',
+          userName:'JangGuangZhou',
+          faceColor:'#f49642'
+      },{
+          smallName:'M',
+          userName:'MaYing',
+          faceColor:'#f49642'
       }],
       selectedUsers:(this.props.value&&this.props.value!='')?this.props.value:[],
       removeBar:{
