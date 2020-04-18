@@ -63,6 +63,20 @@ class PeopleCell extends React.Component {
       const {data, rowIndex, columnKey, collapsedRows, callback, value, handleChange, handleKey, ...props} = this.props;
       const someusers = this.state.selectedUsers||[];
       const allPeoples = this.state.allPeoples||[];
+      const defaultAllPeoples = () => {
+        for(let i=0,len=someusers.length;i<len;i++){
+            const user = someusers[i];
+            for(let j=0;j<allPeoples.length;j++){
+              if(user.userName === allPeoples[j].userName){
+                allPeoples.splice(j,1);
+                this.setState({
+                  allPeoples:allPeoples
+                })
+                break;
+              }
+            }
+        }   
+      }
       const returnValue = (e) => {
         let isHas = false;
         for(let i=0,len=someusers.length;i<len;i++){
@@ -126,6 +140,7 @@ class PeopleCell extends React.Component {
           }
         })
       }
+      defaultAllPeoples();
       return (
         <Cell {...props}  className="PeopleCell">
            <Popover  
