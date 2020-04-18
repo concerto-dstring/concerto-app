@@ -242,6 +242,7 @@ class FixedDataTableBufferedRows extends React.Component {
                 columnReorderingData={columnReorderingData}
                 showScrollbarY={scrollEnabledY}
                 container={props.container}
+                data={props.data}
                 isRTL={props.isRTL}
                 siderWidth={siderWidth}
               >
@@ -269,6 +270,7 @@ class FixedDataTableBufferedRows extends React.Component {
               showScrollbarY={scrollEnabledY}
               isRTL={props.isRTL}
               container={props.container}
+              data={props.data}
               visible={visible} 
               onNewRowAdd={onNewRowAdd}
             />;
@@ -282,6 +284,7 @@ class FixedDataTableBufferedRows extends React.Component {
                 zIndex={0}
                 ariaRowIndex={ariaFooterIndex}
                 isHeaderOrFooter={false}
+                isTableFooter={true}
                 isScrolling={props.isScrolling}
                 isRowReordering={props.isRowReordering}
                 rowReorderingData={props.rowReorderingData}
@@ -299,6 +302,7 @@ class FixedDataTableBufferedRows extends React.Component {
                 scrollLeft={Math.round(props.scrollLeft)}
                 showScrollbarY={scrollEnabledY}
                 container={props.container}
+                data={props.data}
                 isRTL={props.isRTL}
               />;
           break;
@@ -336,6 +340,7 @@ class FixedDataTableBufferedRows extends React.Component {
                 visible={visible}
                 fake={fake}
                 container={props.container}
+                data={props.data}
                 {...rowProps} 
               />
         }

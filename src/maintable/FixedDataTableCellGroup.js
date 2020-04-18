@@ -146,6 +146,7 @@ class FixedDataTableCellGroupImpl extends React.Component {
       <FixedDataTableCell
         isScrolling={this.props.isScrolling}
         isHeaderOrFooter={this.props.isHeaderOrFooter}
+        isTableFooter={this.props.isTableFooter}
         align={columnProps.align}
         className={className}
         height={height}
@@ -225,7 +226,7 @@ class FixedDataTableCellGroup extends React.Component {
 
     var onColumnResize = props.onColumnResize ? this._onColumnResize : null;
 
-    let group = this.props.container.props.data.getGroupByRowIndex(this.props.rowIndex)
+    let group = this.props.data.getGroupByRowIndex(this.props.rowIndex)
     let columns = this.props.columns
     if (columns && group.isCollapsed && columns.findIndex(column => column.props.columnKey === '1000') < 0) {
       style.width = Math.floor(style.width)

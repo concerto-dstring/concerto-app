@@ -95,6 +95,7 @@ class FixedDataTableCell extends React.Component {
      * Whether the cell group is part of the header or footer
      */
     isHeaderOrFooter: PropTypes.bool,
+    isTableFooter: PropTypes.bool,
 
     /**
      * If the component should render for RTL direction
@@ -104,7 +105,6 @@ class FixedDataTableCell extends React.Component {
 
   state = {
     isReorderingThisColumn: false,
-    mouseIn: false,
     menuBar: DISPLAY.BLOCK,
   }
 
@@ -143,7 +143,6 @@ class FixedDataTableCell extends React.Component {
 
   handleRef = component => (this.ref = component);
 
-
   getColumnCollpseByColumnInfo = (columns,columnKey) => {
     for(let i=0,len=columns.length;i<len;i++){
       let column = columns[i];
@@ -156,12 +155,6 @@ class FixedDataTableCell extends React.Component {
   showMenuBar = () => {
     this.setState({
       menuBar: DISPLAY.BLOCK
-    })
-  }
-
-  setMouseIn = (mouseIn) => {
-    this.setState({
-      mouseIn: mouseIn
     })
   }
 
@@ -183,6 +176,12 @@ class FixedDataTableCell extends React.Component {
       style.right = props.left;
     } else {
       style.left = props.left;
+    }
+
+    if (this.props.isTableFooter) {
+      // 统计行去除边框,背景白色
+      style.borderRightStyle = 'none'
+      style.backgroundColor = '#FFFFFF'
     }
 
     let replacingColumn = false;
@@ -251,7 +250,7 @@ class FixedDataTableCell extends React.Component {
       );
       
       tableColumnMenu = (
-        <TableColumnMenu columnKey={columnKey} menuBarStyle={this.state.menuBar}/>
+        <TableColumnMenu columnKey={columnKey} menuBarStyle={this.state.menuBar} container={this.props.container}/>
       )
     }
 
@@ -259,7 +258,7 @@ class FixedDataTableCell extends React.Component {
       columnKey,
       height,
       width,
-      container: this,
+      container: this.props.container,
     };
 
     if (props.rowIndex >= 0) {
@@ -295,21 +294,10 @@ class FixedDataTableCell extends React.Component {
                   </Tooltip>}
                 </div>;
       }else{
-        let resizer = null;
-        let reorderer = null;
-        let tableMenu = null;
-        if (this.state.mouseIn && !replacingColumn) {
-          resizer = columnResizerComponent;
-          reorderer = columnReorderComponent;
-          tableMenu = tableColumnMenu;
-        }
-        return <div className={className} style={style} role={role}
-                onMouseEnter={()=>this.setMouseIn(true)}
-                onMouseLeave={()=>this.setMouseIn(false)}
-                >
-                  {resizer}
-                  {reorderer}
-                  {tableMenu}
+        return <div className={className} style={style} role={role} ref={this.handleRef}>
+                  {!replacingColumn && columnResizerComponent}
+                  {!replacingColumn && columnReorderComponent}
+                  {!replacingColumn && tableColumnMenu}
                   {content}
                 </div>;
       }

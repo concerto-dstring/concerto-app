@@ -1,6 +1,8 @@
 "use strict";
 
 import { RowType, getSubLevel, getRootRowIndex } from './MainTableType';
+import moment from 'moment';
+import 'moment/locale/zh-cn';
 
 class DataViewWrapper {
     constructor(dataset, indexMap = null, subRowKeys) {
@@ -14,7 +16,7 @@ class DataViewWrapper {
               if (rows.length > 0) {      
                   let j = 0;      
                   for (let k = 0; k < rows.length; k ++) {
-                    if (this._subRowKeys) {
+                    if (this._subRowKeys && this._subRowKeys.length > 0) {
                       if (this._subRowKeys.indexOf(rows[k]) !== -1) {
                         j += 1 
                         const indexString = `${i}.${j}`;
@@ -59,6 +61,9 @@ class DataViewWrapper {
         this.getSubRows = this.getSubRows.bind(this);
         this.getSubRowCount = this.getSubRowCount.bind(this);
         this.addNewSubSection = this.addNewSubSection.bind(this)
+        this.getCurrentUser = this.getCurrentUser.bind(this)
+        this.getStatusSummary = this.getStatusSummary.bind(this)
+        this.getDateSummary = this.getDateSummary.bind(this)
     }
 
     /**
@@ -331,19 +336,19 @@ class DataViewWrapper {
         return this._indexMap;
     }
 
-    setObjectAt(rowIndex, columnKey, value) {
+    setObjectAt(rowIndex, columnKey, value, type) {
       if (getSubLevel(rowIndex) === 0) {
         if (this._indexMap === null) {
-            this._dataset.setObjectAt(rowIndex, columnKey, value);
+            this._dataset.setObjectAt(rowIndex, columnKey, value, type);
             return;
         } 
         if (rowIndex < 0 || rowIndex >= this._indexMap.length) {
             return;
         }
-        this._dataset.setObjectAt(this._indexMap[rowIndex].rowKey, columnKey, value);
+        this._dataset.setObjectAt(this._indexMap[rowIndex].rowKey, columnKey, value, type);
       } else {
           let rowKey = this._subRowMap[rowIndex];
-          this._dataset.setObjectAt(rowKey, columnKey, value);
+          this._dataset.setObjectAt(rowKey, columnKey, value, type);
       }
     }
 
@@ -438,6 +443,200 @@ class DataViewWrapper {
       if (row) {
         this._dataset.addNewSubSection(row.rowKey, newItem)
       }
+    }
+
+    /**
+     * 获取当前用户
+     */
+    getCurrentUser() {
+      return this._dataset.getCurrentUser()
+    }
+
+    getColumnRows(rowIndex) {
+      let rows
+      if (getSubLevel(rowIndex) === 0) {
+
+        let group = this.getGroupByRowIndex(rowIndex)
+        if (group) {
+          rows = group.rows
+          return rows
+        }
+      }
+      else {
+        let rootRowIndex = getRootRowIndex(rowIndex)
+        rows = this._dataset.getSubRows(this._indexMap[rootRowIndex].rowKey)
+        return rows
+      }
+
+      return null
+    }
+
+    /**
+     * 获取状态列每个状态占用的比列
+     */
+    getStatusSummary(rowIndex, columnKey) {
+      const status = {
+        block:'阻塞',
+        working:'进行中',
+        finished:'已完成',
+        todo:'To Do',
+        default:''
+      }
+
+      let statusPercent = []
+      let rows = this.getColumnRows(rowIndex)
+
+      if (rows) {
+
+        let finishedCount = 0
+        let workingCount = 0
+        let blockCount = 0
+        let todoCount = 0
+        let defaultCount = 0
+
+        rows.map(rowKey => {
+          let statusValue = this._dataset.getObjectAt(rowKey)[columnKey]
+          switch (statusValue) {
+            case status.finished:
+              finishedCount += 1
+              break;
+            
+            case status.working:
+              workingCount += 1
+              break;
+
+            case status.block:
+              blockCount += 1
+              break;
+
+            case status.todo:
+              todoCount += 1
+              break;
+
+            default:
+              defaultCount += 1
+              break;
+          }
+        })
+
+        let finishedPercent = Number((finishedCount / rows.length).toFixed(2))
+        let workingPercent = Number((workingCount / rows.length).toFixed(2))
+        let blockPercent = Number((blockCount / rows.length).toFixed(2))
+        let todoPercent = Number((todoCount / rows.length).toFixed(2))
+        let defaultPercent = defaultCount === 0 ? 0 : ( 1 - finishedPercent - workingPercent - blockPercent - todoPercent )
+
+        if (finishedPercent !== 0) {
+          statusPercent.push({
+            style: {
+              width: String(finishedPercent * 100) + '%',
+              background: '#5ac47d'
+            }
+          })
+        }
+
+        if (workingPercent !== 0) {
+          statusPercent.push({
+            style: {
+              width: String(workingPercent * 100) + '%',
+              background: '#fec06e'}
+          })
+        }
+
+        if (blockPercent !== 0) {
+          statusPercent.push({
+            style: {
+              width: String(blockPercent * 100) + '%',
+              background: '#d2515e'
+            }
+          })
+        }
+
+        if (todoPercent != 0) {
+          statusPercent.push({
+            style: {
+              width: String(todoPercent * 100) + '%',
+              background: '#808080'
+            }
+          })
+        }
+
+        if (defaultPercent != 0) {
+          statusPercent.push({
+            style: {
+              width: String(defaultPercent * 100) + '%',
+              background: '#c4c4c4'
+            }
+          })
+        }
+
+        return statusPercent
+      }
+
+      statusPercent.push({
+        style: {
+          width: '100%',
+          background: '#c4c4c4'
+        }
+      })
+      return statusPercent
+    }
+
+    /**
+     * 获取日期列的统计
+     * @param {*} rowIndex 
+     * @param {*} columnKey 
+     */
+    getDateSummary(rowIndex, columnKey) {
+      let rows = this.getColumnRows(rowIndex)
+
+      let dateText = '-'
+      let dateDiff
+      let datePercent = '0%'
+      let minDate
+      let maxDate
+
+      if (rows) {
+        rows.map(rowKey => {
+          let dateValue = this._dataset.getObjectAt(rowKey)[columnKey]
+          
+          if (dateValue) {
+            // 只要日期不要时间
+            dateValue = dateValue.substring(0, 10)
+
+            minDate = minDate ? (minDate > dateValue ? dateValue : minDate) : dateValue
+            maxDate = maxDate ? (maxDate > dateValue ? maxDate : dateValue) : dateValue
+          }
+
+          if (minDate && maxDate) {
+            let currentDate =  moment(new Date()).format('YYYY-MM-DD')
+            if (minDate === maxDate) {
+              dateText = minDate.replace(new RegExp('-', 'gm'), '/')
+              dateDiff = '1天'
+              datePercent = minDate <= currentDate ? '100%' : '0%'
+            }
+            else {
+              dateText = minDate.replace(new RegExp('-', 'gm'), '/') + ' - ' + maxDate.replace(new RegExp('-', 'gm'), '/')
+              let days = moment(maxDate).diff(moment(minDate), 'days')
+              dateDiff = String(days + 1) + '天'
+              if (maxDate <= currentDate) {
+                datePercent = '100%'
+              }
+              else if (minDate >= currentDate) {
+                datePercent = '0%'
+              }
+              else {
+                let minToNow = moment(currentDate).diff(moment(minDate), 'days')
+                datePercent = String(Math.floor((minToNow / days) * 100)) + '%'
+              }
+            }
+          }
+        })
+      }
+      let dateSummary = {}
+      dateSummary.dateText = dateText
+      dateSummary.dateDiff = dateDiff
+      dateSummary.datePercent = datePercent
+      return dateSummary
     }
 }
 

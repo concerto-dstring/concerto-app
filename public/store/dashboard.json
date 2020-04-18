@@ -1,41 +1,260 @@
 {
-    "columns":[
-        {"columnKey": "1000", "name":"", "width": 36, "type": "ROWACTION", "columnComponentType":"", "fixed":true, "level": 0},
-        {"columnKey": "1001", "name":"", "width": 36, "type": "ROWSELECT", "columnComponentType":"", "fixed":true, "level": 0},
-        {"columnKey": "1", "name":"Bug名称", "width": 120, "type": "EDITBOX", "columnComponentType":"TEXT", "collpse":false, "fixed":true, "level": 0},
-        {"columnKey": "2", "name":"Bug备注", "width": 200, "type": "EDITBOX", "columnComponentType":"TEXT", "collpse":false, "level": 0},
-        {"columnKey": "3", "name":"Bug分配", "width": 200, "type": "EDITBOX", "columnComponentType":"TEXT", "collpse":false, "level": 0},
-        {"columnKey": "4", "name":"Bug日志", "width": 200, "type": "LABEL", "columnComponentType":"TEXT", "collpse":false, "level": 0},
-        {"columnKey": "5", "name":"Bug文件", "width": 200, "type": "EDITBOX", "columnComponentType":"TEXT", "collpse":false, "level": 0},
-        {"columnKey": "6", "name":"Bug补充说明", "width": 200, "type": "EDITBOX", "columnComponentType":"TEXT", "collpse":false, "level": 0},
-
-        {"columnKey": "1002", "name":"", "width": 36, "type": "ROWACTION", "columnComponentType":"", "fixed":true, "level": 1},
-        {"columnKey": "1003", "name":"", "width": 36, "type": "ROWSELECT", "columnComponentType":"", "fixed":true, "level": 1}, 
-        {"columnKey": "1", "name":"Bug子题", "width": 120, "type": "EDITBOX", "columnComponentType":"TEXT", "collpse":false, "fixed":true, "level": 1},
-        {"columnKey": "11", "name":"Bug分配", "width": 200, "type": "EDITBOX", "columnComponentType":"TEXT", "collpse":false, "level": 1},
-        {"columnKey": "12", "name":"Bug日志", "width": 200, "type": "EDITBOX", "columnComponentType":"TEXT", "collpse":false, "level": 1}
+    "columns": [
+        {
+            "columnKey": "1000",
+            "name": "",
+            "width": 36,
+            "type": "ROWACTION",
+            "columnComponentType": "",
+            "fixed": true,
+            "level": 0
+        },
+        {
+            "columnKey": "1001",
+            "name": "",
+            "width": 36,
+            "type": "ROWSELECT",
+            "columnComponentType": "",
+            "fixed": true,
+            "level": 0
+        },
+        {
+            "columnKey": "1",
+            "name": "Bug名称",
+            "width": 220,
+            "type": "EDITBOX",
+            "columnComponentType": "TEXT",
+            "collpse": false,
+            "fixed": true,
+            "level": 0
+        },
+        {
+            "columnKey": "2",
+            "name": "Bug备注",
+            "width": 200,
+            "type": "EDITBOX",
+            "columnComponentType": "TEXT",
+            "collpse": false,
+            "level": 0
+        },
+        {
+            "columnKey": "3",
+            "name": "Bug分配",
+            "width": 200,
+            "type": "EDITBOX",
+            "columnComponentType": "TEXT",
+            "collpse": false,
+            "level": 0
+        },
+        {
+            "columnKey": "4",
+            "name": "Bug日志",
+            "width": 200,
+            "type": "LABEL",
+            "columnComponentType": "TEXT",
+            "collpse": false,
+            "level": 0
+        },
+        {
+            "columnKey": "5",
+            "name": "Bug文件",
+            "width": 200,
+            "type": "EDITBOX",
+            "columnComponentType": "TEXT",
+            "collpse": false,
+            "level": 0
+        },
+        {
+            "columnKey": "6",
+            "name": "Bug补充说明",
+            "width": 200,
+            "type": "EDITBOX",
+            "columnComponentType": "TEXT",
+            "collpse": false,
+            "level": 0
+        },
+        {
+            "columnKey": "1002",
+            "name": "",
+            "width": 36,
+            "type": "ROWACTION",
+            "columnComponentType": "",
+            "fixed": true,
+            "level": 1
+        },
+        {
+            "columnKey": "1003",
+            "name": "",
+            "width": 36,
+            "type": "ROWSELECT",
+            "columnComponentType": "",
+            "fixed": true,
+            "level": 1
+        },
+        {
+            "columnKey": "1",
+            "name": "Bug子题",
+            "width": 220,
+            "type": "EDITBOX",
+            "columnComponentType": "TEXT",
+            "collpse": false,
+            "fixed": true,
+            "level": 1
+        },
+        {
+            "columnKey": "11",
+            "name": "Bug分配",
+            "width": 200,
+            "type": "EDITBOX",
+            "columnComponentType": "TEXT",
+            "collpse": false,
+            "level": 1
+        },
+        {
+            "columnKey": "12",
+            "name": "Bug日志",
+            "width": 200,
+            "type": "EDITBOX",
+            "columnComponentType": "TEXT",
+            "collpse": false,
+            "level": 1
+        }
     ],
-    "groups":[
-        {"groupKey": "1", "name": "Bug分区1", "rows":["1", "2", "3", "4"], "color":"#4682B4", "isCollapsed": false},
-        {"groupKey": "2", "name": "Bug分区2", "rows":["5", "6", "7", "8"], "color":"#CD5C5C", "isCollapsed": false},
-        {"groupKey": "3", "name": "Bug分区3", "rows":["9", "10"], "color":"#79CDCD", "isCollapsed": false}
+    "groups": [
+        {
+            "groupKey": "1",
+            "name": "Bug分区1",
+            "rows": [
+                "1",
+                "2",
+                "3",
+                "4"
+            ],
+            "color": "#4682B4",
+            "isCollapsed": false
+        },
+        {
+            "groupKey": "2",
+            "name": "Bug分区2",
+            "rows": [
+                "5",
+                "6",
+                "7",
+                "8"
+            ],
+            "color": "#CD5C5C",
+            "isCollapsed": false
+        },
+        {
+            "groupKey": "3",
+            "name": "Bug分区3",
+            "rows": [
+                "9",
+                "10"
+            ],
+            "color": "#79CDCD",
+            "isCollapsed": false
+        }
     ],
-    "rowData":{
-        "1":{"1": "Bug主题 1","2": "Bug备注 1", "3": "Bug分配 1", "4": "日志 1","5": "文件 1", "6": "补充说明 1"},
-        "2":{"1": "Bug主题 2","2": "Bug备注 2", "3": "Bug分配 2", "4": "日志 2","5": "文件 2", "6": "补充说明 2"},
-        "3":{"1": "Bug主题 3","2": "Bug备注 3", "3": "Bug分配 3", "4": "日志 3","5": "文件 3", "6": "补充说明 3"},
-        "4":{"1": "Bug主题 4","2": "Bug备注 4", "3": "Bug分配 4", "4": "日志 4","5": "文件 4", "6": "补充说明 4"},
-        "5":{"1": "Bug主题 5","2": "Bug备注 5", "3": "Bug分配 5", "4": "日志 5","5": "文件 5", "6": "补充说明 5"},
-        "6":{"1": "Bug主题 6","2": "Bug备注 6", "3": "Bug分配 6", "4": "日志 6","5": "文件 6", "6": "补充说明 6"},
-        "7":{"1": "Bug主题 7","2": "Bug备注 7", "3": "Bug分配 7", "4": "日志 7","5": "文件 7", "6": "补充说明 7"},
-        "8":{"1": "Bug主题 8","2": "Bug备注 8", "3": "Bug分配 8", "4": "日志 8","5": "文件 8", "6": "补充说明 8"},
-        "9":{"1": "Bug主题 9","2": "Bug备注 9", "3": "Bug分配 9", "4": "日志 9","5": "文件 9", "6": "补充说明 9"},
-        "10":{"1": "Bug主题 10","2": "Bug备注 10", "3": "Bug分配 10", "4": "日志 10","5": "文件 10", "6": "补充说明 10"},
-        "11":{"1": "Bug子题 1", "11": "Bug分配 6", "12": "Bug日志 1"},
-        "12":{"1": "Bug子题 2", "11": "Bug分配 6", "12": "Bug日志 2"}
+    "rowData": {
+        "1": {
+            "1": "Bug主题 1",
+            "2": "Bug备注 1",
+            "3": "Bug分配 1",
+            "4": "日志 1",
+            "5": "文件 1",
+            "6": "补充说明 1"
+        },
+        "2": {
+            "1": "Bug主题 2",
+            "2": "Bug备注 2",
+            "3": "Bug分配 2",
+            "4": "日志 2",
+            "5": "文件 2",
+            "6": "补充说明 2"
+        },
+        "3": {
+            "1": "Bug主题 3",
+            "2": "Bug备注 3",
+            "3": "Bug分配 3",
+            "4": "日志 3",
+            "5": "文件 3",
+            "6": "补充说明 3"
+        },
+        "4": {
+            "1": "Bug主题 4",
+            "2": "Bug备注 4",
+            "3": "Bug分配 4",
+            "4": "日志 4",
+            "5": "文件 4",
+            "6": "补充说明 4"
+        },
+        "5": {
+            "1": "Bug主题 5",
+            "2": "Bug备注 5",
+            "3": "Bug分配 5",
+            "4": "日志 5",
+            "5": "文件 5",
+            "6": "补充说明 5"
+        },
+        "6": {
+            "1": "Bug主题 6",
+            "2": "Bug备注 6",
+            "3": "Bug分配 6",
+            "4": "日志 6",
+            "5": "文件 6",
+            "6": "补充说明 6"
+        },
+        "7": {
+            "1": "Bug主题 7",
+            "2": "Bug备注 7",
+            "3": "Bug分配 7",
+            "4": "日志 7",
+            "5": "文件 7",
+            "6": "补充说明 7"
+        },
+        "8": {
+            "1": "Bug主题 8",
+            "2": "Bug备注 8",
+            "3": "Bug分配 8",
+            "4": "日志 8",
+            "5": "文件 8",
+            "6": "补充说明 8"
+        },
+        "9": {
+            "1": "Bug主题 9",
+            "2": "Bug备注 9",
+            "3": "Bug分配 9",
+            "4": "日志 9",
+            "5": "文件 9",
+            "6": "补充说明 9"
+        },
+        "10": {
+            "1": "Bug主题 10",
+            "2": "Bug备注 10",
+            "3": "Bug分配 10",
+            "4": "日志 10",
+            "5": "文件 10",
+            "6": "补充说明 10"
+        },
+        "11": {
+            "1": "Bug子题 1",
+            "11": "Bug分配 6",
+            "12": "Bug日志 1"
+        },
+        "12": {
+            "1": "Bug子题 2",
+            "11": "Bug分配 6",
+            "12": "Bug日志 2"
+        }
     },
-    "subRows":{
-        "2":{"rows":["11", "12"], "isExpanded":false}
-     }
-    
- }
+    "subRows": {
+        "2": {
+            "rows": [
+                "11",
+                "12"
+            ],
+            "isExpanded": false
+        }
+    }
+}

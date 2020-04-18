@@ -1,5 +1,6 @@
 
 import React from 'react';
+import {BrowserRouter as Router, Route, Link} from 'react-router-dom'
 import MainTable from './maintable/MainTable';
 import './MainPage.less'
 import { Layout, Menu, Breadcrumb, Input, Collapse, Button, Avatar } from 'antd';
@@ -55,8 +56,7 @@ export default class MainPage extends React.Component {
       "dashboard":"/store/dashboard.json"
     }
     const dataset = new MainTableDataStore();
-    const a = dataset.createFakeObjectData(storeUrl[type]);
-    debugger;
+    dataset.createFakeObjectData(storeUrl[type]);
     this.setState({
       dataset:dataset
     })
@@ -64,6 +64,8 @@ export default class MainPage extends React.Component {
 
   render(){
     return (
+      <Router>
+
       <Layout>
         <Header className="header" style={{background:'#3f51b5',padding:'0 0 0 15px',display:'none'}} >
           
@@ -154,11 +156,11 @@ export default class MainPage extends React.Component {
                 >
                   <Menu.Item key="1">
                     <MailOutlined />
-                    <a onClick={this.nativeGetTableStore.bind(this,'board')}>邮件工作板</a>
+                    <Link to="/board" onClick={this.nativeGetTableStore.bind(this,'board')}>邮件工作板</Link>
                   </Menu.Item>
                   <Menu.Item key="2">
                     <CalendarOutlined />
-                    <a onClick={this.nativeGetTableStore.bind(this,'dashboard')}>进度工作板</a>
+                    <Link to="/dashboard" onClick={this.nativeGetTableStore.bind(this,'dashboard')}>进度工作板</Link>
                   </Menu.Item>
                   <SubMenu
                     key="sub1"
@@ -169,11 +171,11 @@ export default class MainPage extends React.Component {
                       </span>
                     }
                   >
-                    <Menu.Item key="3"><a onClick={this.nativeGetTableStore.bind(this,'dashboard')}>开发组1</a></Menu.Item>
-                    <Menu.Item key="4"><a onClick={this.nativeGetTableStore.bind(this,'board')}>开发组2</a></Menu.Item>
+                    <Menu.Item key="3"><Link to="/dashboard" onClick={this.nativeGetTableStore.bind(this,'dashboard')}>开发组1</Link></Menu.Item>
+                    <Menu.Item key="4"><Link to="/board" onClick={this.nativeGetTableStore.bind(this,'board')}>开发组2</Link></Menu.Item>
                     <SubMenu key="sub1-2" title="开发组3">
-                      <Menu.Item key="5"><a onClick={this.nativeGetTableStore.bind(this,'dashboard')}>设计</a></Menu.Item>
-                      <Menu.Item key="6"><a onClick={this.nativeGetTableStore.bind(this,'board')}>测试</a></Menu.Item>
+                      <Menu.Item key="5"><Link to="/dashboard" onClick={this.nativeGetTableStore.bind(this,'dashboard')}>设计</Link></Menu.Item>
+                      <Menu.Item key="6"><Link to="/board" onClick={this.nativeGetTableStore.bind(this,'board')}>测试</Link></Menu.Item>
                     </SubMenu>
                   </SubMenu>
                   
@@ -187,11 +189,11 @@ export default class MainPage extends React.Component {
                 >
                   <Menu.Item key="1">
                     <MailOutlined />
-                    <a onClick={this.nativeGetTableStore.bind(this,'board')}>邮件统计仪表板</a>
+                    <Link to="/board" onClick={this.nativeGetTableStore.bind(this,'board')}>邮件统计仪表板</Link>
                   </Menu.Item>
                   <Menu.Item key="2">
                     <CalendarOutlined />
-                    <a onClick={this.nativeGetTableStore.bind(this,'dashboard')}>进度仪表板</a>
+                    <Link to="/dashboard" onClick={this.nativeGetTableStore.bind(this,'dashboard')}>进度仪表板</Link>
                   </Menu.Item>
                   <SubMenu
                     key="sub1"
@@ -202,11 +204,11 @@ export default class MainPage extends React.Component {
                       </span>
                     }
                   >
-                    <Menu.Item key="3"><a onClick={this.nativeGetTableStore.bind(this,'board')}>开发组1</a></Menu.Item>
-                    <Menu.Item key="4"><a onClick={this.nativeGetTableStore.bind(this,'dashboard')}>开发组2</a></Menu.Item>
+                    <Menu.Item key="3"><Link to="/board" onClick={this.nativeGetTableStore.bind(this,'board')}>开发组1</Link></Menu.Item>
+                    <Menu.Item key="4"><Link to="/dashboard" onClick={this.nativeGetTableStore.bind(this,'dashboard')}>开发组2</Link></Menu.Item>
                     <SubMenu key="sub1-2" title="开发组3">
-                      <Menu.Item key="5"><a onClick={this.nativeGetTableStore.bind(this,'board')}>设计</a></Menu.Item>
-                      <Menu.Item key="6"><a onClick={this.nativeGetTableStore.bind(this,'dashboard')}>测试</a></Menu.Item>
+                      <Menu.Item key="5"><Link to="/board" onClick={this.nativeGetTableStore.bind(this,'board')}>设计</Link></Menu.Item>
+                      <Menu.Item key="6"><Link to="/dashboard" onClick={this.nativeGetTableStore.bind(this,'dashboard')}>测试</Link></Menu.Item>
                     </SubMenu>
                   </SubMenu>
                 
@@ -231,7 +233,7 @@ export default class MainPage extends React.Component {
             ></Button>
             <div className="collpseBarBottom"></div>
           </div>
-          <Layout>
+          <Layout style={{backgroundColor: '#FFFFFF'}}>
             <Breadcrumb 
               id="appBread"
               style={{ margin: '16px' }}
@@ -241,15 +243,29 @@ export default class MainPage extends React.Component {
               <Breadcrumb.Item>工作区</Breadcrumb.Item>
             </Breadcrumb>
             <Content>
-              <MainTable 
-                data={this.state.dataset} 
-                siderWidth={this.state.siderWidth} 
-              />
+                 <Route exact component={()=>
+                    <MainTable
+                      data={this.state.dataset} 
+                      siderWidth={this.state.siderWidth} 
+                    />}
+                  />
+                  <Route exact path="/borad" component={()=>
+                    <MainTable
+                      data={this.state.dataset} 
+                      siderWidth={this.state.siderWidth} 
+                    />}
+                  />
+                  <Route exact path="/dashborad" component={()=>
+                    <MainTable
+                      data={this.state.dataset} 
+                      siderWidth={this.state.siderWidth} 
+                    />}
+                  />
             </Content>
           </Layout>
         </Layout>
       </Layout>
-     
+     </Router>
     );
   }
 }

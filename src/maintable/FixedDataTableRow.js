@@ -225,7 +225,7 @@ class FixedDataTableRowImpl extends React.Component {
     });
     var fixedColumnsWidth = sumPropWidths(this.props.fixedColumns);
     var fixedRightColumnsWidth = sumPropWidths(this.props.fixedRightColumns);
-    const groupCollapsed = this.props.container.props.data.getGroupByRowIndex(this.props.index).isCollapsed
+    const groupCollapsed = this.props.data.getGroupByRowIndex(this.props.index).isCollapsed
     let extraWidth
     if (groupCollapsed) {
       // 如果分区折叠，设置滚动长度
@@ -253,7 +253,9 @@ class FixedDataTableRowImpl extends React.Component {
         rowHeight={this.props.height}
         rowIndex={this.props.index}
         isHeaderOrFooter={this.props.isHeaderOrFooter}
+        isTableFooter={this.props.isTableFooter}
         container={this.props.container}
+        data={this.props.data}
         isRTL={this.props.isRTL}
       />;
     var columnsLeftShadow = this._renderColumnsLeftShadow(fixedColumnsWidth);
@@ -279,7 +281,9 @@ class FixedDataTableRowImpl extends React.Component {
         rowHeight={this.props.height}
         rowIndex={this.props.index}
         isHeaderOrFooter={this.props.isHeaderOrFooter}
+        isTableFooter={this.props.isTableFooter}
         container={this.props.container}
+        data={this.props.data}
         isRTL={this.props.isRTL}
       />;
 
@@ -306,7 +310,9 @@ class FixedDataTableRowImpl extends React.Component {
         rowHeight={this.props.height}
         rowIndex={this.props.index}
         isHeaderOrFooter={this.props.isHeaderOrFooter}
+        isTableFooter={this.props.isTableFooter}
         container={this.props.container}
+        data={this.props.data}
         isRTL={this.props.isRTL}
       />;
     var scrollableColumnsWidth = sumPropWidths(this.props.scrollableColumns);

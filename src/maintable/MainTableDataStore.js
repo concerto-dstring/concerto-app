@@ -11,6 +11,7 @@
 import $ from 'jquery';
 import { ColumnType } from './data/MainTableType';
 import { COLOR } from '../helpers/section/header/StyleValues'
+import { getPeople } from '../helpers/section/modal/PeopleName';
 
 class MainTableDataStore {
 
@@ -45,24 +46,28 @@ class MainTableDataStore {
     }
     
     createFakeObjectData(url) {
-        const self = this;
-        $.ajax({
-            url : url,
-            data:{},
-            cache : false, 
-            async : false,
-            type : "GET",
-            dataType : 'json',
-            success : function(data){
-                self._columns = data.columns;
-                self._groups  = data.groups;
-                self._rowData = data.rowData;
-                self._subRows = data.subRows;
-                self._sizeColumns = self._columns.length;
-                self._sizeGroups  = self._groups.length;
-                self._sizeRows    = Object.keys(self._rowData).length;                   
-            }
-        });
+      const self = this;
+      $.ajax({
+        url : url,
+        data:{},
+        cache : false, 
+        async : false,
+        type : "GET",
+        dataType : 'json',
+        success : function(data){
+          self._columns = data.columns;
+          self._groups  = data.groups;
+          self._rowData = data.rowData;
+          self._subRows = data.subRows;
+          self._sizeColumns = self._columns.length;
+          self._sizeGroups  = self._groups.length;
+          self._sizeRows    = Object.keys(self._rowData).length;   
+        }
+      });
+    }
+
+    getCurrentUser() {
+      return getPeople('Jiang Guangzhou')[0]
     }
 
     getSize() {
@@ -77,11 +82,38 @@ class MainTableDataStore {
       return this._rowData
     }
 
-    setObjectAt(rowKey, columnKey, value) {
+    setObjectAt(rowKey, columnKey, value, type) {
         // skip the group row 
         if (!rowKey || !columnKey) 
             return;
-        this._rowData[rowKey][columnKey] = value;
+
+        if (columnKey === 'updateInfo') {
+          if (type === 'update') {
+            // 更新
+            let updateInfo = this._rowData[rowKey][columnKey]
+            let infoIndex = updateInfo.findIndex(info => info.id === value.id)
+            updateInfo[infoIndex] = value
+          }
+          else if (type === 'add') {
+            // 新增
+            let updateInfo = this._rowData[rowKey][columnKey]
+            if (updateInfo && updateInfo.length > 0) {
+              updateInfo.unshift(value)
+            }
+            else {
+              updateInfo = []
+              updateInfo.push(value)
+            }
+
+            this._rowData[rowKey][columnKey] = updateInfo
+          }
+          else {
+
+          }
+        }
+        else {
+          this._rowData[rowKey][columnKey] = value;
+        }
 
         this.runCallbacks();
     }
