@@ -74,7 +74,7 @@ export default class MainPage extends React.Component {
           <Header className="header" style={{background:'#3f51b5',padding:'0 0 0 15px',display:'none'}} >
             
             <h2 style={{fontWeight:'bold',lineHeight:'64px',color:'#cccccc'}}>
-              Concerto Dstring   
+            Pynbo   
             </h2>
             
           </Header>
@@ -86,7 +86,7 @@ export default class MainPage extends React.Component {
                     size="large"
                     className='logoIcon'
                 >
-                  Concerto
+                  Pynbo
                 </Avatar>
                 <Button
                     size="large"
@@ -150,7 +150,7 @@ export default class MainPage extends React.Component {
                   <Search
                     placeholder="搜索"
                     onSearch={value => console.log(value)}
-                    style={{margin:'0 0 5px 0' }}
+                    style={{margin:'0 0 5px 0',borderRadius:'15px'}}
                   />
                   <Menu
                     defaultSelectedKeys={this.state.defaultSelectedKeys}
