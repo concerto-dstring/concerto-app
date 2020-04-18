@@ -150,7 +150,7 @@ export default class MainPage extends React.Component {
                   <Search
                     placeholder="搜索"
                     onSearch={value => console.log(value)}
-                    style={{margin:'0 0 5px 0' }}
+                    style={{margin:'0 0 5px 0',borderRadius:'15px'}}
                   />
                   <Menu
                     defaultSelectedKeys={this.state.defaultSelectedKeys}
