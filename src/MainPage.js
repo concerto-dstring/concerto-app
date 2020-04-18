@@ -55,8 +55,8 @@ export default class MainPage extends React.Component {
   
   nativeGetTableStore = (type) => {
     const storeUrl = {
-      "/board":"/store/board.json",
-      "/dashboard":"/store/dashboard.json"
+      "/board":"/store/board.js",
+      "/dashboard":"/store/dashboard.js"
     }
     const dataset = new MainTableDataStore();
     dataset.createFakeObjectData(storeUrl[type]);
