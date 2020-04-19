@@ -509,10 +509,7 @@ class MainTable extends React.Component {
                     </div>
                 </Col>
             </Row>
-              
-              
-            
-          )
+        )
     }
    
     renderTable() {

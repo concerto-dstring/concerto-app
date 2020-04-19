@@ -5,15 +5,11 @@
   "use strict";
 
   import React from 'react';
-  
-  import MainPage from './MainPage.js'
+  import Routes from './Routes';
   
   class App extends React.Component {
-  
     render() {
-      return (
-          <MainPage />
-      );
+      return <div>{Routes}</div>;
     }
   }
 
