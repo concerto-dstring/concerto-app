@@ -31,9 +31,8 @@ import {
     ScheduleOutlined,
     FormOutlined,
     CheckSquareOutlined,
-    StrikethroughOutlined
-    // AccountBookOutlined 
-    } from '@ant-design/icons';
+    StrikethroughOutlined,
+    AccountBookOutlined } from '@ant-design/icons';
 import SummaryCell from '../helpers/columnlib/cell/SummaryCell';
 
 /**
@@ -415,10 +414,10 @@ class MainTable extends React.Component {
                     <ScheduleOutlined />
                     日期
                 </Menu.Item>
-                {/* <Menu.Item key={"NUMBER-"+level}>
+                <Menu.Item key={"NUMBER-"+level}>
                     <AccountBookOutlined />
                     数字
-                </Menu.Item> */}
+                </Menu.Item>
                 <Menu.Item key={"TEXT-"+level}>
                     <FormOutlined />
                     文本
