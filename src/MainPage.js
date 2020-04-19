@@ -71,12 +71,10 @@ export default class MainPage extends React.Component {
     return (
       <Router>
         <Layout>
-          <Header className="header" style={{background:'#3f51b5',padding:'0 0 0 15px',display:'none'}} >
-            
+          <Header className="header" style={{background:'#3f51b5',padding:'0 0 0 15px',display:'none'}} >            
             <h2 style={{fontWeight:'bold',lineHeight:'64px',color:'#cccccc'}}>
             Pynbo   
-            </h2>
-            
+            </h2>            
           </Header>
           <Layout>
             <div className='leftBar'>

@@ -5,7 +5,7 @@ import * as serviceWorker from './serviceWorker';
 import './index.css'
 import store from '../src/maintable/FixedDataTableStore'
 import { Provider } from 'react-redux'
-import { HashRouter } from "react-router-dom";
+import { BrowserRouter } from "react-router-dom";
 
 // antd配置
 import { ConfigProvider } from 'antd'
@@ -14,9 +14,9 @@ import zh_CN from 'antd/es/locale/zh_CN'
 ReactDOM.render(
   <Provider store={store}>
     <ConfigProvider locale={zh_CN}>
-    <HashRouter>
+    <BrowserRouter>
       <App />
-    </HashRouter>
+    </BrowserRouter>
     </ConfigProvider>
   </Provider>, 
   document.getElementById('root')
