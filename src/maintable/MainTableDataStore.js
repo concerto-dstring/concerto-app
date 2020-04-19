@@ -66,6 +66,13 @@ class MainTableDataStore {
       });
     }
 
+    /**
+     * replaces the createFakeObjectData() with backend data
+     */
+    fetchBackendData(){
+
+    }
+
     getCurrentUser() {
       return getPeople('Jiang Guangzhou')[0]
     }

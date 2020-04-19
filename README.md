@@ -1,5 +1,10 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+
+## NOTE:
+
+the react-apollo 3.* version has a known issue about hydrated package; so we chose the 2.5.8 (last of 2.*) instead of 3.*
+
 ## Available Scripts
 
 In the project directory, you can run:
