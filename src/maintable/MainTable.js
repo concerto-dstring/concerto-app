@@ -20,12 +20,6 @@ import { EditableCell } from '../helpers/columnlib/header/EditableCell';
 import SectionHeader from '../helpers/section/header/SectionHeader';
 import Dimensions from 'react-dimensions';
 import { Menu, Dropdown, message, Tooltip, Row, Col, Input} from 'antd';
-import { DataContext, AddFilter } from './data/DataContext';
-import { DataVersionContext, TableContext } from './data/DataContext';
-import { connect } from 'react-redux'
-import { mapRowActionStateToProps } from './data/mapStateToProps'
-import PeopleFilter from '../helpers/filter/PeopleFilter'
-
 import {
     UserOutlined,
     ScheduleOutlined,
@@ -33,6 +27,12 @@ import {
     CheckSquareOutlined,
     StrikethroughOutlined,
     AccountBookOutlined } from '@ant-design/icons';
+import { DataContext, AddFilter } from './data/DataContext';
+import { DataVersionContext, TableContext } from './data/DataContext';
+import { connect } from 'react-redux'
+import { mapRowActionStateToProps } from './data/mapStateToProps'
+import PeopleFilter from '../helpers/filter/PeopleFilter'
+
 import SummaryCell from '../helpers/columnlib/cell/SummaryCell';
 
 /**

@@ -1,8 +1,8 @@
 
 import React from 'react';
-import {BrowserRouter as Router, Route, Link} from 'react-router-dom'
+import {BrowserRouter as Router, Route, Link} from 'react-router-dom';
 import MainTable from './maintable/MainTable';
-import './MainPage.less'
+import './MainPage.less';
 import { Layout, Menu, Breadcrumb, Input, Collapse, Button, Avatar } from 'antd';
 import { 
     SearchOutlined,
