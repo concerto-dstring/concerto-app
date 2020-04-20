@@ -541,10 +541,10 @@ class MainTable extends React.Component {
                     {...this.props}>
                     {/* {fixedColumn && <Column {...this.getColumnTemplate(fixedColumn.columnKey)} fixed={true} />} */}
                     {fixedColumns.map(column => (
-                      <Column {...this.getFixedColumnTemplate(column)} fixed={true} />
+                      <Column key={column.columnKey} {...this.getFixedColumnTemplate(column)} fixed={true} />
                     ))}
                     {scrollColumns.map(column => (
-                        <Column {...this.getColumnTemplate(column.columnKey)} fixed={false} />
+                        <Column key={column.columnKey} {...this.getColumnTemplate(column.columnKey)} fixed={false} />
                     ))
                     }
                     <Column {...this.getColumnAddOptionTemplate("", 0, 40)}/>
