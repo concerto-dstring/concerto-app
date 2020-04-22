@@ -19,21 +19,26 @@ import UndoMessage from '../helpers/section/modal/UndoMessage'
 import { EditableCell } from '../helpers/columnlib/header/EditableCell';
 import SectionHeader from '../helpers/section/header/SectionHeader';
 import Dimensions from 'react-dimensions';
-import { Menu, Dropdown, message, Tooltip, Row, Col, Input} from 'antd';
+import { Menu, Dropdown, Select, Input, Space, Avatar} from 'antd';
 import {
     UserOutlined,
     ScheduleOutlined,
     FormOutlined,
     CheckSquareOutlined,
     StrikethroughOutlined,
-    AccountBookOutlined } from '@ant-design/icons';
+    AccountBookOutlined,
+    DownOutlined,
+    EyeInvisibleOutlined,
+    SearchOutlined
+  } from '@ant-design/icons';
 import { DataContext, AddFilter } from './data/DataContext';
 import { DataVersionContext, TableContext } from './data/DataContext';
 import { connect } from 'react-redux'
 import { mapRowActionStateToProps } from './data/mapStateToProps'
-import PeopleFilter from '../helpers/filter/PeopleFilter'
-
 import SummaryCell from '../helpers/columnlib/cell/SummaryCell';
+import './css/style/Board.less'
+import { getPeople } from '../helpers/section/modal/PeopleName';
+import filterIcon from './helper/filterIcon.svg'
 
 /**
  * A cell that is aware of its context
@@ -229,7 +234,6 @@ class MainTable extends React.Component {
         this.state = {
             data: this._dataset,
             filters: {'rowKey' : ''},
-            filterPeople:null,
             columns: this._dataset.getColumns(),
             version: 0,
             isShowAddSubRowModal: false,
@@ -460,12 +464,6 @@ class MainTable extends React.Component {
         });
     }
 
-    doFilter = (people) => {
-        this.setState({
-         filterPeople:people
-        });
-    }
-
     render() {
         return (
           <div className='autoScrollContainer'>
@@ -481,39 +479,97 @@ class MainTable extends React.Component {
      */
     filterTableData = (e) => {
       this.setState({
-        filterInputValue: e.target.value.trim()
+        filterInputValue: e.target.value.trim(),
+        filterType: null
+      })
+    }
+
+     /**
+     * 根据人员过滤数据
+     */
+    doFilterByPeople = (value) => {
+      this.setState({
+        filterInputValue: value,
+        filterType: 'PEOPLE'
       })
     }
 
     renderControls() {
         return (
-            <Row>
-                <Col span={16}>
-                    <div id="addGroupBtn" className='autoScrollControls'>
-                        <Button primary onClick={this._onAddNewGroupCallback} >添加新分区</Button>
+            <div className="main_table_add_btn_row">
+              <Space size="middle">
+                <div id="addGroupBtn">
+                  <Button
+                    onClick={this._onAddNewGroupCallback}
+                    className="main_table_add_btn"
+                  >
+                    <div className="main_table_btn_layout">
+                      <span style={{}}>
+                        + 新增一行
+                      </span>
+                      <div className="main_table_add_btn_separator" />
+                      <div>
+                        <DownOutlined />
+                      </div>
                     </div>
-                </Col>
-                <Col span={4}>
-                  <Input 
-                    style={{height: 32, borderRadius: 16}} 
-                    allowClear={true}
-                    placeholder={'查询/过滤'}
-                    onChange={this.filterTableData}
-                  />
-                </Col>
-                <Col span={4}>
-                    <div id="filterPeople" style={{marginLeft: 10}} >
-                       <TableContext.Provider value={this.state}> 
-                            <PeopleFilter doFilter={this.doFilter}></PeopleFilter>
-                        </TableContext.Provider>
+                  </Button>
+                </div>
+                <div>
+                  <Select 
+                    className="main_table_select_user"
+                    placeholder="按人员分组显示"
+                    showSearch
+                    allowClear
+                    onChange={this.doFilterByPeople}
+                  >
+                    {
+                      getPeople().map(user => {
+                        return (
+                          <Select.Option
+                            key={user.id} 
+                            value={user.userName}
+                          >
+                            <Avatar
+                              size={20} 
+                              style={{background: user.faceColor}}
+                            >
+                              {user.smallName}
+                            </Avatar>
+                            &emsp;
+                            {
+                              user.userName
+                            }
+                          </Select.Option>
+                        )
+                      })
+                    }
+                  </Select>
+                </div>
+                <div>
+                  <Button className="main_table_filter_btn">
+                    <div className="main_table_btn_layout">
+                      <img src={filterIcon} />&nbsp;2
                     </div>
-                </Col>
-            </Row>
+                  </Button>
+                </div>
+                <div>
+                  <EyeInvisibleOutlined className="main_table_eye" />
+                </div>
+              </Space>
+              <div className="main_table_search_input">
+                <Input
+                  prefix={<SearchOutlined />}
+                  placeholder="搜索工作板内容"
+                  onChange={this.filterTableData}
+                  style={{borderRadius:'15px', width: 240}}
+                />
+              </div>
+            </div>
         )
     }
    
     renderTable() {
-        var { data, filters, filterInputValue, filterPeople } = this.state;
+        var { data, filters, filterInputValue, filterType } = this.state;
         const fixedColumns = this.state.columns.filter(c => c.fixed); 
         const scrollColumns = this.state.columns.filter(c => !c.fixed);
       
@@ -532,8 +588,9 @@ class MainTable extends React.Component {
                     addRowHeight={35}
                     footerHeight={40}
                     filters={filters}
-                    filterInputValue={filterInputValue}  
-                    filterPeople={filterPeople}              
+                    filterInputValue={filterInputValue}
+                    filterType={filterType}  
+                    filterType={filterType}              
                     height={this.props.containerHeight}
                     // 减去左侧Sider宽度 
                     width={this.props.containerWidth - this.props.siderWidth}
@@ -568,9 +625,9 @@ class MainTable extends React.Component {
 export default Dimensions({
     getHeight: function(element) {
       // 减去上面面包屑的高度
-      return window.innerHeight - 152 - document.getElementById("appBread").clientHeight + 64;
+      return window.innerHeight - document.getElementById("appBread").clientHeight - 92;
     },
     getWidth: function(element) {
-      return window.innerWidth - 101;
+      return window.innerWidth - 34;
     }
   })(MainTable);
