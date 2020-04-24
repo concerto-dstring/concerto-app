@@ -32,8 +32,7 @@ function DataContext(Wrapped) {
     }
 
     componentWillReceiveProps(nextProps) {
-      if (JSON.stringify(nextProps.data) !== JSON.stringify(this.state.data) || 
-          this.state.filterInputValue !== nextProps.filterInputValue) {
+      if (JSON.stringify(nextProps.data) !== JSON.stringify(this.state.data)) {
         this.setState({
           data: nextProps.data,
           filterInputValue: nextProps.filterInputValue
@@ -249,6 +248,10 @@ function AddFilter(TableComponent) {
           }
         }
       }
+      else if (this.props.filterPeople){
+        const filteredIndexesAndSubRowkeys = this.doFilterByPeople(filteredIndexes,this.props.filterPeople,'PEOPLE');
+        return (this._getDataWrapper(filteredIndexesAndSubRowkeys.newFilteredIndexes,filteredIndexesAndSubRowkeys.newSubRowKeys));
+      }
       else {
         filteredIndexesMap = filteredIndexes
       }
@@ -272,16 +275,8 @@ function AddFilter(TableComponent) {
       filterData.notGroupKeys = []
       
       if (value) {
-        let filterColumns = []
-        // 检查过滤类型是否有值
-        if (this.props.filterType) {
-          filterColumns = dataset.getColumns().filter(column => column.columnComponentType === this.props.filterType)
-        }
-        else {
-          // 先过滤非日期的columnKey
-          filterColumns = dataset.getColumns().filter(column => column.columnComponentType !== '' && column.columnComponentType !== 'DATE')
-        }
-        
+        // 先过滤非日期的columnKey
+        let filterColumns = dataset.getColumns().filter(column => column.columnComponentType !== '' && column.columnComponentType !== 'DATE')
         let filterColumnKeys = []
         if (filterColumns) {
           filterColumns.map(column => {

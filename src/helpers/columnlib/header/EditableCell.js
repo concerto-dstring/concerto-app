@@ -164,7 +164,7 @@ class EditableCell extends React.PureComponent {
 
     getPeopleFilterStyle = (type, editing, value) => {
       let style = {}
-      if (type === 'PEOPLE' && !editing && value && this.props.filterInputValue && this.props.data) {
+      if (type === 'PEOPLE' && !editing && value && this.props.filterInputValue) {
         let filterInputValue = this.props.filterInputValue.toLowerCase()
         value.map(user => {
           if (user.userName && user.userName.toLowerCase().indexOf(filterInputValue) !== -1) {
