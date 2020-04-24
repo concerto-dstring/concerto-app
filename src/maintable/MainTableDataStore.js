@@ -29,6 +29,7 @@ class MainTableDataStore {
         this._groups = [];
         this._sizeGroups = 0;
         this._subRows = {};
+        this._siderMenus = []
         this.getSize = this.getSize.bind(this);
         this.addNewRow = this.addNewRow.bind(this);
         this.addNewColumn = this.addNewColumn.bind(this);
@@ -62,6 +63,21 @@ class MainTableDataStore {
           self._sizeColumns = self._columns.length;
           self._sizeGroups  = self._groups.length;
           self._sizeRows    = Object.keys(self._rowData).length;   
+        }
+      });
+    }
+
+    createSiderMenus() {
+      const self = this;
+      $.ajax({
+        url : "/store/siderMenu.js",
+        data:{},
+        cache : false, 
+        async : false,
+        type : "GET",
+        dataType : 'json',
+        success : function(data){
+          self._siderMenus = data
         }
       });
     }

@@ -155,7 +155,7 @@
         "2": "已完成",
         "3": [{
                 "smallName":"J",
-                "userName":"JangGuangZhou",
+                "userName":"Jiang Guangzhou",
                 "faceColor":"#f49642"
               }],
         "4": "2020-03-12  5:00PM",
@@ -242,7 +242,7 @@
         "2": "已完成",
         "3": [{
           "smallName":"J",
-          "userName":"JangGuangZhou",
+          "userName":"Jiang Guangzhou",
           "faceColor":"#f49642"
         }],
         "4": "2020-03-16  6:00PM",
@@ -258,7 +258,7 @@
         "2": "已完成",
         "3": [{
           "smallName":"J",
-          "userName":"JangGuangZhou",
+          "userName":"Jiang Guangzhou",
           "faceColor":"#f49642"
         }],
         "4": "2020-03-11  8:00PM",
@@ -274,7 +274,7 @@
         "2": "已完成",
         "3": [{
           "smallName":"J",
-          "userName":"JangGuangZhou",
+          "userName":"Jiang Guangzhou",
           "faceColor":"#f49642"
         }],
         "4": "2020-04-09  5:00PM",
@@ -290,7 +290,7 @@
         "2": "已完成",
         "3": [{
           "smallName":"J",
-          "userName":"JangGuangZhou",
+          "userName":"Jiang Guangzhou",
           "faceColor":"#f49642"
         }],
         "4": "2020-04-11  5:00PM",
@@ -377,7 +377,7 @@
         "2": "进行中",
         "3": [{
           "smallName":"J",
-          "userName":"JangGuangZhou",
+          "userName":"Jiang Guangzhou",
           "faceColor":"#f49642"
         }],
         "4": "2020-04-27  8:00PM",
@@ -393,7 +393,7 @@
         "2": "To Do",
         "3": [{
           "smallName":"Z",
-          "userName":"ZhangTao",
+          "userName":"Zhang Tao",
           "faceColor":"#f4617f"
         }],
         "4": "2020-05-15  8:00PM",
@@ -502,7 +502,7 @@
         "2": "To Do",
         "3": [{
           "smallName":"Z",
-          "userName":"ZhangTao",
+          "userName":"Zhang Tao",
           "faceColor":"#f4617f"
         }],
         "4": "2020-04-15  8:00PM",
