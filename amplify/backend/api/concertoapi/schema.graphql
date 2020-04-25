@@ -9,6 +9,7 @@ type Company @model {
   phone: String!
   admin: User
   teams: [Team] @connection(name: "CompanyTeams")
+  createdAt: String!
 }
 
 ## organization: company has multiple teams
@@ -20,6 +21,7 @@ type Team @model {
   users: [TeamUser] @connection(keyName: "byTeam", fields: ["id"])
   upteam: ID
   downteams: [ID]
+  createdAt: String!
 }
 
 ## organization: team has multiple users, user can belong to multiple teams
@@ -44,6 +46,7 @@ type User @model {
   title: String
   phone: String
   teams: [TeamUser] @connection(keyName: "byUser", fields: ["id"])
+  createdAt: String!
 }
 
 enum UserType {
@@ -62,6 +65,7 @@ type Board @model {
   columns: [Column]
   creator: User!
   subscribers: [User]
+  createdAt: String!
 }
 
 ## basic element of board, a group of rows
@@ -72,6 +76,7 @@ type Group @model {
   rows: [Row] @connection(name: "GroupRows")
   creator: User!
   rank: String!
+  createdAt: String!
 }
 
 ## one task per row
@@ -81,6 +86,7 @@ type Row @model {
   data: [Data]
   creator: User!
   rank: String!
+  createdAt: String!
 }
 
 ## column library 
@@ -89,6 +95,7 @@ type Column @model{
   name: String!
   columntype: String!
   creator: User!
+  createdAt: String!
 }
 
 ## object instance of one column type
