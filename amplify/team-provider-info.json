@@ -11,5 +11,18 @@
             "StackId": "arn:aws:cloudformation:ap-northeast-2:290655070383:stack/amplify-concerto-app-dev-144851/da18f100-7c35-11ea-aa3b-0a70bc372970",
             "AmplifyAppId": "d5nz3bkn2128q"
         }
+    },
+    "product": {
+        "awscloudformation": {
+            "AuthRoleName": "amplify-concerto-app-product-140556-authRole",
+            "UnauthRoleArn": "arn:aws:iam::290655070383:role/amplify-concerto-app-product-140556-unauthRole",
+            "AuthRoleArn": "arn:aws:iam::290655070383:role/amplify-concerto-app-product-140556-authRole",
+            "Region": "ap-northeast-2",
+            "DeploymentBucketName": "amplify-concerto-app-product-140556-deployment",
+            "UnauthRoleName": "amplify-concerto-app-product-140556-unauthRole",
+            "StackName": "amplify-concerto-app-product-140556",
+            "StackId": "arn:aws:cloudformation:ap-northeast-2:290655070383:stack/amplify-concerto-app-product-140556/947e5a30-8730-11ea-84ae-0a86bceb3baa",
+            "AmplifyAppId": "d5nz3bkn2128q"
+        }
     }
 }

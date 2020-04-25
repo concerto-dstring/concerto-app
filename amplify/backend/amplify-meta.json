@@ -1,14 +1,14 @@
 {
 	"providers": {
 		"awscloudformation": {
-			"AuthRoleName": "amplify-concerto-app-dev-144851-authRole",
-			"UnauthRoleArn": "arn:aws:iam::290655070383:role/amplify-concerto-app-dev-144851-unauthRole",
-			"AuthRoleArn": "arn:aws:iam::290655070383:role/amplify-concerto-app-dev-144851-authRole",
+			"AuthRoleName": "amplify-concerto-app-product-140556-authRole",
+			"UnauthRoleArn": "arn:aws:iam::290655070383:role/amplify-concerto-app-product-140556-unauthRole",
+			"AuthRoleArn": "arn:aws:iam::290655070383:role/amplify-concerto-app-product-140556-authRole",
 			"Region": "ap-northeast-2",
-			"DeploymentBucketName": "amplify-concerto-app-dev-144851-deployment",
-			"UnauthRoleName": "amplify-concerto-app-dev-144851-unauthRole",
-			"StackName": "amplify-concerto-app-dev-144851",
-			"StackId": "arn:aws:cloudformation:ap-northeast-2:290655070383:stack/amplify-concerto-app-dev-144851/da18f100-7c35-11ea-aa3b-0a70bc372970",
+			"DeploymentBucketName": "amplify-concerto-app-product-140556-deployment",
+			"UnauthRoleName": "amplify-concerto-app-product-140556-unauthRole",
+			"StackName": "amplify-concerto-app-product-140556",
+			"StackId": "arn:aws:cloudformation:ap-northeast-2:290655070383:stack/amplify-concerto-app-product-140556/947e5a30-8730-11ea-84ae-0a86bceb3baa",
 			"AmplifyAppId": "d5nz3bkn2128q"
 		}
 	},
@@ -27,16 +27,16 @@
 						}
 					}
 				},
-				"GraphQLAPIIdOutput": "zhcwjv37ergptdyuv4hetk555m",
-				"GraphQLAPIEndpointOutput": "https://e6pov7u5qngpdpx6hzl6v5xi3m.appsync-api.ap-northeast-2.amazonaws.com/graphql",
-				"GraphQLAPIKeyOutput": "da2-gklf5prpgna7be4kea6gvdjka4"
+				"GraphQLAPIIdOutput": "yijoslnxgnbopo6zjwzzgkfm74",
+				"GraphQLAPIEndpointOutput": "https://43zsjvmtsfefjfnworauobwsyi.appsync-api.ap-northeast-2.amazonaws.com/graphql",
+				"GraphQLAPIKeyOutput": "da2-7izcwncuarccjfw5qdapfrzccu"
 			},
 			"providerMetadata": {
-				"s3TemplateURL": "https://s3.amazonaws.com/amplify-concerto-app-dev-144851-deployment/amplify-cfn-templates/api/cloudformation-template.json",
+				"s3TemplateURL": "https://s3.amazonaws.com/amplify-concerto-app-product-140556-deployment/amplify-cfn-templates/api/cloudformation-template.json",
 				"logicalId": "apiconcertoapi"
 			},
-			"lastPushTimeStamp": "2020-04-11T21:06:10.757Z",
-			"lastPushDirHash": "Y9FjtZUoF+86QLTJAmSmC5DmRMk="
+			"lastPushTimeStamp": "2020-04-25T20:21:32.397Z",
+			"lastPushDirHash": "2X/uICyzxB31nmtCYHV4aIrggNs="
 		}
 	}
 }
