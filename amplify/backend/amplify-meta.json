@@ -31,12 +31,12 @@
 				"GraphQLAPIEndpointOutput": "https://e6pov7u5qngpdpx6hzl6v5xi3m.appsync-api.ap-northeast-2.amazonaws.com/graphql",
 				"GraphQLAPIKeyOutput": "da2-gklf5prpgna7be4kea6gvdjka4"
 			},
+			"lastPushTimeStamp": "2020-04-25T21:34:01.330Z",
 			"providerMetadata": {
 				"s3TemplateURL": "https://s3.amazonaws.com/amplify-concerto-app-dev-144851-deployment/amplify-cfn-templates/api/cloudformation-template.json",
 				"logicalId": "apiconcertoapi"
 			},
-			"lastPushTimeStamp": "2020-04-11T21:06:10.757Z",
-			"lastPushDirHash": "Y9FjtZUoF+86QLTJAmSmC5DmRMk="
+			"lastPushDirHash": "mfxZIRaKvh59r89kT3NQK0B6784="
 		}
 	}
 }

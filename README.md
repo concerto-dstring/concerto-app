@@ -28,6 +28,7 @@ important:
    From aws-amplify api document: "The Amplify GraphQL client is a light weight option if you’re looking for a simple way to leverage GraphQL features and do not need the offline capabilities or caching"; 
    so using the appsync SDK (e.g., AWSAppSyncClient) instead of amplify SDK
 3. to connect the AppSync graphql backend, we need "npm install aws-appsync graphql-tag react-apollo", and our pakcage.json already setup them (item 1 states the react-apollo version issue).
+4. https://github.com/awslabs/aws-mobile-appsync-sdk-js 
 
 ## react-apollo access the database
 all the graphql auto-genereated codes locate at src/graphql
@@ -39,6 +40,7 @@ https://chrome.google.com/webstore/detail/apollo-client-developer-t/jdkknkkbebba
 ## Refereces:
 1. https://dashbird.io/blog/serverless-react-graphql/
 2. https://docs.amplify.aws/cli/teams/overview
+3. https://github.com/awslabs/aws-mobile-appsync-sdk-js
 
 ## Available Scripts
 

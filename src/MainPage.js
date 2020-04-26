@@ -51,6 +51,7 @@ export default class MainPage extends React.Component {
   initData = (dataset, siderMenus) => {
     if (siderMenus[0]['menus'] && siderMenus[0]['menus'].length > 0) {
       const defaultMenu = siderMenus[0]['menus'][0]
+      /* TODO: using dataset.fetchBackendBoardData() to replace the createFakeObjectData() */
       dataset.createFakeObjectData(defaultMenu['dataUrl'])
       this.setState({
         selectedKey: defaultMenu['id'],

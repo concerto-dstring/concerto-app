@@ -13,6 +13,8 @@ import { ColumnType } from './data/MainTableType';
 import { COLOR } from '../helpers/section/header/StyleValues'
 import { getPeople } from '../helpers/section/modal/PeopleName';
 
+import {ListAllBoards, GetBoardbyId} from '../helpers/data/fetchBoards'
+
 class MainTableDataStore {
 
     // rows is array, rowkey -> {key value hashmap}
@@ -85,8 +87,14 @@ class MainTableDataStore {
     /**
      * replaces the createFakeObjectData() with backend data
      */
-    fetchBackendData(){
+    fetchBackendBoardData(apolloclient, boardid){
+      const ret = {};
+      ret['columns'] = [];  /** fetchColumns.js */
+      ret['groups'] = [];   /** fetchGroups.js */
+      ret['rowdata'] = {};
+      ret['subRows'] = {}
 
+      return ret;
     }
 
     getCurrentUser() {
