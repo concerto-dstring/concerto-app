@@ -20,3 +20,13 @@ export const mapSectionHeaderStateToProps = (state) => {
     curGroup: state.curGroup
   }
 }
+
+export const mapRowHeaderDrawerStateToProps = (state) => {
+  return {
+    isOpenRowHeaderDrawer: state.isOpenRowHeaderDrawer,
+    rowIndex: state.rowIndex,
+    tableData: state.data,
+    updateInfo: state.updateInfo,
+    rowHeaderDrawerTitle: state.rowHeaderDrawerTitle
+  }
+}

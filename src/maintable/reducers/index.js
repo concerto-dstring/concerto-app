@@ -279,6 +279,15 @@ function reducers(state = getInitialState(), action) {
         curGroup: action.modalData.curGroup,
       })
 
+    case ActionTypes.DEAL_ROW_HEADER_DRAWER:
+      return Object.assign({}, state, {
+        isOpenRowHeaderDrawer: action.drawerData.isOpenRowHeaderDrawer,
+        data: action.drawerData.data,
+        rowIndex: action.drawerData.rowIndex,
+        updateInfo: action.drawerData.updateInfo,
+        rowHeaderDrawerTitle: action.drawerData.rowHeaderDrawerTitle
+      })
+
     default: {
       return state;
     }

@@ -39,6 +39,7 @@ import SummaryCell from '../helpers/columnlib/cell/SummaryCell';
 import './css/style/Board.less'
 import { getPeople } from '../helpers/section/modal/PeopleName';
 import filterIcon from './helper/filterIcon.svg'
+import RowHeaderDrawer from '../helpers/RowHeaderDrawer';
 
 /**
  * A cell that is aware of its context
@@ -616,6 +617,7 @@ class MainTable extends React.Component {
                 <UndoMessage 
                   isShowUndoModal={this.state.isShowUndoModal}
                 />
+                <RowHeaderDrawer />
               </div>   
             </TableContext.Provider>   
         );
@@ -625,7 +627,7 @@ class MainTable extends React.Component {
 export default Dimensions({
     getHeight: function(element) {
       // 减去上面面包屑的高度
-      return window.innerHeight - document.getElementById("appBread").clientHeight - 92;
+      return window.innerHeight - document.getElementById("appBread").clientHeight - 94;
     },
     getWidth: function(element) {
       return window.innerWidth - 34;

@@ -5,43 +5,12 @@ import {CloseCircleFilled,UserOutlined,PlusCircleFilled } from '@ant-design/icon
 import 'moment/locale/zh-cn';
 import { Cell } from '../../../maintable/FixedDataTableRoot';
 import './PeopleCell.less';
+import { getPeople } from '../../section/modal/PeopleName'
 
 class PeopleCell extends React.Component {
     state = {
       visible:false,
-      allPeoples:[{
-          smallName:'Z',
-          userName:'ZhangTao',
-          faceColor:'#f4617f'
-      },{
-          smallName:'C',
-          userName:'Lucy Chen',
-          faceColor:'#66cdff'
-      },{
-          smallName:'L',
-          userName:'Leo',
-          faceColor:'#f49642'
-      },{
-          smallName:'M',
-          userName:'Jack Ma',
-          faceColor:'#79cdcd'
-      },{
-          smallName:'W',
-          userName:'Civen Wang',
-          faceColor:'#f4617f'
-      },{
-          smallName:'Z',
-          userName:'ZhangGuoLi',
-          faceColor:'#66cdff'
-      },{
-          smallName:'J',
-          userName:'JangGuangZhou',
-          faceColor:'#f49642'
-      },{
-          smallName:'M',
-          userName:'MaYing',
-          faceColor:'#f49642'
-      }],
+      allPeoples: getPeople(),
       selectedUsers:(this.props.value&&this.props.value!='')?this.props.value:[],
       removeBar:{
         display:'none'

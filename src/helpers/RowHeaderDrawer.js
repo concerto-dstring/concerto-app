@@ -1,5 +1,5 @@
-import React, { PureComponent, createRef } from 'react';
-import { Drawer, Menu, Button, Upload, Modal, Progress, message } from 'antd';
+import React, { PureComponent } from 'react';
+import { Menu, Button, Upload, Modal, Progress, message } from 'antd';
 import {
   ROW_HEADER_UPDATE,
   ROW_HEADER_INFO_BOX,
@@ -21,7 +21,11 @@ import RowHeaderDrawerUpdate from './section/modal/RowHeaderDrawerUpdate'
 import { getBase64, isImageFile } from './section/modal/UploadFun'
 import moment from 'moment';
 import 'moment/locale/zh-cn';
+import SlideDrawer from './section/Drawer/SlideDrawer'
+import { connect } from 'react-redux'
+import { mapRowHeaderDrawerStateToProps } from '../maintable/data/mapStateToProps'
 
+@connect(mapRowHeaderDrawerStateToProps)
 class RowHeaderDrawer extends PureComponent {
 
   constructor(props) {
@@ -50,14 +54,8 @@ class RowHeaderDrawer extends PureComponent {
       fileUrl: '',
       isShowPeopleModal: false,
       isShowRowHeaderDrawer: props.isShowRowHeaderDrawer,
-      currentUser: props.data.getCurrentUser()
+      currentUser: props.tableData ? props.tableData.getCurrentUser() : {}
     }
-  }
-
-  componentWillReceiveProps(props) {
-    this.setState({
-      isShowRowHeaderDrawer: props.isShowRowHeaderDrawer,
-    })
   }
 
   handleEditorChange = (editorState) => {
@@ -69,14 +67,6 @@ class RowHeaderDrawer extends PureComponent {
       current: e.key,
     });
   };
-
-  getDrawerTitle = () => {
-    return (
-      <h1>
-        {this.props.value}
-      </h1>
-    )
-  }
 
   checkUploadFile = (file) => {
     // 可以检查文件的类型和大小(不大于2M)
@@ -306,14 +296,14 @@ class RowHeaderDrawer extends PureComponent {
               </Modal>
               <div className="row_header_drawer_padding">
                 {
-                  this.props.updateInfo.length > 0
+                  (this.props.updateInfo && this.props.updateInfo.length > 0)
                   ?
                   this.props.updateInfo.map(info => {
                     return (
                       <RowHeaderDrawerUpdate
                         key={info.id} 
                         rowIndex={this.props.rowIndex}
-                        data={this.props.data}
+                        data={this.props.tableData}
                         updateInfo={info}
                         currentUser={this.state.currentUser}
                       />
@@ -347,16 +337,10 @@ class RowHeaderDrawer extends PureComponent {
 
   render() {
     return (
-      <Drawer
-        title={this.getDrawerTitle()}
-        placement="right"
-        closable={true}
-        onClose={this.onClose}
-        visible={this.state.isShowRowHeaderDrawer}
-        width={600}
+      <SlideDrawer
+        isVisible={this.props.isOpenRowHeaderDrawer}
         onMouseDown={this.handleRowMove}
-        headerStyle={{padding: 16}}
-        bodyStyle={{padding: 0, overflow: 'hidden'}}
+        drawerHeader={this.props.rowHeaderDrawerTitle}
       >
         <Menu
           style={{padding: '0px 16px'}} 
@@ -375,7 +359,7 @@ class RowHeaderDrawer extends PureComponent {
           </Menu.Item>
         </Menu>
         {this.getMenuContent(this.state.current)}
-      </Drawer>
+      </SlideDrawer>
     );
   }
 }
