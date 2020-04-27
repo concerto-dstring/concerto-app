@@ -3,7 +3,44 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 ## NOTE:
 
-the react-apollo 3.* version has a known issue about hydrated package; so we chose the 2.5.8 (last of 2.*) instead of 3.*
+## amplify environment managment
+Currently there are two amplify environments:
+1. product: it is connected to the git "product" branch. This branch should stay stable and change infrequently.
+   if there is a major change on the "master" branch and approved by product manager, we should merge it from the "master" branch to the "pruduct" branch.
+2. dev: historically it is connected to the git "master" branch
+   it is a daily development branch.
+
+To switch different environemnts, do "git checkout product" first to change to the other branch; 
+then do "amplify env checkout product" to change to corresponding amlify environment. 
+
+When to merge from master to product:
+  -- major change approved by admin/product manager
+
+## graphql dependencies packages
+important:
+1. the react-apollo 3.* version has a known issue about hydrated package; so we chose the 2.5.8 (last of 2.*) instead of 3.*
+2. Try to avoid the amplify-js-app package, it conflicts with 4.* antd:
+         in yarn.lock exists below dependency (if installed the amplify-js-app@1.0.0):
+        amplify-js-app ==> bulky-ui "^1.0.1  ==>   antd "^3.26.0" ==> "@ant-design/icons" "~2.1.1"
+
+        and "@ant-design/icons" "~2.1.1" do not have our codes required resource like "AccountBookOutlined'
+        current I removed the amplify-js-app package. 
+   From aws-amplify api document: "The Amplify GraphQL client is a light weight option if you’re looking for a simple way to leverage GraphQL features and do not need the offline capabilities or caching"; 
+   so using the appsync SDK (e.g., AWSAppSyncClient) instead of amplify SDK
+3. to connect the AppSync graphql backend, we need "npm install aws-appsync graphql-tag react-apollo", and our pakcage.json already setup them (item 1 states the react-apollo version issue).
+4. https://github.com/awslabs/aws-mobile-appsync-sdk-js 
+
+## react-apollo access the database
+all the graphql auto-genereated codes locate at src/graphql
+all the data access/CURD codes can be placed at src/helpers/data
+
+recommend to install the Apollo Client Development Tool extension for Chrome 
+https://chrome.google.com/webstore/detail/apollo-client-developer-t/jdkknkkbebbapilgoeccciglkfbmbnfm?hl=en-US
+
+## Refereces:
+1. https://dashbird.io/blog/serverless-react-graphql/
+2. https://docs.amplify.aws/cli/teams/overview
+3. https://github.com/awslabs/aws-mobile-appsync-sdk-js
 
 ## Available Scripts
 
