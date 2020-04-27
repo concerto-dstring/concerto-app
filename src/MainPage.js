@@ -167,19 +167,19 @@ export default class MainPage extends React.Component {
             <Route exact component={()=>
                 <MainTable
                   data={dataset} 
-                  siderWidth={siderWidth + (!collapsed ? -10 : 1)} 
+                  siderWidth={siderWidth} 
                 />}
               />
               <Route exact path="/borad" component={()=>
                 <MainTable
                   data={dataset} 
-                  siderWidth={siderWidth + (!collapsed ? -10 : 1)} 
+                  siderWidth={siderWidth} 
                 />}
               />
               <Route exact path="/dashborad" component={()=>
                 <MainTable
                   data={dataset} 
-                  siderWidth={siderWidth + (!collapsed ? -10 : 1)} 
+                  siderWidth={siderWidth} 
                 />}
               />
         </Content>
@@ -270,7 +270,7 @@ export default class MainPage extends React.Component {
                 }
               </Collapse>
             </Sider>
-            <div style={{width:'20px', height:'100%',textAlign:'center', marginLeft: collapsed ? 10 : 0}}>
+            <div style={{width:'20px', height:'100%',textAlign:'center'}}>
               <div className="collpseBarTop"></div>
               <Button 
                 shape='circle'

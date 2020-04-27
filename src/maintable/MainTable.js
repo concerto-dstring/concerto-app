@@ -630,6 +630,6 @@ export default Dimensions({
       return window.innerHeight - document.getElementById("appBread").clientHeight - 94;
     },
     getWidth: function(element) {
-      return window.innerWidth - 34;
+      return window.innerWidth - 24;
     }
   })(MainTable);

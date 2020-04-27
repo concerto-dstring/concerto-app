@@ -53,9 +53,14 @@ class RowHeaderDrawer extends PureComponent {
       filePercent: 0,
       fileUrl: '',
       isShowPeopleModal: false,
-      isShowRowHeaderDrawer: props.isShowRowHeaderDrawer,
       currentUser: props.tableData ? props.tableData.getCurrentUser() : {}
     }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      currentUser: nextProps.tableData ? nextProps.tableData.getCurrentUser() : {}
+    })
   }
 
   handleEditorChange = (editorState) => {

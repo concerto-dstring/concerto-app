@@ -45,6 +45,12 @@ class RowHeaderDrawerUpdate extends PureComponent {
     this.replyEditorDiv = createRef()
   }
 
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      currentUser: nextProps.currentUser,
+    })
+  }
+
   getMenu = () => {
     return (
       <Menu>

@@ -7,7 +7,7 @@ import { Cell } from '../../../maintable/FixedDataTableRoot';
 import './PeopleCell.less';
 import { getPeople } from '../../section/modal/PeopleName'
 
-class PeopleCell extends React.Component {
+class PeopleCell extends React.PureComponent {
     state = {
       visible:false,
       allPeoples: getPeople(),
@@ -28,9 +28,12 @@ class PeopleCell extends React.Component {
       })
     }
     render() {
+      const someusers = this.state.selectedUsers||[];
+
+      if (someusers instanceof Array === false) return null
+
       const {Search} = Input;
       const {data, rowIndex, columnKey, collapsedRows, callback, value, handleChange, handleKey, ...props} = this.props;
-      const someusers = this.state.selectedUsers||[];
       const allPeoples = this.state.allPeoples||[];
       const defaultAllPeoples = () => {
         for(let i=0,len=someusers.length;i<len;i++){

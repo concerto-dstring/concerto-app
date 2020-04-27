@@ -12,6 +12,7 @@ import {
 import '../maintable/css/style/RowHeaderCell.less'
 import { connect } from 'react-redux'
 import { dealRowHeaderDrawer } from '../maintable/actions/rowActions'
+import { mapRowHeaderDrawerStateToProps } from '../maintable/data/mapStateToProps'
 
 const CellContainer = styled.div`
   display: flex;
@@ -23,7 +24,7 @@ const CellContainer = styled.div`
   padding: 5px;
 `;
 
-@connect(null, { dealRowHeaderDrawer })
+@connect(state => ({isOpenRowHeaderDrawer: state.isOpenRowHeaderDrawer, drawerRowIndex: state.rowIndex}), { dealRowHeaderDrawer })
 class RowHeaderCell extends React.PureComponent {
     constructor(props){
        super(props)
@@ -68,7 +69,6 @@ class RowHeaderCell extends React.PureComponent {
 
     handleClick = (e) => {
       // 防止document事件的冒泡
-      e.nativeEvent.stopImmediatePropagation();
       e.stopPropagation()
       e.preventDefault()
       this.setState({ editing: true });
@@ -94,9 +94,11 @@ class RowHeaderCell extends React.PureComponent {
         }
     }
 
-    toggleSubRows = (event) => {
+    toggleSubRows = (count, event) => {
+      event.stopPropagation();
+      if (count > 0) {
         this.props.data.toggleSubRows(this.props.rowIndex);
-        event.stopPropagation();
+      }
     }
 
     // 显示右侧滑窗
@@ -112,7 +114,7 @@ class RowHeaderCell extends React.PureComponent {
       const { count, displayValue, updateInfo } = this.state;
       return (
         <>
-          <div className="row_header_cell_text_component" style={{lineHeight: `${height - 10}px`}}>
+          <div className="row_header_cell_text_component" style={{lineHeight: `${height - 12}px`}}>
             <i onClick={this.handleClick.bind(this)} className="row_header_cell_edit_icon">
               <EditOutlined />
             </i>
@@ -120,10 +122,12 @@ class RowHeaderCell extends React.PureComponent {
               {displayValue}
             </div>
           </div>
-          <div style={{marginLeft: 4, lineHeight: `${height - 10}px`}}><UnorderedListOutlined />&nbsp;{count}</div>
+          <div style={{marginLeft: 4, lineHeight: `${height - 12}px`}} onClick={this.toggleSubRows.bind(this, count)}>
+            <UnorderedListOutlined />&nbsp;{count}
+          </div>
           <div 
             className="row_header_cell_update"
-            style={{lineHeight: `${height - 10}px`}}
+            style={{lineHeight: `${height - 12}px`}}
           >
             <span>
               <Badge count={updateInfo.length} style={{backgroundColor: '#BB0000'}} />
@@ -134,12 +138,25 @@ class RowHeaderCell extends React.PureComponent {
     }
 
     render() {
-        const {container, data, rowIndex, columnKey, dataVersion, width, height,  ...props} = this.props;
+        const {container, data, rowIndex, columnKey, dataVersion, width, height, isOpenRowHeaderDrawer, drawerRowIndex, ...props} = this.props;
         const { value, editing } = this.state;
         const inputStyle = {
             width: width - 10,
             height: height - 5,
             borderRadius: '0px',
+        }
+
+        let cellStyle = {
+          border: '1px solid transparent'
+        }
+
+        if (editing) {
+          cellStyle.margin = '2px 5px'
+        }
+
+        if (isOpenRowHeaderDrawer && drawerRowIndex === rowIndex) {
+          cellStyle.border = '1px solid rgba(31, 118, 194, 100)'
+          cellStyle.background = '#e3e6eb'
         }
 
         return (
@@ -148,7 +165,7 @@ class RowHeaderCell extends React.PureComponent {
                   ref={this.setTargetRef} 
                   className="row_header_cell_component"
                   onClick={this.showRowDrawer}
-                  style={editing ? {margin: '2px 5px'} : {}}
+                  style={cellStyle}
                 >
                     {!editing && this.getCellComponent()}
                     {editing && this.targetRef && (
