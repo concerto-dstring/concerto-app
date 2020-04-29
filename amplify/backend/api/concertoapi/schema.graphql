@@ -42,18 +42,18 @@ type User @model {
   email: String!
   fname: String!
   lname: String!
-  usertype : UserType!
+  usertype : String!
   title: String
   phone: String
   teams: [TeamUser] @connection(keyName: "byUser", fields: ["id"])
   createdAt: String!
 }
 
-enum UserType {
-	  ADMIN
-    NORMAL
-	  VISITOR
-}
+#enum UserType {
+#	  ADMIN
+#    NORMAL
+#	  VISITOR
+#}
 
 ## UI
 ## ==
