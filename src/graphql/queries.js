@@ -20,6 +20,23 @@ export const getCompany = /* GraphQL */ `
           nextToken
         }
         createdAt
+        boardCreated {
+          nextToken
+        }
+        boardSubscribed {
+          id
+          name
+          createdAt
+        }
+        groupCreated {
+          nextToken
+        }
+        columnCreated {
+          nextToken
+        }
+        rowCreated {
+          nextToken
+        }
       }
       teams {
         items {
@@ -83,6 +100,23 @@ export const getTeam = /* GraphQL */ `
           nextToken
         }
         createdAt
+        boardCreated {
+          nextToken
+        }
+        boardSubscribed {
+          id
+          name
+          createdAt
+        }
+        groupCreated {
+          nextToken
+        }
+        columnCreated {
+          nextToken
+        }
+        rowCreated {
+          nextToken
+        }
       }
       company {
         id
@@ -175,6 +209,74 @@ export const getUser = /* GraphQL */ `
         nextToken
       }
       createdAt
+      boardCreated {
+        items {
+          id
+          name
+          createdAt
+        }
+        nextToken
+      }
+      boardSubscribed {
+        id
+        name
+        groups {
+          nextToken
+        }
+        columns {
+          id
+          name
+          columntype
+          createdAt
+        }
+        creator {
+          id
+          email
+          fname
+          lname
+          usertype
+          title
+          phone
+          createdAt
+        }
+        subscribers {
+          id
+          email
+          fname
+          lname
+          usertype
+          title
+          phone
+          createdAt
+        }
+        createdAt
+      }
+      groupCreated {
+        items {
+          id
+          name
+          rank
+          createdAt
+        }
+        nextToken
+      }
+      columnCreated {
+        items {
+          id
+          name
+          columntype
+          createdAt
+        }
+        nextToken
+      }
+      rowCreated {
+        items {
+          id
+          rank
+          createdAt
+        }
+        nextToken
+      }
     }
   }
 `;
@@ -197,6 +299,23 @@ export const listUsers = /* GraphQL */ `
           nextToken
         }
         createdAt
+        boardCreated {
+          nextToken
+        }
+        boardSubscribed {
+          id
+          name
+          createdAt
+        }
+        groupCreated {
+          nextToken
+        }
+        columnCreated {
+          nextToken
+        }
+        rowCreated {
+          nextToken
+        }
       }
       nextToken
     }
@@ -244,6 +363,23 @@ export const getBoard = /* GraphQL */ `
           nextToken
         }
         createdAt
+        boardCreated {
+          nextToken
+        }
+        boardSubscribed {
+          id
+          name
+          createdAt
+        }
+        groupCreated {
+          nextToken
+        }
+        columnCreated {
+          nextToken
+        }
+        rowCreated {
+          nextToken
+        }
       }
       subscribers {
         id
@@ -257,6 +393,23 @@ export const getBoard = /* GraphQL */ `
           nextToken
         }
         createdAt
+        boardCreated {
+          nextToken
+        }
+        boardSubscribed {
+          id
+          name
+          createdAt
+        }
+        groupCreated {
+          nextToken
+        }
+        columnCreated {
+          nextToken
+        }
+        rowCreated {
+          nextToken
+        }
       }
       createdAt
     }
@@ -366,6 +519,23 @@ export const getGroup = /* GraphQL */ `
           nextToken
         }
         createdAt
+        boardCreated {
+          nextToken
+        }
+        boardSubscribed {
+          id
+          name
+          createdAt
+        }
+        groupCreated {
+          nextToken
+        }
+        columnCreated {
+          nextToken
+        }
+        rowCreated {
+          nextToken
+        }
       }
       rank
       createdAt
@@ -457,6 +627,23 @@ export const getRow = /* GraphQL */ `
           nextToken
         }
         createdAt
+        boardCreated {
+          nextToken
+        }
+        boardSubscribed {
+          id
+          name
+          createdAt
+        }
+        groupCreated {
+          nextToken
+        }
+        columnCreated {
+          nextToken
+        }
+        rowCreated {
+          nextToken
+        }
       }
       rank
       createdAt
@@ -517,6 +704,23 @@ export const getColumn = /* GraphQL */ `
           nextToken
         }
         createdAt
+        boardCreated {
+          nextToken
+        }
+        boardSubscribed {
+          id
+          name
+          createdAt
+        }
+        groupCreated {
+          nextToken
+        }
+        columnCreated {
+          nextToken
+        }
+        rowCreated {
+          nextToken
+        }
       }
       createdAt
     }
