@@ -12,7 +12,7 @@
   import gql from "graphql-tag";
 
   import MainPage from './MainPage.js'
-  
+  import MainTableDataStore from './maintable/MainTableDataStore';
   import { listCompanys } from "./graphql/queries"
 
   /* AWSAppSyncClient integrates with the Apollo Client for GraphQL */
@@ -38,10 +38,11 @@
   class App extends React.Component {
   
     render() {
+      let dataset = new MainTableDataStore();
       return (
         <ApolloProvider client={client}>
           <Rehydrated>
-              <MainPage />
+              <MainPage dataset={dataset} />
           </Rehydrated>
         </ApolloProvider> 
       );

@@ -12,7 +12,6 @@ import {
 import '../maintable/css/style/RowHeaderCell.less'
 import { connect } from 'react-redux'
 import { dealRowHeaderDrawer } from '../maintable/actions/rowActions'
-import { mapRowHeaderDrawerStateToProps } from '../maintable/data/mapStateToProps'
 
 const CellContainer = styled.div`
   display: flex;

@@ -35,11 +35,18 @@ const users = [{
   faceColor:'#9370DB',
   userUrl: 'https://www.baidu.com?liwei'
 }, {
-  id: 'user07',
   smallName:'JGZ',
   userName:'Jiang Guangzhou',
   faceColor:'#AFEEEE',
-  userUrl: 'https://www.baidu.com?jiangguangzhou'
+  userUrl: 'https://www.baidu.com?jiangguangzhou',
+  createdAt: '2020-04-25T21:37:47.463Z',
+  email: '1000122331@qq.com',
+  fname: '蒋',
+  id: '100001',
+  lname: '光洲',
+  phone: '18821245466',
+  title: '测试者',
+  usertype: 'NORMAL'
 }]
 
 export const getPeople = (userName) => {
@@ -57,4 +64,9 @@ export const getPeople = (userName) => {
   else {
     return usersCopy
   }
+}
+
+export const getPeopleById = (id) => {
+  let usersCopy = users.slice()
+  return usersCopy.find(user => user.id === id)
 }

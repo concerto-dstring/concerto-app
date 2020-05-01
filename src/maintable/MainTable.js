@@ -40,6 +40,7 @@ import './css/style/Board.less'
 import { getPeople } from '../helpers/section/modal/PeopleName';
 import filterIcon from './helper/filterIcon.svg'
 import RowHeaderDrawer from '../helpers/RowHeaderDrawer';
+import { withApollo } from 'react-apollo'
 
 /**
  * A cell that is aware of its context
@@ -209,6 +210,7 @@ const DataSummaryCell = function(props) {
 
 const FilterableDataTable = AddFilter(DataContext(Table));
 
+@withApollo
 @connect(mapRowActionStateToProps, null, null, { forwardRef: true })
 class MainTable extends React.Component {
 
@@ -267,7 +269,7 @@ class MainTable extends React.Component {
      * @param {*} event 
      */
     _onAddNewGroupCallback(event) {
-        this._dataset.addNewGroup("新分区");
+        this._dataset.addNewGroup("新分区", null, this.props.client);
         this.refresh()
     }
 

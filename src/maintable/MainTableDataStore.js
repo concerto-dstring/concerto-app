@@ -11,9 +11,11 @@
 import $ from 'jquery';
 import { ColumnType } from './data/MainTableType';
 import { COLOR } from '../helpers/section/header/StyleValues'
-import { getPeople } from '../helpers/section/modal/PeopleName';
-
-import {ListAllBoards, GetBoardbyId} from '../helpers/data/fetchBoards'
+import { getPeople, getPeopleById } from '../helpers/section/modal/PeopleName';
+import { ListAllBoards, GetBoardbyId } from '../helpers/data/fetchBoards'
+import gql from "graphql-tag";
+import { listBoards, getBoard } from "../graphql/queries"
+import { createGroup } from "../graphql/mutations" 
 
 class MainTableDataStore {
 
@@ -31,7 +33,8 @@ class MainTableDataStore {
         this._groups = [];
         this._sizeGroups = 0;
         this._subRows = {};
-        this._siderMenus = []
+        this._boardMenus = []
+        this._dashboardMenus = []
         this.getSize = this.getSize.bind(this);
         this.addNewRow = this.addNewRow.bind(this);
         this.addNewColumn = this.addNewColumn.bind(this);
@@ -69,32 +72,40 @@ class MainTableDataStore {
       });
     }
 
-    createSiderMenus() {
-      const self = this;
-      $.ajax({
-        url : "/store/siderMenu.js",
-        data:{},
-        cache : false, 
-        async : false,
-        type : "GET",
-        dataType : 'json',
-        success : function(data){
-          self._siderMenus = data
-        }
-      });
+    fetchSideMenus(apolloClient, type, setMenus) {
+      switch (type) {
+        case 'board':
+          apolloClient
+            .query({
+              query: gql(listBoards)
+            })
+            .then(result => {
+              this._boardMenus = result.data.listBoards.items
+              this._currentBoardId = this._boardMenus.length > 0 ? this._boardMenus[0].id : ''
+              setMenus(result.data.listBoards.items, true)
+            });
+          break;
+      
+        default:
+          break;
+      }
     }
 
     /**
      * replaces the createFakeObjectData() with backend data
      */
-    fetchBackendBoardData(apolloclient, boardid){
-      const ret = {};
-      ret['columns'] = [];  /** fetchColumns.js */
-      ret['groups'] = [];   /** fetchGroups.js */
-      ret['rowdata'] = {};
-      ret['subRows'] = {}
+    fetchBackendBoardData(apolloClient, boardId){
+      this._currentBoardId = boardId
+      apolloClient
+        .query({
+          query: gql(getBoard),
+          variables: {
+            id: boardId
+          }
+        })
+        .then(result => console.log(result));
 
-      return ret;
+      // return ret;
     }
 
     getCurrentUser() {
@@ -206,7 +217,7 @@ class MainTableDataStore {
         this.runCallbacks();
     }
 
-    addNewGroup(groupName, groupKey) {
+    addNewGroup(groupName, groupKey, apolloClient) {
         this._sizeGroups ++;
         let id = this._sizeGroups.toString();
         if (groupKey) {
@@ -220,7 +231,21 @@ class MainTableDataStore {
           this._groups.splice(index + 1, 0, group)
         }
         else {
-          this._groups.push({groupKey: id, name: groupName + id, rows:[], color: COLOR.SECTION_DEFAULT});
+          // this._groups.push({groupKey: id, name: groupName + id, rows:[], color: COLOR.SECTION_DEFAULT});
+          apolloClient
+            .mutate({
+              mutation: gql(createGroup),
+              variables: {
+                input: {
+                  name: groupName,
+                  rank: '1',
+                  createdAt: new Date().toISOString(),
+                  groupBoardId: this._currentBoardId,
+                  groupCreatorId: '100001'
+                }
+              }
+            })
+            .then(result => console.log(result))
         }
 
         //refresh
