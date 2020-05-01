@@ -23,6 +23,23 @@ export const createCompany = /* GraphQL */ `
           nextToken
         }
         createdAt
+        boardCreated {
+          nextToken
+        }
+        boardSubscribed {
+          id
+          name
+          createdAt
+        }
+        groupCreated {
+          nextToken
+        }
+        columnCreated {
+          nextToken
+        }
+        rowCreated {
+          nextToken
+        }
       }
       teams {
         items {
@@ -60,6 +77,23 @@ export const updateCompany = /* GraphQL */ `
           nextToken
         }
         createdAt
+        boardCreated {
+          nextToken
+        }
+        boardSubscribed {
+          id
+          name
+          createdAt
+        }
+        groupCreated {
+          nextToken
+        }
+        columnCreated {
+          nextToken
+        }
+        rowCreated {
+          nextToken
+        }
       }
       teams {
         items {
@@ -97,6 +131,23 @@ export const deleteCompany = /* GraphQL */ `
           nextToken
         }
         createdAt
+        boardCreated {
+          nextToken
+        }
+        boardSubscribed {
+          id
+          name
+          createdAt
+        }
+        groupCreated {
+          nextToken
+        }
+        columnCreated {
+          nextToken
+        }
+        rowCreated {
+          nextToken
+        }
       }
       teams {
         items {
@@ -132,6 +183,23 @@ export const createTeam = /* GraphQL */ `
           nextToken
         }
         createdAt
+        boardCreated {
+          nextToken
+        }
+        boardSubscribed {
+          id
+          name
+          createdAt
+        }
+        groupCreated {
+          nextToken
+        }
+        columnCreated {
+          nextToken
+        }
+        rowCreated {
+          nextToken
+        }
       }
       company {
         id
@@ -187,6 +255,23 @@ export const updateTeam = /* GraphQL */ `
           nextToken
         }
         createdAt
+        boardCreated {
+          nextToken
+        }
+        boardSubscribed {
+          id
+          name
+          createdAt
+        }
+        groupCreated {
+          nextToken
+        }
+        columnCreated {
+          nextToken
+        }
+        rowCreated {
+          nextToken
+        }
       }
       company {
         id
@@ -242,6 +327,23 @@ export const deleteTeam = /* GraphQL */ `
           nextToken
         }
         createdAt
+        boardCreated {
+          nextToken
+        }
+        boardSubscribed {
+          id
+          name
+          createdAt
+        }
+        groupCreated {
+          nextToken
+        }
+        columnCreated {
+          nextToken
+        }
+        rowCreated {
+          nextToken
+        }
       }
       company {
         id
@@ -325,6 +427,23 @@ export const createTeamUser = /* GraphQL */ `
           nextToken
         }
         createdAt
+        boardCreated {
+          nextToken
+        }
+        boardSubscribed {
+          id
+          name
+          createdAt
+        }
+        groupCreated {
+          nextToken
+        }
+        columnCreated {
+          nextToken
+        }
+        rowCreated {
+          nextToken
+        }
       }
     }
   }
@@ -377,6 +496,23 @@ export const updateTeamUser = /* GraphQL */ `
           nextToken
         }
         createdAt
+        boardCreated {
+          nextToken
+        }
+        boardSubscribed {
+          id
+          name
+          createdAt
+        }
+        groupCreated {
+          nextToken
+        }
+        columnCreated {
+          nextToken
+        }
+        rowCreated {
+          nextToken
+        }
       }
     }
   }
@@ -429,6 +565,23 @@ export const deleteTeamUser = /* GraphQL */ `
           nextToken
         }
         createdAt
+        boardCreated {
+          nextToken
+        }
+        boardSubscribed {
+          id
+          name
+          createdAt
+        }
+        groupCreated {
+          nextToken
+        }
+        columnCreated {
+          nextToken
+        }
+        rowCreated {
+          nextToken
+        }
       }
     }
   }
@@ -455,6 +608,74 @@ export const createUser = /* GraphQL */ `
         nextToken
       }
       createdAt
+      boardCreated {
+        items {
+          id
+          name
+          createdAt
+        }
+        nextToken
+      }
+      boardSubscribed {
+        id
+        name
+        groups {
+          nextToken
+        }
+        columns {
+          id
+          name
+          columntype
+          createdAt
+        }
+        creator {
+          id
+          email
+          fname
+          lname
+          usertype
+          title
+          phone
+          createdAt
+        }
+        subscribers {
+          id
+          email
+          fname
+          lname
+          usertype
+          title
+          phone
+          createdAt
+        }
+        createdAt
+      }
+      groupCreated {
+        items {
+          id
+          name
+          rank
+          createdAt
+        }
+        nextToken
+      }
+      columnCreated {
+        items {
+          id
+          name
+          columntype
+          createdAt
+        }
+        nextToken
+      }
+      rowCreated {
+        items {
+          id
+          rank
+          createdAt
+        }
+        nextToken
+      }
     }
   }
 `;
@@ -480,6 +701,74 @@ export const updateUser = /* GraphQL */ `
         nextToken
       }
       createdAt
+      boardCreated {
+        items {
+          id
+          name
+          createdAt
+        }
+        nextToken
+      }
+      boardSubscribed {
+        id
+        name
+        groups {
+          nextToken
+        }
+        columns {
+          id
+          name
+          columntype
+          createdAt
+        }
+        creator {
+          id
+          email
+          fname
+          lname
+          usertype
+          title
+          phone
+          createdAt
+        }
+        subscribers {
+          id
+          email
+          fname
+          lname
+          usertype
+          title
+          phone
+          createdAt
+        }
+        createdAt
+      }
+      groupCreated {
+        items {
+          id
+          name
+          rank
+          createdAt
+        }
+        nextToken
+      }
+      columnCreated {
+        items {
+          id
+          name
+          columntype
+          createdAt
+        }
+        nextToken
+      }
+      rowCreated {
+        items {
+          id
+          rank
+          createdAt
+        }
+        nextToken
+      }
     }
   }
 `;
@@ -505,6 +794,74 @@ export const deleteUser = /* GraphQL */ `
         nextToken
       }
       createdAt
+      boardCreated {
+        items {
+          id
+          name
+          createdAt
+        }
+        nextToken
+      }
+      boardSubscribed {
+        id
+        name
+        groups {
+          nextToken
+        }
+        columns {
+          id
+          name
+          columntype
+          createdAt
+        }
+        creator {
+          id
+          email
+          fname
+          lname
+          usertype
+          title
+          phone
+          createdAt
+        }
+        subscribers {
+          id
+          email
+          fname
+          lname
+          usertype
+          title
+          phone
+          createdAt
+        }
+        createdAt
+      }
+      groupCreated {
+        items {
+          id
+          name
+          rank
+          createdAt
+        }
+        nextToken
+      }
+      columnCreated {
+        items {
+          id
+          name
+          columntype
+          createdAt
+        }
+        nextToken
+      }
+      rowCreated {
+        items {
+          id
+          rank
+          createdAt
+        }
+        nextToken
+      }
     }
   }
 `;
@@ -553,6 +910,23 @@ export const createBoard = /* GraphQL */ `
           nextToken
         }
         createdAt
+        boardCreated {
+          nextToken
+        }
+        boardSubscribed {
+          id
+          name
+          createdAt
+        }
+        groupCreated {
+          nextToken
+        }
+        columnCreated {
+          nextToken
+        }
+        rowCreated {
+          nextToken
+        }
       }
       subscribers {
         id
@@ -566,6 +940,23 @@ export const createBoard = /* GraphQL */ `
           nextToken
         }
         createdAt
+        boardCreated {
+          nextToken
+        }
+        boardSubscribed {
+          id
+          name
+          createdAt
+        }
+        groupCreated {
+          nextToken
+        }
+        columnCreated {
+          nextToken
+        }
+        rowCreated {
+          nextToken
+        }
       }
       createdAt
     }
@@ -616,6 +1007,23 @@ export const updateBoard = /* GraphQL */ `
           nextToken
         }
         createdAt
+        boardCreated {
+          nextToken
+        }
+        boardSubscribed {
+          id
+          name
+          createdAt
+        }
+        groupCreated {
+          nextToken
+        }
+        columnCreated {
+          nextToken
+        }
+        rowCreated {
+          nextToken
+        }
       }
       subscribers {
         id
@@ -629,6 +1037,23 @@ export const updateBoard = /* GraphQL */ `
           nextToken
         }
         createdAt
+        boardCreated {
+          nextToken
+        }
+        boardSubscribed {
+          id
+          name
+          createdAt
+        }
+        groupCreated {
+          nextToken
+        }
+        columnCreated {
+          nextToken
+        }
+        rowCreated {
+          nextToken
+        }
       }
       createdAt
     }
@@ -679,6 +1104,23 @@ export const deleteBoard = /* GraphQL */ `
           nextToken
         }
         createdAt
+        boardCreated {
+          nextToken
+        }
+        boardSubscribed {
+          id
+          name
+          createdAt
+        }
+        groupCreated {
+          nextToken
+        }
+        columnCreated {
+          nextToken
+        }
+        rowCreated {
+          nextToken
+        }
       }
       subscribers {
         id
@@ -692,6 +1134,23 @@ export const deleteBoard = /* GraphQL */ `
           nextToken
         }
         createdAt
+        boardCreated {
+          nextToken
+        }
+        boardSubscribed {
+          id
+          name
+          createdAt
+        }
+        groupCreated {
+          nextToken
+        }
+        columnCreated {
+          nextToken
+        }
+        rowCreated {
+          nextToken
+        }
       }
       createdAt
     }
@@ -759,6 +1218,23 @@ export const createGroup = /* GraphQL */ `
           nextToken
         }
         createdAt
+        boardCreated {
+          nextToken
+        }
+        boardSubscribed {
+          id
+          name
+          createdAt
+        }
+        groupCreated {
+          nextToken
+        }
+        columnCreated {
+          nextToken
+        }
+        rowCreated {
+          nextToken
+        }
       }
       rank
       createdAt
@@ -827,6 +1303,23 @@ export const updateGroup = /* GraphQL */ `
           nextToken
         }
         createdAt
+        boardCreated {
+          nextToken
+        }
+        boardSubscribed {
+          id
+          name
+          createdAt
+        }
+        groupCreated {
+          nextToken
+        }
+        columnCreated {
+          nextToken
+        }
+        rowCreated {
+          nextToken
+        }
       }
       rank
       createdAt
@@ -895,6 +1388,23 @@ export const deleteGroup = /* GraphQL */ `
           nextToken
         }
         createdAt
+        boardCreated {
+          nextToken
+        }
+        boardSubscribed {
+          id
+          name
+          createdAt
+        }
+        groupCreated {
+          nextToken
+        }
+        columnCreated {
+          nextToken
+        }
+        rowCreated {
+          nextToken
+        }
       }
       rank
       createdAt
@@ -954,6 +1464,23 @@ export const createRow = /* GraphQL */ `
           nextToken
         }
         createdAt
+        boardCreated {
+          nextToken
+        }
+        boardSubscribed {
+          id
+          name
+          createdAt
+        }
+        groupCreated {
+          nextToken
+        }
+        columnCreated {
+          nextToken
+        }
+        rowCreated {
+          nextToken
+        }
       }
       rank
       createdAt
@@ -1013,6 +1540,23 @@ export const updateRow = /* GraphQL */ `
           nextToken
         }
         createdAt
+        boardCreated {
+          nextToken
+        }
+        boardSubscribed {
+          id
+          name
+          createdAt
+        }
+        groupCreated {
+          nextToken
+        }
+        columnCreated {
+          nextToken
+        }
+        rowCreated {
+          nextToken
+        }
       }
       rank
       createdAt
@@ -1072,6 +1616,23 @@ export const deleteRow = /* GraphQL */ `
           nextToken
         }
         createdAt
+        boardCreated {
+          nextToken
+        }
+        boardSubscribed {
+          id
+          name
+          createdAt
+        }
+        groupCreated {
+          nextToken
+        }
+        columnCreated {
+          nextToken
+        }
+        rowCreated {
+          nextToken
+        }
       }
       rank
       createdAt
@@ -1099,6 +1660,23 @@ export const createColumn = /* GraphQL */ `
           nextToken
         }
         createdAt
+        boardCreated {
+          nextToken
+        }
+        boardSubscribed {
+          id
+          name
+          createdAt
+        }
+        groupCreated {
+          nextToken
+        }
+        columnCreated {
+          nextToken
+        }
+        rowCreated {
+          nextToken
+        }
       }
       createdAt
     }
@@ -1125,6 +1703,23 @@ export const updateColumn = /* GraphQL */ `
           nextToken
         }
         createdAt
+        boardCreated {
+          nextToken
+        }
+        boardSubscribed {
+          id
+          name
+          createdAt
+        }
+        groupCreated {
+          nextToken
+        }
+        columnCreated {
+          nextToken
+        }
+        rowCreated {
+          nextToken
+        }
       }
       createdAt
     }
@@ -1151,6 +1746,23 @@ export const deleteColumn = /* GraphQL */ `
           nextToken
         }
         createdAt
+        boardCreated {
+          nextToken
+        }
+        boardSubscribed {
+          id
+          name
+          createdAt
+        }
+        groupCreated {
+          nextToken
+        }
+        columnCreated {
+          nextToken
+        }
+        rowCreated {
+          nextToken
+        }
       }
       createdAt
     }
