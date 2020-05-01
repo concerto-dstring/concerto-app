@@ -42,18 +42,23 @@ type User @model {
   email: String!
   fname: String!
   lname: String!
-  usertype : UserType!
+  usertype : String!
   title: String
   phone: String
   teams: [TeamUser] @connection(keyName: "byUser", fields: ["id"])
   createdAt: String!
+  boardCreated: [Board] @connection(name: "BoardCreatedUser")
+  boardSubscribed: [Board] 
+  groupCreated: [Group] @connection(name: "GroupCreatedUser")
+  columnCreated: [Column] @connection(name: "ColumnCreatedUser")
+  rowCreated: [Row] @connection(name: "RowCreatedUser")
 }
 
-enum UserType {
-	  ADMIN
-    NORMAL
-	  VISITOR
-}
+#enum UserType {
+#	  ADMIN
+#    NORMAL
+#	  VISITOR
+#}
 
 ## UI
 ## ==
@@ -63,7 +68,7 @@ type Board @model {
   name: String!
   groups: [Group] @connection(name: "BoardGroups")
   columns: [Column]
-  creator: User!
+  creator: User!  @connection(name: "BoardCreatedUser")
   subscribers: [User]
   createdAt: String!
 }
@@ -74,7 +79,7 @@ type Group @model {
   name: String!
   board: Board! @connection(name: "BoardGroups")
   rows: [Row] @connection(name: "GroupRows")
-  creator: User!
+  creator: User! @connection(name: "GroupCreatedUser")
   rank: String!
   createdAt: String!
 }
@@ -84,7 +89,7 @@ type Row @model {
   id: ID!
   group: Group! @connection(name: "GroupRows")
   data: [Data]
-  creator: User!
+  creator: User!  @connection(name: "RowCreatedUser")
   rank: String!
   createdAt: String!
 }
@@ -94,7 +99,7 @@ type Column @model{
   id: ID!
   name: String!
   columntype: String!
-  creator: User!
+  creator: User!  @connection(name: "ColumnCreatedUser")
   createdAt: String!
 }
 
