@@ -10,6 +10,7 @@
     "@testing-library/user-event": "^7.1.2",
     "ant-design": "^1.0.0",
     "antd": "^4.0.1",
+    "aws-amplify": "^3.0.10",
     "aws-appsync": "3.0.3",
     "aws-appsync-react": "3.0.3",
     "babel-plugin-import": "^1.13.0",
