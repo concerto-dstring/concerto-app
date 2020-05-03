@@ -15,7 +15,9 @@
   
   import { listCompanys } from "./graphql/queries"
   import { createUser, deleteUser, createBoard, createGroup, createCompany } from "./graphql/mutations"
-import { createStructuredSelector } from 'reselect';
+  import { createStructuredSelector } from 'reselect';
+
+  import { withAuthenticator, AmplifySignOut } from '@aws-amplify/ui-react'
 
   /* AWSAppSyncClient integrates with the Apollo Client for GraphQL */
   const client = new AWSAppSyncClient({
@@ -104,13 +106,13 @@ import { createStructuredSelector } from 'reselect';
   // }).then(result => console.log(result)).catch(console.error);
 
 
-
   class App extends React.Component {
   
     render() {
       return (
         <ApolloProvider client={client}>
           <Rehydrated>
+              <AmplifySignOut />
               <MainPage />
           </Rehydrated>
         </ApolloProvider> 
@@ -118,4 +120,4 @@ import { createStructuredSelector } from 'reselect';
     }
   }
 
-  export default App;
+  export default withAuthenticator(App);
