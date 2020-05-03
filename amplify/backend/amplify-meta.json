@@ -10,6 +10,11 @@
 			"StackName": "amplify-concerto-app-rd-231546",
 			"StackId": "arn:aws:cloudformation:ap-northeast-2:290655070383:stack/amplify-concerto-app-rd-231546/3b4858a0-8b6b-11ea-81c0-02a3be530d22",
 			"AmplifyAppId": "d5nz3bkn2128q"
+		},
+		"categories": {
+			"auth": {
+				"concertoapp2fea5048": {}
+			}
 		}
 	},
 	"api": {
@@ -31,11 +36,12 @@
 				"GraphQLAPIEndpointOutput": "https://xebve4g6nbccfme6fj74xwcf4a.appsync-api.ap-northeast-2.amazonaws.com/graphql",
 				"GraphQLAPIKeyOutput": "da2-imeyvtpjmvczlcv65vilfpshfy"
 			},
-			"lastPushTimeStamp": "2020-05-01T05:35:19.238Z",
+			"lastPushTimeStamp": "2020-05-03T04:22:18.859Z",
 			"providerMetadata": {
 				"s3TemplateURL": "https://s3.amazonaws.com/amplify-concerto-app-rd-231546-deployment/amplify-cfn-templates/api/cloudformation-template.json",
 				"logicalId": "apiconcertoapi"
-			}
+			},
+			"lastPushDirHash": "0C56e/QB5j8jfBypT9MP3hHCUno="
 		}
 	},
 	"auth": {
@@ -43,7 +49,22 @@
 			"service": "Cognito",
 			"providerPlugin": "awscloudformation",
 			"dependsOn": [],
-			"customAuth": false
+			"customAuth": false,
+			"providerMetadata": {
+				"s3TemplateURL": "https://s3.amazonaws.com/amplify-concerto-app-rd-231546-deployment/amplify-cfn-templates/auth/concertoapp2fea5048-cloudformation-template.yml",
+				"logicalId": "authconcertoapp2fea5048"
+			},
+			"lastPushTimeStamp": "2020-05-03T04:22:18.859Z",
+			"output": {
+				"AppClientSecret": "1tkvra1g77oqs7mrdcvmhu9k0p7jjf674a7lgjopm18cg5dfegvd",
+				"UserPoolId": "ap-northeast-2_6oseBcIaX",
+				"AppClientIDWeb": "45ea5274ugc2qa3vecked0bq6e",
+				"AppClientID": "20j8o1ekbp5vvoqe17lljie311",
+				"IdentityPoolId": "ap-northeast-2:80801c94-1ad5-4a54-939c-22f047de45dd",
+				"IdentityPoolName": "concertoapp2fea5048_identitypool_2fea5048__rd",
+				"UserPoolName": "concertoapp2fea5048_userpool_2fea5048"
+			},
+			"lastPushDirHash": "Vt1Q4eSxCOtkpwE7wWJTI8TC1A8="
 		}
 	}
 }
