@@ -1,6 +1,6 @@
 projects:
   concertoapi:
-    schemaPath: src/graphql/schema.json
+    schemaPath: amplify/backend/api/concertoapi/build/schema.graphql
     includes:
       - src/graphql/**/*.js
     excludes:
