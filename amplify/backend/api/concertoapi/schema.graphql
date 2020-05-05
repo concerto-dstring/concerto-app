@@ -88,7 +88,7 @@ type Group @model {
 type Row @model {
   id: ID!
   group: Group! @connection(name: "GroupRows")
-  data: [Data]
+  data: [Data]  @connection(name: "RowDatas")
   creator: User!  @connection(name: "RowCreatedUser")
   rank: String!
   createdAt: String!
@@ -108,4 +108,5 @@ type Data @model{
   id: ID!
   column: Column!
   value: String   
+  row: Row @connection(name: "RowDatas")
 }

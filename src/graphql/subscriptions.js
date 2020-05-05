@@ -1386,14 +1386,11 @@ export const onCreateRow = /* GraphQL */ `
         createdAt
       }
       data {
-        id
-        column {
+        items {
           id
-          name
-          columntype
-          createdAt
+          value
         }
-        value
+        nextToken
       }
       creator {
         id
@@ -1459,14 +1456,11 @@ export const onUpdateRow = /* GraphQL */ `
         createdAt
       }
       data {
-        id
-        column {
+        items {
           id
-          name
-          columntype
-          createdAt
+          value
         }
-        value
+        nextToken
       }
       creator {
         id
@@ -1532,14 +1526,11 @@ export const onDeleteRow = /* GraphQL */ `
         createdAt
       }
       data {
-        id
-        column {
+        items {
           id
-          name
-          columntype
-          createdAt
+          value
         }
-        value
+        nextToken
       }
       creator {
         id
@@ -1717,6 +1708,30 @@ export const onCreateData = /* GraphQL */ `
         createdAt
       }
       value
+      row {
+        id
+        group {
+          id
+          name
+          rank
+          createdAt
+        }
+        data {
+          nextToken
+        }
+        creator {
+          id
+          email
+          fname
+          lname
+          usertype
+          title
+          phone
+          createdAt
+        }
+        rank
+        createdAt
+      }
     }
   }
 `;
@@ -1741,6 +1756,30 @@ export const onUpdateData = /* GraphQL */ `
         createdAt
       }
       value
+      row {
+        id
+        group {
+          id
+          name
+          rank
+          createdAt
+        }
+        data {
+          nextToken
+        }
+        creator {
+          id
+          email
+          fname
+          lname
+          usertype
+          title
+          phone
+          createdAt
+        }
+        rank
+        createdAt
+      }
     }
   }
 `;
@@ -1765,6 +1804,30 @@ export const onDeleteData = /* GraphQL */ `
         createdAt
       }
       value
+      row {
+        id
+        group {
+          id
+          name
+          rank
+          createdAt
+        }
+        data {
+          nextToken
+        }
+        creator {
+          id
+          email
+          fname
+          lname
+          usertype
+          title
+          phone
+          createdAt
+        }
+        rank
+        createdAt
+      }
     }
   }
 `;

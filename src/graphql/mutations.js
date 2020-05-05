@@ -1443,14 +1443,11 @@ export const createRow = /* GraphQL */ `
         createdAt
       }
       data {
-        id
-        column {
+        items {
           id
-          name
-          columntype
-          createdAt
+          value
         }
-        value
+        nextToken
       }
       creator {
         id
@@ -1519,14 +1516,11 @@ export const updateRow = /* GraphQL */ `
         createdAt
       }
       data {
-        id
-        column {
+        items {
           id
-          name
-          columntype
-          createdAt
+          value
         }
-        value
+        nextToken
       }
       creator {
         id
@@ -1595,14 +1589,11 @@ export const deleteRow = /* GraphQL */ `
         createdAt
       }
       data {
-        id
-        column {
+        items {
           id
-          name
-          columntype
-          createdAt
+          value
         }
-        value
+        nextToken
       }
       creator {
         id
@@ -1792,6 +1783,30 @@ export const createData = /* GraphQL */ `
         createdAt
       }
       value
+      row {
+        id
+        group {
+          id
+          name
+          rank
+          createdAt
+        }
+        data {
+          nextToken
+        }
+        creator {
+          id
+          email
+          fname
+          lname
+          usertype
+          title
+          phone
+          createdAt
+        }
+        rank
+        createdAt
+      }
     }
   }
 `;
@@ -1819,6 +1834,30 @@ export const updateData = /* GraphQL */ `
         createdAt
       }
       value
+      row {
+        id
+        group {
+          id
+          name
+          rank
+          createdAt
+        }
+        data {
+          nextToken
+        }
+        creator {
+          id
+          email
+          fname
+          lname
+          usertype
+          title
+          phone
+          createdAt
+        }
+        rank
+        createdAt
+      }
     }
   }
 `;
@@ -1846,6 +1885,30 @@ export const deleteData = /* GraphQL */ `
         createdAt
       }
       value
+      row {
+        id
+        group {
+          id
+          name
+          rank
+          createdAt
+        }
+        data {
+          nextToken
+        }
+        creator {
+          id
+          email
+          fname
+          lname
+          usertype
+          title
+          phone
+          createdAt
+        }
+        rank
+        createdAt
+      }
     }
   }
 `;
