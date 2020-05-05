@@ -39,6 +39,7 @@
   
     render() {
       let dataset = new MainTableDataStore();
+      dataset.getCurrentUser(client, 'c20554ef-9a4d-4f1c-b286-e7e7f0dd799c')
       return (
         <ApolloProvider client={client}>
           <Rehydrated>

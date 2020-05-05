@@ -256,6 +256,7 @@ export const getUser = /* GraphQL */ `
           id
           name
           rank
+          isCollapsed
           createdAt
         }
         nextToken
@@ -331,6 +332,7 @@ export const getBoard = /* GraphQL */ `
           id
           name
           rank
+          isCollapsed
           createdAt
         }
         nextToken
@@ -538,6 +540,7 @@ export const getGroup = /* GraphQL */ `
         }
       }
       rank
+      isCollapsed
       createdAt
     }
   }
@@ -571,6 +574,7 @@ export const listGroups = /* GraphQL */ `
           createdAt
         }
         rank
+        isCollapsed
         createdAt
       }
       nextToken
@@ -603,6 +607,7 @@ export const getRow = /* GraphQL */ `
           createdAt
         }
         rank
+        isCollapsed
         createdAt
       }
       data {
@@ -663,6 +668,7 @@ export const listRows = /* GraphQL */ `
           id
           name
           rank
+          isCollapsed
           createdAt
         }
         data {

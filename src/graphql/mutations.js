@@ -655,6 +655,7 @@ export const createUser = /* GraphQL */ `
           id
           name
           rank
+          isCollapsed
           createdAt
         }
         nextToken
@@ -748,6 +749,7 @@ export const updateUser = /* GraphQL */ `
           id
           name
           rank
+          isCollapsed
           createdAt
         }
         nextToken
@@ -841,6 +843,7 @@ export const deleteUser = /* GraphQL */ `
           id
           name
           rank
+          isCollapsed
           createdAt
         }
         nextToken
@@ -878,6 +881,7 @@ export const createBoard = /* GraphQL */ `
           id
           name
           rank
+          isCollapsed
           createdAt
         }
         nextToken
@@ -975,6 +979,7 @@ export const updateBoard = /* GraphQL */ `
           id
           name
           rank
+          isCollapsed
           createdAt
         }
         nextToken
@@ -1072,6 +1077,7 @@ export const deleteBoard = /* GraphQL */ `
           id
           name
           rank
+          isCollapsed
           createdAt
         }
         nextToken
@@ -1237,6 +1243,7 @@ export const createGroup = /* GraphQL */ `
         }
       }
       rank
+      isCollapsed
       createdAt
     }
   }
@@ -1322,6 +1329,7 @@ export const updateGroup = /* GraphQL */ `
         }
       }
       rank
+      isCollapsed
       createdAt
     }
   }
@@ -1407,6 +1415,7 @@ export const deleteGroup = /* GraphQL */ `
         }
       }
       rank
+      isCollapsed
       createdAt
     }
   }
@@ -1440,6 +1449,7 @@ export const createRow = /* GraphQL */ `
           createdAt
         }
         rank
+        isCollapsed
         createdAt
       }
       data {
@@ -1516,6 +1526,7 @@ export const updateRow = /* GraphQL */ `
           createdAt
         }
         rank
+        isCollapsed
         createdAt
       }
       data {
@@ -1592,6 +1603,7 @@ export const deleteRow = /* GraphQL */ `
           createdAt
         }
         rank
+        isCollapsed
         createdAt
       }
       data {

@@ -625,6 +625,7 @@ export const onCreateUser = /* GraphQL */ `
           id
           name
           rank
+          isCollapsed
           createdAt
         }
         nextToken
@@ -715,6 +716,7 @@ export const onUpdateUser = /* GraphQL */ `
           id
           name
           rank
+          isCollapsed
           createdAt
         }
         nextToken
@@ -805,6 +807,7 @@ export const onDeleteUser = /* GraphQL */ `
           id
           name
           rank
+          isCollapsed
           createdAt
         }
         nextToken
@@ -839,6 +842,7 @@ export const onCreateBoard = /* GraphQL */ `
           id
           name
           rank
+          isCollapsed
           createdAt
         }
         nextToken
@@ -933,6 +937,7 @@ export const onUpdateBoard = /* GraphQL */ `
           id
           name
           rank
+          isCollapsed
           createdAt
         }
         nextToken
@@ -1027,6 +1032,7 @@ export const onDeleteBoard = /* GraphQL */ `
           id
           name
           rank
+          isCollapsed
           createdAt
         }
         nextToken
@@ -1189,6 +1195,7 @@ export const onCreateGroup = /* GraphQL */ `
         }
       }
       rank
+      isCollapsed
       createdAt
     }
   }
@@ -1271,6 +1278,7 @@ export const onUpdateGroup = /* GraphQL */ `
         }
       }
       rank
+      isCollapsed
       createdAt
     }
   }
@@ -1353,6 +1361,7 @@ export const onDeleteGroup = /* GraphQL */ `
         }
       }
       rank
+      isCollapsed
       createdAt
     }
   }
@@ -1383,6 +1392,7 @@ export const onCreateRow = /* GraphQL */ `
           createdAt
         }
         rank
+        isCollapsed
         createdAt
       }
       data {
@@ -1456,6 +1466,7 @@ export const onUpdateRow = /* GraphQL */ `
           createdAt
         }
         rank
+        isCollapsed
         createdAt
       }
       data {
@@ -1529,6 +1540,7 @@ export const onDeleteRow = /* GraphQL */ `
           createdAt
         }
         rank
+        isCollapsed
         createdAt
       }
       data {

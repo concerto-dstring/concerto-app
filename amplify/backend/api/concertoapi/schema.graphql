@@ -81,6 +81,7 @@ type Group @model {
   rows: [Row] @connection(name: "GroupRows")
   creator: User! @connection(name: "GroupCreatedUser")
   rank: String!
+  isCollapsed: Boolean!
   createdAt: String!
 }
 
