@@ -611,14 +611,11 @@ export const getRow = /* GraphQL */ `
         createdAt
       }
       data {
-        id
-        column {
+        items {
           id
-          name
-          columntype
-          createdAt
+          value
         }
-        value
+        nextToken
       }
       creator {
         id
@@ -672,8 +669,7 @@ export const listRows = /* GraphQL */ `
           createdAt
         }
         data {
-          id
-          value
+          nextToken
         }
         creator {
           id
@@ -780,6 +776,30 @@ export const getData = /* GraphQL */ `
         createdAt
       }
       value
+      row {
+        id
+        group {
+          id
+          name
+          rank
+          createdAt
+        }
+        data {
+          nextToken
+        }
+        creator {
+          id
+          email
+          fname
+          lname
+          usertype
+          title
+          phone
+          createdAt
+        }
+        rank
+        createdAt
+      }
     }
   }
 `;
@@ -799,6 +819,11 @@ export const listDatas = /* GraphQL */ `
           createdAt
         }
         value
+        row {
+          id
+          rank
+          createdAt
+        }
       }
       nextToken
     }

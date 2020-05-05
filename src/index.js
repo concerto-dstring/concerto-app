@@ -11,6 +11,11 @@ import { BrowserRouter } from "react-router-dom";
 import { ConfigProvider } from 'antd'
 import zh_CN from 'antd/es/locale/zh_CN'
 
+// amplify
+import Amplify from 'aws-amplify'
+import config from './aws-exports'
+Amplify.configure(config)
+
 ReactDOM.render(
   <Provider store={store}>
     <ConfigProvider locale={zh_CN}>
