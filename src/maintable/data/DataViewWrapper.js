@@ -71,7 +71,6 @@ class DataViewWrapper {
      */
     getIndexMap = (dataset, indexMap) => {
       // 先过滤折叠的分区
-      console.log(dataset._groups)
       let groups = dataset._groups.filter(group => group.isCollapsed)
 
       let indexMapData = [] 
@@ -241,11 +240,11 @@ class DataViewWrapper {
       return '';
   }
 
-    addNewRow(rowIndex, newItem) {
+    addNewRow(rowIndex, newItem, apolloClient) {
         if (newItem !== '') {
           if (getSubLevel(rowIndex) === 0) {
             let row = this._indexMap[rowIndex];
-            let rowKey = this._dataset.addNewRow(row.groupKey, newItem);
+            let rowKey = this._dataset.addNewRow(row.groupKey, newItem, apolloClient);
             for (let row = this._indexMap.length; row > rowIndex; row--) {
                 this._indexMap[row] = this._indexMap[row-1]; 
             }
@@ -365,8 +364,8 @@ class DataViewWrapper {
      * remove a group from the backend dataset by the groupKey
      * @param {*} groupKey 
      */
-    removeGroup(groupKey) {
-        return this._dataset.removeGroup(groupKey);
+    removeGroup(groupKey, apolloClient) {
+        return this._dataset.removeGroup(groupKey, apolloClient);
     }
 
     undoRemoveGroup(groupIndex, group) {
@@ -450,7 +449,7 @@ class DataViewWrapper {
      * 获取当前用户
      */
     getCurrentUser() {
-      return this._dataset.getCurrentUser()
+      return this._dataset._currentUser
     }
 
     getColumnRows(rowIndex) {
@@ -615,7 +614,7 @@ class DataViewWrapper {
       let minDate
       let maxDate
 
-      if (rows) {
+      if (rows && Object.keys(this._dataset._rowData).length > 0) {
         rows.map(rowKey => {
           let dateValue = this._dataset.getObjectAt(rowKey)[columnKey]
           

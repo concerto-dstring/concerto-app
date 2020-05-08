@@ -8,7 +8,7 @@ import cx from './vendor_upstream/stubs/cx';
 import { sumPropWidths } from './helper/widthHelper';
 import Scrollbar from './Scrollbar';
 import FixedDataTableTranslateDOMPosition from './FixedDataTableTranslateDOMPosition';
-
+import { withApollo } from 'react-apollo'
 import './css/layout/fixedDataTableRowLayout.css';
 import './css/style/fixedDataTableRow.css';
 import './css/style/fixedDataTable.css';
@@ -20,7 +20,7 @@ import './css/style/fixedDataTable.css';
  * only <FixedDataTable /> should use the component internally.
  */
 
-
+@withApollo
 class MainTableAddRow extends React.Component {
 
   static propTypes = {
@@ -102,14 +102,14 @@ class MainTableAddRow extends React.Component {
   _onKeyPress(event) {
     if (event.key === 'Enter') {
       if (this.props.onNewRowAdd) {
-        this.props.onNewRowAdd(this.props.index, this.state.newItem);
+        this.props.onNewRowAdd(this.props.index, this.state.newItem, this.props.client);
       }
     }
   }
 
   _onNewrowButton(props){
     if (props.onNewRowAdd) {
-      props.onNewRowAdd(props.index, this.state.newItem);
+      props.onNewRowAdd(props.index, this.state.newItem, props.client);
     }
   }
 

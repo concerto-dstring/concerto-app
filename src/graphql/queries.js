@@ -224,10 +224,7 @@ export const getUser = /* GraphQL */ `
           nextToken
         }
         columns {
-          id
-          name
-          columntype
-          createdAt
+          nextToken
         }
         creator {
           id
@@ -256,7 +253,9 @@ export const getUser = /* GraphQL */ `
           id
           name
           rank
+          color
           isCollapsed
+          deleteFlag
           createdAt
         }
         nextToken
@@ -266,6 +265,11 @@ export const getUser = /* GraphQL */ `
           id
           name
           columntype
+          columnComponentType
+          fixed
+          level
+          collpse
+          rank
           createdAt
         }
         nextToken
@@ -332,26 +336,26 @@ export const getBoard = /* GraphQL */ `
           id
           name
           rank
+          color
           isCollapsed
+          deleteFlag
           createdAt
         }
         nextToken
       }
       columns {
-        id
-        name
-        columntype
-        creator {
+        items {
           id
-          email
-          fname
-          lname
-          usertype
-          title
-          phone
+          name
+          columntype
+          columnComponentType
+          fixed
+          level
+          collpse
+          rank
           createdAt
         }
-        createdAt
+        nextToken
       }
       creator {
         id
@@ -431,10 +435,7 @@ export const listBoards = /* GraphQL */ `
           nextToken
         }
         columns {
-          id
-          name
-          columntype
-          createdAt
+          nextToken
         }
         creator {
           id
@@ -474,10 +475,7 @@ export const getGroup = /* GraphQL */ `
           nextToken
         }
         columns {
-          id
-          name
-          columntype
-          createdAt
+          nextToken
         }
         creator {
           id
@@ -540,7 +538,9 @@ export const getGroup = /* GraphQL */ `
         }
       }
       rank
+      color
       isCollapsed
+      deleteFlag
       createdAt
     }
   }
@@ -574,7 +574,9 @@ export const listGroups = /* GraphQL */ `
           createdAt
         }
         rank
+        color
         isCollapsed
+        deleteFlag
         createdAt
       }
       nextToken
@@ -607,7 +609,9 @@ export const getRow = /* GraphQL */ `
           createdAt
         }
         rank
+        color
         isCollapsed
+        deleteFlag
         createdAt
       }
       data {
@@ -665,7 +669,9 @@ export const listRows = /* GraphQL */ `
           id
           name
           rank
+          color
           isCollapsed
+          deleteFlag
           createdAt
         }
         data {
@@ -692,8 +698,44 @@ export const getColumn = /* GraphQL */ `
   query GetColumn($id: ID!) {
     getColumn(id: $id) {
       id
+      board {
+        id
+        name
+        groups {
+          nextToken
+        }
+        columns {
+          nextToken
+        }
+        creator {
+          id
+          email
+          fname
+          lname
+          usertype
+          title
+          phone
+          createdAt
+        }
+        subscribers {
+          id
+          email
+          fname
+          lname
+          usertype
+          title
+          phone
+          createdAt
+        }
+        createdAt
+      }
       name
       columntype
+      columnComponentType
+      fixed
+      level
+      collpse
+      rank
       creator {
         id
         email
@@ -725,6 +767,13 @@ export const getColumn = /* GraphQL */ `
         }
       }
       createdAt
+      rowColumn {
+        items {
+          id
+          value
+        }
+        nextToken
+      }
     }
   }
 `;
@@ -737,8 +786,18 @@ export const listColumns = /* GraphQL */ `
     listColumns(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
+        board {
+          id
+          name
+          createdAt
+        }
         name
         columntype
+        columnComponentType
+        fixed
+        level
+        collpse
+        rank
         creator {
           id
           email
@@ -750,6 +809,9 @@ export const listColumns = /* GraphQL */ `
           createdAt
         }
         createdAt
+        rowColumn {
+          nextToken
+        }
       }
       nextToken
     }
@@ -761,8 +823,18 @@ export const getData = /* GraphQL */ `
       id
       column {
         id
+        board {
+          id
+          name
+          createdAt
+        }
         name
         columntype
+        columnComponentType
+        fixed
+        level
+        collpse
+        rank
         creator {
           id
           email
@@ -774,6 +846,9 @@ export const getData = /* GraphQL */ `
           createdAt
         }
         createdAt
+        rowColumn {
+          nextToken
+        }
       }
       value
       row {
@@ -782,6 +857,9 @@ export const getData = /* GraphQL */ `
           id
           name
           rank
+          color
+          isCollapsed
+          deleteFlag
           createdAt
         }
         data {
@@ -816,6 +894,11 @@ export const listDatas = /* GraphQL */ `
           id
           name
           columntype
+          columnComponentType
+          fixed
+          level
+          collpse
+          rank
           createdAt
         }
         value

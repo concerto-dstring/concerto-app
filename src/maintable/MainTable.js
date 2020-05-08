@@ -323,7 +323,7 @@ class MainTable extends React.Component {
 
     _onColumnAddCallback(e) {
         const [columnComponentType, level] = e.key.split('-');
-        this._dataset.addNewColumn(e.item.node.innerText, level * 1, columnComponentType);
+        this._dataset.addNewColumn(e.item.node.innerText, level * 1, columnComponentType, this.props.client);
     }
 
     _getColumnName(columnKey) {
@@ -340,6 +340,7 @@ class MainTable extends React.Component {
     getColumnTemplate(columnKey) {
         let columns = this.state.columns;
         let colTemplates = {};
+ 
         for (let i  = 0; i < columns.length; i ++) {
             let column = columns[i];
             if (columnKey === column.columnKey) {
@@ -580,6 +581,7 @@ class MainTable extends React.Component {
          <TableContext.Provider value={this.state}>
             <div>
                 <FilterableDataTable
+                    apolloClient={this.props.client}
                     ref={this.handleRef}
                     onColumnReorderEndCallback={this._onColumnReorderEndCallback}
                     onColumnResizeEndCallback={this._onColumnResizeEndCallback}
@@ -629,7 +631,7 @@ class MainTable extends React.Component {
 export default Dimensions({
     getHeight: function(element) {
       // 减去上面面包屑的高度
-      return window.innerHeight - document.getElementById("appBread").clientHeight - 94;
+      return window.innerHeight - document.getElementById("appBread").clientHeight - 134;
     },
     getWidth: function(element) {
       return window.innerWidth - 24;

@@ -18,14 +18,14 @@ const { Panel } = Collapse;
 const { Header, Content, Sider } = Layout;
 
 // Sider默认宽度
-const defaultSideWidth = 300
+const defaultSiderWidth = 300
 
 @withApollo
 class MainPage extends React.Component {
   constructor(props){
     super(props)
     this.state = {
-      sideWidth: defaultSideWidth,
+      siderWidth: defaultSiderWidth,
       collapsed: false,
       dataset: props.dataset,
       boardMenus: [],
@@ -50,27 +50,35 @@ class MainPage extends React.Component {
       this.setState({
         boardMenus: menus,
         selectedKey,
-        contentTitle
+        contentTitle,
+        dataset: this.props.dataset,
       })
     }
     else {
       this.setState({
-        dashboardMenus: menus
+        dashboardMenus: menus,
+        dataset: this.props.dataset,
       })
     }
   }
 
   toggle = () => {
     this.setState({
-      sideWidth: !this.state.collapsed ? 0 : defaultSideWidth,
+      siderWidth: !this.state.collapsed ? 0 : defaultSiderWidth,
       collapsed: !this.state.collapsed,
     });
   };
+
+  setBusy = (busy) => {
+    this.setState({
+      busy: busy
+    })
+  }
   
   nativeGetTableStore = (id, name, isBoard) => {
     const { dataset } = this.state
     if (isBoard) {
-      dataset.fetchBackendBoardData(this.props.client, id)
+      dataset.fetchBackendBoardData(this.props.client, id, null, this.setBusy)
       this.setState({
         selectedKey: id,
         contentTitle: name,
@@ -97,7 +105,7 @@ class MainPage extends React.Component {
   }
 
   getBodyContent = () => {
-    const { dataset, sideWidth, contentTitle } = this.state
+    const { dataset, siderWidth, contentTitle } = this.state
     return (
       <>
         <div id="appBread">
@@ -158,19 +166,19 @@ class MainPage extends React.Component {
             <Route exact component={()=>
                 <MainTable
                   data={dataset} 
-                  sideWidth={sideWidth} 
+                  siderWidth={siderWidth} 
                 />}
               />
               <Route exact path="/borad" component={()=>
                 <MainTable
                   data={dataset} 
-                  sideWidth={sideWidth} 
+                  siderWidth={siderWidth} 
                 />}
               />
               <Route exact path="/dashborad" component={()=>
                 <MainTable
                   data={dataset} 
-                  sideWidth={sideWidth} 
+                  siderWidth={siderWidth} 
                 />}
               />
         </Content>
@@ -215,7 +223,7 @@ class MainPage extends React.Component {
                   </Link>
                 </div>
                 <div className="body_left_sider_panel_menu_item_count" style={style}>
-                  {dataset ? dataset._sizeRows : 0}
+                  {dataset ? Object.keys(dataset._rowData).length : 0}
                 </div>
               </div>
             )
@@ -226,7 +234,7 @@ class MainPage extends React.Component {
   }
 
   render(){
-    const { dataset, sideWidth, collapsed, boardMenus, dashboardMenus } = this.state
+    const { siderWidth, collapsed, boardMenus, dashboardMenus } = this.state
     return (
       <Router>
         <Layout>
@@ -251,8 +259,8 @@ class MainPage extends React.Component {
           <Layout>
             <Sider 
               collapsible={true} 
-              collapsedWidth={sideWidth} 
-              width={sideWidth}
+              collapsedWidth={siderWidth} 
+              width={siderWidth}
               trigger={null} 
               collapsed={collapsed}
               className="body_left_sider"

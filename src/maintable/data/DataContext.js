@@ -12,7 +12,8 @@ const TableContext = React.createContext();
 const DataVersionContext = React.createContext({
   data: null,
   version: 0,
-  filterInputValue: null
+  filterInputValue: null,
+  apolloClient: null
 });
 
 function DataContext(Wrapped) {
@@ -27,7 +28,8 @@ function DataContext(Wrapped) {
       this.state = {
         data: props.data,
         version: 0,
-        filterInputValue: props.filterInputValue
+        filterInputValue: props.filterInputValue,
+        apolloClient: props.apolloClient
       };
     }
 

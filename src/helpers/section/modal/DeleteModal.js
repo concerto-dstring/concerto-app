@@ -7,7 +7,9 @@ import { dealSectionDeleteModal, dealSectionUndoDeleteMessage } from '../../../m
 import { mapRowActionStateToProps } from '../../../maintable/data/mapStateToProps'
 
 import '../../../maintable/css/style/SectionMenu.less'
+import { withApollo } from 'react-apollo'
 
+@withApollo
 @connect(mapRowActionStateToProps, { dealRowDeleteModal, dealSectionDeleteModal, dealSectionUndoDeleteMessage })
 class DeleteModal extends PureComponent {
 
@@ -31,7 +33,7 @@ class DeleteModal extends PureComponent {
     
     if (isSection) {
       // 删除分区
-      let groupIndex = tableData.removeGroup(group.groupKey)
+      let groupIndex = tableData.removeGroup(group.groupKey, this.props.client)
       this.handleCancelClick(isSection)
 
       // 显示撤销窗口
