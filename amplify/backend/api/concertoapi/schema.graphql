@@ -42,7 +42,7 @@ type User @model {
   email: String!
   fname: String!
   lname: String!
-  usertype : String!
+  usertype: String!
   title: String
   phone: String
   teams: [TeamUser] @connection(keyName: "byUser", fields: ["id"])
@@ -67,7 +67,7 @@ type Board @model {
   id: ID!
   name: String!
   groups: [Group] @connection(name: "BoardGroups")
-  columns: [Column]
+  columns: [Column] @connection(name: "BoardColumns")
   creator: User!  @connection(name: "BoardCreatedUser")
   subscribers: [User]
   createdAt: String!
@@ -81,6 +81,9 @@ type Group @model {
   rows: [Row] @connection(name: "GroupRows")
   creator: User! @connection(name: "GroupCreatedUser")
   rank: String!
+  color: String!
+  isCollapsed: Boolean!
+  deleteFlag: Boolean!
   createdAt: String!
 }
 
@@ -97,16 +100,23 @@ type Row @model {
 ## column library 
 type Column @model{
   id: ID!
+  board: Board! @connection(name: "BoardColumns")
   name: String!
   columntype: String!
+  columnComponentType: String
+  fixed: Boolean!
+  level: Int!
+  collpse: Boolean!
+  rank: String!
   creator: User!  @connection(name: "ColumnCreatedUser")
   createdAt: String!
+  rowColumn: [Data] @connection(name: "rowColumn")
 }
 
 ## object instance of one column type
 type Data @model{
   id: ID!
-  column: Column!
+  column: Column! @connection(name: "rowColumn")
   value: String   
   row: Row @connection(name: "RowDatas")
 }
