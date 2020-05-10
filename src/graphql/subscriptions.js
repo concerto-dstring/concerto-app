@@ -24,9 +24,7 @@ export const onCreateCompany = /* GraphQL */ `
           nextToken
         }
         boardSubscribed {
-          id
-          name
-          createdAt
+          nextToken
         }
         groupCreated {
           nextToken
@@ -42,6 +40,7 @@ export const onCreateCompany = /* GraphQL */ `
         items {
           id
           name
+          companyId
           upteam
           downteams
           createdAt
@@ -75,9 +74,7 @@ export const onUpdateCompany = /* GraphQL */ `
           nextToken
         }
         boardSubscribed {
-          id
-          name
-          createdAt
+          nextToken
         }
         groupCreated {
           nextToken
@@ -93,6 +90,7 @@ export const onUpdateCompany = /* GraphQL */ `
         items {
           id
           name
+          companyId
           upteam
           downteams
           createdAt
@@ -126,9 +124,7 @@ export const onDeleteCompany = /* GraphQL */ `
           nextToken
         }
         boardSubscribed {
-          id
-          name
-          createdAt
+          nextToken
         }
         groupCreated {
           nextToken
@@ -144,6 +140,7 @@ export const onDeleteCompany = /* GraphQL */ `
         items {
           id
           name
+          companyId
           upteam
           downteams
           createdAt
@@ -175,9 +172,7 @@ export const onCreateTeam = /* GraphQL */ `
           nextToken
         }
         boardSubscribed {
-          id
-          name
-          createdAt
+          nextToken
         }
         groupCreated {
           nextToken
@@ -189,6 +184,7 @@ export const onCreateTeam = /* GraphQL */ `
           nextToken
         }
       }
+      companyId
       company {
         id
         name
@@ -244,9 +240,7 @@ export const onUpdateTeam = /* GraphQL */ `
           nextToken
         }
         boardSubscribed {
-          id
-          name
-          createdAt
+          nextToken
         }
         groupCreated {
           nextToken
@@ -258,6 +252,7 @@ export const onUpdateTeam = /* GraphQL */ `
           nextToken
         }
       }
+      companyId
       company {
         id
         name
@@ -313,9 +308,7 @@ export const onDeleteTeam = /* GraphQL */ `
           nextToken
         }
         boardSubscribed {
-          id
-          name
-          createdAt
+          nextToken
         }
         groupCreated {
           nextToken
@@ -327,6 +320,7 @@ export const onDeleteTeam = /* GraphQL */ `
           nextToken
         }
       }
+      companyId
       company {
         id
         name
@@ -380,6 +374,7 @@ export const onCreateTeamUser = /* GraphQL */ `
           phone
           createdAt
         }
+        companyId
         company {
           id
           name
@@ -410,9 +405,7 @@ export const onCreateTeamUser = /* GraphQL */ `
           nextToken
         }
         boardSubscribed {
-          id
-          name
-          createdAt
+          nextToken
         }
         groupCreated {
           nextToken
@@ -446,6 +439,7 @@ export const onUpdateTeamUser = /* GraphQL */ `
           phone
           createdAt
         }
+        companyId
         company {
           id
           name
@@ -476,9 +470,7 @@ export const onUpdateTeamUser = /* GraphQL */ `
           nextToken
         }
         boardSubscribed {
-          id
-          name
-          createdAt
+          nextToken
         }
         groupCreated {
           nextToken
@@ -512,6 +504,7 @@ export const onDeleteTeamUser = /* GraphQL */ `
           phone
           createdAt
         }
+        companyId
         company {
           id
           name
@@ -542,9 +535,7 @@ export const onDeleteTeamUser = /* GraphQL */ `
           nextToken
         }
         boardSubscribed {
-          id
-          name
-          createdAt
+          nextToken
         }
         groupCreated {
           nextToken
@@ -582,48 +573,25 @@ export const onCreateUser = /* GraphQL */ `
         items {
           id
           name
+          creatorId
           createdAt
         }
         nextToken
       }
       boardSubscribed {
-        id
-        name
-        groups {
-          nextToken
-        }
-        columns {
+        items {
           id
-          name
-          columntype
-          createdAt
+          boardSubscribedID
+          userID
         }
-        creator {
-          id
-          email
-          fname
-          lname
-          usertype
-          title
-          phone
-          createdAt
-        }
-        subscribers {
-          id
-          email
-          fname
-          lname
-          usertype
-          title
-          phone
-          createdAt
-        }
-        createdAt
+        nextToken
       }
       groupCreated {
         items {
           id
           name
+          boardId
+          creatorId
           rank
           createdAt
         }
@@ -634,6 +602,8 @@ export const onCreateUser = /* GraphQL */ `
           id
           name
           columntype
+          columnComponentType
+          creatorId
           createdAt
         }
         nextToken
@@ -641,6 +611,8 @@ export const onCreateUser = /* GraphQL */ `
       rowCreated {
         items {
           id
+          groupId
+          createorId
           rank
           createdAt
         }
@@ -672,48 +644,25 @@ export const onUpdateUser = /* GraphQL */ `
         items {
           id
           name
+          creatorId
           createdAt
         }
         nextToken
       }
       boardSubscribed {
-        id
-        name
-        groups {
-          nextToken
-        }
-        columns {
+        items {
           id
-          name
-          columntype
-          createdAt
+          boardSubscribedID
+          userID
         }
-        creator {
-          id
-          email
-          fname
-          lname
-          usertype
-          title
-          phone
-          createdAt
-        }
-        subscribers {
-          id
-          email
-          fname
-          lname
-          usertype
-          title
-          phone
-          createdAt
-        }
-        createdAt
+        nextToken
       }
       groupCreated {
         items {
           id
           name
+          boardId
+          creatorId
           rank
           createdAt
         }
@@ -724,6 +673,8 @@ export const onUpdateUser = /* GraphQL */ `
           id
           name
           columntype
+          columnComponentType
+          creatorId
           createdAt
         }
         nextToken
@@ -731,6 +682,8 @@ export const onUpdateUser = /* GraphQL */ `
       rowCreated {
         items {
           id
+          groupId
+          createorId
           rank
           createdAt
         }
@@ -762,10 +715,60 @@ export const onDeleteUser = /* GraphQL */ `
         items {
           id
           name
+          creatorId
           createdAt
         }
         nextToken
       }
+      boardSubscribed {
+        items {
+          id
+          boardSubscribedID
+          userID
+        }
+        nextToken
+      }
+      groupCreated {
+        items {
+          id
+          name
+          boardId
+          creatorId
+          rank
+          createdAt
+        }
+        nextToken
+      }
+      columnCreated {
+        items {
+          id
+          name
+          columntype
+          columnComponentType
+          creatorId
+          createdAt
+        }
+        nextToken
+      }
+      rowCreated {
+        items {
+          id
+          groupId
+          createorId
+          rank
+          createdAt
+        }
+        nextToken
+      }
+    }
+  }
+`;
+export const onCreateBoardSubscribedUser = /* GraphQL */ `
+  subscription OnCreateBoardSubscribedUser {
+    onCreateBoardSubscribedUser {
+      id
+      boardSubscribedID
+      userID
       boardSubscribed {
         id
         name
@@ -773,11 +776,9 @@ export const onDeleteUser = /* GraphQL */ `
           nextToken
         }
         columns {
-          id
-          name
-          columntype
-          createdAt
+          nextToken
         }
+        creatorId
         creator {
           id
           email
@@ -789,6 +790,58 @@ export const onDeleteUser = /* GraphQL */ `
           createdAt
         }
         subscribers {
+          nextToken
+        }
+        createdAt
+      }
+      user {
+        id
+        email
+        fname
+        lname
+        usertype
+        title
+        phone
+        teams {
+          nextToken
+        }
+        createdAt
+        boardCreated {
+          nextToken
+        }
+        boardSubscribed {
+          nextToken
+        }
+        groupCreated {
+          nextToken
+        }
+        columnCreated {
+          nextToken
+        }
+        rowCreated {
+          nextToken
+        }
+      }
+    }
+  }
+`;
+export const onUpdateBoardSubscribedUser = /* GraphQL */ `
+  subscription OnUpdateBoardSubscribedUser {
+    onUpdateBoardSubscribedUser {
+      id
+      boardSubscribedID
+      userID
+      boardSubscribed {
+        id
+        name
+        groups {
+          nextToken
+        }
+        columns {
+          nextToken
+        }
+        creatorId
+        creator {
           id
           email
           fname
@@ -798,33 +851,100 @@ export const onDeleteUser = /* GraphQL */ `
           phone
           createdAt
         }
+        subscribers {
+          nextToken
+        }
         createdAt
       }
-      groupCreated {
-        items {
-          id
-          name
-          rank
-          createdAt
+      user {
+        id
+        email
+        fname
+        lname
+        usertype
+        title
+        phone
+        teams {
+          nextToken
         }
-        nextToken
+        createdAt
+        boardCreated {
+          nextToken
+        }
+        boardSubscribed {
+          nextToken
+        }
+        groupCreated {
+          nextToken
+        }
+        columnCreated {
+          nextToken
+        }
+        rowCreated {
+          nextToken
+        }
       }
-      columnCreated {
-        items {
+    }
+  }
+`;
+export const onDeleteBoardSubscribedUser = /* GraphQL */ `
+  subscription OnDeleteBoardSubscribedUser {
+    onDeleteBoardSubscribedUser {
+      id
+      boardSubscribedID
+      userID
+      boardSubscribed {
+        id
+        name
+        groups {
+          nextToken
+        }
+        columns {
+          nextToken
+        }
+        creatorId
+        creator {
           id
-          name
-          columntype
+          email
+          fname
+          lname
+          usertype
+          title
+          phone
           createdAt
         }
-        nextToken
+        subscribers {
+          nextToken
+        }
+        createdAt
       }
-      rowCreated {
-        items {
-          id
-          rank
-          createdAt
+      user {
+        id
+        email
+        fname
+        lname
+        usertype
+        title
+        phone
+        teams {
+          nextToken
         }
-        nextToken
+        createdAt
+        boardCreated {
+          nextToken
+        }
+        boardSubscribed {
+          nextToken
+        }
+        groupCreated {
+          nextToken
+        }
+        columnCreated {
+          nextToken
+        }
+        rowCreated {
+          nextToken
+        }
       }
     }
   }
@@ -838,27 +958,26 @@ export const onCreateBoard = /* GraphQL */ `
         items {
           id
           name
+          boardId
+          creatorId
           rank
           createdAt
         }
         nextToken
       }
       columns {
-        id
-        name
-        columntype
-        creator {
+        items {
           id
-          email
-          fname
-          lname
-          usertype
-          title
-          phone
-          createdAt
+          boardId
+          columnId
+          fixed
+          level
+          collpse
+          rank
         }
-        createdAt
+        nextToken
       }
+      creatorId
       creator {
         id
         email
@@ -875,9 +994,7 @@ export const onCreateBoard = /* GraphQL */ `
           nextToken
         }
         boardSubscribed {
-          id
-          name
-          createdAt
+          nextToken
         }
         groupCreated {
           nextToken
@@ -890,34 +1007,12 @@ export const onCreateBoard = /* GraphQL */ `
         }
       }
       subscribers {
-        id
-        email
-        fname
-        lname
-        usertype
-        title
-        phone
-        teams {
-          nextToken
-        }
-        createdAt
-        boardCreated {
-          nextToken
-        }
-        boardSubscribed {
+        items {
           id
-          name
-          createdAt
+          boardSubscribedID
+          userID
         }
-        groupCreated {
-          nextToken
-        }
-        columnCreated {
-          nextToken
-        }
-        rowCreated {
-          nextToken
-        }
+        nextToken
       }
       createdAt
     }
@@ -932,27 +1027,26 @@ export const onUpdateBoard = /* GraphQL */ `
         items {
           id
           name
+          boardId
+          creatorId
           rank
           createdAt
         }
         nextToken
       }
       columns {
-        id
-        name
-        columntype
-        creator {
+        items {
           id
-          email
-          fname
-          lname
-          usertype
-          title
-          phone
-          createdAt
+          boardId
+          columnId
+          fixed
+          level
+          collpse
+          rank
         }
-        createdAt
+        nextToken
       }
+      creatorId
       creator {
         id
         email
@@ -969,9 +1063,7 @@ export const onUpdateBoard = /* GraphQL */ `
           nextToken
         }
         boardSubscribed {
-          id
-          name
-          createdAt
+          nextToken
         }
         groupCreated {
           nextToken
@@ -984,34 +1076,12 @@ export const onUpdateBoard = /* GraphQL */ `
         }
       }
       subscribers {
-        id
-        email
-        fname
-        lname
-        usertype
-        title
-        phone
-        teams {
-          nextToken
-        }
-        createdAt
-        boardCreated {
-          nextToken
-        }
-        boardSubscribed {
+        items {
           id
-          name
-          createdAt
+          boardSubscribedID
+          userID
         }
-        groupCreated {
-          nextToken
-        }
-        columnCreated {
-          nextToken
-        }
-        rowCreated {
-          nextToken
-        }
+        nextToken
       }
       createdAt
     }
@@ -1026,27 +1096,26 @@ export const onDeleteBoard = /* GraphQL */ `
         items {
           id
           name
+          boardId
+          creatorId
           rank
           createdAt
         }
         nextToken
       }
       columns {
-        id
-        name
-        columntype
-        creator {
+        items {
           id
-          email
-          fname
-          lname
-          usertype
-          title
-          phone
-          createdAt
+          boardId
+          columnId
+          fixed
+          level
+          collpse
+          rank
         }
-        createdAt
+        nextToken
       }
+      creatorId
       creator {
         id
         email
@@ -1063,9 +1132,7 @@ export const onDeleteBoard = /* GraphQL */ `
           nextToken
         }
         boardSubscribed {
-          id
-          name
-          createdAt
+          nextToken
         }
         groupCreated {
           nextToken
@@ -1078,34 +1145,12 @@ export const onDeleteBoard = /* GraphQL */ `
         }
       }
       subscribers {
-        id
-        email
-        fname
-        lname
-        usertype
-        title
-        phone
-        teams {
-          nextToken
-        }
-        createdAt
-        boardCreated {
-          nextToken
-        }
-        boardSubscribed {
+        items {
           id
-          name
-          createdAt
+          boardSubscribedID
+          userID
         }
-        groupCreated {
-          nextToken
-        }
-        columnCreated {
-          nextToken
-        }
-        rowCreated {
-          nextToken
-        }
+        nextToken
       }
       createdAt
     }
@@ -1116,6 +1161,7 @@ export const onCreateGroup = /* GraphQL */ `
     onCreateGroup {
       id
       name
+      boardId
       board {
         id
         name
@@ -1123,11 +1169,9 @@ export const onCreateGroup = /* GraphQL */ `
           nextToken
         }
         columns {
-          id
-          name
-          columntype
-          createdAt
+          nextToken
         }
+        creatorId
         creator {
           id
           email
@@ -1139,25 +1183,21 @@ export const onCreateGroup = /* GraphQL */ `
           createdAt
         }
         subscribers {
-          id
-          email
-          fname
-          lname
-          usertype
-          title
-          phone
-          createdAt
+          nextToken
         }
         createdAt
       }
       rows {
         items {
           id
+          groupId
+          createorId
           rank
           createdAt
         }
         nextToken
       }
+      creatorId
       creator {
         id
         email
@@ -1174,9 +1214,7 @@ export const onCreateGroup = /* GraphQL */ `
           nextToken
         }
         boardSubscribed {
-          id
-          name
-          createdAt
+          nextToken
         }
         groupCreated {
           nextToken
@@ -1198,6 +1236,7 @@ export const onUpdateGroup = /* GraphQL */ `
     onUpdateGroup {
       id
       name
+      boardId
       board {
         id
         name
@@ -1205,11 +1244,9 @@ export const onUpdateGroup = /* GraphQL */ `
           nextToken
         }
         columns {
-          id
-          name
-          columntype
-          createdAt
+          nextToken
         }
+        creatorId
         creator {
           id
           email
@@ -1221,25 +1258,21 @@ export const onUpdateGroup = /* GraphQL */ `
           createdAt
         }
         subscribers {
-          id
-          email
-          fname
-          lname
-          usertype
-          title
-          phone
-          createdAt
+          nextToken
         }
         createdAt
       }
       rows {
         items {
           id
+          groupId
+          createorId
           rank
           createdAt
         }
         nextToken
       }
+      creatorId
       creator {
         id
         email
@@ -1256,9 +1289,7 @@ export const onUpdateGroup = /* GraphQL */ `
           nextToken
         }
         boardSubscribed {
-          id
-          name
-          createdAt
+          nextToken
         }
         groupCreated {
           nextToken
@@ -1280,6 +1311,7 @@ export const onDeleteGroup = /* GraphQL */ `
     onDeleteGroup {
       id
       name
+      boardId
       board {
         id
         name
@@ -1287,11 +1319,9 @@ export const onDeleteGroup = /* GraphQL */ `
           nextToken
         }
         columns {
-          id
-          name
-          columntype
-          createdAt
+          nextToken
         }
+        creatorId
         creator {
           id
           email
@@ -1303,25 +1333,21 @@ export const onDeleteGroup = /* GraphQL */ `
           createdAt
         }
         subscribers {
-          id
-          email
-          fname
-          lname
-          usertype
-          title
-          phone
-          createdAt
+          nextToken
         }
         createdAt
       }
       rows {
         items {
           id
+          groupId
+          createorId
           rank
           createdAt
         }
         nextToken
       }
+      creatorId
       creator {
         id
         email
@@ -1338,9 +1364,7 @@ export const onDeleteGroup = /* GraphQL */ `
           nextToken
         }
         boardSubscribed {
-          id
-          name
-          createdAt
+          nextToken
         }
         groupCreated {
           nextToken
@@ -1361,17 +1385,21 @@ export const onCreateRow = /* GraphQL */ `
   subscription OnCreateRow {
     onCreateRow {
       id
+      groupId
       group {
         id
         name
+        boardId
         board {
           id
           name
+          creatorId
           createdAt
         }
         rows {
           nextToken
         }
+        creatorId
         creator {
           id
           email
@@ -1385,16 +1413,16 @@ export const onCreateRow = /* GraphQL */ `
         rank
         createdAt
       }
-      data {
-        id
-        column {
+      datas {
+        items {
           id
-          name
-          columntype
-          createdAt
+          columnId
+          rowId
+          value
         }
-        value
+        nextToken
       }
+      createorId
       creator {
         id
         email
@@ -1411,9 +1439,7 @@ export const onCreateRow = /* GraphQL */ `
           nextToken
         }
         boardSubscribed {
-          id
-          name
-          createdAt
+          nextToken
         }
         groupCreated {
           nextToken
@@ -1434,17 +1460,21 @@ export const onUpdateRow = /* GraphQL */ `
   subscription OnUpdateRow {
     onUpdateRow {
       id
+      groupId
       group {
         id
         name
+        boardId
         board {
           id
           name
+          creatorId
           createdAt
         }
         rows {
           nextToken
         }
+        creatorId
         creator {
           id
           email
@@ -1458,16 +1488,16 @@ export const onUpdateRow = /* GraphQL */ `
         rank
         createdAt
       }
-      data {
-        id
-        column {
+      datas {
+        items {
           id
-          name
-          columntype
-          createdAt
+          columnId
+          rowId
+          value
         }
-        value
+        nextToken
       }
+      createorId
       creator {
         id
         email
@@ -1484,9 +1514,7 @@ export const onUpdateRow = /* GraphQL */ `
           nextToken
         }
         boardSubscribed {
-          id
-          name
-          createdAt
+          nextToken
         }
         groupCreated {
           nextToken
@@ -1507,17 +1535,21 @@ export const onDeleteRow = /* GraphQL */ `
   subscription OnDeleteRow {
     onDeleteRow {
       id
+      groupId
       group {
         id
         name
+        boardId
         board {
           id
           name
+          creatorId
           createdAt
         }
         rows {
           nextToken
         }
+        creatorId
         creator {
           id
           email
@@ -1531,16 +1563,16 @@ export const onDeleteRow = /* GraphQL */ `
         rank
         createdAt
       }
-      data {
-        id
-        column {
+      datas {
+        items {
           id
-          name
-          columntype
-          createdAt
+          columnId
+          rowId
+          value
         }
-        value
+        nextToken
       }
+      createorId
       creator {
         id
         email
@@ -1557,9 +1589,7 @@ export const onDeleteRow = /* GraphQL */ `
           nextToken
         }
         boardSubscribed {
-          id
-          name
-          createdAt
+          nextToken
         }
         groupCreated {
           nextToken
@@ -1576,134 +1606,22 @@ export const onDeleteRow = /* GraphQL */ `
     }
   }
 `;
-export const onCreateColumn = /* GraphQL */ `
-  subscription OnCreateColumn {
-    onCreateColumn {
+export const onCreateColumnBoard = /* GraphQL */ `
+  subscription OnCreateColumnBoard {
+    onCreateColumnBoard {
       id
-      name
-      columntype
-      creator {
-        id
-        email
-        fname
-        lname
-        usertype
-        title
-        phone
-        teams {
-          nextToken
-        }
-        createdAt
-        boardCreated {
-          nextToken
-        }
-        boardSubscribed {
-          id
-          name
-          createdAt
-        }
-        groupCreated {
-          nextToken
-        }
-        columnCreated {
-          nextToken
-        }
-        rowCreated {
-          nextToken
-        }
-      }
-      createdAt
-    }
-  }
-`;
-export const onUpdateColumn = /* GraphQL */ `
-  subscription OnUpdateColumn {
-    onUpdateColumn {
-      id
-      name
-      columntype
-      creator {
-        id
-        email
-        fname
-        lname
-        usertype
-        title
-        phone
-        teams {
-          nextToken
-        }
-        createdAt
-        boardCreated {
-          nextToken
-        }
-        boardSubscribed {
-          id
-          name
-          createdAt
-        }
-        groupCreated {
-          nextToken
-        }
-        columnCreated {
-          nextToken
-        }
-        rowCreated {
-          nextToken
-        }
-      }
-      createdAt
-    }
-  }
-`;
-export const onDeleteColumn = /* GraphQL */ `
-  subscription OnDeleteColumn {
-    onDeleteColumn {
-      id
-      name
-      columntype
-      creator {
-        id
-        email
-        fname
-        lname
-        usertype
-        title
-        phone
-        teams {
-          nextToken
-        }
-        createdAt
-        boardCreated {
-          nextToken
-        }
-        boardSubscribed {
-          id
-          name
-          createdAt
-        }
-        groupCreated {
-          nextToken
-        }
-        columnCreated {
-          nextToken
-        }
-        rowCreated {
-          nextToken
-        }
-      }
-      createdAt
-    }
-  }
-`;
-export const onCreateData = /* GraphQL */ `
-  subscription OnCreateData {
-    onCreateData {
-      id
-      column {
+      boardId
+      columnId
+      board {
         id
         name
-        columntype
+        groups {
+          nextToken
+        }
+        columns {
+          nextToken
+        }
+        creatorId
         creator {
           id
           email
@@ -1714,6 +1632,405 @@ export const onCreateData = /* GraphQL */ `
           phone
           createdAt
         }
+        subscribers {
+          nextToken
+        }
+        createdAt
+      }
+      column {
+        id
+        board {
+          nextToken
+        }
+        name
+        columntype
+        columnComponentType
+        creatorId
+        creator {
+          id
+          email
+          fname
+          lname
+          usertype
+          title
+          phone
+          createdAt
+        }
+        createdAt
+        datas {
+          nextToken
+        }
+      }
+      fixed
+      level
+      collpse
+      rank
+    }
+  }
+`;
+export const onUpdateColumnBoard = /* GraphQL */ `
+  subscription OnUpdateColumnBoard {
+    onUpdateColumnBoard {
+      id
+      boardId
+      columnId
+      board {
+        id
+        name
+        groups {
+          nextToken
+        }
+        columns {
+          nextToken
+        }
+        creatorId
+        creator {
+          id
+          email
+          fname
+          lname
+          usertype
+          title
+          phone
+          createdAt
+        }
+        subscribers {
+          nextToken
+        }
+        createdAt
+      }
+      column {
+        id
+        board {
+          nextToken
+        }
+        name
+        columntype
+        columnComponentType
+        creatorId
+        creator {
+          id
+          email
+          fname
+          lname
+          usertype
+          title
+          phone
+          createdAt
+        }
+        createdAt
+        datas {
+          nextToken
+        }
+      }
+      fixed
+      level
+      collpse
+      rank
+    }
+  }
+`;
+export const onDeleteColumnBoard = /* GraphQL */ `
+  subscription OnDeleteColumnBoard {
+    onDeleteColumnBoard {
+      id
+      boardId
+      columnId
+      board {
+        id
+        name
+        groups {
+          nextToken
+        }
+        columns {
+          nextToken
+        }
+        creatorId
+        creator {
+          id
+          email
+          fname
+          lname
+          usertype
+          title
+          phone
+          createdAt
+        }
+        subscribers {
+          nextToken
+        }
+        createdAt
+      }
+      column {
+        id
+        board {
+          nextToken
+        }
+        name
+        columntype
+        columnComponentType
+        creatorId
+        creator {
+          id
+          email
+          fname
+          lname
+          usertype
+          title
+          phone
+          createdAt
+        }
+        createdAt
+        datas {
+          nextToken
+        }
+      }
+      fixed
+      level
+      collpse
+      rank
+    }
+  }
+`;
+export const onCreateColumn = /* GraphQL */ `
+  subscription OnCreateColumn {
+    onCreateColumn {
+      id
+      board {
+        items {
+          id
+          boardId
+          columnId
+          fixed
+          level
+          collpse
+          rank
+        }
+        nextToken
+      }
+      name
+      columntype
+      columnComponentType
+      creatorId
+      creator {
+        id
+        email
+        fname
+        lname
+        usertype
+        title
+        phone
+        teams {
+          nextToken
+        }
+        createdAt
+        boardCreated {
+          nextToken
+        }
+        boardSubscribed {
+          nextToken
+        }
+        groupCreated {
+          nextToken
+        }
+        columnCreated {
+          nextToken
+        }
+        rowCreated {
+          nextToken
+        }
+      }
+      createdAt
+      datas {
+        items {
+          id
+          columnId
+          rowId
+          value
+        }
+        nextToken
+      }
+    }
+  }
+`;
+export const onUpdateColumn = /* GraphQL */ `
+  subscription OnUpdateColumn {
+    onUpdateColumn {
+      id
+      board {
+        items {
+          id
+          boardId
+          columnId
+          fixed
+          level
+          collpse
+          rank
+        }
+        nextToken
+      }
+      name
+      columntype
+      columnComponentType
+      creatorId
+      creator {
+        id
+        email
+        fname
+        lname
+        usertype
+        title
+        phone
+        teams {
+          nextToken
+        }
+        createdAt
+        boardCreated {
+          nextToken
+        }
+        boardSubscribed {
+          nextToken
+        }
+        groupCreated {
+          nextToken
+        }
+        columnCreated {
+          nextToken
+        }
+        rowCreated {
+          nextToken
+        }
+      }
+      createdAt
+      datas {
+        items {
+          id
+          columnId
+          rowId
+          value
+        }
+        nextToken
+      }
+    }
+  }
+`;
+export const onDeleteColumn = /* GraphQL */ `
+  subscription OnDeleteColumn {
+    onDeleteColumn {
+      id
+      board {
+        items {
+          id
+          boardId
+          columnId
+          fixed
+          level
+          collpse
+          rank
+        }
+        nextToken
+      }
+      name
+      columntype
+      columnComponentType
+      creatorId
+      creator {
+        id
+        email
+        fname
+        lname
+        usertype
+        title
+        phone
+        teams {
+          nextToken
+        }
+        createdAt
+        boardCreated {
+          nextToken
+        }
+        boardSubscribed {
+          nextToken
+        }
+        groupCreated {
+          nextToken
+        }
+        columnCreated {
+          nextToken
+        }
+        rowCreated {
+          nextToken
+        }
+      }
+      createdAt
+      datas {
+        items {
+          id
+          columnId
+          rowId
+          value
+        }
+        nextToken
+      }
+    }
+  }
+`;
+export const onCreateData = /* GraphQL */ `
+  subscription OnCreateData {
+    onCreateData {
+      id
+      columnId
+      column {
+        id
+        board {
+          nextToken
+        }
+        name
+        columntype
+        columnComponentType
+        creatorId
+        creator {
+          id
+          email
+          fname
+          lname
+          usertype
+          title
+          phone
+          createdAt
+        }
+        createdAt
+        datas {
+          nextToken
+        }
+      }
+      rowId
+      row {
+        id
+        groupId
+        group {
+          id
+          name
+          boardId
+          creatorId
+          rank
+          createdAt
+        }
+        datas {
+          nextToken
+        }
+        createorId
+        creator {
+          id
+          email
+          fname
+          lname
+          usertype
+          title
+          phone
+          createdAt
+        }
+        rank
         createdAt
       }
       value
@@ -1724,10 +2041,16 @@ export const onUpdateData = /* GraphQL */ `
   subscription OnUpdateData {
     onUpdateData {
       id
+      columnId
       column {
         id
+        board {
+          nextToken
+        }
         name
         columntype
+        columnComponentType
+        creatorId
         creator {
           id
           email
@@ -1739,19 +2062,26 @@ export const onUpdateData = /* GraphQL */ `
           createdAt
         }
         createdAt
+        datas {
+          nextToken
+        }
       }
-      value
-    }
-  }
-`;
-export const onDeleteData = /* GraphQL */ `
-  subscription OnDeleteData {
-    onDeleteData {
-      id
-      column {
+      rowId
+      row {
         id
-        name
-        columntype
+        groupId
+        group {
+          id
+          name
+          boardId
+          creatorId
+          rank
+          createdAt
+        }
+        datas {
+          nextToken
+        }
+        createorId
         creator {
           id
           email
@@ -1762,6 +2092,69 @@ export const onDeleteData = /* GraphQL */ `
           phone
           createdAt
         }
+        rank
+        createdAt
+      }
+      value
+    }
+  }
+`;
+export const onDeleteData = /* GraphQL */ `
+  subscription OnDeleteData {
+    onDeleteData {
+      id
+      columnId
+      column {
+        id
+        board {
+          nextToken
+        }
+        name
+        columntype
+        columnComponentType
+        creatorId
+        creator {
+          id
+          email
+          fname
+          lname
+          usertype
+          title
+          phone
+          createdAt
+        }
+        createdAt
+        datas {
+          nextToken
+        }
+      }
+      rowId
+      row {
+        id
+        groupId
+        group {
+          id
+          name
+          boardId
+          creatorId
+          rank
+          createdAt
+        }
+        datas {
+          nextToken
+        }
+        createorId
+        creator {
+          id
+          email
+          fname
+          lname
+          usertype
+          title
+          phone
+          createdAt
+        }
+        rank
         createdAt
       }
       value

@@ -1,68 +1,70 @@
 {
-    "providers": {
-        "awscloudformation": {
-            "AuthRoleName": "amplify-concerto-app-test-214928-authRole",
-            "UnauthRoleArn": "arn:aws:iam::290655070383:role/amplify-concerto-app-test-214928-unauthRole",
-            "AuthRoleArn": "arn:aws:iam::290655070383:role/amplify-concerto-app-test-214928-authRole",
-            "Region": "ap-northeast-2",
-            "DeploymentBucketName": "amplify-concerto-app-test-214928-deployment",
-            "UnauthRoleName": "amplify-concerto-app-test-214928-unauthRole",
-            "StackName": "amplify-concerto-app-test-214928",
-            "StackId": "arn:aws:cloudformation:ap-northeast-2:290655070383:stack/amplify-concerto-app-test-214928/826b52a0-8cf1-11ea-8b0c-06f846be6a12",
-            "AmplifyAppId": "d5nz3bkn2128q"
-        },
-        "categories": {
-            "auth": {
-                "concertoapp2fea5048": {}
-            }
-        }
-    },
-    "api": {
-        "concertoapi": {
-            "service": "AppSync",
-            "providerPlugin": "awscloudformation",
-            "output": {
-                "authConfig": {
-                    "additionalAuthenticationProviders": [],
-                    "defaultAuthentication": {
-                        "authenticationType": "API_KEY",
-                        "apiKeyConfig": {
-                            "description": "rd api key",
-                            "apiKeyExpirationDays": "365"
-                        }
-                    }
-                },
-                "GraphQLAPIIdOutput": "y7yf3p35zfdb7e2aeecfwebb5u",
-                "GraphQLAPIEndpointOutput": "https://b4ez3t67fbf3vm5hbcgg4uzrji.appsync-api.ap-northeast-2.amazonaws.com/graphql",
-                "GraphQLAPIKeyOutput": "da2-upx3i3ymafa7th2cnwxuoro6vy"
-            },
-            "lastPushTimeStamp": "2020-05-10T16:12:18.193Z",
-            "providerMetadata": {
-                "s3TemplateURL": "https://s3.amazonaws.com/amplify-concerto-app-test-214928-deployment/amplify-cfn-templates/api/cloudformation-template.json",
-                "logicalId": "apiconcertoapi"
-            }
-        }
-    },
-    "auth": {
-        "concertoapp2fea5048": {
-            "service": "Cognito",
-            "providerPlugin": "awscloudformation",
-            "dependsOn": [],
-            "customAuth": false,
-            "output": {
-                "AppClientSecret": "1ulvorh4ma27v25roiu0q1msv0v58bunf7blc18aq5ans9d2rif9",
-                "UserPoolId": "ap-northeast-2_vm4Zs5Xqh",
-                "AppClientIDWeb": "1ql6mhh753bah36k439rqjtr0d",
-                "AppClientID": "3d5jq985edgnrkbcrink0gui93",
-                "IdentityPoolId": "ap-northeast-2:f39ab69b-5646-4162-b81d-681965328259",
-                "IdentityPoolName": "concertoapp2fea5048_identitypool_2fea5048__test",
-                "UserPoolName": "concertoapp2fea5048_userpool_2fea5048"
-            },
-            "lastPushTimeStamp": "2020-05-10T16:12:18.195Z",
-            "providerMetadata": {
-                "s3TemplateURL": "https://s3.amazonaws.com/amplify-concerto-app-test-214928-deployment/amplify-cfn-templates/auth/concertoapp2fea5048-cloudformation-template.yml",
-                "logicalId": "authconcertoapp2fea5048"
-            }
-        }
-    }
+	"providers": {
+		"awscloudformation": {
+			"AuthRoleName": "amplify-concerto-app-test-214928-authRole",
+			"UnauthRoleArn": "arn:aws:iam::290655070383:role/amplify-concerto-app-test-214928-unauthRole",
+			"AuthRoleArn": "arn:aws:iam::290655070383:role/amplify-concerto-app-test-214928-authRole",
+			"Region": "ap-northeast-2",
+			"DeploymentBucketName": "amplify-concerto-app-test-214928-deployment",
+			"UnauthRoleName": "amplify-concerto-app-test-214928-unauthRole",
+			"StackName": "amplify-concerto-app-test-214928",
+			"StackId": "arn:aws:cloudformation:ap-northeast-2:290655070383:stack/amplify-concerto-app-test-214928/826b52a0-8cf1-11ea-8b0c-06f846be6a12",
+			"AmplifyAppId": "d5nz3bkn2128q"
+		},
+		"categories": {
+			"auth": {
+				"concertoapp2fea5048": {}
+			}
+		}
+	},
+	"api": {
+		"concertoapi": {
+			"service": "AppSync",
+			"providerPlugin": "awscloudformation",
+			"output": {
+				"authConfig": {
+					"additionalAuthenticationProviders": [],
+					"defaultAuthentication": {
+						"authenticationType": "API_KEY",
+						"apiKeyConfig": {
+							"description": "api key for test",
+							"apiKeyExpirationDays": "365"
+						}
+					}
+				},
+				"GraphQLAPIIdOutput": "5yikv27svbccbjfsxb3yiysfum",
+				"GraphQLAPIEndpointOutput": "https://lzk5tio3bfffjpu6fpuwwvqbbe.appsync-api.ap-northeast-2.amazonaws.com/graphql",
+				"GraphQLAPIKeyOutput": "da2-fjtatlkvgjamtdvfdvtr7v7hiq"
+			},
+			"providerMetadata": {
+				"s3TemplateURL": "https://s3.amazonaws.com/amplify-concerto-app-test-214928-deployment/amplify-cfn-templates/api/cloudformation-template.json",
+				"logicalId": "apiconcertoapi"
+			},
+			"lastPushTimeStamp": "2020-05-10T16:51:42.395Z",
+			"lastPushDirHash": "W2F6yo/NfJZNDb1F7j17x3Y8xzU="
+		}
+	},
+	"auth": {
+		"concertoapp2fea5048": {
+			"service": "Cognito",
+			"providerPlugin": "awscloudformation",
+			"dependsOn": [],
+			"customAuth": false,
+			"output": {
+				"AppClientSecret": "1ulvorh4ma27v25roiu0q1msv0v58bunf7blc18aq5ans9d2rif9",
+				"UserPoolId": "ap-northeast-2_vm4Zs5Xqh",
+				"AppClientIDWeb": "1ql6mhh753bah36k439rqjtr0d",
+				"AppClientID": "3d5jq985edgnrkbcrink0gui93",
+				"IdentityPoolId": "ap-northeast-2:f39ab69b-5646-4162-b81d-681965328259",
+				"IdentityPoolName": "concertoapp2fea5048_identitypool_2fea5048__test",
+				"UserPoolName": "concertoapp2fea5048_userpool_2fea5048"
+			},
+			"lastPushTimeStamp": "2020-05-10T16:51:36.588Z",
+			"providerMetadata": {
+				"s3TemplateURL": "https://s3.amazonaws.com/amplify-concerto-app-test-214928-deployment/amplify-cfn-templates/auth/concertoapp2fea5048-cloudformation-template.yml",
+				"logicalId": "authconcertoapp2fea5048"
+			},
+			"lastPushDirHash": "mHFYZrkJyogIpKyDKcKoAvvjLhI="
+		}
+	}
 }
