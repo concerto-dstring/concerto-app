@@ -63,6 +63,24 @@ The AppSync Mock endpoint gives you access to:
 
 The "amplify mock storage" to have only the S3 storage, mocked locally.
 
+## troubleshooting
+
+1. Q: when chaning the schema and re-compile, sometime has the problem "Attempting to add and remove a global secondary index at the same time on the BoardTable table in the Board stack.
+Cause: You may only change one global secondary index in a single CloudFormation stack update.
+How to fix: If using @key, change one @key at a time. If using @connection, add the new @connection, run `amplify push`, and then remove the new @connection with the new configuration."
+A: you can delete and push the schema from the start.
+I opted for more brute force approach.
+To solve same problem "only one resolver is allowed per field."
+amplify remove api
+amplify push
+amplify add api
+amplify push
+works 100% of the time. don't forget to copy the schema.
+
+ABSOLUTELY DO NOT DO THIS IF YOU HAVE DATA IN YOUR DYNAMODB DATABASE.
+
+This will delete all tables and remove all data. This can only work if your project is in a very early stage and does not have data already.
+
 ## Refereces:
 1. https://dashbird.io/blog/serverless-react-graphql/
 2. https://docs.amplify.aws/cli/teams/overview
