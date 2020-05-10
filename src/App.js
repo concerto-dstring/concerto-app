@@ -28,6 +28,7 @@
       apiKey: appSyncConfig.aws_appsync_apiKey,
     },
     cacheOptions: {
+      dataIdFromObject: (obj) => `${obj.__typename}:${obj.myKey}`
     }
   });
 
