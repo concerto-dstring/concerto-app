@@ -157,8 +157,43 @@ type Data @model
 @key(name: "datasByColumn", fields: ["columnID", "id"]) {
   id: ID!
   columnID: ID!
-  column: Column! @connection(fields: ["columnID"])
   rowID: ID!
-  row: Row! @connection(fields: ["rowID"])
   value: String   
+}
+
+## row-based interaction threading, sorted by the createdAt date-time
+type ThreadOnRow @model {
+  id: ID!
+  rowID: ID!
+  userID: ID!
+  user: User @connection(fields:["userID"])
+  content: String!
+  createdAt: String!
+  likedByUsersID: [ID]
+  seenByUsersID: [ID]
+  repliesByDate: [ReplyOnThread]  @connection(keyName: "repliesByDate", fields: ["id"])
+}
+
+## reply to the thread, ThreadOnRow <-- 1:n --> Reply, sorted by the createdAt date-time
+type ReplyOnThread @model 
+@key(name: "repliesByDate", fields: ["threadID", "createdAt"]) {
+  id: ID!
+  threadID: ID!
+  userID: ID!
+  user: User @connection(fields:["userID"])
+  content: String!
+  createdAt: String!
+  likedByUsersID: [ID!]
+  seenByUsersID: [ID!]
+}
+
+## row-based attachments/inbox, , sorted by the createdAt date-time
+type InboxOnRow @model 
+ @key(fields: ["id", "createdAt"]) {
+  id: ID!
+  rowID: ID!
+  userID: ID!
+  user: User @connection(fields:["userID"])
+  filelocations: String!  # s3 location
+  createdAt: String!
 }
