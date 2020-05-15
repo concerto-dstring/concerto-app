@@ -78,8 +78,10 @@ amplify push
 works 100% of the time. don't forget to copy the schema.
 
 ABSOLUTELY DO NOT DO THIS IF YOU HAVE DATA IN YOUR DYNAMODB DATABASE.
-
 This will delete all tables and remove all data. This can only work if your project is in a very early stage and does not have data already.
+
+2. Q: undo the "amplify remove api"
+A:  amplify env pull --restore 
 
 ## Refereces:
 1. https://dashbird.io/blog/serverless-react-graphql/
