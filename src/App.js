@@ -28,7 +28,7 @@
       apiKey: appSyncConfig.aws_appsync_apiKey,
     },
     cacheOptions: {
-    }
+    },
   });
 
   /* a sample codes to use the client */
@@ -110,7 +110,7 @@
   
     render() {
       let dataset = new MainTableDataStore();
-      dataset.getCurrentUser(client, 'c20554ef-9a4d-4f1c-b286-e7e7f0dd799c')
+      dataset.getCurrentUser(client, '4e8e53bc-80d7-4f4e-af84-704a737c9e98')
       return (
         <ApolloProvider client={client}>
           <Rehydrated>

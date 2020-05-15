@@ -73,6 +73,11 @@ class RowHeaderCell extends React.PureComponent {
       this.setState({ editing: true });
     }
 
+    handleInputClick = (e) => {
+      e.stopPropagation()
+      e.preventDefault()
+    }
+
     handleHide = () => {
         if (this.props.data) {
             this.props.data.setObjectAt(this.props.rowIndex, this.props.columnKey, this.state.value);
@@ -189,7 +194,7 @@ class RowHeaderCell extends React.PureComponent {
                                                 : -this.targetRef.offsetHeight,
                                     }}>
                                     <Input autoFocus value={value} onChange={this.handleChange} style={inputStyle}
-                                        onKeyDown={this.handleKey} />
+                                        onKeyDown={this.handleKey} onClick={this.handleInputClick} />
                                 </div>
                             )}
                         </Overlay>

@@ -15,7 +15,13 @@ import { getPeople } from '../helpers/section/modal/PeopleName';
 import { ListAllBoards, GetBoardbyId } from '../helpers/data/fetchBoards'
 import gql from "graphql-tag";
 import { listBoards, getBoard, getGroup, getRow, getData, getUser } from "../graphql/queries"
-import { createGroup, updateGroup, createColumn, createData, createRow } from "../graphql/mutations" 
+import { 
+  createGroup, updateGroup, 
+  createColumn, updateColumn, 
+  createColumnBoard, updateColumnBoard,
+  createData, updateData,
+  createRow, updateRow 
+} from "../graphql/mutations" 
 
 class MainTableDataStore {
 
@@ -23,15 +29,19 @@ class MainTableDataStore {
     // columnkey
 
     constructor() {
+        this._apolloClient = null
         this._sizeRows = 0;
         this._sizeSubrows = 0;
         this._columns= [];
         this._subColumns = [];
         this._sizeColumns = 0;
         this._rowData = {};
-        this._subRowData = {};
+        this._rowColumnData = {}
         this._groups = [];
         this._sizeGroups = 0;
+        this._allGroupSize = 0
+        this._allRowSize = {}
+        this._allColumnSize = 0
         this._subRows = {};
         this._boardMenus = []
         this._dashboardMenus = []
@@ -75,6 +85,7 @@ class MainTableDataStore {
     }
 
     fetchSideMenus(apolloClient, type, setMenus) {
+      this._apolloClient = apolloClient
       switch (type) {
         case 'board':
           apolloClient
@@ -112,46 +123,98 @@ class MainTableDataStore {
         })
         .then(result => {
           let board = result.data.getBoard
-          let groups = this.sortDataByRank(board.groups.items)
           
-           this._rowData = {}
-           this._groups = []
-           groups.map(group => {
-             if (!group.deleteFlag) {
-              this.fetchGroupRows(apolloClient, group.id)
-             }
-           })
+          this._columns = []
+          this._rowData = {}
+          this._groups = []
+          this._subRows = {}
 
-          this._columns = this.sortDataByRank(board.columns.items)
-          for (let i = 0; i < this._columns.length; i++) {
-            let name = this._columns[i].name
-            this._columns[i].columnKey = this._columns[i].id
-            this._columns[i].type = this._columns[i].columntype
-            if (name === 'ROWACTION' || name === 'ROWSELECT') {
-              this._columns[i].width = 36
+          let groups = this.sortDataByRank(board.groups.items)
+          this._allGroupSize = groups.length
+          groups.map(group => {
+            if (!group.deleteFlag) {
+              group.groupKey = group.id
+              let groupRows = this.sortDataByRank(group.rows.items)
+              this._allRowSize[group.id] = groupRows.length
+              let rows = []
+              groupRows.map(row => {
+                if (!row.deleteFlag) {
+                  if (row.parentId) {
+                    if (Object.keys(this._subRows).indexOf(row.parentId) !== -1) {
+                      let subRows = this._subRows[row.parentId].rows
+                      subRows.push(row)
+                    }
+                    else {
+                      this._subRows[row.parentId] = {}
+                      let subRows = []
+                      subRows.push(row)
+                      this._subRows[row.parentId].rows = subRows
+                      this._subRows[row.parentId].isExpanded = false
+                    }
+                  }
+                  else {
+                    rows.push(row)
+                  }
+                  this._rowData[row.id] = {}
+                  this._rowColumnData[row.id] = {}
+                  let dataItems = row.datas.items
+                  dataItems.map(item => {
+                    this._rowData[item.rowID][item.columnID] = item.value
+                    this._rowColumnData[item.rowID][item.columnID] = item.id
+                  })
+                }
+              })
+
+              group.rows = rows
+              this._groups.push(group)
             }
-            else if (name === 'GROUPTITLE') {
-              this._columns[i].width = 360
-            }
-            else {
-              this._columns[i].width = 200
-            }
+          })
+
+          for (let key in this._subRows) {
+            let subRows = this.sortDataByRank(this._subRows[key].rows)
+            this._subRows[key].rows = subRows
           }
+
+          let columns = this.sortDataByRank(board.columns.items)
+          this._allColumnSize = columns.length
+          columns.map(column => {
+            if(!column.deleteFlag) {
+              column.type = column.column.columntype
+              column.columnKey = column.column.id
+              column.columnComponentType = column.column.columnComponentType
+              let name = column.column.name
+              column.name = name
+              if (name === ColumnType.ROWACTION || name === ColumnType.ROWSELECT) {
+                column.width = 36
+              }
+              else if (name === ColumnType.GROUPTITLE) {
+                column.width = 360
+              }
+              else {
+                column.width = 200
+              }
+              this._columns.push(column)
+            }
+          })
+          console.log(this._columns)
           if (setMenus) {
             setMenus(this._boardMenus, true)
           }
           else {
             setBusy(false)
           }
-        });
+        })
+        .catch(error => {
+          console.log(error)
+        })
 
       // return ret;
     }
 
     sortDataByRank(arr) {
       arr.sort(function(a, b){
-        var m = a.rank.toLowerCase();
-        var n = b.rank.toLowerCase();
+        let m = Number(a.rank);
+        let n = Number(b.rank);
         if (m < n) return -1;
         if (m > n) return 1;
         return 0;
@@ -196,11 +259,12 @@ class MainTableDataStore {
           fetchPolicy: "no-cache"
         })
         .then(result => {
-          let data = result.data.getRow.data.items
+          let dataItems = result.data.getRow.datas.items
           this._rowData[rowId] = {}
-          data.map(item => {
-            this.fetchRowColumnData(apolloClient, item.id)
+          dataItems.map(item => {
+            this._rowData[item.rowID][item.columnID] = item.value
           })
+          this.runCallbacks()
         })
     }
 
@@ -249,6 +313,8 @@ class MainTableDataStore {
         if (!rowKey || !columnKey) 
             return;
 
+        let column = this._columns.find(column => column.columnKey === columnKey)
+
         if (columnKey === 'updateInfo') {
           if (type === 'update') {
             // 更新
@@ -274,10 +340,40 @@ class MainTableDataStore {
           }
         }
         else {
-          this._rowData[rowKey][columnKey] = value;
+          if (column.columnComponentType === 'PEOPLE') {
+            console.log(value)
+          }
+          else {
+            let newValue = value === "" ? null : value
+            let dataId = this._rowColumnData[rowKey][columnKey]
+            if (dataId) {
+              this.updateCellData(dataId, newValue)
+            }
+            else {
+              this.createCellData(rowKey, columnKey, newValue)
+            }
+          }
         }
+    }
 
-        this.runCallbacks();
+    updateCellData(dataId, value) {
+      this._apolloClient
+        .mutate({
+          mutation: gql(updateData),
+          variables: {
+            input: {
+              id: dataId,
+              value: value
+            }
+          }
+        })
+        .then(result => {
+          this._rowData[rowKey][columnKey] = newValue;
+          this.runCallbacks();
+        })
+        .catch(error => {
+          console.log(error)
+        })
     }
 
     getGroups() {
@@ -290,7 +386,7 @@ class MainTableDataStore {
             if (this._subRows[rowKey].rows) {
               let rows = []
               this._subRows[rowKey].rows.map(row => {
-                if (subRowKeys.indexOf(row) !== -1) {
+                if (subRowKeys.indexOf(row.id) !== -1) {
                   rows.push(row)
                 }
               })
@@ -318,8 +414,42 @@ class MainTableDataStore {
         return false;
     }
 
-    addNewSubSection(parentRowKey, newItem) {
+    addNewSubSection(groupKey, parentRowKey, newItem) {
       // 添加空白行
+      this._apolloClient
+        .mutate({
+          mutation: gql(createRow),
+          variables: {
+            input: {
+              parentId: parentRowKey,
+              rank: String(rowSize),
+              createdAt: new Date().toISOString(),
+              groupID: groupKey,
+              creatorID: this._currentUser.id,
+              deleteFlag: false
+            }
+          }
+        })
+        .then(result => {
+          let row = result.data.createRow
+          this._rowData[row.id] = {}
+          this._rowColumnData[row.id] = {}
+          for(var i=0; i<this._columns.length; i++){
+            const column = this._columns[i]
+            if (column.level === 0) continue
+            if (column.name === 'GROUPTITLE') {
+              this.createCellData(row.id, column.columnKey, newItem)
+            }
+            else if (column.name !== 'ROWACTION' && column.name !== 'ROWSELECT') {
+              this.createCellData(row.id, column.columnKey, null)
+            }
+          }
+          rows.push(row);
+          this._allRowSize[groupID] = rowSize + 1
+        })
+        .catch(error => {
+          console.log(error)
+        })
       this._sizeRows ++;
       let id = this._sizeRows.toString();
       this._rowData[id] = newItem;
@@ -337,59 +467,85 @@ class MainTableDataStore {
         this.runCallbacks();
     }
 
-    addNewGroup(groupName, groupKey, apolloClient) {
-        this._sizeGroups ++;
-        let id = this._sizeGroups.toString();
-        if (groupKey) {
-          // groupKey有值
-          let index = this._groups.findIndex(group => group.groupKey === groupKey);
-          if (index < 0) {
-              return null;
+    addNewGroup(groupName, groupKey) {
+      let currentGroup
+      let rank
+      let index
+      if (groupKey) {
+        index = this._groups.findIndex(group => group.groupKey === groupKey);
+        if (index < 0) {
+            return null;
+        }
+        currentGroup = this._groups[index]
+        // 中间插入分区的rank计算暂时没有完美方案
+        rank = String(this._allGroupSize)
+      }
+      else {
+        rank = String(this._allGroupSize)
+      }
+      this._apolloClient
+        .mutate({
+          mutation: gql(createGroup),
+          variables: {
+            input: {
+              name: groupName,
+              rank: rank,
+              createdAt: new Date().toISOString(),
+              boardID: this._currentBoardId,
+              creatorID: this._currentUser.id,
+              isCollapsed: false,
+              deleteFlag: false,
+              color: COLOR.DEFAULT
+            }
           }
-          const group = this._groups[index]
-          this._groups.splice(index, 1, {groupKey: id, name: groupName + id, rows:[], color: COLOR.SECTION_DEFAULT})
-          this._groups.splice(index + 1, 0, group)
-        }
-        else {
-          apolloClient
-            .mutate({
-              mutation: gql(createGroup),
-              variables: {
-                input: {
-                  name: groupName,
-                  rank: String(this._groups.length + 1),
-                  createdAt: new Date().toISOString(),
-                  groupBoardId: this._currentBoardId,
-                  groupCreatorId: this._currentUser.id,
-                  isCollapsed: false,
-                  deleteFlag: false,
-                  color: COLOR.DEFAULT
-                }
-              }
-            })
-            .then(result => {
-              let group = result.data.createGroup
-              this._groups.push(group)
-              this.runCallbacks();
-              return group.id;
-            })
-        }
+        })
+        .then(result => {
+          let group = result.data.createGroup
+          group.rows = []
+          if (groupKey) {
+            this._groups.splice(index, 1, group)
+            this._groups.splice(index + 1, 0, currentGroup)
+          }
+          else {
+            this._groups.push(group)
+          }
+          this._allGroupSize = this._allGroupSize + 1
+          this.runCallbacks();
+        })
+        .catch(error => {
+          console.log(error)
+        })
     }
 
     undoRemoveGroup(groupIndex, group) {
-      this._groups.splice(groupIndex, 0, group);
+      this._apolloClient
+        .mutate({
+          mutation: gql(updateGroup),
+          variables: {
+            input: {
+              id: group.id,
+              deleteFlag: false
+            }
+          }
+        })
+        .then(result => {
+          this._groups.splice(groupIndex, 0, group);
 
-      //refresh
-      this.runCallbacks();
+          //refresh
+          this.runCallbacks();
+        })
+        .catch(error => {
+          console.log(error)
+        })
     }
 
-    removeGroup(groupKey, apolloClient) {
+    removeGroup(groupKey) {
         let index = this._groups.findIndex(column => column.groupKey === groupKey);
         if (index < 0) {
             return;
         }
         let group = this._groups[index]
-        apolloClient
+        this._apolloClient
           .mutate({
             mutation: gql(updateGroup),
             variables: {
@@ -403,6 +559,9 @@ class MainTableDataStore {
             this._groups.splice(index, 1);
 
             this.runCallbacks();
+          })
+          .catch(error => {
+            console.log(error)
           })
 
         return index
@@ -420,86 +579,142 @@ class MainTableDataStore {
         return this._columns;
     }
 
-    addNewRow(groupKey, newItem, apolloClient) {
+    addNewRow(groupKey, newItem) {
       let index = this._groups.findIndex(group => group.groupKey === groupKey);
       if (index < 0) {
           return;
       }
       let group = this._groups[index]
-      apolloClient
+      let rowSize = this._allRowSize[group.id]
+      this._apolloClient
         .mutate({
           mutation: gql(createRow),
           variables: {
             input: {
-              rank: String(Object.keys(this._rowData).length),
+              rank: String(rowSize),
               createdAt: new Date().toISOString(),
-              rowGroupId: group.id,
-              rowCreatorId: this._currentUser.id
+              groupID: group.id,
+              creatorID: this._currentUser.id,
+              deleteFlag: false
             }
           }
         })
         .then(result => {
           let row = result.data.createRow
+          this._rowData[row.id] = {}
+          this._rowColumnData[row.id] = {}
           for(var i=0; i<this._columns.length; i++){
             const column = this._columns[i]
+            if (column.level !== 0) continue
             if (column.name === 'GROUPTITLE') {
-              this.createCellData(apolloClient, row.id, column.id, newItem)
+              this.createCellData(row.id, column.columnKey, newItem)
             }
             else if (column.name !== 'ROWACTION' && column.name !== 'ROWSELECT') {
-              this.createCellData(apolloClient, row.id, column.id, null)
+              this.createCellData(row.id, column.columnKey, null)
             }
           }
           let rows = this._groups[index].rows;
-          rows.push(row.id);
+          rows.push(row);
+          this._allRowSize[group.id] = rowSize + 1
+        })
+        .catch(error => {
+          console.log(error)
         })
     }
 
-    moveRow(sourceGroupKey, targetGroupKey, rowKey, rowIndex) {
+    moveRow(sourceGroupKey, targetGroupKey, rowKey, oldSourceRow) {
       let sourceGroupIndex = this._groups.findIndex(group => group.groupKey === sourceGroupKey);
       let targetGroupIndex = this._groups.findIndex(group => group.groupKey === targetGroupKey);
       if (sourceGroupIndex < 0 || targetGroupIndex < 0) {
           return;
       }
-      
+
       let sourceGroupRows = this._groups[sourceGroupIndex].rows;
       let targetGroupRows = this._groups[targetGroupIndex].rows;
-      
-      let sourceRowIndex = sourceGroupRows.findIndex(row => row === rowKey);
-      sourceGroupRows.splice(sourceRowIndex, 1)
-      
-      // rowIndex 小于0 则为移动，否则为撤销移动
-      if (rowIndex < 0) {
-        targetGroupRows.push(rowKey);
-      }
-      else {
-        targetGroupRows.splice(rowIndex, 0, rowKey)
-      }
-      
-      //refresh
-      this.runCallbacks();
+      let sourceRowIndex = sourceGroupRows.findIndex(row => row.id === rowKey);
+      let sourceRow = sourceGroupRows[sourceRowIndex]
+      sourceRow.sourceRowIndex = sourceRowIndex
+      let rowSize = String(this._allRowSize[targetGroupKey])
+      this._apolloClient
+        .mutate({
+          mutation: gql(updateRow),
+          variables: {
+            input: {
+              id: rowKey,
+              groupID: targetGroupKey,
+              rank: oldSourceRow ? oldSourceRow.rank : rowSize
+            }
+          }
+        })
+        .then(result => {
+          sourceGroupRows.splice(sourceRowIndex, 1)
+          
+          // rowIndex 小于0 则为移动，否则为撤销移动
+          if (!oldSourceRow) {
+            targetGroupRows.push(sourceRow);
+          }
+          else {
+            console.log(111)
+            targetGroupRows.splice(oldSourceRow.sourceRowIndex, 0, oldSourceRow)
+          }
 
-      return sourceRowIndex;
+          this._allRowSize[sourceGroupKey] = this._allRowSize[sourceGroupKey] - 1
+          this._allRowSize[targetGroupKey] = this._allRowSize[targetGroupKey] + 1
+          //refresh
+          this.runCallbacks();
+        })
+        .catch(error => {
+          console.log(error)
+        })
+
+      return sourceRow;
     }
 
-    addNewSubRow(rowKey, newItem) {
+    addNewSubRow(groupID, rowKey, newItem) {
         let rows = this._subRows[rowKey].rows;
         if (!rows) {
             rows = [];
             this._subRows[rowKey].rows = rows;
         }
-        this._sizeRows ++;
-        let id = this._sizeRows.toString();
-        rows.push(id);
-        this._rowData[id] = {'1':newItem};
-
-        //refresh
-        this.runCallbacks();
-
-        return id;
+        let rowSize = this._allRowSize[groupID]
+        this._apolloClient
+        .mutate({
+          mutation: gql(createRow),
+          variables: {
+            input: {
+              parentId: rowKey,
+              rank: String(rowSize),
+              createdAt: new Date().toISOString(),
+              groupID: groupID,
+              creatorID: this._currentUser.id,
+              deleteFlag: false
+            }
+          }
+        })
+        .then(result => {
+          let row = result.data.createRow
+          this._rowData[row.id] = {}
+          this._rowColumnData[row.id] = {}
+          for(var i=0; i<this._columns.length; i++){
+            const column = this._columns[i]
+            if (column.level === 0 || column.name === ColumnType.ROWACTION || column.name === ColumnType.ROWSELECT) continue
+            if (column.name === 'GROUPTITLE') {
+              this.createCellData(row.id, column.columnKey, newItem)
+            }
+            else if (column.name !== 'ROWACTION' && column.name !== 'ROWSELECT') {
+              this.createCellData(row.id, column.columnKey, null)
+            }
+          }
+          rows.push(row);
+          this._allRowSize[groupID] = rowSize + 1
+        })
+        .catch(error => {
+          console.log(error)
+        })
     }
 
-    addNewColumn(newItem, level, columnComponentType, apolloClient) {
-      apolloClient
+    addNewColumn(newItem, level, columnComponentType) {
+      this._apolloClient
         .mutate({
           mutation: gql(createColumn),
           variables: {
@@ -507,45 +722,76 @@ class MainTableDataStore {
               name: newItem,
               columntype: ColumnType.EDITBOX,
               columnComponentType: columnComponentType,
-              fixed: false,
-              level: level,
-              collpse: false,
-              rank: String(this._columns.length),
               createdAt: new Date().toISOString(),
-              columnBoardId: this._currentBoardId,
-              columnCreatorId: this._currentUser.id
+              creatorID: this._currentUser.id,
+              deleteFlag: false
             }
           }
         })
         .then(result => {
           let column = result.data.createColumn
-          column.width = 200
-          column.type = ColumnType.EDITBOX
-          column.columnKey = column.id
-          this._columns.push(column)
-          for(let key in this._rowData) {
-            this.createCellData(apolloClient, key, column.id, null)
-          }
-          return column.id;
+          this.createColumnBoard(column.id, newItem, level, columnComponentType)
+        })
+        .catch(error => {
+          console.log(error)
         })
     }
 
-    createCellData(apolloClient, rowId, columnId, value) {
-      apolloClient
+    createColumnBoard(columnId, columnName, level, columnComponentType) {
+      this._apolloClient
+        .mutate({
+          mutation: gql(createColumnBoard),
+          variables: {
+            input: {
+              boardID: this._currentBoardId,
+              columnID: columnId,
+              fixed: false,
+              level: level,
+              collpse: false,
+              rank: String(this._allColumnSize),
+              deleteFlag: false
+            }
+          }
+        })
+        .then(result => {
+          let column = result.data.createColumnBoard
+          column.width = 200
+          column.type = ColumnType.EDITBOX
+          column.columnKey = columnId
+          column.name = columnName
+          column.columnComponentType = columnComponentType
+          this._columns.push(column)
+          this._allColumnSize = this._allColumnSize + 1
+          for(let key in this._rowData) {
+            this.createCellData(key, columnId, null)
+          }
+        })
+        .catch(error => {
+          console.log(error)
+        })
+    }
+
+    createCellData(rowId, columnId, value) {
+      this._apolloClient
         .mutate({
           mutation: gql(createData),
           variables: {
             input: {
               value: value,
-              dataColumnId: columnId,
-              dataRowId: rowId
+              columnID: columnId,
+              rowID: rowId
             }
           }
         })
         .then(result => {
           let row = this._rowData[rowId];
+          let rowColumn = this._rowColumnData[rowId]
           row[columnId] = value;
+          rowColumn[columnId] = result.data.createData.id
           this.runCallbacks();
+        })
+        .catch(error => {
+          console.log(error)
         })
     }
 
@@ -561,14 +807,49 @@ class MainTableDataStore {
     }
 
     removeColumn(columnKey) {
-        let index = this._columns.findIndex(column => column.columnKey === columnKey);
-        if (index < 0) {
-            return;
-        }
-        this._columns.splice(index, 1);
-        // push undo stack
-        //refresh
-        this.runCallbacks(); 
+      let index = this._columns.findIndex(column => column.columnKey === columnKey);
+      if (index < 0) {
+          return;
+      }
+      let column = this._columns[index]
+      this._apolloClient
+        .mutate({
+          mutation: gql(updateColumn),
+          variables: {
+            input: {
+              id: columnKey,
+              deleteFlag: true
+            }
+          }
+        })
+        .then(result => {
+          this.removeColumnBoard(column.id, index)
+        })
+        .catch(error => {
+          console.log(error)
+        })
+    }
+
+    removeColumnBoard(id, index) {
+      this._apolloClient
+        .mutate({
+          mutation: gql(updateColumnBoard),
+          variables: {
+            input: {
+              id: id,
+              deleteFlag: true
+            }
+          }
+        })
+        .then(result => {
+          this._columns.splice(index, 1);
+          // push undo stack
+          //refresh
+          this.runCallbacks(); 
+        })
+        .catch(error => {
+          console.log(error)
+        })
     }
 
     removeSubColumn(columnKey) {
@@ -588,16 +869,25 @@ class MainTableDataStore {
           return;
       }
 
-      let groupRows = this._groups[groupIndex].rows;
-
-      let rowIndex = groupRows.findIndex(row => row === rowKey);
-      groupRows.splice(rowIndex, 1)
-
-      delete this._rowData[rowKey];
-      this._sizeRows--
-
-      //refresh
-      this.runCallbacks(); 
+      this._apolloClient
+        .mutate({
+          mutation: gql(updateRow),
+          variables: {
+            input: {
+              id: rowKey,
+              deleteFlag: true
+            }
+          }
+        })
+        .then(result => {
+          let groupRows = this._groups[groupIndex].rows;
+          let rowIndex = groupRows.findIndex(row => row.id === rowKey);
+          groupRows.splice(rowIndex, 1)
+          this.runCallbacks(); 
+        })
+        .catch(error => {
+          console.log(error)
+        })
     }
 
     removeRows(rowKeys) {
@@ -662,46 +952,97 @@ class MainTableDataStore {
       let group = this._groups.find(group => group.groupKey === groupData.groupKey)
 
       if (group) {
-        group.name = groupData.name ? groupData.name : group.name
-        group.color = groupData.color ? groupData.color : group.color
+        let name = groupData.name ? groupData.name : group.name
+        let color = groupData.color ? groupData.color : group.color
+        this._apolloClient
+        .mutate({
+          mutation: gql(updateGroup),
+          variables: {
+            input: {
+              id: group.groupKey,
+              name: name,
+              color: color
+            }
+          }
+        })
+        .then(result => {
+          group.name = name
+          group.color = color
+          this.runCallbacks(); 
+        })
+        .catch(error => {
+          console.log(error)
+        })
       }
-
-      //refresh
-      this.runCallbacks();
     }
 
     changeGroupCollapseState(groupKey, isGroupCollapsed) {
       // 都有值
       if (groupKey && (null !== isGroupCollapsed && undefined !== isGroupCollapsed)) {
         let group = this._groups.find(group => group.groupKey == groupKey);
-        group.isCollapsed = isGroupCollapsed
+        this.updateGroupCollapsed(groupKey, isGroupCollapsed, group)
       }
       // key无值，折叠状态有值
       else if (!groupKey && (null !== isGroupCollapsed && undefined !== isGroupCollapsed)) {
         for (let i = 0; i < this._groups.length; i++) {
-          this._groups[i].isCollapsed = isGroupCollapsed
+          this.updateGroupCollapsed(this._groups[i].groupKey, isGroupCollapsed, this._groups[i])
         }
       }
       // key有值，折叠状态无值
       else if (groupKey && (null === isGroupCollapsed || undefined === isGroupCollapsed)) {
         let group = this._groups.find(group => group.groupKey == groupKey);
-        group.isCollapsed = !group.isCollapsed
+        this.updateGroupCollapsed(groupKey, !group.isCollapsed, group)
       }
 
       //refresh
       this.runCallbacks();
     }
+
+    updateGroupCollapsed(groupKey, isCollapsed, group) {
+      this._apolloClient
+        .mutate({
+          mutation: gql(updateGroup),
+          variables: {
+            input: {
+              id: groupKey,
+              isCollapsed: isCollapsed,
+            }
+          }
+        })
+        .then(result => {
+          group.isCollapsed = isCollapsed
+          this.runCallbacks(); 
+        })
+        .catch(error => {
+          console.log(error)
+        })
+    }
     
     setColumnData(columnKey, columnData) {
       let column = this._columns.find(column => column.columnKey === columnKey)
       if (column) {
+        let updateInput = {}
         for (let key in columnData) {
-          column[key] = columnData[key]
+          updateInput[key] = columnData[key]
         }
+        updateInput.id = columnKey
+        this._apolloClient
+        .mutate({
+          mutation: gql(updateColumn),
+          variables: {
+            input: updateInput
+          }
+        })
+        .then(result => {
+          for (let key in columnData) {
+            column[key] = columnData[key]
+          }
+          this.runCallbacks(); 
+        })
+        .catch(error => {
+          console.log(error)
+        })
       }
-
-      //refresh
-      this.runCallbacks();
     }
 
     /**

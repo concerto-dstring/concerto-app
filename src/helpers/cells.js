@@ -432,7 +432,8 @@ class DropDownMenuCell extends React.PureComponent {
     }
     else if (key === RENAME_ROW.key) {
       // 重命名行
-      this.props.dealRowRenameModal({rowIndex, columnKey: '1', isShowReNameModal: true, data});
+      let columnKey = data.getRowNameColumn()
+      this.props.dealRowRenameModal({rowIndex, columnKey, isShowReNameModal: true, data});
     }
     else if (key === MOVE_TO_SECTION.key) {
       // 移动至其他分区

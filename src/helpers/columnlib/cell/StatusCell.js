@@ -10,13 +10,13 @@ class StatusCell extends React.Component {
       super(props);
       this.state = {
         value:props.value||'',
-        styleClassName:this.renderStatusStyle(props.value)
+        styleClassName:this.renderStatusStyle(props.value||'')
       }
     }
     componentWillReceiveProps(nextProps) {
       this.setState({
-        value: nextProps.value,
-        styleClassName:this.renderStatusStyle(nextProps.value)
+        value: nextProps.value||'',
+        styleClassName:this.renderStatusStyle(nextProps.value||'')
       });
     }
     statusHashTable = {

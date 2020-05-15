@@ -40,7 +40,6 @@ import './css/style/Board.less'
 import { getPeople } from '../helpers/section/modal/PeopleName';
 import filterIcon from './helper/filterIcon.svg'
 import RowHeaderDrawer from '../helpers/RowHeaderDrawer';
-import { withApollo } from 'react-apollo'
 
 /**
  * A cell that is aware of its context
@@ -210,7 +209,6 @@ const DataSummaryCell = function(props) {
 
 const FilterableDataTable = AddFilter(DataContext(Table));
 
-@withApollo
 @connect(mapRowActionStateToProps, null, null, { forwardRef: true })
 class MainTable extends React.Component {
 
@@ -323,7 +321,7 @@ class MainTable extends React.Component {
 
     _onColumnAddCallback(e) {
         const [columnComponentType, level] = e.key.split('-');
-        this._dataset.addNewColumn(e.item.node.innerText, level * 1, columnComponentType, this.props.client);
+        this._dataset.addNewColumn(e.item.node.innerText, level * 1, columnComponentType);
     }
 
     _getColumnName(columnKey) {
@@ -581,7 +579,6 @@ class MainTable extends React.Component {
          <TableContext.Provider value={this.state}>
             <div>
                 <FilterableDataTable
-                    apolloClient={this.props.client}
                     ref={this.handleRef}
                     onColumnReorderEndCallback={this._onColumnReorderEndCallback}
                     onColumnResizeEndCallback={this._onColumnResizeEndCallback}

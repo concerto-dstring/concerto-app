@@ -11,7 +11,8 @@ export const mapRowActionStateToProps = (state) => {
     groupIndex: state.groupIndex,
     sourceGroupKey: state.sourceGroupKey,
     targetGroupKey: state.targetGroupKey,
-    tableData: state.data
+    tableData: state.data,
+    oldSourceRow: state.oldSourceRow
   }
 }
 

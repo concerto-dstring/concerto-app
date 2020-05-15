@@ -1,6 +1,6 @@
 "use strict";
 
-import { RowType, getSubLevel, getRootRowIndex } from './MainTableType';
+import { RowType, getSubLevel, getRootRowIndex, ColumnType } from './MainTableType';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
 
@@ -8,6 +8,7 @@ class DataViewWrapper {
     constructor(dataset, indexMap = null, subRowKeys) {
         this._indexMap = this.getIndexMap(dataset, indexMap);
         this._subRowMap = {};
+        this._subRowData = {}
         this._dataset = dataset;
         this._subRowKeys = subRowKeys
         this._indexMap.forEach((r, i) => {
@@ -17,20 +18,23 @@ class DataViewWrapper {
                   let j = 0;      
                   for (let k = 0; k < rows.length; k ++) {
                     if (this._subRowKeys && this._subRowKeys.length > 0) {
-                      if (this._subRowKeys.indexOf(rows[k]) !== -1) {
+                      if (this._subRowKeys.indexOf(rows[k].id) !== -1) {
                         j += 1 
                         const indexString = `${i}.${j}`;
-                        this._subRowMap[indexString] = rows[k];
+                        this._subRowMap[indexString] = rows[k].id;
+                        this._subRowData[indexString] = rows[k]
                       }
                     }
                     else {
                       j += 1
                       const indexString = `${i}.${j}`;
-                      this._subRowMap[indexString] = rows[k];
+                      this._subRowMap[indexString] = rows[k].id;
+                      this._subRowData[indexString] = rows[k]
                     }  
                   }
                   const indexString = `${i}.${j + 1}`;
                   this._subRowMap[indexString] = r.rowKey;
+                  this._subRowData[indexString] = r
               }
           }
         });
@@ -64,6 +68,7 @@ class DataViewWrapper {
         this.getCurrentUser = this.getCurrentUser.bind(this)
         this.getStatusSummary = this.getStatusSummary.bind(this)
         this.getDateSummary = this.getDateSummary.bind(this)
+        this.getRowNameColumn = this.getRowNameColumn.bind(this)
     }
 
     /**
@@ -179,8 +184,8 @@ class DataViewWrapper {
           offset ++;
           for (let k = 0; k < rows.length; k ++) {
               const indexString = `${rowIndex}.${offset}`;
-              this._subRowMap[indexString] = rows[k];
-              indexes.push({ rowType:RowType.SUBROW, rowKey:rows[k], parentRowKey: rowKey});
+              this._subRowMap[indexString] = rows[k].id;
+              indexes.push({ rowType:RowType.SUBROW, rowKey:rows[k].id, parentRowKey: rowKey});
               offset ++;
           }
           const indexString = `${rowIndex}.${offset}`;
@@ -240,18 +245,19 @@ class DataViewWrapper {
       return '';
   }
 
-    addNewRow(rowIndex, newItem, apolloClient) {
+    addNewRow(rowIndex, newItem) {
         if (newItem !== '') {
           if (getSubLevel(rowIndex) === 0) {
             let row = this._indexMap[rowIndex];
-            let rowKey = this._dataset.addNewRow(row.groupKey, newItem, apolloClient);
+            let rowKey = this._dataset.addNewRow(row.groupKey, newItem);
             for (let row = this._indexMap.length; row > rowIndex; row--) {
                 this._indexMap[row] = this._indexMap[row-1]; 
             }
             this._indexMap[rowIndex] = {rowType:RowType.ROW, groupKey:row.groupKey, rowKey:rowKey};
           } else {
-            let row = this._subRowMap[rowIndex];
-            this._dataset.addNewSubRow(row, newItem);
+            let rowKey = this._subRowMap[rowIndex];
+            let rowData = this._subRowData[rowIndex]
+            this._dataset.addNewSubRow(rowData.groupID, rowKey, newItem);
           } 
         }
     }
@@ -364,8 +370,8 @@ class DataViewWrapper {
      * remove a group from the backend dataset by the groupKey
      * @param {*} groupKey 
      */
-    removeGroup(groupKey, apolloClient) {
-        return this._dataset.removeGroup(groupKey, apolloClient);
+    removeGroup(groupKey) {
+        return this._dataset.removeGroup(groupKey);
     }
 
     undoRemoveGroup(groupIndex, group) {
@@ -376,30 +382,8 @@ class DataViewWrapper {
       return this._dataset.getGroups()
     }
     
-    moveRow(sourceGroupKey, targetGroupKey, rowKey, rowIndex) {
-
-      let moveRow;
-      for  (let ridx = 0; ridx < this._indexMap.length; ridx ++) {
-        let row = this._indexMap[ridx];
-        if (row && row.rowKey === rowKey) {
-          moveRow = row
-          this._indexMap.splice(ridx, 1)
-        }
-      }
-
-      if (rowIndex < 0) {
-        for (let ridx = 0; ridx < this._indexMap.length; ridx ++) {
-          let row = this._indexMap[ridx];
-          if (row && row.groupKey === targetGroupKey && row.rowType === RowType.ADDROW) {
-            rowIndex = ridx
-            break
-          }
-        }
-      }
-
-      this._indexMap.splice(rowIndex, 0, moveRow)
-
-      return this._dataset.moveRow(sourceGroupKey, targetGroupKey, rowKey, rowIndex)
+    moveRow(sourceGroupKey, targetGroupKey, rowKey, oldSourceRow) {
+      return this._dataset.moveRow(sourceGroupKey, targetGroupKey, rowKey, oldSourceRow)
     }
 
     getGroupByRowIndex(rowIndex) {
@@ -422,6 +406,12 @@ class DataViewWrapper {
       return null
     }
 
+    getRowNameColumn() {
+      let columns = this._dataset.getColumns()
+      let column = columns.find(column => column.name === ColumnType.GROUPTITLE)
+      return column.columnKey
+    }
+
     changeGroupCollapseState(groupKey, isGroupCollapsed) {
       this._dataset.changeGroupCollapseState(groupKey, isGroupCollapsed)
     }
@@ -441,7 +431,7 @@ class DataViewWrapper {
     addNewSubSection(parentRowIndex, newItem) {
       let row = this._indexMap[parentRowIndex]
       if (row) {
-        this._dataset.addNewSubSection(row.rowKey, newItem)
+        this._dataset.addNewSubSection(row.groupKey, row.rowKey, newItem)
       }
     }
 

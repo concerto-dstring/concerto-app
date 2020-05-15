@@ -125,7 +125,8 @@ class EditableCell extends React.PureComponent {
         }
     }
       
-    handleHide = () => {         
+    handleHide = () => { 
+        this.updateValue()        
         this.setState({ editing: false });
     }
 
@@ -134,14 +135,13 @@ class EditableCell extends React.PureComponent {
     {
         this.setState({
             value: value,
-        },this.updateValue);
+        });
         
     }
 
     handleKey = e =>
     {
         if (e.keyCode === Keys.RETURN) {
-            this.updateValue()
             this.handleHide();
             return;
         }
