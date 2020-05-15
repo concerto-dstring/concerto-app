@@ -45,7 +45,7 @@ type User @model {
   email: String!
   fname: String!
   lname: String!
-  usertype : String!
+  usertype: String!
   title: String
   phone: String
   ## team-user is a many to many relationship 
@@ -104,7 +104,7 @@ type Group @model
   creatorID: ID!
   creator: User! @connection(fields: ["creatorID"])
   rank: String!
-  deleteFlag: Boolean!
+  deleteFlag: Boolean
   isCollapsed: Boolean!
   color: String!
   createdAt: String!
@@ -122,7 +122,7 @@ type Row @model
   creator: User!  @connection(fields: ["creatorID"])
   rank: String!
   parentId: ID
-  deleteFlag: Boolean!
+  deleteFlag: Boolean
   createdAt: String!
 }
 
@@ -139,7 +139,7 @@ type ColumnBoard
   fixed: Boolean!
   level: Int!
   collpse: Boolean!
-  deleteFlag: Boolean!
+  deleteFlag: Boolean
   rank: String!
 }
 
@@ -148,13 +148,14 @@ type Column @model
 @key(name: "columnCreatedByUser", fields: ["creatorID", "name"]) {
   id: ID!
   board: [ColumnBoard] @connection(keyName: "boardByColumn", fields:["id"])
+  isTitle: Boolean
   name: String!
   columntype: String!
   columnComponentType: String
   creatorID: ID!
   creator: User! @connection(fields:["creatorID"]) 
   createdAt: String!
-  deleteFlag: Boolean!
+  deleteFlag: Boolean
   datas: [Data] @connection(keyName: "datasByColumn", fields: ["id"])
 }
 

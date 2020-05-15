@@ -310,7 +310,7 @@ export const getBoard = /* GraphQL */ `
     getBoard(id: $id) {
       id
       name
-      groups {
+      groups(limit: 1000) {
         items {
           id
           name
@@ -321,7 +321,7 @@ export const getBoard = /* GraphQL */ `
           isCollapsed
           color
           createdAt
-          rows {
+          rows(limit: 10000) {
             items {
               id
               parentId
@@ -345,13 +345,14 @@ export const getBoard = /* GraphQL */ `
         }
         nextToken
       }
-      columns {
+      columns(limit: 1000) {
         items {
           id
           boardID
           columnID
           column {
             id
+            isTitle
             name
             deleteFlag
             columntype
@@ -716,6 +717,7 @@ export const getColumn = /* GraphQL */ `
         }
         nextToken
       }
+      isTitle
       name
       columntype
       columnComponentType

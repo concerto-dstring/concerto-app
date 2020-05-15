@@ -2145,65 +2145,7 @@ export const createData = /* GraphQL */ `
     createData(input: $input, condition: $condition) {
       id
       columnID
-      column {
-        id
-        board {
-          nextToken
-        }
-        name
-        columntype
-        columnComponentType
-        creatorID
-        creator {
-          id
-          email
-          fname
-          lname
-          usertype
-          title
-          phone
-          createdAt
-        }
-        createdAt
-        deleteFlag
-        datas {
-          nextToken
-        }
-      }
       rowID
-      row {
-        id
-        groupID
-        group {
-          id
-          name
-          boardID
-          creatorID
-          rank
-          deleteFlag
-          isCollapsed
-          color
-          createdAt
-        }
-        datas {
-          nextToken
-        }
-        creatorID
-        creator {
-          id
-          email
-          fname
-          lname
-          usertype
-          title
-          phone
-          createdAt
-        }
-        rank
-        parentId
-        deleteFlag
-        createdAt
-      }
       value
     }
   }
@@ -2216,65 +2158,7 @@ export const updateData = /* GraphQL */ `
     updateData(input: $input, condition: $condition) {
       id
       columnID
-      column {
-        id
-        board {
-          nextToken
-        }
-        name
-        columntype
-        columnComponentType
-        creatorID
-        creator {
-          id
-          email
-          fname
-          lname
-          usertype
-          title
-          phone
-          createdAt
-        }
-        createdAt
-        deleteFlag
-        datas {
-          nextToken
-        }
-      }
       rowID
-      row {
-        id
-        groupID
-        group {
-          id
-          name
-          boardID
-          creatorID
-          rank
-          deleteFlag
-          isCollapsed
-          color
-          createdAt
-        }
-        datas {
-          nextToken
-        }
-        creatorID
-        creator {
-          id
-          email
-          fname
-          lname
-          usertype
-          title
-          phone
-          createdAt
-        }
-        rank
-        parentId
-        deleteFlag
-        createdAt
-      }
       value
     }
   }

@@ -97,21 +97,25 @@ class EditableCell extends React.PureComponent {
     getTargetRef = () => this.targetRef;
 
     updateValue = () => {
-        if (this.props.data) {
-            // 有行数据
-            if (this.props.data.getObjectAt(this.props.rowIndex)) {
-              this.props.data.setObjectAt(this.props.rowIndex, this.props.columnKey, this.state.value);
-            }
-            else {
-              // 修改列名
-              if (this.state.value) {
-                this.props.data.setColumnData(this.props.columnKey, {name: this.state.value})
-              }
-              else {
-                this.props.data.setColumnData(this.props.columnKey, {name: this.state.oldValue})
-              }
-            }
+      if (this.props.data) {
+        // 有行数据
+        if (this.props.data.getObjectAt(this.props.rowIndex)) {
+          this.props.data.setObjectAt(this.props.rowIndex, this.props.columnKey, this.state.value);
+        }
+        else {
+          // 修改列名
+          if (this.state.value) {
+            this.props.data.setColumnData(this.props.columnKey, {name: this.state.value})
           }
+          else {
+            this.props.data.setColumnData(this.props.columnKey, {name: this.state.oldValue})
+          }
+        }
+      }
+    }
+
+    saveData(value) {
+      this.props.data.setObjectAt(this.props.rowIndex, this.props.columnKey, value);
     }
 
     handleClick = (type) => {
@@ -131,12 +135,16 @@ class EditableCell extends React.PureComponent {
     }
 
 
-    handleChange = (value)=>
+    handleChange = (value, isSave)=>
     {
+      if (isSave) {
+        this.saveData(value)
+      }
+      else {
         this.setState({
-            value: value,
+          value: value,
         });
-        
+      }
     }
 
     handleKey = e =>

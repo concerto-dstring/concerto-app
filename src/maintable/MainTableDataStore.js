@@ -21,7 +21,9 @@ import {
   createColumnBoard, updateColumnBoard,
   createData, updateData,
   createRow, updateRow 
-} from "../graphql/mutations" 
+} from "../graphql/mutations"
+
+const rankBlock = 32768
 
 class MainTableDataStore {
 
@@ -33,15 +35,12 @@ class MainTableDataStore {
         this._sizeRows = 0;
         this._sizeSubrows = 0;
         this._columns= [];
-        this._subColumns = [];
         this._sizeColumns = 0;
         this._rowData = {};
+        this._subRowKeys = []
         this._rowColumnData = {}
         this._groups = [];
         this._sizeGroups = 0;
-        this._allGroupSize = 0
-        this._allRowSize = {}
-        this._allColumnSize = 0
         this._subRows = {};
         this._boardMenus = []
         this._dashboardMenus = []
@@ -128,14 +127,13 @@ class MainTableDataStore {
           this._rowData = {}
           this._groups = []
           this._subRows = {}
+          this._subRowKeys = []
 
           let groups = this.sortDataByRank(board.groups.items)
-          this._allGroupSize = groups.length
           groups.map(group => {
             if (!group.deleteFlag) {
               group.groupKey = group.id
               let groupRows = this.sortDataByRank(group.rows.items)
-              this._allRowSize[group.id] = groupRows.length
               let rows = []
               groupRows.map(row => {
                 if (!row.deleteFlag) {
@@ -151,6 +149,7 @@ class MainTableDataStore {
                       this._subRows[row.parentId].rows = subRows
                       this._subRows[row.parentId].isExpanded = false
                     }
+                    this._subRowKeys.push(row.id)
                   }
                   else {
                     rows.push(row)
@@ -176,18 +175,18 @@ class MainTableDataStore {
           }
 
           let columns = this.sortDataByRank(board.columns.items)
-          this._allColumnSize = columns.length
           columns.map(column => {
             if(!column.deleteFlag) {
               column.type = column.column.columntype
               column.columnKey = column.column.id
               column.columnComponentType = column.column.columnComponentType
+              column.isTitle = column.column.isTitle
               let name = column.column.name
               column.name = name
               if (name === ColumnType.ROWACTION || name === ColumnType.ROWSELECT) {
                 column.width = 36
               }
-              else if (name === ColumnType.GROUPTITLE) {
+              else if (column.isTitle) {
                 column.width = 360
               }
               else {
@@ -212,76 +211,55 @@ class MainTableDataStore {
     }
 
     sortDataByRank(arr) {
-      arr.sort(function(a, b){
-        let m = Number(a.rank);
-        let n = Number(b.rank);
-        if (m < n) return -1;
-        if (m > n) return 1;
-        return 0;
-       })
+      if (arr && arr.length > 0) {
+        arr.sort(function(a, b){
+          let m = Number(a.rank);
+          let n = Number(b.rank);
+          if (m < n) return -1;
+          if (m > n) return 1;
+          return 0;
+         })
+      }
 
        return arr
     }
 
-    fetchGroupRows(apolloClient, groupId) {
-      apolloClient
-        .query({
-          query: gql(getGroup),
-          variables: {
-            id: groupId
-          },
-          fetchPolicy: "no-cache"
-        })
-        .then(result => {
-          let group = result.data.getGroup
-          group.groupKey = group.id
-          let rows = this.sortDataByRank(group.rows.items)
-          let groupRows = []
-          rows.map(row => {
-            groupRows.push(row.id)
-            this.fetchRowData(apolloClient, row.id)
-          })
-          group.rows = groupRows
-          this._groups.push(group)
-          if (groupRows.length === 0) {
-            this.runCallbacks()
-          }
-        })
+    getCreateColumnRank(level) {
+      let columns = this.sortDataByRank(this._columns.filter(column => column.level === level))
+      let rank
+      if (columns.length > 0) {
+        rank = Number(columns[columns.length - 1].rank) + rankBlock
+      }
+      else {
+        rank = rankBlock
+      }
+
+      return String(rank)
     }
 
-    fetchRowData(apolloClient, rowId) {
-      apolloClient
-        .query({
-          query: gql(getRow),
-          variables: {
-            id: rowId
-          },
-          fetchPolicy: "no-cache"
-        })
-        .then(result => {
-          let dataItems = result.data.getRow.datas.items
-          this._rowData[rowId] = {}
-          dataItems.map(item => {
-            this._rowData[item.rowID][item.columnID] = item.value
-          })
-          this.runCallbacks()
-        })
-    }
+    getCreateRowRank(parentRowKey, groupKey) {
+      let rows = []
+      if (parentRowKey) {
+        let subRow = this._subRows[parentRowKey]
+        if (subRow) {
+          rows = subRow.rows
+        }
+      }
+      else {
+        let group = this._groups.find(group => group.groupKey === groupKey)
+        if (group) {
+          rows = group.rows
+        }
+      }
+      let rank
+      if (rows.length > 0) {
+        rank = Number(rows[rows.length - 1].rank) + rankBlock
+      }
+      else {
+        rank = rankBlock
+      }
 
-    fetchRowColumnData(apolloClient, dataId) {
-      apolloClient
-        .query({
-          query: gql(getData),
-          variables: {
-            id: dataId
-          },
-          fetchPolicy: "no-cache"
-        })
-        .then(result => {
-          let data = result.data.getData
-          this._rowData[data.row.id][data.column.id] = data.value
-          this.runCallbacks()
-        })
+      return String(rank)
     }
 
     getCurrentUser(apolloClient, userId) {
@@ -340,23 +318,18 @@ class MainTableDataStore {
           }
         }
         else {
-          if (column.columnComponentType === 'PEOPLE') {
-            console.log(value)
+          let newValue = value === "" ? null : value
+          let dataId = this._rowColumnData[rowKey][columnKey]
+          if (dataId) {
+            this.updateCellData(rowKey, columnKey, dataId, newValue)
           }
           else {
-            let newValue = value === "" ? null : value
-            let dataId = this._rowColumnData[rowKey][columnKey]
-            if (dataId) {
-              this.updateCellData(dataId, newValue)
-            }
-            else {
-              this.createCellData(rowKey, columnKey, newValue)
-            }
+            this.createCellData(rowKey, columnKey, newValue)
           }
         }
     }
 
-    updateCellData(dataId, value) {
+    updateCellData(rowKey, columnKey, dataId, value) {
       this._apolloClient
         .mutate({
           mutation: gql(updateData),
@@ -368,7 +341,7 @@ class MainTableDataStore {
           }
         })
         .then(result => {
-          this._rowData[rowKey][columnKey] = newValue;
+          this._rowData[rowKey][columnKey] = value;
           this.runCallbacks();
         })
         .catch(error => {
@@ -415,6 +388,7 @@ class MainTableDataStore {
     }
 
     addNewSubSection(groupKey, parentRowKey, newItem) {
+      let rank = this.getCreateRowRank(parentRowKey, groupKey)
       // 添加空白行
       this._apolloClient
         .mutate({
@@ -422,7 +396,7 @@ class MainTableDataStore {
           variables: {
             input: {
               parentId: parentRowKey,
-              rank: String(rowSize),
+              rank: rank,
               createdAt: new Date().toISOString(),
               groupID: groupKey,
               creatorID: this._currentUser.id,
@@ -434,37 +408,93 @@ class MainTableDataStore {
           let row = result.data.createRow
           this._rowData[row.id] = {}
           this._rowColumnData[row.id] = {}
-          for(var i=0; i<this._columns.length; i++){
-            const column = this._columns[i]
-            if (column.level === 0) continue
-            if (column.name === 'GROUPTITLE') {
-              this.createCellData(row.id, column.columnKey, newItem)
+          let subColumns = this._columns.filter(column => column.level !== 0)
+          if (subColumns.length > 0) {
+            for(var i=0; i<this._columns.length; i++){
+              const column = this._columns[i]
+              if (column.level === 0|| column.name === ColumnType.ROWACTION || column.name === ColumnType.ROWSELECT) continue
+              if (column.isTitle) {
+                this.createCellData(row.id, column.columnKey, newItem)
+              }
+              else {
+                this.createCellData(row.id, column.columnKey, null)
+              }
             }
-            else if (column.name !== 'ROWACTION' && column.name !== 'ROWSELECT') {
-              this.createCellData(row.id, column.columnKey, null)
-            }
+            // 添加子项
+            this._subRows[parentRowKey] = {rows:[row], isExpanded: true}
           }
-          rows.push(row);
-          this._allRowSize[groupID] = rowSize + 1
+          else {
+            let name = "子项描述"
+            this.createColumn(false, ColumnType.ROWACTION, true, 1, ColumnType.ROWACTION, null, true, String(rankBlock))
+            this.createColumn(false, ColumnType.ROWSELECT, true, 1, ColumnType.ROWACTION, null, true, String(rankBlock * 2))
+            this.createColumn(true, name, true, 1, ColumnType.EDITBOX, "TEXT", true, String(rankBlock * 3))
+            // 添加子项
+            this._subRows[parentRowKey] = {rows:[row], isExpanded: true}
+            this.runCallbacks()
+          }
         })
         .catch(error => {
           console.log(error)
         })
-      this._sizeRows ++;
-      let id = this._sizeRows.toString();
-      this._rowData[id] = newItem;
+    }
 
-      // 添加子项
-      this._subRows[parentRowKey] = {rows:[id], isExpanded: true}
-
-      // 刷新
-      this.runCallbacks();
+    createColumn(isTitle, name, fixed, level, columntype, columnComponentType, isSubColumn, rank) {
+      this._apolloClient
+        .mutate({
+          mutation: gql(createColumn),
+          variables: {
+            input: {
+              isTitle: isTitle,
+              name: name,
+              columntype: columntype,
+              columnComponentType: columnComponentType,
+              createdAt: new Date().toISOString(),
+              creatorID: this._currentUser.id,
+              deleteFlag: false
+            }
+          }
+        })
+        .then(result => {
+          let column = result.data.createColumn
+          this.createColumnBoard(column.id, name, fixed, level, columntype, columnComponentType, isSubColumn, rank)
+        })
+        .catch(error => {
+          console.log(error)
+        })
     }
 
     toggleExpandSubRows(rowKey) {
         this._subRows[rowKey].isExpanded = !this.isSubRowExpanded(rowKey);
         //refresh
         this.runCallbacks();
+    }
+
+    getCreateGroupRank(groupKey, currentGroup, currentIndex) {
+      let rank
+      if (this._groups.length > 0) {
+        if (groupKey) {
+          // 中间插入
+          let currentRank = Number(currentGroup.rank)
+          let preRank
+          if (currentIndex === 0) {
+            preRank = 0
+          }
+          else {
+            preRank = Number(this._groups[currentIndex - 1].rank)
+          }
+
+          rank = preRank + ((currentRank - preRank) / 2)
+        }
+        else {
+          // 插入最上面
+          rank = Number(this._groups[this._groups.length - 1].rank) + rankBlock
+        }
+      }
+      else {
+        rank = rankBlock
+      }
+      
+      return String(rank)
     }
 
     addNewGroup(groupName, groupKey) {
@@ -478,10 +508,10 @@ class MainTableDataStore {
         }
         currentGroup = this._groups[index]
         // 中间插入分区的rank计算暂时没有完美方案
-        rank = String(this._allGroupSize)
+        rank = this.getCreateGroupRank(groupKey, currentGroup, index)
       }
       else {
-        rank = String(this._allGroupSize)
+        rank = this.getCreateGroupRank(groupKey)
       }
       this._apolloClient
         .mutate({
@@ -509,7 +539,7 @@ class MainTableDataStore {
           else {
             this._groups.push(group)
           }
-          this._allGroupSize = this._allGroupSize + 1
+
           this.runCallbacks();
         })
         .catch(error => {
@@ -585,13 +615,13 @@ class MainTableDataStore {
           return;
       }
       let group = this._groups[index]
-      let rowSize = this._allRowSize[group.id]
+      let rank = this.getCreateRowRank(null, groupKey)
       this._apolloClient
         .mutate({
           mutation: gql(createRow),
           variables: {
             input: {
-              rank: String(rowSize),
+              rank: rank,
               createdAt: new Date().toISOString(),
               groupID: group.id,
               creatorID: this._currentUser.id,
@@ -605,17 +635,16 @@ class MainTableDataStore {
           this._rowColumnData[row.id] = {}
           for(var i=0; i<this._columns.length; i++){
             const column = this._columns[i]
-            if (column.level !== 0) continue
-            if (column.name === 'GROUPTITLE') {
+            if (column.level !== 0  || column.name === ColumnType.ROWACTION || column.name === ColumnType.ROWSELECT) continue
+            if (column.isTitle) {
               this.createCellData(row.id, column.columnKey, newItem)
             }
-            else if (column.name !== 'ROWACTION' && column.name !== 'ROWSELECT') {
+            else {
               this.createCellData(row.id, column.columnKey, null)
             }
           }
           let rows = this._groups[index].rows;
           rows.push(row);
-          this._allRowSize[group.id] = rowSize + 1
         })
         .catch(error => {
           console.log(error)
@@ -633,8 +662,11 @@ class MainTableDataStore {
       let targetGroupRows = this._groups[targetGroupIndex].rows;
       let sourceRowIndex = sourceGroupRows.findIndex(row => row.id === rowKey);
       let sourceRow = sourceGroupRows[sourceRowIndex]
-      sourceRow.sourceRowIndex = sourceRowIndex
-      let rowSize = String(this._allRowSize[targetGroupKey])
+      let data = {}
+      data.sourceRowIndex = sourceRowIndex
+      data.rank = sourceRow.rank
+      data.row = sourceRow
+      let rank = this.getCreateRowRank(null, targetGroupKey)
       this._apolloClient
         .mutate({
           mutation: gql(updateRow),
@@ -642,7 +674,7 @@ class MainTableDataStore {
             input: {
               id: rowKey,
               groupID: targetGroupKey,
-              rank: oldSourceRow ? oldSourceRow.rank : rowSize
+              rank: oldSourceRow ? oldSourceRow.rank : rank
             }
           }
         })
@@ -654,12 +686,8 @@ class MainTableDataStore {
             targetGroupRows.push(sourceRow);
           }
           else {
-            console.log(111)
-            targetGroupRows.splice(oldSourceRow.sourceRowIndex, 0, oldSourceRow)
+            targetGroupRows.splice(oldSourceRow.sourceRowIndex, 0, oldSourceRow.row)
           }
-
-          this._allRowSize[sourceGroupKey] = this._allRowSize[sourceGroupKey] - 1
-          this._allRowSize[targetGroupKey] = this._allRowSize[targetGroupKey] + 1
           //refresh
           this.runCallbacks();
         })
@@ -667,7 +695,7 @@ class MainTableDataStore {
           console.log(error)
         })
 
-      return sourceRow;
+      return data;
     }
 
     addNewSubRow(groupID, rowKey, newItem) {
@@ -676,41 +704,40 @@ class MainTableDataStore {
             rows = [];
             this._subRows[rowKey].rows = rows;
         }
-        let rowSize = this._allRowSize[groupID]
+        let rank = this.getCreateRowRank(rowKey, groupID)
         this._apolloClient
-        .mutate({
-          mutation: gql(createRow),
-          variables: {
-            input: {
-              parentId: rowKey,
-              rank: String(rowSize),
-              createdAt: new Date().toISOString(),
-              groupID: groupID,
-              creatorID: this._currentUser.id,
-              deleteFlag: false
+          .mutate({
+            mutation: gql(createRow),
+            variables: {
+              input: {
+                parentId: rowKey,
+                rank: rank,
+                createdAt: new Date().toISOString(),
+                groupID: groupID,
+                creatorID: this._currentUser.id,
+                deleteFlag: false
+              }
             }
-          }
-        })
-        .then(result => {
-          let row = result.data.createRow
-          this._rowData[row.id] = {}
-          this._rowColumnData[row.id] = {}
-          for(var i=0; i<this._columns.length; i++){
-            const column = this._columns[i]
-            if (column.level === 0 || column.name === ColumnType.ROWACTION || column.name === ColumnType.ROWSELECT) continue
-            if (column.name === 'GROUPTITLE') {
-              this.createCellData(row.id, column.columnKey, newItem)
+          })
+          .then(result => {
+            let row = result.data.createRow
+            this._rowData[row.id] = {}
+            this._rowColumnData[row.id] = {}
+            for(var i=0; i<this._columns.length; i++){
+              const column = this._columns[i]
+              if (column.level === 0 || column.name === ColumnType.ROWACTION || column.name === ColumnType.ROWSELECT) continue
+              if (column.isTitle) {
+                this.createCellData(row.id, column.columnKey, newItem)
+              }
+              else {
+                this.createCellData(row.id, column.columnKey, null)
+              }
             }
-            else if (column.name !== 'ROWACTION' && column.name !== 'ROWSELECT') {
-              this.createCellData(row.id, column.columnKey, null)
-            }
-          }
-          rows.push(row);
-          this._allRowSize[groupID] = rowSize + 1
-        })
-        .catch(error => {
-          console.log(error)
-        })
+            rows.push(row);
+          })
+          .catch(error => {
+            console.log(error)
+          })
     }
 
     addNewColumn(newItem, level, columnComponentType) {
@@ -730,14 +757,15 @@ class MainTableDataStore {
         })
         .then(result => {
           let column = result.data.createColumn
-          this.createColumnBoard(column.id, newItem, level, columnComponentType)
+          this.createColumnBoard(column.id, newItem, false, level, ColumnType.EDITBOX, columnComponentType, false, null)
         })
         .catch(error => {
           console.log(error)
         })
     }
 
-    createColumnBoard(columnId, columnName, level, columnComponentType) {
+    createColumnBoard(columnId, columnName, fixed, level, columnType, columnComponentType, isSubColumn, rank) {
+      let rankValue = rank ? rank : this.getCreateColumnRank(level)
       this._apolloClient
         .mutate({
           mutation: gql(createColumnBoard),
@@ -745,10 +773,10 @@ class MainTableDataStore {
             input: {
               boardID: this._currentBoardId,
               columnID: columnId,
-              fixed: false,
+              fixed: fixed,
               level: level,
               collpse: false,
-              rank: String(this._allColumnSize),
+              rank: rankValue,
               deleteFlag: false
             }
           }
@@ -756,14 +784,24 @@ class MainTableDataStore {
         .then(result => {
           let column = result.data.createColumnBoard
           column.width = 200
-          column.type = ColumnType.EDITBOX
+          column.type = columnType
           column.columnKey = columnId
           column.name = columnName
           column.columnComponentType = columnComponentType
           this._columns.push(column)
-          this._allColumnSize = this._allColumnSize + 1
-          for(let key in this._rowData) {
-            this.createCellData(key, columnId, null)
+          if (isSubColumn) {
+            for(let key in this._rowData) {
+              if (this._subRowKeys.indexOf(key) !== -1) {
+                this.createCellData(key, columnId, null)
+              }
+            }
+          }
+          else {
+            for(let key in this._rowData) {
+              if (this._subRowKeys.indexOf(key) === -1) {
+                this.createCellData(key, columnId, null)
+              }
+            }
           }
         })
         .catch(error => {
@@ -793,17 +831,6 @@ class MainTableDataStore {
         .catch(error => {
           console.log(error)
         })
-    }
-
-    addNewSubcolumn(newItem, columnComponentType) {
-        this._sizeSubcolumns ++; 
-        let id = this._sizeSubcolumns.toString();
-        this._subColumns.push({columnKey: id, name:newItem, width: 200, type: ColumnType.EDITBOX, columnComponentType: columnComponentType});
-
-        //refresh
-        this.runCallbacks();
-
-        return id;
     }
 
     removeColumn(columnKey) {
@@ -897,55 +924,119 @@ class MainTableDataStore {
     }
 
     reorderColumn(columnAfter, columnKey) {
-        if (columnAfter === columnKey) {
+      if (columnAfter === columnKey) {
+          return;
+      }
+      let index = this._columns.findIndex(column => column.columnKey === columnKey);
+      if (index < 0) {
+          return;
+      }
+      let columnToReorder = this._columns[index];
+      let rank
+      let insertIndex
+      if (columnAfter) {
+        let insertIndex = this._columns.findIndex(column => column.columnKey === columnAfter);
+        if (insertIndex <= 0) { 
             return;
         }
-        let index = this._columns.findIndex(column => column.columnKey === columnKey);
-        if (index < 0) {
-            return;
+        
+        let preColumn = this._columns[insertIndex]
+        let nextColumn = this._columns[insertIndex + 1]
+        if (nextColumn) {
+          rank = Number(preColumn.rank) + ((Number(nextColumn.rank) - Number(preColumn.rank)) / 2)
         }
-        let columnToReorder = this._columns[index];
+        else {
+          rank = Number(preColumn.rank) + rankBlock
+        }
+      } else if (index !== this._columns.length - 1) {
+        rank = Number(columnToReorder.rank) + rankBlock
+      }
 
-        if (columnAfter) {
-            var iindex = this._columns.findIndex(column => column.columnKey === columnAfter);
-            if (iindex <= 0) { 
-                return;
+      this._apolloClient
+        .mutate({
+          mutation: gql(updateColumnBoard),
+          variables: {
+            input: {
+              id: columnToReorder.id,
+              rank: String(rank)
             }
+          }
+        })
+        .then(result => {
+          let column = result.data.updateColumnBoard
+          columnToReorder.rank = column.rank
+          if (columnAfter) {
             this._columns.splice(index, 1);
-            this._columns.splice(iindex, 0, columnToReorder);
-        } else if (index !== this._columns.length - 1) {
+            this._columns.splice(insertIndex, 0, columnToReorder);
+          }
+          else if (index !== this._columns.length - 1) {
             this._columns.splice(index, 1);
             this._columns.push(columnToReorder);
-        }
-        //refresh
-        this.runCallbacks();
+          }
+        
+          //refresh
+          this.runCallbacks();
+        })
+        .catch(error => {
+          console.log(error)
+        })
     }
 
     reorderRow(oldGroupKey, rowKey, newGroupKey, rowAfter) {
-        let oldgroup = this._groups.find(group => group.groupKey === oldGroupKey);
-        if (!oldgroup) {
-            return;
-        }
-        let index = oldgroup.rows.findIndex(row => row === rowKey);
-        if (index >= 0) {
-            oldgroup.rows.splice(index, 1);
-        }
-        let newgroup = this._groups.find(group => group.groupKey === newGroupKey);
-        if (!newgroup) {
-            return;
-        }
-        index = newgroup.rows.findIndex(row => row === rowAfter);
-        if (index === -1)
-            index = 0;
-        else 
-            index ++;
+      let oldGroup = this._groups.find(group => group.groupKey === oldGroupKey);
+      if (!oldGroup) {
+          return;
+      }
 
-        if (index >= 0) {
-            newgroup.rows.splice(index, 0, rowKey);
+      let newGroup = this._groups.find(group => group.groupKey === newGroupKey);
+      if (!newGroup) {
+          return;
+      }
+
+      let newIndex = newGroup.rows.findIndex(row => row.id === rowAfter);
+      let rank
+      if (newIndex === -1) {
+        // 分区无数据
+        newIndex = 0
+        rank = rankBlock
+      }
+      else {
+        // 分区有数据
+        let preRow = newGroup.rows[newIndex]
+        let nextRow = newGroup.rows[newIndex + 1]
+        if (nextRow) {
+          rank = Number(preRow.rank) + ((Number(nextRow.rank) - Number(preRow.rank)) / 2)
         }
-        
-        //refresh
-        this.runCallbacks();
+        else {
+          rank = Number(preRow.rank) + rankBlock
+        }
+      }
+
+      this._apolloClient
+        .mutate({
+          mutation: gql(updateRow),
+          variables: {
+            input: {
+              id: rowKey,
+              groupID: newGroupKey,
+              rank: String(rank)
+            }
+          }
+        })
+        .then(result => {
+          // 去除原行数据
+          let oldIndex = oldGroup.rows.findIndex(row => row.id === rowKey);
+          let row = oldGroup.rows[oldIndex]
+          oldGroup.rows.splice(oldIndex, 1);
+
+          newGroup.rows.splice(newIndex, 0, result.data.updateRow)
+
+          //refresh
+          this.runCallbacks();
+        })
+        .catch(error => {
+          console.log(error)
+        })
     }
 
     setGroupData(groupData) {

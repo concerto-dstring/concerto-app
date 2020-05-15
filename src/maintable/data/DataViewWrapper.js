@@ -215,7 +215,8 @@ class DataViewWrapper {
     getCellValue(rowIndex, columnKey) {
       let row = this.getObjectAt(rowIndex)
       if (row) {
-        return row[columnKey]
+        let value = row[columnKey]
+        return value === null ? '' : value
       }
 
       return ''
@@ -257,7 +258,7 @@ class DataViewWrapper {
           } else {
             let rowKey = this._subRowMap[rowIndex];
             let rowData = this._subRowData[rowIndex]
-            this._dataset.addNewSubRow(rowData.groupID, rowKey, newItem);
+            this._dataset.addNewSubRow(rowData.groupKey, rowKey, newItem);
           } 
         }
     }

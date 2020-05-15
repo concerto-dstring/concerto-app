@@ -43,7 +43,7 @@ class StatusCell extends React.Component {
           value:statusValue,
           styleClassName:selectedStyle,
         })
-        handleChange(statusValue);
+        handleChange(statusValue, true);
       }
       const menu = <Menu onClick={returnValue} className='statusCellMenu'>
           <Menu.Item key="working" className='workingItem'>

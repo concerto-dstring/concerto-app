@@ -428,7 +428,7 @@ class DropDownMenuCell extends React.PureComponent {
     const { rowIndex, data } = this.props;
     if (key === ADD_SUB_TABLE.key) {
       // 添加子项
-      data.addNewSubSection(rowIndex, {})
+      data.addNewSubSection(rowIndex, null)
     }
     else if (key === RENAME_ROW.key) {
       // 重命名行
