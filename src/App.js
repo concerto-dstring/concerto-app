@@ -32,12 +32,12 @@
   });
 
   /* a sample codes to use the client */
-  console.log("start to run gql " + new Date().toISOString())
-  client
-    .query({
-      query: gql(listCompanys)
-    })
-    .then(result => console.log(result));
+  // console.log("start to run gql " + new Date().toISOString())
+  // client
+  //   .query({
+  //     query: gql(listCompanys)
+  //   })
+  //   .then(result => console.log(result));
 
   // Input types can't have fields that are other objects, only basic scalar types, list types, and other input types.
   // const newuser = {
