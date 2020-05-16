@@ -14,12 +14,12 @@ type Company @model {
 
 ## organization: company has multiple teams
 type Team @model 
-@key(name: "teamByCompany", fields: ["companyId", "name"]){
+@key(name: "teamByCompany", fields: ["companyID", "name"]){
   id: ID!
   name: String!
   admin: User! @connection
-  companyId: ID!
-  company: Company @connection(fields: ["companyId"])
+  companyID: ID!
+  company: Company @connection(fields: ["companyID"])
   ## team-user is a many to many relationship 
   users: [TeamUser] @connection(keyName: "userByTeam", fields: ["id"])
   upteam: ID
@@ -81,42 +81,42 @@ type BoardSubscribedUser
 
 ## UI: board is the main container of UI for the maintable view
 type Board @model 
-@key(name: "boardByUser", fields: ["creatorId", "name"]) {
+@key(name: "boardByUser", fields: ["creatorID", "name"]) {
   id: ID!
   name: String!
   groups: [Group] @connection(keyName: "groupsByBoard", fields: ["id"])
   columns: [ColumnBoard] @connection(keyName: "columnsByBoard", fields: ["id"])
-  creatorId: ID!
-  creator: User!  @connection(fields: ["creatorId"])
+  creatorID: ID!
+  creator: User!  @connection(fields: ["creatorID"])
   subscribers: [BoardSubscribedUser]  @connection(keyName: "userByBoardSubscribed", fields: ["id"]) 
   createdAt: String!
 }
 
 ## basic element of board, a group belongs to one board
 type Group @model 
-@key(name: "groupsByBoard", fields: ["boardId", "name"]) 
-@key(name: "groupCreatedByUser", fields: ["creatorId", "name"]) {
+@key(name: "groupsByBoard", fields: ["boardID", "name"]) 
+@key(name: "groupCreatedByUser", fields: ["creatorID", "name"]) {
   id: ID!
   name: String!
-  boardId: ID!
-  board: Board! @connection(fields: ["boardId"])
+  boardID: ID!
+  board: Board! @connection(fields: ["boardID"])
   rows: [Row] @connection(keyName: "rowsByGroup", fields:["id"])
-  creatorId: ID!
-  creator: User! @connection(fields: ["creatorId"])
+  creatorID: ID!
+  creator: User! @connection(fields: ["creatorID"])
   rank: String!
   createdAt: String!
 }
 
-## one task per row 
+## one task per row
 type Row @model 
-@key(name: "rowsByGroup", fields: ["groupId", "rank"]) 
-@key(name: "rowCreatedByUser", fields: ["createorId", "rank"]){
+@key(name: "rowsByGroup", fields: ["groupID", "rank"]) 
+@key(name: "rowCreatedByUser", fields: ["creatorID", "rank"]){
   id: ID!
-  groupId: ID!
-  group: Group! @connection(fields: ["groupId"])
+  groupID: ID!
+  group: Group! @connection(fields: ["groupID"])
   datas: [Data]  @connection(keyName: "datasByRow", fields:["id"])
-  createorId: ID!
-  creator: User!  @connection(fields: ["createorId"])
+  creatorID: ID!
+  creator: User!  @connection(fields: ["creatorID"])
   rank: String!
   createdAt: String!
 }
@@ -124,13 +124,13 @@ type Row @model
 ## column-board is a many to many relationship
 type ColumnBoard
   @model(queries: null)
-  @key(name: "columnsByBoard", fields: ["boardId", "columnId"])
-  @key(name: "boardByColumn", fields: ["columnId", "boardId"]) {
+  @key(name: "columnsByBoard", fields: ["boardID", "columnID"])
+  @key(name: "boardByColumn", fields: ["columnID", "boardID"]) {
   id: ID!
-  boardId: ID!
-  columnId: ID!
-  board: Board! @connection(fields: ["boardId"])
-  column: Column! @connection(fields: ["columnId"])
+  boardID: ID!
+  columnID: ID!
+  board: Board! @connection(fields: ["boardID"])
+  column: Column! @connection(fields: ["columnID"])
   fixed: Boolean!
   level: Int!
   collpse: Boolean!
@@ -139,26 +139,61 @@ type ColumnBoard
 
 ## column library 
 type Column @model
-@key(name: "columnCreatedByUser", fields: ["creatorId", "name"]) {
+@key(name: "columnCreatedByUser", fields: ["creatorID", "name"]) {
   id: ID!
   board: [ColumnBoard] @connection(keyName: "boardByColumn", fields:["id"])
   name: String!
   columntype: String!
   columnComponentType: String
-  creatorId: ID!
-  creator: User! @connection(fields:["creatorId"]) 
+  creatorID: ID!
+  creator: User! @connection(fields:["creatorID"]) 
   createdAt: String!
   datas: [Data] @connection(keyName: "datasByColumn", fields: ["id"])
 }
 
 ## object instance of one data value in the intersection of a column and a row
 type Data @model 
-@key(name: "datasByRow", fields: ["rowId", "id"]) 
-@key(name: "datasByColumn", fields: ["columnId", "id"]) {
+@key(name: "datasByRow", fields: ["rowID", "id"]) 
+@key(name: "datasByColumn", fields: ["columnID", "id"]) {
   id: ID!
-  columnId: ID!
-  column: Column! @connection(fields: ["columnId"])
-  rowId: ID!
-  row: Row! @connection(fields: ["rowId"])
-  value: String  
+  columnID: ID!
+  rowID: ID!
+  value: String   
+}
+
+## row-based interaction threading, sorted by the createdAt date-time
+type ThreadOnRow @model {
+  id: ID!
+  rowID: ID!
+  userID: ID!
+  user: User @connection(fields:["userID"])
+  content: String!
+  createdAt: String!
+  likedByUsersID: [ID]
+  seenByUsersID: [ID]
+  repliesByDate: [ReplyOnThread]  @connection(keyName: "repliesByDate", fields: ["id"])
+}
+
+## reply to the thread, ThreadOnRow <-- 1:n --> Reply, sorted by the createdAt date-time
+type ReplyOnThread @model 
+@key(name: "repliesByDate", fields: ["threadID", "createdAt"]) {
+  id: ID!
+  threadID: ID!
+  userID: ID!
+  user: User @connection(fields:["userID"])
+  content: String!
+  createdAt: String!
+  likedByUsersID: [ID!]
+  seenByUsersID: [ID!]
+}
+
+## row-based attachments/inbox, , sorted by the createdAt date-time
+type InboxOnRow @model 
+ @key(fields: ["id", "createdAt"]) {
+  id: ID!
+  rowID: ID!
+  userID: ID!
+  user: User @connection(fields:["userID"])
+  filelocations: String!  # s3 location
+  createdAt: String!
 }

@@ -43,7 +43,7 @@ export const createCompany = /* GraphQL */ `
         items {
           id
           name
-          companyId
+          companyID
           upteam
           downteams
           createdAt
@@ -96,7 +96,7 @@ export const updateCompany = /* GraphQL */ `
         items {
           id
           name
-          companyId
+          companyID
           upteam
           downteams
           createdAt
@@ -149,7 +149,7 @@ export const deleteCompany = /* GraphQL */ `
         items {
           id
           name
-          companyId
+          companyID
           upteam
           downteams
           createdAt
@@ -196,7 +196,7 @@ export const createTeam = /* GraphQL */ `
           nextToken
         }
       }
-      companyId
+      companyID
       company {
         id
         name
@@ -267,7 +267,7 @@ export const updateTeam = /* GraphQL */ `
           nextToken
         }
       }
-      companyId
+      companyID
       company {
         id
         name
@@ -338,7 +338,7 @@ export const deleteTeam = /* GraphQL */ `
           nextToken
         }
       }
-      companyId
+      companyID
       company {
         id
         name
@@ -395,7 +395,7 @@ export const createTeamUser = /* GraphQL */ `
           phone
           createdAt
         }
-        companyId
+        companyID
         company {
           id
           name
@@ -463,7 +463,7 @@ export const updateTeamUser = /* GraphQL */ `
           phone
           createdAt
         }
-        companyId
+        companyID
         company {
           id
           name
@@ -531,7 +531,7 @@ export const deleteTeamUser = /* GraphQL */ `
           phone
           createdAt
         }
-        companyId
+        companyID
         company {
           id
           name
@@ -603,7 +603,7 @@ export const createUser = /* GraphQL */ `
         items {
           id
           name
-          creatorId
+          creatorID
           createdAt
         }
         nextToken
@@ -620,8 +620,8 @@ export const createUser = /* GraphQL */ `
         items {
           id
           name
-          boardId
-          creatorId
+          boardID
+          creatorID
           rank
           createdAt
         }
@@ -633,7 +633,7 @@ export const createUser = /* GraphQL */ `
           name
           columntype
           columnComponentType
-          creatorId
+          creatorID
           createdAt
         }
         nextToken
@@ -641,8 +641,8 @@ export const createUser = /* GraphQL */ `
       rowCreated {
         items {
           id
-          groupId
-          createorId
+          groupID
+          creatorID
           rank
           createdAt
         }
@@ -677,7 +677,7 @@ export const updateUser = /* GraphQL */ `
         items {
           id
           name
-          creatorId
+          creatorID
           createdAt
         }
         nextToken
@@ -694,8 +694,8 @@ export const updateUser = /* GraphQL */ `
         items {
           id
           name
-          boardId
-          creatorId
+          boardID
+          creatorID
           rank
           createdAt
         }
@@ -707,7 +707,7 @@ export const updateUser = /* GraphQL */ `
           name
           columntype
           columnComponentType
-          creatorId
+          creatorID
           createdAt
         }
         nextToken
@@ -715,8 +715,8 @@ export const updateUser = /* GraphQL */ `
       rowCreated {
         items {
           id
-          groupId
-          createorId
+          groupID
+          creatorID
           rank
           createdAt
         }
@@ -751,7 +751,7 @@ export const deleteUser = /* GraphQL */ `
         items {
           id
           name
-          creatorId
+          creatorID
           createdAt
         }
         nextToken
@@ -768,8 +768,8 @@ export const deleteUser = /* GraphQL */ `
         items {
           id
           name
-          boardId
-          creatorId
+          boardID
+          creatorID
           rank
           createdAt
         }
@@ -781,7 +781,7 @@ export const deleteUser = /* GraphQL */ `
           name
           columntype
           columnComponentType
-          creatorId
+          creatorID
           createdAt
         }
         nextToken
@@ -789,8 +789,8 @@ export const deleteUser = /* GraphQL */ `
       rowCreated {
         items {
           id
-          groupId
-          createorId
+          groupID
+          creatorID
           rank
           createdAt
         }
@@ -817,7 +817,7 @@ export const createBoardSubscribedUser = /* GraphQL */ `
         columns {
           nextToken
         }
-        creatorId
+        creatorID
         creator {
           id
           email
@@ -882,7 +882,7 @@ export const updateBoardSubscribedUser = /* GraphQL */ `
         columns {
           nextToken
         }
-        creatorId
+        creatorID
         creator {
           id
           email
@@ -947,7 +947,7 @@ export const deleteBoardSubscribedUser = /* GraphQL */ `
         columns {
           nextToken
         }
-        creatorId
+        creatorID
         creator {
           id
           email
@@ -1006,8 +1006,8 @@ export const createBoard = /* GraphQL */ `
         items {
           id
           name
-          boardId
-          creatorId
+          boardID
+          creatorID
           rank
           createdAt
         }
@@ -1016,8 +1016,8 @@ export const createBoard = /* GraphQL */ `
       columns {
         items {
           id
-          boardId
-          columnId
+          boardID
+          columnID
           fixed
           level
           collpse
@@ -1025,7 +1025,7 @@ export const createBoard = /* GraphQL */ `
         }
         nextToken
       }
-      creatorId
+      creatorID
       creator {
         id
         email
@@ -1078,8 +1078,8 @@ export const updateBoard = /* GraphQL */ `
         items {
           id
           name
-          boardId
-          creatorId
+          boardID
+          creatorID
           rank
           createdAt
         }
@@ -1088,8 +1088,8 @@ export const updateBoard = /* GraphQL */ `
       columns {
         items {
           id
-          boardId
-          columnId
+          boardID
+          columnID
           fixed
           level
           collpse
@@ -1097,7 +1097,7 @@ export const updateBoard = /* GraphQL */ `
         }
         nextToken
       }
-      creatorId
+      creatorID
       creator {
         id
         email
@@ -1150,8 +1150,8 @@ export const deleteBoard = /* GraphQL */ `
         items {
           id
           name
-          boardId
-          creatorId
+          boardID
+          creatorID
           rank
           createdAt
         }
@@ -1160,8 +1160,8 @@ export const deleteBoard = /* GraphQL */ `
       columns {
         items {
           id
-          boardId
-          columnId
+          boardID
+          columnID
           fixed
           level
           collpse
@@ -1169,7 +1169,7 @@ export const deleteBoard = /* GraphQL */ `
         }
         nextToken
       }
-      creatorId
+      creatorID
       creator {
         id
         email
@@ -1218,7 +1218,7 @@ export const createGroup = /* GraphQL */ `
     createGroup(input: $input, condition: $condition) {
       id
       name
-      boardId
+      boardID
       board {
         id
         name
@@ -1228,7 +1228,7 @@ export const createGroup = /* GraphQL */ `
         columns {
           nextToken
         }
-        creatorId
+        creatorID
         creator {
           id
           email
@@ -1247,14 +1247,14 @@ export const createGroup = /* GraphQL */ `
       rows {
         items {
           id
-          groupId
-          createorId
+          groupID
+          creatorID
           rank
           createdAt
         }
         nextToken
       }
-      creatorId
+      creatorID
       creator {
         id
         email
@@ -1296,7 +1296,7 @@ export const updateGroup = /* GraphQL */ `
     updateGroup(input: $input, condition: $condition) {
       id
       name
-      boardId
+      boardID
       board {
         id
         name
@@ -1306,7 +1306,7 @@ export const updateGroup = /* GraphQL */ `
         columns {
           nextToken
         }
-        creatorId
+        creatorID
         creator {
           id
           email
@@ -1325,14 +1325,14 @@ export const updateGroup = /* GraphQL */ `
       rows {
         items {
           id
-          groupId
-          createorId
+          groupID
+          creatorID
           rank
           createdAt
         }
         nextToken
       }
-      creatorId
+      creatorID
       creator {
         id
         email
@@ -1374,7 +1374,7 @@ export const deleteGroup = /* GraphQL */ `
     deleteGroup(input: $input, condition: $condition) {
       id
       name
-      boardId
+      boardID
       board {
         id
         name
@@ -1384,7 +1384,7 @@ export const deleteGroup = /* GraphQL */ `
         columns {
           nextToken
         }
-        creatorId
+        creatorID
         creator {
           id
           email
@@ -1403,14 +1403,14 @@ export const deleteGroup = /* GraphQL */ `
       rows {
         items {
           id
-          groupId
-          createorId
+          groupID
+          creatorID
           rank
           createdAt
         }
         nextToken
       }
-      creatorId
+      creatorID
       creator {
         id
         email
@@ -1451,21 +1451,21 @@ export const createRow = /* GraphQL */ `
   ) {
     createRow(input: $input, condition: $condition) {
       id
-      groupId
+      groupID
       group {
         id
         name
-        boardId
+        boardID
         board {
           id
           name
-          creatorId
+          creatorID
           createdAt
         }
         rows {
           nextToken
         }
-        creatorId
+        creatorID
         creator {
           id
           email
@@ -1482,13 +1482,13 @@ export const createRow = /* GraphQL */ `
       datas {
         items {
           id
-          columnId
-          rowId
+          columnID
+          rowID
           value
         }
         nextToken
       }
-      createorId
+      creatorID
       creator {
         id
         email
@@ -1529,21 +1529,21 @@ export const updateRow = /* GraphQL */ `
   ) {
     updateRow(input: $input, condition: $condition) {
       id
-      groupId
+      groupID
       group {
         id
         name
-        boardId
+        boardID
         board {
           id
           name
-          creatorId
+          creatorID
           createdAt
         }
         rows {
           nextToken
         }
-        creatorId
+        creatorID
         creator {
           id
           email
@@ -1560,13 +1560,13 @@ export const updateRow = /* GraphQL */ `
       datas {
         items {
           id
-          columnId
-          rowId
+          columnID
+          rowID
           value
         }
         nextToken
       }
-      createorId
+      creatorID
       creator {
         id
         email
@@ -1607,21 +1607,21 @@ export const deleteRow = /* GraphQL */ `
   ) {
     deleteRow(input: $input, condition: $condition) {
       id
-      groupId
+      groupID
       group {
         id
         name
-        boardId
+        boardID
         board {
           id
           name
-          creatorId
+          creatorID
           createdAt
         }
         rows {
           nextToken
         }
-        creatorId
+        creatorID
         creator {
           id
           email
@@ -1638,13 +1638,13 @@ export const deleteRow = /* GraphQL */ `
       datas {
         items {
           id
-          columnId
-          rowId
+          columnID
+          rowID
           value
         }
         nextToken
       }
-      createorId
+      creatorID
       creator {
         id
         email
@@ -1685,8 +1685,8 @@ export const createColumnBoard = /* GraphQL */ `
   ) {
     createColumnBoard(input: $input, condition: $condition) {
       id
-      boardId
-      columnId
+      boardID
+      columnID
       board {
         id
         name
@@ -1696,7 +1696,7 @@ export const createColumnBoard = /* GraphQL */ `
         columns {
           nextToken
         }
-        creatorId
+        creatorID
         creator {
           id
           email
@@ -1720,7 +1720,7 @@ export const createColumnBoard = /* GraphQL */ `
         name
         columntype
         columnComponentType
-        creatorId
+        creatorID
         creator {
           id
           email
@@ -1750,8 +1750,8 @@ export const updateColumnBoard = /* GraphQL */ `
   ) {
     updateColumnBoard(input: $input, condition: $condition) {
       id
-      boardId
-      columnId
+      boardID
+      columnID
       board {
         id
         name
@@ -1761,7 +1761,7 @@ export const updateColumnBoard = /* GraphQL */ `
         columns {
           nextToken
         }
-        creatorId
+        creatorID
         creator {
           id
           email
@@ -1785,7 +1785,7 @@ export const updateColumnBoard = /* GraphQL */ `
         name
         columntype
         columnComponentType
-        creatorId
+        creatorID
         creator {
           id
           email
@@ -1815,8 +1815,8 @@ export const deleteColumnBoard = /* GraphQL */ `
   ) {
     deleteColumnBoard(input: $input, condition: $condition) {
       id
-      boardId
-      columnId
+      boardID
+      columnID
       board {
         id
         name
@@ -1826,7 +1826,7 @@ export const deleteColumnBoard = /* GraphQL */ `
         columns {
           nextToken
         }
-        creatorId
+        creatorID
         creator {
           id
           email
@@ -1850,7 +1850,7 @@ export const deleteColumnBoard = /* GraphQL */ `
         name
         columntype
         columnComponentType
-        creatorId
+        creatorID
         creator {
           id
           email
@@ -1883,8 +1883,8 @@ export const createColumn = /* GraphQL */ `
       board {
         items {
           id
-          boardId
-          columnId
+          boardID
+          columnID
           fixed
           level
           collpse
@@ -1895,7 +1895,7 @@ export const createColumn = /* GraphQL */ `
       name
       columntype
       columnComponentType
-      creatorId
+      creatorID
       creator {
         id
         email
@@ -1928,8 +1928,8 @@ export const createColumn = /* GraphQL */ `
       datas {
         items {
           id
-          columnId
-          rowId
+          columnID
+          rowID
           value
         }
         nextToken
@@ -1947,8 +1947,8 @@ export const updateColumn = /* GraphQL */ `
       board {
         items {
           id
-          boardId
-          columnId
+          boardID
+          columnID
           fixed
           level
           collpse
@@ -1959,7 +1959,7 @@ export const updateColumn = /* GraphQL */ `
       name
       columntype
       columnComponentType
-      creatorId
+      creatorID
       creator {
         id
         email
@@ -1992,8 +1992,8 @@ export const updateColumn = /* GraphQL */ `
       datas {
         items {
           id
-          columnId
-          rowId
+          columnID
+          rowID
           value
         }
         nextToken
@@ -2011,8 +2011,8 @@ export const deleteColumn = /* GraphQL */ `
       board {
         items {
           id
-          boardId
-          columnId
+          boardID
+          columnID
           fixed
           level
           collpse
@@ -2023,7 +2023,7 @@ export const deleteColumn = /* GraphQL */ `
       name
       columntype
       columnComponentType
-      creatorId
+      creatorID
       creator {
         id
         email
@@ -2056,8 +2056,8 @@ export const deleteColumn = /* GraphQL */ `
       datas {
         items {
           id
-          columnId
-          rowId
+          columnID
+          rowID
           value
         }
         nextToken
@@ -2072,7 +2072,7 @@ export const createData = /* GraphQL */ `
   ) {
     createData(input: $input, condition: $condition) {
       id
-      columnId
+      columnID
       column {
         id
         board {
@@ -2081,7 +2081,7 @@ export const createData = /* GraphQL */ `
         name
         columntype
         columnComponentType
-        creatorId
+        creatorID
         creator {
           id
           email
@@ -2097,22 +2097,22 @@ export const createData = /* GraphQL */ `
           nextToken
         }
       }
-      rowId
+      rowID
       row {
         id
-        groupId
+        groupID
         group {
           id
           name
-          boardId
-          creatorId
+          boardID
+          creatorID
           rank
           createdAt
         }
         datas {
           nextToken
         }
-        createorId
+        creatorID
         creator {
           id
           email
@@ -2137,7 +2137,7 @@ export const updateData = /* GraphQL */ `
   ) {
     updateData(input: $input, condition: $condition) {
       id
-      columnId
+      columnID
       column {
         id
         board {
@@ -2146,7 +2146,7 @@ export const updateData = /* GraphQL */ `
         name
         columntype
         columnComponentType
-        creatorId
+        creatorID
         creator {
           id
           email
@@ -2162,22 +2162,22 @@ export const updateData = /* GraphQL */ `
           nextToken
         }
       }
-      rowId
+      rowID
       row {
         id
-        groupId
+        groupID
         group {
           id
           name
-          boardId
-          creatorId
+          boardID
+          creatorID
           rank
           createdAt
         }
         datas {
           nextToken
         }
-        createorId
+        creatorID
         creator {
           id
           email
@@ -2202,7 +2202,7 @@ export const deleteData = /* GraphQL */ `
   ) {
     deleteData(input: $input, condition: $condition) {
       id
-      columnId
+      columnID
       column {
         id
         board {
@@ -2211,7 +2211,7 @@ export const deleteData = /* GraphQL */ `
         name
         columntype
         columnComponentType
-        creatorId
+        creatorID
         creator {
           id
           email
@@ -2227,22 +2227,22 @@ export const deleteData = /* GraphQL */ `
           nextToken
         }
       }
-      rowId
+      rowID
       row {
         id
-        groupId
+        groupID
         group {
           id
           name
-          boardId
-          creatorId
+          boardID
+          creatorID
           rank
           createdAt
         }
         datas {
           nextToken
         }
-        createorId
+        creatorID
         creator {
           id
           email
