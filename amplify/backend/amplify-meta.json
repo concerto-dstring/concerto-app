@@ -18,7 +18,7 @@
 		}
 	},
 	"api": {
-		"concertoapi": {
+		"conertoapi": {
 			"service": "AppSync",
 			"providerPlugin": "awscloudformation",
 			"output": {
@@ -27,21 +27,21 @@
 					"defaultAuthentication": {
 						"authenticationType": "API_KEY",
 						"apiKeyConfig": {
-							"description": "api key for test",
+							"description": "api for test",
 							"apiKeyExpirationDays": "365"
 						}
 					}
 				},
-				"GraphQLAPIIdOutput": "5yikv27svbccbjfsxb3yiysfum",
-				"GraphQLAPIEndpointOutput": "https://lzk5tio3bfffjpu6fpuwwvqbbe.appsync-api.ap-northeast-2.amazonaws.com/graphql",
-				"GraphQLAPIKeyOutput": "da2-fjtatlkvgjamtdvfdvtr7v7hiq"
+				"GraphQLAPIIdOutput": "dccfbvhu7jbmvo65affa3z3uga",
+				"GraphQLAPIEndpointOutput": "https://mr37zvqyivactjekjqugkluknu.appsync-api.ap-northeast-2.amazonaws.com/graphql",
+				"GraphQLAPIKeyOutput": "da2-jmnu33ie4vautdttmnqgm5zpzq"
 			},
 			"providerMetadata": {
 				"s3TemplateURL": "https://s3.amazonaws.com/amplify-concerto-app-test-214928-deployment/amplify-cfn-templates/api/cloudformation-template.json",
-				"logicalId": "apiconcertoapi"
+				"logicalId": "apiconertoapi"
 			},
-			"lastPushTimeStamp": "2020-05-10T16:51:42.395Z",
-			"lastPushDirHash": "W2F6yo/NfJZNDb1F7j17x3Y8xzU="
+			"lastPushTimeStamp": "2020-05-17T02:00:37.240Z",
+			"lastPushDirHash": "1/KV9zt6VAIO7mB8eyG2CyL2Lrs="
 		}
 	},
 	"auth": {
@@ -59,12 +59,11 @@
 				"IdentityPoolName": "concertoapp2fea5048_identitypool_2fea5048__test",
 				"UserPoolName": "concertoapp2fea5048_userpool_2fea5048"
 			},
-			"lastPushTimeStamp": "2020-05-10T16:51:36.588Z",
+			"lastPushTimeStamp": "2020-05-17T02:00:32.966Z",
 			"providerMetadata": {
 				"s3TemplateURL": "https://s3.amazonaws.com/amplify-concerto-app-test-214928-deployment/amplify-cfn-templates/auth/concertoapp2fea5048-cloudformation-template.yml",
 				"logicalId": "authconcertoapp2fea5048"
-			},
-			"lastPushDirHash": "mHFYZrkJyogIpKyDKcKoAvvjLhI="
+			}
 		}
 	}
 }

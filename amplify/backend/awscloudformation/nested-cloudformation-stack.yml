@@ -68,17 +68,17 @@
 				}
 			}
 		},
-		"apiconcertoapi": {
+		"apiconertoapi": {
 			"Type": "AWS::CloudFormation::Stack",
 			"Properties": {
 				"TemplateURL": "https://s3.amazonaws.com/amplify-concerto-app-test-214928-deployment/amplify-cfn-templates/api/cloudformation-template.json",
 				"Parameters": {
 					"CreateAPIKey": 1,
-					"AppSyncApiName": "concertoapi",
+					"AppSyncApiName": "conertoapi",
 					"DynamoDBBillingMode": "PAY_PER_REQUEST",
 					"DynamoDBEnableServerSideEncryption": "false",
 					"S3DeploymentBucket": "amplify-concerto-app-test-214928-deployment",
-					"S3DeploymentRootKey": "amplify-appsync-files/874ba995907782918568a306c24e162610a327bf",
+					"S3DeploymentRootKey": "amplify-appsync-files/a0d61762cdacc691b12cfffbcfc7c7a9eb165ca2",
 					"env": "test"
 				}
 			}
