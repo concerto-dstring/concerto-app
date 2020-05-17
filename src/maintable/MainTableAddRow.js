@@ -20,7 +20,6 @@ import './css/style/fixedDataTable.css';
  * only <FixedDataTable /> should use the component internally.
  */
 
-
 class MainTableAddRow extends React.Component {
 
   static propTypes = {

@@ -84,7 +84,7 @@ class DateCell extends React.Component {
           open:false
         })
         this.refs.datePicker.blur();
-        this.props.handleChange(moment(this.state.value).format('YYYY-MM-DD')+this.#date_time_delimit+this.state.addDateTime);
+        this.props.handleChange(moment(this.state.value).format('YYYY-MM-DD')+this.#date_time_delimit+this.state.addDateTime, true);
       }
       const clearDateTime = () => {
         this.setState({
@@ -93,7 +93,7 @@ class DateCell extends React.Component {
           value:""
         })
         this.refs.datePicker.blur();
-        this.props.handleChange("");
+        this.props.handleChange("", true);
 
       }
       return (

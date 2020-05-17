@@ -267,7 +267,7 @@ class MainTable extends React.Component {
      * @param {*} event 
      */
     _onAddNewGroupCallback(event) {
-        this._dataset.addNewGroup("新分区");
+        this._dataset.addNewGroup("新分区", null, this.props.client);
         this.refresh()
     }
 
@@ -338,6 +338,7 @@ class MainTable extends React.Component {
     getColumnTemplate(columnKey) {
         let columns = this.state.columns;
         let colTemplates = {};
+ 
         for (let i  = 0; i < columns.length; i ++) {
             let column = columns[i];
             if (columnKey === column.columnKey) {
@@ -627,7 +628,7 @@ class MainTable extends React.Component {
 export default Dimensions({
     getHeight: function(element) {
       // 减去上面面包屑的高度
-      return window.innerHeight - document.getElementById("appBread").clientHeight - 94;
+      return window.innerHeight - document.getElementById("appBread").clientHeight - 134;
     },
     getWidth: function(element) {
       return window.innerWidth - 24;

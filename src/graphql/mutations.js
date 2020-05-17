@@ -623,6 +623,9 @@ export const createUser = /* GraphQL */ `
           boardID
           creatorID
           rank
+          deleteFlag
+          isCollapsed
+          color
           createdAt
         }
         nextToken
@@ -635,6 +638,7 @@ export const createUser = /* GraphQL */ `
           columnComponentType
           creatorID
           createdAt
+          deleteFlag
         }
         nextToken
       }
@@ -644,6 +648,8 @@ export const createUser = /* GraphQL */ `
           groupID
           creatorID
           rank
+          parentId
+          deleteFlag
           createdAt
         }
         nextToken
@@ -697,6 +703,9 @@ export const updateUser = /* GraphQL */ `
           boardID
           creatorID
           rank
+          deleteFlag
+          isCollapsed
+          color
           createdAt
         }
         nextToken
@@ -709,6 +718,7 @@ export const updateUser = /* GraphQL */ `
           columnComponentType
           creatorID
           createdAt
+          deleteFlag
         }
         nextToken
       }
@@ -718,6 +728,8 @@ export const updateUser = /* GraphQL */ `
           groupID
           creatorID
           rank
+          parentId
+          deleteFlag
           createdAt
         }
         nextToken
@@ -771,6 +783,9 @@ export const deleteUser = /* GraphQL */ `
           boardID
           creatorID
           rank
+          deleteFlag
+          isCollapsed
+          color
           createdAt
         }
         nextToken
@@ -783,6 +798,7 @@ export const deleteUser = /* GraphQL */ `
           columnComponentType
           creatorID
           createdAt
+          deleteFlag
         }
         nextToken
       }
@@ -792,6 +808,8 @@ export const deleteUser = /* GraphQL */ `
           groupID
           creatorID
           rank
+          parentId
+          deleteFlag
           createdAt
         }
         nextToken
@@ -1009,6 +1027,9 @@ export const createBoard = /* GraphQL */ `
           boardID
           creatorID
           rank
+          deleteFlag
+          isCollapsed
+          color
           createdAt
         }
         nextToken
@@ -1021,6 +1042,7 @@ export const createBoard = /* GraphQL */ `
           fixed
           level
           collpse
+          deleteFlag
           rank
         }
         nextToken
@@ -1081,6 +1103,9 @@ export const updateBoard = /* GraphQL */ `
           boardID
           creatorID
           rank
+          deleteFlag
+          isCollapsed
+          color
           createdAt
         }
         nextToken
@@ -1093,6 +1118,7 @@ export const updateBoard = /* GraphQL */ `
           fixed
           level
           collpse
+          deleteFlag
           rank
         }
         nextToken
@@ -1153,6 +1179,9 @@ export const deleteBoard = /* GraphQL */ `
           boardID
           creatorID
           rank
+          deleteFlag
+          isCollapsed
+          color
           createdAt
         }
         nextToken
@@ -1165,6 +1194,7 @@ export const deleteBoard = /* GraphQL */ `
           fixed
           level
           collpse
+          deleteFlag
           rank
         }
         nextToken
@@ -1250,6 +1280,8 @@ export const createGroup = /* GraphQL */ `
           groupID
           creatorID
           rank
+          parentId
+          deleteFlag
           createdAt
         }
         nextToken
@@ -1284,6 +1316,9 @@ export const createGroup = /* GraphQL */ `
         }
       }
       rank
+      deleteFlag
+      isCollapsed
+      color
       createdAt
     }
   }
@@ -1328,6 +1363,8 @@ export const updateGroup = /* GraphQL */ `
           groupID
           creatorID
           rank
+          parentId
+          deleteFlag
           createdAt
         }
         nextToken
@@ -1362,6 +1399,9 @@ export const updateGroup = /* GraphQL */ `
         }
       }
       rank
+      deleteFlag
+      isCollapsed
+      color
       createdAt
     }
   }
@@ -1406,6 +1446,8 @@ export const deleteGroup = /* GraphQL */ `
           groupID
           creatorID
           rank
+          parentId
+          deleteFlag
           createdAt
         }
         nextToken
@@ -1440,6 +1482,9 @@ export const deleteGroup = /* GraphQL */ `
         }
       }
       rank
+      deleteFlag
+      isCollapsed
+      color
       createdAt
     }
   }
@@ -1477,6 +1522,9 @@ export const createRow = /* GraphQL */ `
           createdAt
         }
         rank
+        deleteFlag
+        isCollapsed
+        color
         createdAt
       }
       datas {
@@ -1518,6 +1566,8 @@ export const createRow = /* GraphQL */ `
         }
       }
       rank
+      parentId
+      deleteFlag
       createdAt
     }
   }
@@ -1555,6 +1605,9 @@ export const updateRow = /* GraphQL */ `
           createdAt
         }
         rank
+        deleteFlag
+        isCollapsed
+        color
         createdAt
       }
       datas {
@@ -1596,6 +1649,8 @@ export const updateRow = /* GraphQL */ `
         }
       }
       rank
+      parentId
+      deleteFlag
       createdAt
     }
   }
@@ -1633,6 +1688,9 @@ export const deleteRow = /* GraphQL */ `
           createdAt
         }
         rank
+        deleteFlag
+        isCollapsed
+        color
         createdAt
       }
       datas {
@@ -1674,6 +1732,8 @@ export const deleteRow = /* GraphQL */ `
         }
       }
       rank
+      parentId
+      deleteFlag
       createdAt
     }
   }
@@ -1732,6 +1792,7 @@ export const createColumnBoard = /* GraphQL */ `
           createdAt
         }
         createdAt
+        deleteFlag
         datas {
           nextToken
         }
@@ -1739,6 +1800,7 @@ export const createColumnBoard = /* GraphQL */ `
       fixed
       level
       collpse
+      deleteFlag
       rank
     }
   }
@@ -1797,6 +1859,7 @@ export const updateColumnBoard = /* GraphQL */ `
           createdAt
         }
         createdAt
+        deleteFlag
         datas {
           nextToken
         }
@@ -1804,6 +1867,7 @@ export const updateColumnBoard = /* GraphQL */ `
       fixed
       level
       collpse
+      deleteFlag
       rank
     }
   }
@@ -1862,6 +1926,7 @@ export const deleteColumnBoard = /* GraphQL */ `
           createdAt
         }
         createdAt
+        deleteFlag
         datas {
           nextToken
         }
@@ -1869,6 +1934,7 @@ export const deleteColumnBoard = /* GraphQL */ `
       fixed
       level
       collpse
+      deleteFlag
       rank
     }
   }
@@ -1888,6 +1954,7 @@ export const createColumn = /* GraphQL */ `
           fixed
           level
           collpse
+          deleteFlag
           rank
         }
         nextToken
@@ -1925,6 +1992,7 @@ export const createColumn = /* GraphQL */ `
         }
       }
       createdAt
+      deleteFlag
       datas {
         items {
           id
@@ -1952,6 +2020,7 @@ export const updateColumn = /* GraphQL */ `
           fixed
           level
           collpse
+          deleteFlag
           rank
         }
         nextToken
@@ -1989,6 +2058,7 @@ export const updateColumn = /* GraphQL */ `
         }
       }
       createdAt
+      deleteFlag
       datas {
         items {
           id
@@ -2016,6 +2086,7 @@ export const deleteColumn = /* GraphQL */ `
           fixed
           level
           collpse
+          deleteFlag
           rank
         }
         nextToken
@@ -2053,6 +2124,7 @@ export const deleteColumn = /* GraphQL */ `
         }
       }
       createdAt
+      deleteFlag
       datas {
         items {
           id
@@ -2073,59 +2145,7 @@ export const createData = /* GraphQL */ `
     createData(input: $input, condition: $condition) {
       id
       columnID
-      column {
-        id
-        board {
-          nextToken
-        }
-        name
-        columntype
-        columnComponentType
-        creatorID
-        creator {
-          id
-          email
-          fname
-          lname
-          usertype
-          title
-          phone
-          createdAt
-        }
-        createdAt
-        datas {
-          nextToken
-        }
-      }
       rowID
-      row {
-        id
-        groupID
-        group {
-          id
-          name
-          boardID
-          creatorID
-          rank
-          createdAt
-        }
-        datas {
-          nextToken
-        }
-        creatorID
-        creator {
-          id
-          email
-          fname
-          lname
-          usertype
-          title
-          phone
-          createdAt
-        }
-        rank
-        createdAt
-      }
       value
     }
   }
@@ -2138,59 +2158,7 @@ export const updateData = /* GraphQL */ `
     updateData(input: $input, condition: $condition) {
       id
       columnID
-      column {
-        id
-        board {
-          nextToken
-        }
-        name
-        columntype
-        columnComponentType
-        creatorID
-        creator {
-          id
-          email
-          fname
-          lname
-          usertype
-          title
-          phone
-          createdAt
-        }
-        createdAt
-        datas {
-          nextToken
-        }
-      }
       rowID
-      row {
-        id
-        groupID
-        group {
-          id
-          name
-          boardID
-          creatorID
-          rank
-          createdAt
-        }
-        datas {
-          nextToken
-        }
-        creatorID
-        creator {
-          id
-          email
-          fname
-          lname
-          usertype
-          title
-          phone
-          createdAt
-        }
-        rank
-        createdAt
-      }
       value
     }
   }
@@ -2223,6 +2191,7 @@ export const deleteData = /* GraphQL */ `
           createdAt
         }
         createdAt
+        deleteFlag
         datas {
           nextToken
         }
@@ -2237,6 +2206,9 @@ export const deleteData = /* GraphQL */ `
           boardID
           creatorID
           rank
+          deleteFlag
+          isCollapsed
+          color
           createdAt
         }
         datas {
@@ -2254,6 +2226,8 @@ export const deleteData = /* GraphQL */ `
           createdAt
         }
         rank
+        parentId
+        deleteFlag
         createdAt
       }
       value

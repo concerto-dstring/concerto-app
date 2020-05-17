@@ -12,7 +12,7 @@
   import gql from "graphql-tag";
 
   import MainPage from './MainPage.js'
-  
+  import MainTableDataStore from './maintable/MainTableDataStore';
   import { listCompanys } from "./graphql/queries"
   import { createUser, deleteUser, createBoard, createGroup, createCompany } from "./graphql/mutations"
   import { createStructuredSelector } from 'reselect';
@@ -28,16 +28,16 @@
       apiKey: appSyncConfig.aws_appsync_apiKey,
     },
     cacheOptions: {
-    }
+    },
   });
 
   /* a sample codes to use the client */
-  console.log("start to run gql " + new Date().toISOString())
-  client
-    .query({
-      query: gql(listCompanys)
-    })
-    .then(result => console.log(result));
+  // console.log("start to run gql " + new Date().toISOString())
+  // client
+  //   .query({
+  //     query: gql(listCompanys)
+  //   })
+  //   .then(result => console.log(result));
 
   // Input types can't have fields that are other objects, only basic scalar types, list types, and other input types.
   // const newuser = {
@@ -109,11 +109,13 @@
   class App extends React.Component {
   
     render() {
+      let dataset = new MainTableDataStore();
+      dataset.getCurrentUser(client, '4e8e53bc-80d7-4f4e-af84-704a737c9e98')
       return (
         <ApolloProvider client={client}>
           <Rehydrated>
               <AmplifySignOut />
-              <MainPage />
+              <MainPage dataset={dataset} />
           </Rehydrated>
         </ApolloProvider> 
       );
