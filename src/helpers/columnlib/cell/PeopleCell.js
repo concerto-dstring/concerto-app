@@ -5,43 +5,12 @@ import {CloseCircleFilled,UserOutlined,PlusCircleFilled } from '@ant-design/icon
 import 'moment/locale/zh-cn';
 import { Cell } from '../../../maintable/FixedDataTableRoot';
 import './PeopleCell.less';
+import { getPeople } from '../../section/modal/PeopleName'
 
-class PeopleCell extends React.Component {
+class PeopleCell extends React.PureComponent {
     state = {
       visible:false,
-      allPeoples:[{
-          smallName:'Z',
-          userName:'ZhangTao',
-          faceColor:'#f4617f'
-      },{
-          smallName:'C',
-          userName:'Lucy Chen',
-          faceColor:'#66cdff'
-      },{
-          smallName:'L',
-          userName:'Leo',
-          faceColor:'#f49642'
-      },{
-          smallName:'M',
-          userName:'Jack Ma',
-          faceColor:'#79cdcd'
-      },{
-          smallName:'W',
-          userName:'Civen Wang',
-          faceColor:'#f4617f'
-      },{
-          smallName:'Z',
-          userName:'ZhangGuoLi',
-          faceColor:'#66cdff'
-      },{
-          smallName:'J',
-          userName:'JangGuangZhou',
-          faceColor:'#f49642'
-      },{
-          smallName:'M',
-          userName:'MaYing',
-          faceColor:'#f49642'
-      }],
+      allPeoples: getPeople(),
       selectedUsers:(this.props.value&&this.props.value!='')?this.props.value:[],
       removeBar:{
         display:'none'
@@ -59,9 +28,12 @@ class PeopleCell extends React.Component {
       })
     }
     render() {
+      const someusers = this.state.selectedUsers||[];
+
+      if (someusers instanceof Array === false) return null
+
       const {Search} = Input;
       const {data, rowIndex, columnKey, collapsedRows, callback, value, handleChange, handleKey, ...props} = this.props;
-      const someusers = this.state.selectedUsers||[];
       const allPeoples = this.state.allPeoples||[];
       const defaultAllPeoples = () => {
         for(let i=0,len=someusers.length;i<len;i++){

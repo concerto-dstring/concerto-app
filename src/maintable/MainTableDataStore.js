@@ -13,6 +13,8 @@ import { ColumnType } from './data/MainTableType';
 import { COLOR } from '../helpers/section/header/StyleValues'
 import { getPeople } from '../helpers/section/modal/PeopleName';
 
+import {ListAllBoards, GetBoardbyId} from '../helpers/data/fetchBoards'
+
 class MainTableDataStore {
 
     // rows is array, rowkey -> {key value hashmap}
@@ -29,6 +31,7 @@ class MainTableDataStore {
         this._groups = [];
         this._sizeGroups = 0;
         this._subRows = {};
+        this._siderMenus = []
         this.getSize = this.getSize.bind(this);
         this.addNewRow = this.addNewRow.bind(this);
         this.addNewColumn = this.addNewColumn.bind(this);
@@ -64,6 +67,34 @@ class MainTableDataStore {
           self._sizeRows    = Object.keys(self._rowData).length;   
         }
       });
+    }
+
+    createSiderMenus() {
+      const self = this;
+      $.ajax({
+        url : "/store/siderMenu.js",
+        data:{},
+        cache : false, 
+        async : false,
+        type : "GET",
+        dataType : 'json',
+        success : function(data){
+          self._siderMenus = data
+        }
+      });
+    }
+
+    /**
+     * replaces the createFakeObjectData() with backend data
+     */
+    fetchBackendBoardData(apolloclient, boardid){
+      const ret = {};
+      ret['columns'] = [];  /** fetchColumns.js */
+      ret['groups'] = [];   /** fetchGroups.js */
+      ret['rowdata'] = {};
+      ret['subRows'] = {}
+
+      return ret;
     }
 
     getCurrentUser() {

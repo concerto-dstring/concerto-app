@@ -1,125 +1,12 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
-export const createCompany = `mutation CreateCompany(
-  $input: CreateCompanyInput!
-  $condition: ModelCompanyConditionInput
-) {
-  createCompany(input: $input, condition: $condition) {
-    id
-    name
-    email
-    phone
-    admin {
-      id
-      email
-      fname
-      lname
-      usertype
-      title
-      phone
-      teams {
-        nextToken
-      }
-    }
-    teams {
-      items {
-        id
-        name
-        upteam
-        downteams
-      }
-      nextToken
-    }
-  }
-}
-`;
-export const updateCompany = `mutation UpdateCompany(
-  $input: UpdateCompanyInput!
-  $condition: ModelCompanyConditionInput
-) {
-  updateCompany(input: $input, condition: $condition) {
-    id
-    name
-    email
-    phone
-    admin {
-      id
-      email
-      fname
-      lname
-      usertype
-      title
-      phone
-      teams {
-        nextToken
-      }
-    }
-    teams {
-      items {
-        id
-        name
-        upteam
-        downteams
-      }
-      nextToken
-    }
-  }
-}
-`;
-export const deleteCompany = `mutation DeleteCompany(
-  $input: DeleteCompanyInput!
-  $condition: ModelCompanyConditionInput
-) {
-  deleteCompany(input: $input, condition: $condition) {
-    id
-    name
-    email
-    phone
-    admin {
-      id
-      email
-      fname
-      lname
-      usertype
-      title
-      phone
-      teams {
-        nextToken
-      }
-    }
-    teams {
-      items {
-        id
-        name
-        upteam
-        downteams
-      }
-      nextToken
-    }
-  }
-}
-`;
-export const createTeam = `mutation CreateTeam(
-  $input: CreateTeamInput!
-  $condition: ModelTeamConditionInput
-) {
-  createTeam(input: $input, condition: $condition) {
-    id
-    name
-    admin {
-      id
-      email
-      fname
-      lname
-      usertype
-      title
-      phone
-      teams {
-        nextToken
-      }
-    }
-    company {
+export const createCompany = /* GraphQL */ `
+  mutation CreateCompany(
+    $input: CreateCompanyInput!
+    $condition: ModelCompanyConditionInput
+  ) {
+    createCompany(input: $input, condition: $condition) {
       id
       name
       email
@@ -132,44 +19,47 @@ export const createTeam = `mutation CreateTeam(
         usertype
         title
         phone
+        teams {
+          nextToken
+        }
+        createdAt
+        boardCreated {
+          nextToken
+        }
+        boardSubscribed {
+          nextToken
+        }
+        groupCreated {
+          nextToken
+        }
+        columnCreated {
+          nextToken
+        }
+        rowCreated {
+          nextToken
+        }
       }
       teams {
+        items {
+          id
+          name
+          companyID
+          upteam
+          downteams
+          createdAt
+        }
         nextToken
       }
+      createdAt
     }
-    users {
-      items {
-        id
-        teamID
-        userID
-      }
-      nextToken
-    }
-    upteam
-    downteams
   }
-}
 `;
-export const updateTeam = `mutation UpdateTeam(
-  $input: UpdateTeamInput!
-  $condition: ModelTeamConditionInput
-) {
-  updateTeam(input: $input, condition: $condition) {
-    id
-    name
-    admin {
-      id
-      email
-      fname
-      lname
-      usertype
-      title
-      phone
-      teams {
-        nextToken
-      }
-    }
-    company {
+export const updateCompany = /* GraphQL */ `
+  mutation UpdateCompany(
+    $input: UpdateCompanyInput!
+    $condition: ModelCompanyConditionInput
+  ) {
+    updateCompany(input: $input, condition: $condition) {
       id
       name
       email
@@ -182,44 +72,47 @@ export const updateTeam = `mutation UpdateTeam(
         usertype
         title
         phone
+        teams {
+          nextToken
+        }
+        createdAt
+        boardCreated {
+          nextToken
+        }
+        boardSubscribed {
+          nextToken
+        }
+        groupCreated {
+          nextToken
+        }
+        columnCreated {
+          nextToken
+        }
+        rowCreated {
+          nextToken
+        }
       }
       teams {
+        items {
+          id
+          name
+          companyID
+          upteam
+          downteams
+          createdAt
+        }
         nextToken
       }
+      createdAt
     }
-    users {
-      items {
-        id
-        teamID
-        userID
-      }
-      nextToken
-    }
-    upteam
-    downteams
   }
-}
 `;
-export const deleteTeam = `mutation DeleteTeam(
-  $input: DeleteTeamInput!
-  $condition: ModelTeamConditionInput
-) {
-  deleteTeam(input: $input, condition: $condition) {
-    id
-    name
-    admin {
-      id
-      email
-      fname
-      lname
-      usertype
-      title
-      phone
-      teams {
-        nextToken
-      }
-    }
-    company {
+export const deleteCompany = /* GraphQL */ `
+  mutation DeleteCompany(
+    $input: DeleteCompanyInput!
+    $condition: ModelCompanyConditionInput
+  ) {
+    deleteCompany(input: $input, condition: $condition) {
       id
       name
       email
@@ -232,33 +125,47 @@ export const deleteTeam = `mutation DeleteTeam(
         usertype
         title
         phone
+        teams {
+          nextToken
+        }
+        createdAt
+        boardCreated {
+          nextToken
+        }
+        boardSubscribed {
+          nextToken
+        }
+        groupCreated {
+          nextToken
+        }
+        columnCreated {
+          nextToken
+        }
+        rowCreated {
+          nextToken
+        }
       }
       teams {
+        items {
+          id
+          name
+          companyID
+          upteam
+          downteams
+          createdAt
+        }
         nextToken
       }
+      createdAt
     }
-    users {
-      items {
-        id
-        teamID
-        userID
-      }
-      nextToken
-    }
-    upteam
-    downteams
   }
-}
 `;
-export const createTeamUser = `mutation CreateTeamUser(
-  $input: CreateTeamUserInput!
-  $condition: ModelTeamUserConditionInput
-) {
-  createTeamUser(input: $input, condition: $condition) {
-    id
-    teamID
-    userID
-    team {
+export const createTeam = /* GraphQL */ `
+  mutation CreateTeam(
+    $input: CreateTeamInput!
+    $condition: ModelTeamConditionInput
+  ) {
+    createTeam(input: $input, condition: $condition) {
       id
       name
       admin {
@@ -269,43 +176,67 @@ export const createTeamUser = `mutation CreateTeamUser(
         usertype
         title
         phone
+        teams {
+          nextToken
+        }
+        createdAt
+        boardCreated {
+          nextToken
+        }
+        boardSubscribed {
+          nextToken
+        }
+        groupCreated {
+          nextToken
+        }
+        columnCreated {
+          nextToken
+        }
+        rowCreated {
+          nextToken
+        }
       }
+      companyID
       company {
         id
         name
         email
         phone
+        admin {
+          id
+          email
+          fname
+          lname
+          usertype
+          title
+          phone
+          createdAt
+        }
+        teams {
+          nextToken
+        }
+        createdAt
       }
       users {
+        items {
+          id
+          teamID
+          userID
+        }
         nextToken
       }
       upteam
       downteams
-    }
-    user {
-      id
-      email
-      fname
-      lname
-      usertype
-      title
-      phone
-      teams {
-        nextToken
-      }
+      createdAt
     }
   }
-}
 `;
-export const updateTeamUser = `mutation UpdateTeamUser(
-  $input: UpdateTeamUserInput!
-  $condition: ModelTeamUserConditionInput
-) {
-  updateTeamUser(input: $input, condition: $condition) {
-    id
-    teamID
-    userID
-    team {
+export const updateTeam = /* GraphQL */ `
+  mutation UpdateTeam(
+    $input: UpdateTeamInput!
+    $condition: ModelTeamConditionInput
+  ) {
+    updateTeam(input: $input, condition: $condition) {
       id
       name
       admin {
@@ -316,43 +247,67 @@ export const updateTeamUser = `mutation UpdateTeamUser(
         usertype
         title
         phone
+        teams {
+          nextToken
+        }
+        createdAt
+        boardCreated {
+          nextToken
+        }
+        boardSubscribed {
+          nextToken
+        }
+        groupCreated {
+          nextToken
+        }
+        columnCreated {
+          nextToken
+        }
+        rowCreated {
+          nextToken
+        }
       }
+      companyID
       company {
         id
         name
         email
         phone
+        admin {
+          id
+          email
+          fname
+          lname
+          usertype
+          title
+          phone
+          createdAt
+        }
+        teams {
+          nextToken
+        }
+        createdAt
       }
       users {
+        items {
+          id
+          teamID
+          userID
+        }
         nextToken
       }
       upteam
       downteams
-    }
-    user {
-      id
-      email
-      fname
-      lname
-      usertype
-      title
-      phone
-      teams {
-        nextToken
-      }
+      createdAt
     }
   }
-}
 `;
-export const deleteTeamUser = `mutation DeleteTeamUser(
-  $input: DeleteTeamUserInput!
-  $condition: ModelTeamUserConditionInput
-) {
-  deleteTeamUser(input: $input, condition: $condition) {
-    id
-    teamID
-    userID
-    team {
+export const deleteTeam = /* GraphQL */ `
+  mutation DeleteTeam(
+    $input: DeleteTeamInput!
+    $condition: ModelTeamConditionInput
+  ) {
+    deleteTeam(input: $input, condition: $condition) {
       id
       name
       admin {
@@ -363,123 +318,99 @@ export const deleteTeamUser = `mutation DeleteTeamUser(
         usertype
         title
         phone
+        teams {
+          nextToken
+        }
+        createdAt
+        boardCreated {
+          nextToken
+        }
+        boardSubscribed {
+          nextToken
+        }
+        groupCreated {
+          nextToken
+        }
+        columnCreated {
+          nextToken
+        }
+        rowCreated {
+          nextToken
+        }
       }
+      companyID
       company {
         id
         name
         email
         phone
+        admin {
+          id
+          email
+          fname
+          lname
+          usertype
+          title
+          phone
+          createdAt
+        }
+        teams {
+          nextToken
+        }
+        createdAt
       }
       users {
+        items {
+          id
+          teamID
+          userID
+        }
         nextToken
       }
       upteam
       downteams
+      createdAt
     }
-    user {
+  }
+`;
+export const createTeamUser = /* GraphQL */ `
+  mutation CreateTeamUser(
+    $input: CreateTeamUserInput!
+    $condition: ModelTeamUserConditionInput
+  ) {
+    createTeamUser(input: $input, condition: $condition) {
       id
-      email
-      fname
-      lname
-      usertype
-      title
-      phone
-      teams {
-        nextToken
-      }
-    }
-  }
-}
-`;
-export const createUser = `mutation CreateUser(
-  $input: CreateUserInput!
-  $condition: ModelUserConditionInput
-) {
-  createUser(input: $input, condition: $condition) {
-    id
-    email
-    fname
-    lname
-    usertype
-    title
-    phone
-    teams {
-      items {
-        id
-        teamID
-        userID
-      }
-      nextToken
-    }
-  }
-}
-`;
-export const updateUser = `mutation UpdateUser(
-  $input: UpdateUserInput!
-  $condition: ModelUserConditionInput
-) {
-  updateUser(input: $input, condition: $condition) {
-    id
-    email
-    fname
-    lname
-    usertype
-    title
-    phone
-    teams {
-      items {
-        id
-        teamID
-        userID
-      }
-      nextToken
-    }
-  }
-}
-`;
-export const deleteUser = `mutation DeleteUser(
-  $input: DeleteUserInput!
-  $condition: ModelUserConditionInput
-) {
-  deleteUser(input: $input, condition: $condition) {
-    id
-    email
-    fname
-    lname
-    usertype
-    title
-    phone
-    teams {
-      items {
-        id
-        teamID
-        userID
-      }
-      nextToken
-    }
-  }
-}
-`;
-export const createBoard = `mutation CreateBoard(
-  $input: CreateBoardInput!
-  $condition: ModelBoardConditionInput
-) {
-  createBoard(input: $input, condition: $condition) {
-    id
-    name
-    groups {
-      items {
+      teamID
+      userID
+      team {
         id
         name
-        rank
+        admin {
+          id
+          email
+          fname
+          lname
+          usertype
+          title
+          phone
+          createdAt
+        }
+        companyID
+        company {
+          id
+          name
+          email
+          phone
+          createdAt
+        }
+        users {
+          nextToken
+        }
+        upteam
+        downteams
+        createdAt
       }
-      nextToken
-    }
-    columns {
-      id
-      name
-      columntype
-      creator {
+      user {
         id
         email
         fname
@@ -487,55 +418,67 @@ export const createBoard = `mutation CreateBoard(
         usertype
         title
         phone
-      }
-    }
-    creator {
-      id
-      email
-      fname
-      lname
-      usertype
-      title
-      phone
-      teams {
-        nextToken
-      }
-    }
-    subscribers {
-      id
-      email
-      fname
-      lname
-      usertype
-      title
-      phone
-      teams {
-        nextToken
+        teams {
+          nextToken
+        }
+        createdAt
+        boardCreated {
+          nextToken
+        }
+        boardSubscribed {
+          nextToken
+        }
+        groupCreated {
+          nextToken
+        }
+        columnCreated {
+          nextToken
+        }
+        rowCreated {
+          nextToken
+        }
       }
     }
   }
-}
 `;
-export const updateBoard = `mutation UpdateBoard(
-  $input: UpdateBoardInput!
-  $condition: ModelBoardConditionInput
-) {
-  updateBoard(input: $input, condition: $condition) {
-    id
-    name
-    groups {
-      items {
+export const updateTeamUser = /* GraphQL */ `
+  mutation UpdateTeamUser(
+    $input: UpdateTeamUserInput!
+    $condition: ModelTeamUserConditionInput
+  ) {
+    updateTeamUser(input: $input, condition: $condition) {
+      id
+      teamID
+      userID
+      team {
         id
         name
-        rank
+        admin {
+          id
+          email
+          fname
+          lname
+          usertype
+          title
+          phone
+          createdAt
+        }
+        companyID
+        company {
+          id
+          name
+          email
+          phone
+          createdAt
+        }
+        users {
+          nextToken
+        }
+        upteam
+        downteams
+        createdAt
       }
-      nextToken
-    }
-    columns {
-      id
-      name
-      columntype
-      creator {
+      user {
         id
         email
         fname
@@ -543,55 +486,67 @@ export const updateBoard = `mutation UpdateBoard(
         usertype
         title
         phone
-      }
-    }
-    creator {
-      id
-      email
-      fname
-      lname
-      usertype
-      title
-      phone
-      teams {
-        nextToken
-      }
-    }
-    subscribers {
-      id
-      email
-      fname
-      lname
-      usertype
-      title
-      phone
-      teams {
-        nextToken
+        teams {
+          nextToken
+        }
+        createdAt
+        boardCreated {
+          nextToken
+        }
+        boardSubscribed {
+          nextToken
+        }
+        groupCreated {
+          nextToken
+        }
+        columnCreated {
+          nextToken
+        }
+        rowCreated {
+          nextToken
+        }
       }
     }
   }
-}
 `;
-export const deleteBoard = `mutation DeleteBoard(
-  $input: DeleteBoardInput!
-  $condition: ModelBoardConditionInput
-) {
-  deleteBoard(input: $input, condition: $condition) {
-    id
-    name
-    groups {
-      items {
+export const deleteTeamUser = /* GraphQL */ `
+  mutation DeleteTeamUser(
+    $input: DeleteTeamUserInput!
+    $condition: ModelTeamUserConditionInput
+  ) {
+    deleteTeamUser(input: $input, condition: $condition) {
+      id
+      teamID
+      userID
+      team {
         id
         name
-        rank
+        admin {
+          id
+          email
+          fname
+          lname
+          usertype
+          title
+          phone
+          createdAt
+        }
+        companyID
+        company {
+          id
+          name
+          email
+          phone
+          createdAt
+        }
+        users {
+          nextToken
+        }
+        upteam
+        downteams
+        createdAt
       }
-      nextToken
-    }
-    columns {
-      id
-      name
-      columntype
-      creator {
+      user {
         id
         email
         fname
@@ -599,9 +554,35 @@ export const deleteBoard = `mutation DeleteBoard(
         usertype
         title
         phone
+        teams {
+          nextToken
+        }
+        createdAt
+        boardCreated {
+          nextToken
+        }
+        boardSubscribed {
+          nextToken
+        }
+        groupCreated {
+          nextToken
+        }
+        columnCreated {
+          nextToken
+        }
+        rowCreated {
+          nextToken
+        }
       }
     }
-    creator {
+  }
+`;
+export const createUser = /* GraphQL */ `
+  mutation CreateUser(
+    $input: CreateUserInput!
+    $condition: ModelUserConditionInput
+  ) {
+    createUser(input: $input, condition: $condition) {
       id
       email
       fname
@@ -610,42 +591,441 @@ export const deleteBoard = `mutation DeleteBoard(
       title
       phone
       teams {
+        items {
+          id
+          teamID
+          userID
+        }
         nextToken
       }
-    }
-    subscribers {
-      id
-      email
-      fname
-      lname
-      usertype
-      title
-      phone
-      teams {
+      createdAt
+      boardCreated {
+        items {
+          id
+          name
+          creatorID
+          createdAt
+        }
+        nextToken
+      }
+      boardSubscribed {
+        items {
+          id
+          boardSubscribedID
+          userID
+        }
+        nextToken
+      }
+      groupCreated {
+        items {
+          id
+          name
+          boardID
+          creatorID
+          rank
+          createdAt
+        }
+        nextToken
+      }
+      columnCreated {
+        items {
+          id
+          name
+          columntype
+          columnComponentType
+          creatorID
+          createdAt
+        }
+        nextToken
+      }
+      rowCreated {
+        items {
+          id
+          groupID
+          creatorID
+          rank
+          createdAt
+        }
         nextToken
       }
     }
   }
-}
 `;
-export const createGroup = `mutation CreateGroup(
-  $input: CreateGroupInput!
-  $condition: ModelGroupConditionInput
-) {
-  createGroup(input: $input, condition: $condition) {
-    id
-    name
-    board {
+export const updateUser = /* GraphQL */ `
+  mutation UpdateUser(
+    $input: UpdateUserInput!
+    $condition: ModelUserConditionInput
+  ) {
+    updateUser(input: $input, condition: $condition) {
+      id
+      email
+      fname
+      lname
+      usertype
+      title
+      phone
+      teams {
+        items {
+          id
+          teamID
+          userID
+        }
+        nextToken
+      }
+      createdAt
+      boardCreated {
+        items {
+          id
+          name
+          creatorID
+          createdAt
+        }
+        nextToken
+      }
+      boardSubscribed {
+        items {
+          id
+          boardSubscribedID
+          userID
+        }
+        nextToken
+      }
+      groupCreated {
+        items {
+          id
+          name
+          boardID
+          creatorID
+          rank
+          createdAt
+        }
+        nextToken
+      }
+      columnCreated {
+        items {
+          id
+          name
+          columntype
+          columnComponentType
+          creatorID
+          createdAt
+        }
+        nextToken
+      }
+      rowCreated {
+        items {
+          id
+          groupID
+          creatorID
+          rank
+          createdAt
+        }
+        nextToken
+      }
+    }
+  }
+`;
+export const deleteUser = /* GraphQL */ `
+  mutation DeleteUser(
+    $input: DeleteUserInput!
+    $condition: ModelUserConditionInput
+  ) {
+    deleteUser(input: $input, condition: $condition) {
+      id
+      email
+      fname
+      lname
+      usertype
+      title
+      phone
+      teams {
+        items {
+          id
+          teamID
+          userID
+        }
+        nextToken
+      }
+      createdAt
+      boardCreated {
+        items {
+          id
+          name
+          creatorID
+          createdAt
+        }
+        nextToken
+      }
+      boardSubscribed {
+        items {
+          id
+          boardSubscribedID
+          userID
+        }
+        nextToken
+      }
+      groupCreated {
+        items {
+          id
+          name
+          boardID
+          creatorID
+          rank
+          createdAt
+        }
+        nextToken
+      }
+      columnCreated {
+        items {
+          id
+          name
+          columntype
+          columnComponentType
+          creatorID
+          createdAt
+        }
+        nextToken
+      }
+      rowCreated {
+        items {
+          id
+          groupID
+          creatorID
+          rank
+          createdAt
+        }
+        nextToken
+      }
+    }
+  }
+`;
+export const createBoardSubscribedUser = /* GraphQL */ `
+  mutation CreateBoardSubscribedUser(
+    $input: CreateBoardSubscribedUserInput!
+    $condition: ModelBoardSubscribedUserConditionInput
+  ) {
+    createBoardSubscribedUser(input: $input, condition: $condition) {
+      id
+      boardSubscribedID
+      userID
+      boardSubscribed {
+        id
+        name
+        groups {
+          nextToken
+        }
+        columns {
+          nextToken
+        }
+        creatorID
+        creator {
+          id
+          email
+          fname
+          lname
+          usertype
+          title
+          phone
+          createdAt
+        }
+        subscribers {
+          nextToken
+        }
+        createdAt
+      }
+      user {
+        id
+        email
+        fname
+        lname
+        usertype
+        title
+        phone
+        teams {
+          nextToken
+        }
+        createdAt
+        boardCreated {
+          nextToken
+        }
+        boardSubscribed {
+          nextToken
+        }
+        groupCreated {
+          nextToken
+        }
+        columnCreated {
+          nextToken
+        }
+        rowCreated {
+          nextToken
+        }
+      }
+    }
+  }
+`;
+export const updateBoardSubscribedUser = /* GraphQL */ `
+  mutation UpdateBoardSubscribedUser(
+    $input: UpdateBoardSubscribedUserInput!
+    $condition: ModelBoardSubscribedUserConditionInput
+  ) {
+    updateBoardSubscribedUser(input: $input, condition: $condition) {
+      id
+      boardSubscribedID
+      userID
+      boardSubscribed {
+        id
+        name
+        groups {
+          nextToken
+        }
+        columns {
+          nextToken
+        }
+        creatorID
+        creator {
+          id
+          email
+          fname
+          lname
+          usertype
+          title
+          phone
+          createdAt
+        }
+        subscribers {
+          nextToken
+        }
+        createdAt
+      }
+      user {
+        id
+        email
+        fname
+        lname
+        usertype
+        title
+        phone
+        teams {
+          nextToken
+        }
+        createdAt
+        boardCreated {
+          nextToken
+        }
+        boardSubscribed {
+          nextToken
+        }
+        groupCreated {
+          nextToken
+        }
+        columnCreated {
+          nextToken
+        }
+        rowCreated {
+          nextToken
+        }
+      }
+    }
+  }
+`;
+export const deleteBoardSubscribedUser = /* GraphQL */ `
+  mutation DeleteBoardSubscribedUser(
+    $input: DeleteBoardSubscribedUserInput!
+    $condition: ModelBoardSubscribedUserConditionInput
+  ) {
+    deleteBoardSubscribedUser(input: $input, condition: $condition) {
+      id
+      boardSubscribedID
+      userID
+      boardSubscribed {
+        id
+        name
+        groups {
+          nextToken
+        }
+        columns {
+          nextToken
+        }
+        creatorID
+        creator {
+          id
+          email
+          fname
+          lname
+          usertype
+          title
+          phone
+          createdAt
+        }
+        subscribers {
+          nextToken
+        }
+        createdAt
+      }
+      user {
+        id
+        email
+        fname
+        lname
+        usertype
+        title
+        phone
+        teams {
+          nextToken
+        }
+        createdAt
+        boardCreated {
+          nextToken
+        }
+        boardSubscribed {
+          nextToken
+        }
+        groupCreated {
+          nextToken
+        }
+        columnCreated {
+          nextToken
+        }
+        rowCreated {
+          nextToken
+        }
+      }
+    }
+  }
+`;
+export const createBoard = /* GraphQL */ `
+  mutation CreateBoard(
+    $input: CreateBoardInput!
+    $condition: ModelBoardConditionInput
+  ) {
+    createBoard(input: $input, condition: $condition) {
       id
       name
       groups {
+        items {
+          id
+          name
+          boardID
+          creatorID
+          rank
+          createdAt
+        }
         nextToken
       }
       columns {
-        id
-        name
-        columntype
+        items {
+          id
+          boardID
+          columnID
+          fixed
+          level
+          collpse
+          rank
+        }
+        nextToken
       }
+      creatorID
       creator {
         id
         email
@@ -654,58 +1034,70 @@ export const createGroup = `mutation CreateGroup(
         usertype
         title
         phone
+        teams {
+          nextToken
+        }
+        createdAt
+        boardCreated {
+          nextToken
+        }
+        boardSubscribed {
+          nextToken
+        }
+        groupCreated {
+          nextToken
+        }
+        columnCreated {
+          nextToken
+        }
+        rowCreated {
+          nextToken
+        }
       }
       subscribers {
-        id
-        email
-        fname
-        lname
-        usertype
-        title
-        phone
-      }
-    }
-    rows {
-      items {
-        id
-        rank
-      }
-      nextToken
-    }
-    creator {
-      id
-      email
-      fname
-      lname
-      usertype
-      title
-      phone
-      teams {
+        items {
+          id
+          boardSubscribedID
+          userID
+        }
         nextToken
       }
+      createdAt
     }
-    rank
   }
-}
 `;
-export const updateGroup = `mutation UpdateGroup(
-  $input: UpdateGroupInput!
-  $condition: ModelGroupConditionInput
-) {
-  updateGroup(input: $input, condition: $condition) {
-    id
-    name
-    board {
+export const updateBoard = /* GraphQL */ `
+  mutation UpdateBoard(
+    $input: UpdateBoardInput!
+    $condition: ModelBoardConditionInput
+  ) {
+    updateBoard(input: $input, condition: $condition) {
       id
       name
       groups {
+        items {
+          id
+          name
+          boardID
+          creatorID
+          rank
+          createdAt
+        }
         nextToken
       }
       columns {
-        id
-        name
-        columntype
+        items {
+          id
+          boardID
+          columnID
+          fixed
+          level
+          collpse
+          rank
+        }
+        nextToken
       }
+      creatorID
       creator {
         id
         email
@@ -714,58 +1106,70 @@ export const updateGroup = `mutation UpdateGroup(
         usertype
         title
         phone
+        teams {
+          nextToken
+        }
+        createdAt
+        boardCreated {
+          nextToken
+        }
+        boardSubscribed {
+          nextToken
+        }
+        groupCreated {
+          nextToken
+        }
+        columnCreated {
+          nextToken
+        }
+        rowCreated {
+          nextToken
+        }
       }
       subscribers {
-        id
-        email
-        fname
-        lname
-        usertype
-        title
-        phone
-      }
-    }
-    rows {
-      items {
-        id
-        rank
-      }
-      nextToken
-    }
-    creator {
-      id
-      email
-      fname
-      lname
-      usertype
-      title
-      phone
-      teams {
+        items {
+          id
+          boardSubscribedID
+          userID
+        }
         nextToken
       }
+      createdAt
     }
-    rank
   }
-}
 `;
-export const deleteGroup = `mutation DeleteGroup(
-  $input: DeleteGroupInput!
-  $condition: ModelGroupConditionInput
-) {
-  deleteGroup(input: $input, condition: $condition) {
-    id
-    name
-    board {
+export const deleteBoard = /* GraphQL */ `
+  mutation DeleteBoard(
+    $input: DeleteBoardInput!
+    $condition: ModelBoardConditionInput
+  ) {
+    deleteBoard(input: $input, condition: $condition) {
       id
       name
       groups {
+        items {
+          id
+          name
+          boardID
+          creatorID
+          rank
+          createdAt
+        }
         nextToken
       }
       columns {
-        id
-        name
-        columntype
+        items {
+          id
+          boardID
+          columnID
+          fixed
+          level
+          collpse
+          rank
+        }
+        nextToken
       }
+      creatorID
       creator {
         id
         email
@@ -774,8 +1178,84 @@ export const deleteGroup = `mutation DeleteGroup(
         usertype
         title
         phone
+        teams {
+          nextToken
+        }
+        createdAt
+        boardCreated {
+          nextToken
+        }
+        boardSubscribed {
+          nextToken
+        }
+        groupCreated {
+          nextToken
+        }
+        columnCreated {
+          nextToken
+        }
+        rowCreated {
+          nextToken
+        }
       }
       subscribers {
+        items {
+          id
+          boardSubscribedID
+          userID
+        }
+        nextToken
+      }
+      createdAt
+    }
+  }
+`;
+export const createGroup = /* GraphQL */ `
+  mutation CreateGroup(
+    $input: CreateGroupInput!
+    $condition: ModelGroupConditionInput
+  ) {
+    createGroup(input: $input, condition: $condition) {
+      id
+      name
+      boardID
+      board {
+        id
+        name
+        groups {
+          nextToken
+        }
+        columns {
+          nextToken
+        }
+        creatorID
+        creator {
+          id
+          email
+          fname
+          lname
+          usertype
+          title
+          phone
+          createdAt
+        }
+        subscribers {
+          nextToken
+        }
+        createdAt
+      }
+      rows {
+        items {
+          id
+          groupID
+          creatorID
+          rank
+          createdAt
+        }
+        nextToken
+      }
+      creatorID
+      creator {
         id
         email
         fname
@@ -783,151 +1263,639 @@ export const deleteGroup = `mutation DeleteGroup(
         usertype
         title
         phone
+        teams {
+          nextToken
+        }
+        createdAt
+        boardCreated {
+          nextToken
+        }
+        boardSubscribed {
+          nextToken
+        }
+        groupCreated {
+          nextToken
+        }
+        columnCreated {
+          nextToken
+        }
+        rowCreated {
+          nextToken
+        }
       }
+      rank
+      createdAt
     }
-    rows {
-      items {
+  }
+`;
+export const updateGroup = /* GraphQL */ `
+  mutation UpdateGroup(
+    $input: UpdateGroupInput!
+    $condition: ModelGroupConditionInput
+  ) {
+    updateGroup(input: $input, condition: $condition) {
+      id
+      name
+      boardID
+      board {
         id
+        name
+        groups {
+          nextToken
+        }
+        columns {
+          nextToken
+        }
+        creatorID
+        creator {
+          id
+          email
+          fname
+          lname
+          usertype
+          title
+          phone
+          createdAt
+        }
+        subscribers {
+          nextToken
+        }
+        createdAt
+      }
+      rows {
+        items {
+          id
+          groupID
+          creatorID
+          rank
+          createdAt
+        }
+        nextToken
+      }
+      creatorID
+      creator {
+        id
+        email
+        fname
+        lname
+        usertype
+        title
+        phone
+        teams {
+          nextToken
+        }
+        createdAt
+        boardCreated {
+          nextToken
+        }
+        boardSubscribed {
+          nextToken
+        }
+        groupCreated {
+          nextToken
+        }
+        columnCreated {
+          nextToken
+        }
+        rowCreated {
+          nextToken
+        }
+      }
+      rank
+      createdAt
+    }
+  }
+`;
+export const deleteGroup = /* GraphQL */ `
+  mutation DeleteGroup(
+    $input: DeleteGroupInput!
+    $condition: ModelGroupConditionInput
+  ) {
+    deleteGroup(input: $input, condition: $condition) {
+      id
+      name
+      boardID
+      board {
+        id
+        name
+        groups {
+          nextToken
+        }
+        columns {
+          nextToken
+        }
+        creatorID
+        creator {
+          id
+          email
+          fname
+          lname
+          usertype
+          title
+          phone
+          createdAt
+        }
+        subscribers {
+          nextToken
+        }
+        createdAt
+      }
+      rows {
+        items {
+          id
+          groupID
+          creatorID
+          rank
+          createdAt
+        }
+        nextToken
+      }
+      creatorID
+      creator {
+        id
+        email
+        fname
+        lname
+        usertype
+        title
+        phone
+        teams {
+          nextToken
+        }
+        createdAt
+        boardCreated {
+          nextToken
+        }
+        boardSubscribed {
+          nextToken
+        }
+        groupCreated {
+          nextToken
+        }
+        columnCreated {
+          nextToken
+        }
+        rowCreated {
+          nextToken
+        }
+      }
+      rank
+      createdAt
+    }
+  }
+`;
+export const createRow = /* GraphQL */ `
+  mutation CreateRow(
+    $input: CreateRowInput!
+    $condition: ModelRowConditionInput
+  ) {
+    createRow(input: $input, condition: $condition) {
+      id
+      groupID
+      group {
+        id
+        name
+        boardID
+        board {
+          id
+          name
+          creatorID
+          createdAt
+        }
+        rows {
+          nextToken
+        }
+        creatorID
+        creator {
+          id
+          email
+          fname
+          lname
+          usertype
+          title
+          phone
+          createdAt
+        }
         rank
+        createdAt
       }
-      nextToken
-    }
-    creator {
-      id
-      email
-      fname
-      lname
-      usertype
-      title
-      phone
-      teams {
+      datas {
+        items {
+          id
+          columnID
+          rowID
+          value
+        }
         nextToken
       }
+      creatorID
+      creator {
+        id
+        email
+        fname
+        lname
+        usertype
+        title
+        phone
+        teams {
+          nextToken
+        }
+        createdAt
+        boardCreated {
+          nextToken
+        }
+        boardSubscribed {
+          nextToken
+        }
+        groupCreated {
+          nextToken
+        }
+        columnCreated {
+          nextToken
+        }
+        rowCreated {
+          nextToken
+        }
+      }
+      rank
+      createdAt
     }
-    rank
   }
-}
 `;
-export const createRow = `mutation CreateRow(
-  $input: CreateRowInput!
-  $condition: ModelRowConditionInput
-) {
-  createRow(input: $input, condition: $condition) {
-    id
-    group {
+export const updateRow = /* GraphQL */ `
+  mutation UpdateRow(
+    $input: UpdateRowInput!
+    $condition: ModelRowConditionInput
+  ) {
+    updateRow(input: $input, condition: $condition) {
       id
-      name
+      groupID
+      group {
+        id
+        name
+        boardID
+        board {
+          id
+          name
+          creatorID
+          createdAt
+        }
+        rows {
+          nextToken
+        }
+        creatorID
+        creator {
+          id
+          email
+          fname
+          lname
+          usertype
+          title
+          phone
+          createdAt
+        }
+        rank
+        createdAt
+      }
+      datas {
+        items {
+          id
+          columnID
+          rowID
+          value
+        }
+        nextToken
+      }
+      creatorID
+      creator {
+        id
+        email
+        fname
+        lname
+        usertype
+        title
+        phone
+        teams {
+          nextToken
+        }
+        createdAt
+        boardCreated {
+          nextToken
+        }
+        boardSubscribed {
+          nextToken
+        }
+        groupCreated {
+          nextToken
+        }
+        columnCreated {
+          nextToken
+        }
+        rowCreated {
+          nextToken
+        }
+      }
+      rank
+      createdAt
+    }
+  }
+`;
+export const deleteRow = /* GraphQL */ `
+  mutation DeleteRow(
+    $input: DeleteRowInput!
+    $condition: ModelRowConditionInput
+  ) {
+    deleteRow(input: $input, condition: $condition) {
+      id
+      groupID
+      group {
+        id
+        name
+        boardID
+        board {
+          id
+          name
+          creatorID
+          createdAt
+        }
+        rows {
+          nextToken
+        }
+        creatorID
+        creator {
+          id
+          email
+          fname
+          lname
+          usertype
+          title
+          phone
+          createdAt
+        }
+        rank
+        createdAt
+      }
+      datas {
+        items {
+          id
+          columnID
+          rowID
+          value
+        }
+        nextToken
+      }
+      creatorID
+      creator {
+        id
+        email
+        fname
+        lname
+        usertype
+        title
+        phone
+        teams {
+          nextToken
+        }
+        createdAt
+        boardCreated {
+          nextToken
+        }
+        boardSubscribed {
+          nextToken
+        }
+        groupCreated {
+          nextToken
+        }
+        columnCreated {
+          nextToken
+        }
+        rowCreated {
+          nextToken
+        }
+      }
+      rank
+      createdAt
+    }
+  }
+`;
+export const createColumnBoard = /* GraphQL */ `
+  mutation CreateColumnBoard(
+    $input: CreateColumnBoardInput!
+    $condition: ModelColumnBoardConditionInput
+  ) {
+    createColumnBoard(input: $input, condition: $condition) {
+      id
+      boardID
+      columnID
       board {
         id
         name
+        groups {
+          nextToken
+        }
+        columns {
+          nextToken
+        }
+        creatorID
+        creator {
+          id
+          email
+          fname
+          lname
+          usertype
+          title
+          phone
+          createdAt
+        }
+        subscribers {
+          nextToken
+        }
+        createdAt
       }
-      rows {
-        nextToken
-      }
-      creator {
-        id
-        email
-        fname
-        lname
-        usertype
-        title
-        phone
-      }
-      rank
-    }
-    data {
-      id
       column {
         id
+        board {
+          nextToken
+        }
         name
         columntype
+        columnComponentType
+        creatorID
+        creator {
+          id
+          email
+          fname
+          lname
+          usertype
+          title
+          phone
+          createdAt
+        }
+        createdAt
+        datas {
+          nextToken
+        }
       }
-      value
+      fixed
+      level
+      collpse
+      rank
     }
-    creator {
-      id
-      email
-      fname
-      lname
-      usertype
-      title
-      phone
-      teams {
-        nextToken
-      }
-    }
-    rank
   }
-}
 `;
-export const updateRow = `mutation UpdateRow(
-  $input: UpdateRowInput!
-  $condition: ModelRowConditionInput
-) {
-  updateRow(input: $input, condition: $condition) {
-    id
-    group {
+export const updateColumnBoard = /* GraphQL */ `
+  mutation UpdateColumnBoard(
+    $input: UpdateColumnBoardInput!
+    $condition: ModelColumnBoardConditionInput
+  ) {
+    updateColumnBoard(input: $input, condition: $condition) {
       id
-      name
+      boardID
+      columnID
       board {
         id
         name
+        groups {
+          nextToken
+        }
+        columns {
+          nextToken
+        }
+        creatorID
+        creator {
+          id
+          email
+          fname
+          lname
+          usertype
+          title
+          phone
+          createdAt
+        }
+        subscribers {
+          nextToken
+        }
+        createdAt
       }
-      rows {
-        nextToken
-      }
-      creator {
-        id
-        email
-        fname
-        lname
-        usertype
-        title
-        phone
-      }
-      rank
-    }
-    data {
-      id
       column {
         id
+        board {
+          nextToken
+        }
         name
         columntype
+        columnComponentType
+        creatorID
+        creator {
+          id
+          email
+          fname
+          lname
+          usertype
+          title
+          phone
+          createdAt
+        }
+        createdAt
+        datas {
+          nextToken
+        }
       }
-      value
+      fixed
+      level
+      collpse
+      rank
     }
-    creator {
-      id
-      email
-      fname
-      lname
-      usertype
-      title
-      phone
-      teams {
-        nextToken
-      }
-    }
-    rank
   }
-}
 `;
-export const deleteRow = `mutation DeleteRow(
-  $input: DeleteRowInput!
-  $condition: ModelRowConditionInput
-) {
-  deleteRow(input: $input, condition: $condition) {
-    id
-    group {
+export const deleteColumnBoard = /* GraphQL */ `
+  mutation DeleteColumnBoard(
+    $input: DeleteColumnBoardInput!
+    $condition: ModelColumnBoardConditionInput
+  ) {
+    deleteColumnBoard(input: $input, condition: $condition) {
       id
-      name
+      boardID
+      columnID
       board {
         id
         name
+        groups {
+          nextToken
+        }
+        columns {
+          nextToken
+        }
+        creatorID
+        creator {
+          id
+          email
+          fname
+          lname
+          usertype
+          title
+          phone
+          createdAt
+        }
+        subscribers {
+          nextToken
+        }
+        createdAt
       }
-      rows {
+      column {
+        id
+        board {
+          nextToken
+        }
+        name
+        columntype
+        columnComponentType
+        creatorID
+        creator {
+          id
+          email
+          fname
+          lname
+          usertype
+          title
+          phone
+          createdAt
+        }
+        createdAt
+        datas {
+          nextToken
+        }
+      }
+      fixed
+      level
+      collpse
+      rank
+    }
+  }
+`;
+export const createColumn = /* GraphQL */ `
+  mutation CreateColumn(
+    $input: CreateColumnInput!
+    $condition: ModelColumnConditionInput
+  ) {
+    createColumn(input: $input, condition: $condition) {
+      id
+      board {
+        items {
+          id
+          boardID
+          columnID
+          fixed
+          level
+          collpse
+          rank
+        }
         nextToken
       }
+      name
+      columntype
+      columnComponentType
+      creatorID
       creator {
         id
         email
@@ -936,172 +1904,359 @@ export const deleteRow = `mutation DeleteRow(
         usertype
         title
         phone
+        teams {
+          nextToken
+        }
+        createdAt
+        boardCreated {
+          nextToken
+        }
+        boardSubscribed {
+          nextToken
+        }
+        groupCreated {
+          nextToken
+        }
+        columnCreated {
+          nextToken
+        }
+        rowCreated {
+          nextToken
+        }
       }
-      rank
+      createdAt
+      datas {
+        items {
+          id
+          columnID
+          rowID
+          value
+        }
+        nextToken
+      }
     }
-    data {
+  }
+`;
+export const updateColumn = /* GraphQL */ `
+  mutation UpdateColumn(
+    $input: UpdateColumnInput!
+    $condition: ModelColumnConditionInput
+  ) {
+    updateColumn(input: $input, condition: $condition) {
       id
+      board {
+        items {
+          id
+          boardID
+          columnID
+          fixed
+          level
+          collpse
+          rank
+        }
+        nextToken
+      }
+      name
+      columntype
+      columnComponentType
+      creatorID
+      creator {
+        id
+        email
+        fname
+        lname
+        usertype
+        title
+        phone
+        teams {
+          nextToken
+        }
+        createdAt
+        boardCreated {
+          nextToken
+        }
+        boardSubscribed {
+          nextToken
+        }
+        groupCreated {
+          nextToken
+        }
+        columnCreated {
+          nextToken
+        }
+        rowCreated {
+          nextToken
+        }
+      }
+      createdAt
+      datas {
+        items {
+          id
+          columnID
+          rowID
+          value
+        }
+        nextToken
+      }
+    }
+  }
+`;
+export const deleteColumn = /* GraphQL */ `
+  mutation DeleteColumn(
+    $input: DeleteColumnInput!
+    $condition: ModelColumnConditionInput
+  ) {
+    deleteColumn(input: $input, condition: $condition) {
+      id
+      board {
+        items {
+          id
+          boardID
+          columnID
+          fixed
+          level
+          collpse
+          rank
+        }
+        nextToken
+      }
+      name
+      columntype
+      columnComponentType
+      creatorID
+      creator {
+        id
+        email
+        fname
+        lname
+        usertype
+        title
+        phone
+        teams {
+          nextToken
+        }
+        createdAt
+        boardCreated {
+          nextToken
+        }
+        boardSubscribed {
+          nextToken
+        }
+        groupCreated {
+          nextToken
+        }
+        columnCreated {
+          nextToken
+        }
+        rowCreated {
+          nextToken
+        }
+      }
+      createdAt
+      datas {
+        items {
+          id
+          columnID
+          rowID
+          value
+        }
+        nextToken
+      }
+    }
+  }
+`;
+export const createData = /* GraphQL */ `
+  mutation CreateData(
+    $input: CreateDataInput!
+    $condition: ModelDataConditionInput
+  ) {
+    createData(input: $input, condition: $condition) {
+      id
+      columnID
       column {
         id
+        board {
+          nextToken
+        }
         name
         columntype
+        columnComponentType
+        creatorID
+        creator {
+          id
+          email
+          fname
+          lname
+          usertype
+          title
+          phone
+          createdAt
+        }
+        createdAt
+        datas {
+          nextToken
+        }
+      }
+      rowID
+      row {
+        id
+        groupID
+        group {
+          id
+          name
+          boardID
+          creatorID
+          rank
+          createdAt
+        }
+        datas {
+          nextToken
+        }
+        creatorID
+        creator {
+          id
+          email
+          fname
+          lname
+          usertype
+          title
+          phone
+          createdAt
+        }
+        rank
+        createdAt
       }
       value
     }
-    creator {
-      id
-      email
-      fname
-      lname
-      usertype
-      title
-      phone
-      teams {
-        nextToken
-      }
-    }
-    rank
   }
-}
 `;
-export const createColumn = `mutation CreateColumn(
-  $input: CreateColumnInput!
-  $condition: ModelColumnConditionInput
-) {
-  createColumn(input: $input, condition: $condition) {
-    id
-    name
-    columntype
-    creator {
+export const updateData = /* GraphQL */ `
+  mutation UpdateData(
+    $input: UpdateDataInput!
+    $condition: ModelDataConditionInput
+  ) {
+    updateData(input: $input, condition: $condition) {
       id
-      email
-      fname
-      lname
-      usertype
-      title
-      phone
-      teams {
-        nextToken
-      }
-    }
-  }
-}
-`;
-export const updateColumn = `mutation UpdateColumn(
-  $input: UpdateColumnInput!
-  $condition: ModelColumnConditionInput
-) {
-  updateColumn(input: $input, condition: $condition) {
-    id
-    name
-    columntype
-    creator {
-      id
-      email
-      fname
-      lname
-      usertype
-      title
-      phone
-      teams {
-        nextToken
-      }
-    }
-  }
-}
-`;
-export const deleteColumn = `mutation DeleteColumn(
-  $input: DeleteColumnInput!
-  $condition: ModelColumnConditionInput
-) {
-  deleteColumn(input: $input, condition: $condition) {
-    id
-    name
-    columntype
-    creator {
-      id
-      email
-      fname
-      lname
-      usertype
-      title
-      phone
-      teams {
-        nextToken
-      }
-    }
-  }
-}
-`;
-export const createData = `mutation CreateData(
-  $input: CreateDataInput!
-  $condition: ModelDataConditionInput
-) {
-  createData(input: $input, condition: $condition) {
-    id
-    column {
-      id
-      name
-      columntype
-      creator {
+      columnID
+      column {
         id
-        email
-        fname
-        lname
-        usertype
-        title
-        phone
+        board {
+          nextToken
+        }
+        name
+        columntype
+        columnComponentType
+        creatorID
+        creator {
+          id
+          email
+          fname
+          lname
+          usertype
+          title
+          phone
+          createdAt
+        }
+        createdAt
+        datas {
+          nextToken
+        }
       }
-    }
-    value
-  }
-}
-`;
-export const updateData = `mutation UpdateData(
-  $input: UpdateDataInput!
-  $condition: ModelDataConditionInput
-) {
-  updateData(input: $input, condition: $condition) {
-    id
-    column {
-      id
-      name
-      columntype
-      creator {
+      rowID
+      row {
         id
-        email
-        fname
-        lname
-        usertype
-        title
-        phone
+        groupID
+        group {
+          id
+          name
+          boardID
+          creatorID
+          rank
+          createdAt
+        }
+        datas {
+          nextToken
+        }
+        creatorID
+        creator {
+          id
+          email
+          fname
+          lname
+          usertype
+          title
+          phone
+          createdAt
+        }
+        rank
+        createdAt
       }
+      value
     }
-    value
   }
-}
 `;
-export const deleteData = `mutation DeleteData(
-  $input: DeleteDataInput!
-  $condition: ModelDataConditionInput
-) {
-  deleteData(input: $input, condition: $condition) {
-    id
-    column {
+export const deleteData = /* GraphQL */ `
+  mutation DeleteData(
+    $input: DeleteDataInput!
+    $condition: ModelDataConditionInput
+  ) {
+    deleteData(input: $input, condition: $condition) {
       id
-      name
-      columntype
-      creator {
+      columnID
+      column {
         id
-        email
-        fname
-        lname
-        usertype
-        title
-        phone
+        board {
+          nextToken
+        }
+        name
+        columntype
+        columnComponentType
+        creatorID
+        creator {
+          id
+          email
+          fname
+          lname
+          usertype
+          title
+          phone
+          createdAt
+        }
+        createdAt
+        datas {
+          nextToken
+        }
       }
+      rowID
+      row {
+        id
+        groupID
+        group {
+          id
+          name
+          boardID
+          creatorID
+          rank
+          createdAt
+        }
+        datas {
+          nextToken
+        }
+        creatorID
+        creator {
+          id
+          email
+          fname
+          lname
+          usertype
+          title
+          phone
+          createdAt
+        }
+        rank
+        createdAt
+      }
+      value
     }
-    value
   }
-}
 `;

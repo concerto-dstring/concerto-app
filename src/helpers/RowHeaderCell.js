@@ -6,31 +6,37 @@ import Keys from '../maintable/vendor_upstream/core/Keys';
 import styled from 'styled-components';
 import getHighlightText from '../maintable/getHighlightText'
 import {
-  MessageOutlined
+  EditOutlined,
+  UnorderedListOutlined
 } from '@ant-design/icons'
 import '../maintable/css/style/RowHeaderCell.less'
-import RowHeaderDrawer from './RowHeaderDrawer'
+import { connect } from 'react-redux'
+import { dealRowHeaderDrawer } from '../maintable/actions/rowActions'
+import { mapRowHeaderDrawerStateToProps } from '../maintable/data/mapStateToProps'
 
 const CellContainer = styled.div`
   display: flex;
   align-items: center;
   height: 100%;
   overflow: hidden;
-  margin: 2px 5px;
+  cursor: pointer;
+  text-align: left;
   padding: 5px;
 `;
 
+@connect(state => ({isOpenRowHeaderDrawer: state.isOpenRowHeaderDrawer, drawerRowIndex: state.rowIndex}), { dealRowHeaderDrawer })
 class RowHeaderCell extends React.PureComponent {
     constructor(props){
        super(props)
        let value = props.data ? props.data.getObjectAt(props.rowIndex)[props.columnKey] : props.value
        this.state = {
-            value: value,
-            displayValue: getHighlightText(value, props.filterInputValue),
-            count: props.data ? props.data.getSubRowCount(props.rowIndex) : 0,
-            editing: false,
-            handleChange:this.handleChange,
-            handleKey:this.handleKey
+          value: value,
+          displayValue: getHighlightText(value, props.filterInputValue),
+          count: props.data ? props.data.getSubRowCount(props.rowIndex) : 0,
+          editing: false,
+          handleChange:this.handleChange,
+          handleKey:this.handleKey,
+          updateInfo: this.getRowUpdateInfo(props),
         }
     }
     
@@ -41,15 +47,31 @@ class RowHeaderCell extends React.PureComponent {
             displayValue: getHighlightText(value, props.filterInputValue),
             count: props.data ? props.data.getSubRowCount(props.rowIndex) : 0,
             version: props.dataVersion,
+            updateInfo: this.getRowUpdateInfo(props)
         });
+    }
+
+    getRowUpdateInfo = (props) => {
+      // 滑窗里菜单Update Info数据
+      let updateInfo 
+      if (!props.data || !props.data.getObjectAt(props.rowIndex) || !props.data.getObjectAt(props.rowIndex)['updateInfo']) {
+        updateInfo = []
+      }
+      else {
+        updateInfo = props.data.getObjectAt(props.rowIndex)['updateInfo']
+      }
+      return updateInfo
     }
 
     setTargetRef = ref => (this.targetRef = ref);
 
     getTargetRef = () => this.targetRef;
 
-    handleClick = () => {
-        this.setState({ editing: true });
+    handleClick = (e) => {
+      // 防止document事件的冒泡
+      e.stopPropagation()
+      e.preventDefault()
+      this.setState({ editing: true });
     }
 
     handleHide = () => {
@@ -72,73 +94,90 @@ class RowHeaderCell extends React.PureComponent {
         }
     }
 
-    toggleSubRows = (event) => {
+    toggleSubRows = (count, event) => {
+      event.stopPropagation();
+      if (count > 0) {
         this.props.data.toggleSubRows(this.props.rowIndex);
-        event.stopPropagation();
+      }
     }
 
     // 显示右侧滑窗
     showRowDrawer = (event) => {
-      this.setState({
-        isShowRowHeaderDrawer: true
-      })
       event.stopPropagation();
+      const { updateInfo, value } = this.state
+      const { data, rowIndex } = this.props
+      this.props.dealRowHeaderDrawer({rowHeaderDrawerTitle: value, updateInfo, data, rowIndex, isOpenRowHeaderDrawer: true})
     }
 
-    // 关闭右侧滑窗
-    closeRowDrawer = () => {
-      this.setState({
-        isShowRowHeaderDrawer: false
-      })
+    getCellComponent = () => {
+      const { height } = this.props;
+      const { count, displayValue, updateInfo } = this.state;
+      return (
+        <>
+          <div className="row_header_cell_text_component" style={{lineHeight: `${height - 12}px`}}>
+            <i onClick={this.handleClick.bind(this)} className="row_header_cell_edit_icon">
+              <EditOutlined />
+            </i>
+            <div className="row_header_cell_text">
+              {displayValue}
+            </div>
+          </div>
+          <div style={{marginLeft: 4, lineHeight: `${height - 12}px`}} onClick={this.toggleSubRows.bind(this, count)}>
+            <UnorderedListOutlined />&nbsp;{count}
+          </div>
+          <div 
+            className="row_header_cell_update"
+            style={{lineHeight: `${height - 12}px`}}
+          >
+            <span>
+              <Badge count={updateInfo.length} style={{backgroundColor: '#BB0000'}} />
+            </span>
+          </div>
+        </>
+      )
     }
 
     render() {
-        const {container, data, rowIndex, columnKey, dataVersion, width, height,  ...props} = this.props;
-        const { value, editing, count, displayValue } = this.state;
+        const {container, data, rowIndex, columnKey, dataVersion, width, height, isOpenRowHeaderDrawer, drawerRowIndex, ...props} = this.props;
+        const { value, editing } = this.state;
         const inputStyle = {
             width: width - 10,
             height: height - 5,
             borderRadius: '0px',
         }
 
-        // 滑窗里信息
-        let updateInfo 
-        if (!this.props.data || !this.props.data.getObjectAt(this.props.rowIndex) || !this.props.data.getObjectAt(this.props.rowIndex)['updateInfo']) {
-          updateInfo = []
+        let cellStyle = {
+          border: '1px solid transparent'
         }
-        else {
-          updateInfo = this.props.data.getObjectAt(this.props.rowIndex)['updateInfo']
+
+        if (editing) {
+          cellStyle.margin = '2px 5px'
         }
-        let countColor = updateInfo.length > 0 ? '#009AFF' : '#D3D3D3'
+
+        if (isOpenRowHeaderDrawer && drawerRowIndex === rowIndex) {
+          cellStyle.border = '1px solid rgba(31, 118, 194, 100)'
+          cellStyle.background = '#e3e6eb'
+        }
 
         return (
             <>
-                <CellContainer ref={this.setTargetRef} onClick={this.handleClick.bind(this)}>
-                    <div style={{width:50}}>
-                    {count != 0 && <a onClick={this.toggleSubRows}><Badge count={count+'+'} /></a>}
-                    </div>
-                    {!editing && <div className="row_header_cell_text">{displayValue}</div>}
-                    {!editing && <div 
-                                  className="row_header_cell_update"
-                                  onClick={this.showRowDrawer}
-                                 >
-                                   <span>
-                                      <MessageOutlined style={{fontSize: 24, color: countColor}} />
-                                    </span>
-                                    <span>
-                                      <Badge count={updateInfo.length} style={{fontSize: 10, marginLeft: -15, width: 14, height: 14, padding: '0px 0px 4px', minWidth: 'unset', lineHeight: '14px', backgroundColor: countColor}} />
-                                    </span>
-                                 </div>}
+                <CellContainer 
+                  ref={this.setTargetRef} 
+                  className="row_header_cell_component"
+                  onClick={this.showRowDrawer}
+                  style={cellStyle}
+                >
+                    {!editing && this.getCellComponent()}
                     {editing && this.targetRef && (
                         <Overlay
-                            show
-                            flip
-                            rootClose
-                            container={this.getTargetRef}
-                            target={this.getTargetRef}
-                            onHide={this.handleHide}
-                            onExit={this.handleHide}
-                            >
+                          show
+                          flip
+                          rootClose
+                          container={this.getTargetRef}
+                          target={this.getTargetRef}
+                          onHide={this.handleHide}
+                          onExit={this.handleHide}
+                        >
                             {({ props, placement }) => (
                                 <div
                                     {...props}
@@ -157,14 +196,6 @@ class RowHeaderCell extends React.PureComponent {
                         </Overlay>
                     )}
                 </CellContainer>
-                <RowHeaderDrawer 
-                  isShowRowHeaderDrawer={this.state.isShowRowHeaderDrawer}
-                  value={this.state.value}
-                  rowIndex={this.props.rowIndex}
-                  data={this.props.data}
-                  updateInfo={updateInfo}
-                  closeRowDrawer={this.closeRowDrawer}
-                />
             </>
         )
     }

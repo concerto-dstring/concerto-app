@@ -458,14 +458,32 @@ class DataViewWrapper {
 
         let group = this.getGroupByRowIndex(rowIndex)
         if (group) {
-          rows = group.rows
-          return rows
+          let filterIndexMap = this._indexMap.filter(index => index.groupKey === group.groupKey && index.rowKey !== '')
+          if (filterIndexMap && filterIndexMap.length > 0) {
+            rows = []
+            filterIndexMap.map(index => {
+              rows.push(index.rowKey)
+            })
+            return rows
+          }
         }
       }
       else {
         let rootRowIndex = getRootRowIndex(rowIndex)
         rows = this._dataset.getSubRows(this._indexMap[rootRowIndex].rowKey)
-        return rows
+
+        if (this._subRowKeys.length > 0) {
+          let filterRows = rows.filter(row => {
+            if (this._subRowKeys.indexOf(row) !== -1) {
+              return row
+            }
+          })
+          
+          return filterRows
+        }
+        else {
+          return rows
+        }
       }
 
       return null
@@ -495,6 +513,7 @@ class DataViewWrapper {
         let defaultCount = 0
 
         rows.map(rowKey => {
+          if (!this._dataset.getObjectAt(rowKey) || !columnKey in this._dataset.getObjectAt(rowKey)) return
           let statusValue = this._dataset.getObjectAt(rowKey)[columnKey]
           switch (statusValue) {
             case status.finished:

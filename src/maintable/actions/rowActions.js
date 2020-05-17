@@ -14,6 +14,7 @@ import {
   DEAL_ROW_RENAME_MODAL,
   DEAL_ROW_DELETE_MODAL,
   DEAL_ROW_MOVE_MODAL,
+  DEAL_ROW_HEADER_DRAWER
 } from './ActionTypes';
 
 /**
@@ -68,6 +69,15 @@ export const dealRowDeleteModal = (modalData) => ({
 export const dealRowMoveModal = (modalData) => ({
   type: DEAL_ROW_MOVE_MODAL,
   modalData
+});
+
+/**
+ * 处理行滑窗
+ * @param {*} modalData 
+ */
+export const dealRowHeaderDrawer = (drawerData) => ({
+  type: DEAL_ROW_HEADER_DRAWER,
+  drawerData
 });
 
 

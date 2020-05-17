@@ -84,7 +84,7 @@
           "level": 1
         },
         {
-          "columnKey": "11",
+          "columnKey": "10",
           "name": "任务描述",
           "width": 200,
           "type": "EDITBOX",
@@ -93,7 +93,7 @@
           "level": 1
         },
         {
-          "columnKey": "12",
+          "columnKey": "11",
           "name": "日志",
           "width": 200,
           "type": "EDITBOX",
@@ -150,11 +150,11 @@
                   "faceColor":"#66cdff"
                 },{
                   "smallName":"Z",
-                  "userName":"ZhangTao",
+                  "userName":"Zhang Tao",
                   "faceColor":"#f4617f"
                 },{
                   "smallName":"J",
-                  "userName":"JangGuangZhou",
+                  "userName":"Jiang Guangzhou",
                   "faceColor":"#f49642"
                 }],
           "4": "2020-03-12  5:00PM",
@@ -233,7 +233,7 @@
           "2": "To Do",
           "3": [{
             "smallName":"J",
-            "userName":"JangGuangZhou",
+            "userName":"Jiang Guangzhou",
             "faceColor":"#f49642"
           }],
           "4": "2020-03-16  6:00PM",
@@ -245,7 +245,7 @@
           "2": "已完成",
           "3": [{
             "smallName":"J",
-            "userName":"JangGuangZhou",
+            "userName":"Jiang Guangzhou",
             "faceColor":"#f49642"
           }],
           "4": "2020-03-11  8:00PM",
@@ -257,7 +257,7 @@
           "2": "阻塞",
           "3": [{
             "smallName":"J",
-            "userName":"JangGuangZhou",
+            "userName":"Jiang Guangzhou",
             "faceColor":"#f49642"
           }],
           "4": "2020-04-09  5:00PM",
@@ -269,7 +269,7 @@
           "2": "已完成",
           "3": [{
             "smallName":"J",
-            "userName":"JangGuangZhou",
+            "userName":"Jiang Guangzhou",
             "faceColor":"#f49642"
           }],
           "4": "2020-04-11  5:00PM",
@@ -285,11 +285,11 @@
             "faceColor":"#66cdff"
           },{
             "smallName":"Z",
-            "userName":"ZhangTao",
+            "userName":"Zhang Tao",
             "faceColor":"#f4617f"
           },{
             "smallName":"J",
-            "userName":"JangGuangZhou",
+            "userName":"Jiang Guangzhou",
             "faceColor":"#f49642"
           }],
           "4": "2020-04-27  8:00PM",
@@ -360,11 +360,11 @@
             "faceColor":"#66cdff"
           },{
             "smallName":"Z",
-            "userName":"ZhangTao",
+            "userName":"Zhang Tao",
             "faceColor":"#f4617f"
           },{
             "smallName":"J",
-            "userName":"JangGuangZhou",
+            "userName":"Jiang Guangzhou",
             "faceColor":"#f49642"
           },{
             "smallName":"M",
@@ -384,7 +384,7 @@
             "faceColor":"#66cdff"
           },{
             "smallName":"Z",
-            "userName":"ZhangTao",
+            "userName":"Zhang Tao",
             "faceColor":"#f4617f"
           },{
             "smallName":"M",
@@ -400,7 +400,7 @@
           "2": "进行中",
           "3": [{
             "smallName":"J",
-            "userName":"JangGuangZhou",
+            "userName":"Jiang Guangzhou",
             "faceColor":"#f49642"
           },{
             "smallName":"Z",
@@ -408,7 +408,7 @@
             "faceColor":"#66cdff"
           },{
             "smallName":"Z",
-            "userName":"ZhangTao",
+            "userName":"Zhang Tao",
             "faceColor":"#f4617f"
           },{
             "smallName":"M",
@@ -476,13 +476,13 @@
         },
         "11": {
           "1": "Add new data for this table",
-          "11": "更新表格最新数据",
-          "12": "自动保存，提高工作效率"
+          "10": "更新表格最新数据",
+          "11": "自动保存，提高工作效率"
         },
         "12": {
           "1": "参考monday效果，实现富文本编辑处理",
-          "11": "实现右侧item数据加载更新",
-          "12": "参考monday效果，实现富文本编辑处理"
+          "10": "实现右侧item数据加载更新",
+          "11": "参考monday效果，实现富文本编辑处理"
         },
         "13": {
           "1": "UI新的风格设计和实现规划",
@@ -501,7 +501,7 @@
           "2": "已完成",
           "3": [{
             "smallName":"Z",
-            "userName":"ZhangTao",
+            "userName":"Zhang Tao",
             "faceColor":"#f4617f"
           }],
           "4": "2020-04-15  8:00PM",

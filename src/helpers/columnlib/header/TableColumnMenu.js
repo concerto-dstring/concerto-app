@@ -4,6 +4,7 @@ import { CaretDownOutlined, DeleteOutlined} from '@ant-design/icons';
 import PropTypes from 'prop-types';
 import { TableContext } from '../../../maintable/data/DataContext';
 import FixedDataTableTranslateDOMPosition from '../../../maintable/FixedDataTableTranslateDOMPosition';
+import './TableColumnMenu.less'
 
 class TableColumnMenu extends React.Component{
     static propTypes = {
@@ -11,7 +12,6 @@ class TableColumnMenu extends React.Component{
     }
     constructor(props){
         super(props);
-        // this._onColumnMenuAction = this._onColumnMenuAction.bind(this);
     }
     
     render(){
@@ -20,22 +20,19 @@ class TableColumnMenu extends React.Component{
             position:'absolute',
             top:'8px',
             right:'5px',
-            display:'none',
         }
         const columnKey = this.props.columnKey;
-        columnMenubarStyle.display = this.props.menuBarStyle;
 
         const menuStyle = {
             width:'100px',
             position:'fixed',
             zIndex:3,
         }
-        //FixedDataTableTranslateDOMPosition(menuStyle, 0, 50, true);
 
         return(
             <TableContext.Consumer>
                 {(table) => (
-                    <div style={columnMenubarStyle}>
+                    <div style={columnMenubarStyle} className="column_header_menu_btn">
                         <Dropdown
                             overlay={
                             <Menu style={menuStyle}>
