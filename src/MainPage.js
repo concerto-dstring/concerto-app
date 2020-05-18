@@ -78,7 +78,7 @@ class MainPage extends React.Component {
   nativeGetTableStore = (id, name, isBoard) => {
     const { dataset } = this.state
     if (isBoard) {
-      dataset.fetchBackendBoardData(this.props.client, id, null, this.setBusy)
+      dataset.fetchBackendBoardData(id, null, this.setBusy)
       this.setState({
         selectedKey: id,
         contentTitle: name,

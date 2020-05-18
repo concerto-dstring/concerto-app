@@ -114,70 +114,6 @@ function AddFilter(TableComponent) {
       return filteredData;
     }
 
-    doFilterByPeople(filteredIndexes,people,columnPeople){
-        
-        const updateFilteredIndexes = (filteredIndexes,rowKeysArray) => {
-          let newFilteredIndexes = [],newSubRowKeys=[];
-          const subRows = this.props.data._subRows;
-          for(let x=0;x<filteredIndexes.length;x++){
-              const thisRowKey = filteredIndexes[x].rowKey;
-              if(thisRowKey===''){
-                newFilteredIndexes.push(filteredIndexes[x]);
-              }else{
-                for(let y=0;y<rowKeysArray.length;y++){
-                  if(thisRowKey === rowKeysArray[y]){
-                    newFilteredIndexes.push(filteredIndexes[x]);
-                  }
-                  for(var rowKey in subRows){
-                    const subRowArray = subRows[rowKey].rows;
-                    for(let z=0; z<subRowArray.length; z++){
-                       if(subRowArray[z].id == rowKeysArray[y] && newSubRowKeys.indexOf(subRowArray[z].id)<0) {
-                         newSubRowKeys.push(subRowArray[z]);
-                       }
-                       if(thisRowKey === rowKey&&newFilteredIndexes.indexOf(filteredIndexes[x])<0){
-                         newFilteredIndexes.push(filteredIndexes[x]);
-                       }
-                    }
-                  }
-                }
-              }
-          }
-          return {
-            newFilteredIndexes:newFilteredIndexes,
-            newSubRowKeys:newSubRowKeys
-          };
-        }
-
-        const updateTableRows = (filteredIndexes) => {
-          const tableData   = this.props.data._rowData;
-          const tableColumn = this.props.data._columns;
-          let rowKeysArray  = [];
-          for(let i=0;i<tableColumn.length;i++){
-            const column = tableColumn[i];
-            const columnKey = column.columnKey;
-            if(columnPeople === column.columnComponentType){
-              for(var rowIndex in tableData){
-                  const row = tableData[rowIndex];
-                  for(var key in row){
-                    if(columnKey === key){
-                      if(row[key].length>0){
-                        for(let j=0;j<row[key].length;j++){
-                          const thePeople = row[key][j];
-                          if(people.userName === thePeople.userName&&rowKeysArray.indexOf(rowIndex)<0){
-                            rowKeysArray.push(rowIndex);
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-            return updateFilteredIndexes(filteredIndexes,rowKeysArray);
-        } 
-        return updateTableRows(filteredIndexes);
-    }
-
     filter() {
       // Get and prep filters
       // todo add filter here
@@ -317,7 +253,7 @@ function AddFilter(TableComponent) {
               if (row[subKey] instanceof Array) {
                 let users = row[subKey]
                 users.map(user => {
-                  if (user.userName && user.userName.toLowerCase().indexOf(value) !== -1 && filterData.rowKeys.indexOf(key) === -1) {
+                  if (user.username && user.username.toLowerCase().indexOf(value) !== -1 && filterData.rowKeys.indexOf(key) === -1) {
                     filterData.rowKeys.push(key)
                     return
                   }

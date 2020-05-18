@@ -91,7 +91,7 @@ class RowHeaderDrawerUpdate extends PureComponent {
             {author.smallName}
           </Avatar>
           &nbsp;
-          <a href={author.userUrl} target="_blank">{author.userName}</a>
+          <a href={author.userUrl} target="_blank">{author.username}</a>
         </div>
         <div className="row_drawer_card_header_end">
           <span className="row_drawer_card_header_span secondary_color">
@@ -207,11 +207,11 @@ class RowHeaderDrawerUpdate extends PureComponent {
   /**
    * 回复消息
    */
-  replyMsg = (userName, userUrl) => {
+  replyMsg = (username, userUrl) => {
     let editorState = ContentUtils.clear(this.state.editorState)
-    if (userName) {
-      userName = '@' + userName
-      editorState = ContentUtils.insertHTML(editorState, `回复<a href=${userUrl} target="_blank">${userName} :</a>`)
+    if (username) {
+      username = '@' + username
+      editorState = ContentUtils.insertHTML(editorState, `回复<a href=${userUrl} target="_blank">${username} :</a>`)
 
       this.setState({
         isShowReplyInput: false,
@@ -345,7 +345,7 @@ class RowHeaderDrawerUpdate extends PureComponent {
             </Avatar>
             <div className="reply_body_data">
               <div className="reply_body_data_wrapper">
-                <a href={reply.replyUser.userUrl} target="_blank">{reply.replyUser.userName}:</a>
+                <a href={reply.replyUser.userUrl} target="_blank">{reply.replyUser.username}:</a>
                 &nbsp;
                 <span dangerouslySetInnerHTML={{__html: reply.replyMsg}} />
               </div>
@@ -380,7 +380,7 @@ class RowHeaderDrawerUpdate extends PureComponent {
                   }
                   <span 
                     className="reply_body_data_tool_reply_btn"
-                    onClick={this.replyMsg.bind(this, reply.replyUser.userName, reply.replyUser.userUrl)}
+                    onClick={this.replyMsg.bind(this, reply.replyUser.username, reply.replyUser.userUrl)}
                   >
                     <SendOutlined />
                   </span>
@@ -460,6 +460,7 @@ class RowHeaderDrawerUpdate extends PureComponent {
                       handlePeopleModalVisible={this.handlePeopleModalVisible}
                       insertPeople={this.insertPeople}
                       placement={'top'}
+                      data={this.props.data}
                     >
                       @
                     </PeopleModal>  
@@ -557,9 +558,9 @@ class RowHeaderDrawerUpdate extends PureComponent {
     });
   }
 
-  insertPeople = (userName) => {
-    const userUrl = "https://www.baidu.com?" + userName
-    const userData = '@' + userName 
+  insertPeople = (username) => {
+    const userUrl = "https://www.baidu.com?" + username
+    const userData = '@' + username 
     this.setState({
       editorState: ContentUtils.insertHTML(this.state.editorState, `<a href=${userUrl} target="_blank">${userData}&nbsp</a>`)
     })

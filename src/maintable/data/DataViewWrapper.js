@@ -69,6 +69,8 @@ class DataViewWrapper {
         this.getStatusSummary = this.getStatusSummary.bind(this)
         this.getDateSummary = this.getDateSummary.bind(this)
         this.getRowNameColumn = this.getRowNameColumn.bind(this)
+        this.getTeamUsers = this.getTeamUsers.bind(this)
+        this.filterTeamUsers = this.filterTeamUsers.bind(this)
     }
 
     /**
@@ -441,6 +443,14 @@ class DataViewWrapper {
      */
     getCurrentUser() {
       return this._dataset._currentUser
+    }
+
+    getTeamUsers() {
+      return this._dataset._teamUsers.slice()
+    }
+
+    filterTeamUsers(filterValue) {
+      return this._dataset.filterTeamUsers(filterValue)
     }
 
     getColumnRows(rowIndex) {

@@ -270,6 +270,7 @@ class RowHeaderDrawer extends PureComponent {
                         visible={this.state.isShowPeopleModal}
                         handlePeopleModalVisible={this.handlePeopleModalVisible}
                         insertPeople={this.insertPeople}
+                        data={this.props.tableData}
                       >
                         @
                       </PeopleModal>  

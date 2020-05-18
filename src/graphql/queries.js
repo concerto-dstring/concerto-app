@@ -136,11 +136,21 @@ export const getTeam = /* GraphQL */ `
         }
         createdAt
       }
-      users {
+      users(limit: 1000) {
         items {
           id
           teamID
-          userID
+          user {
+            id
+            email
+            fname
+            lname
+            usertype
+            title
+            phone
+            avatar
+            username
+          }
         }
         nextToken
       }
@@ -199,6 +209,8 @@ export const getUser = /* GraphQL */ `
       usertype
       title
       phone
+      avatar
+      username
       teams {
         items {
           id

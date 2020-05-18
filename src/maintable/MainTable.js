@@ -37,7 +37,6 @@ import { connect } from 'react-redux'
 import { mapRowActionStateToProps } from './data/mapStateToProps'
 import SummaryCell from '../helpers/columnlib/cell/SummaryCell';
 import './css/style/Board.less'
-import { getPeople } from '../helpers/section/modal/PeopleName';
 import filterIcon from './helper/filterIcon.svg'
 import RowHeaderDrawer from '../helpers/RowHeaderDrawer';
 
@@ -525,21 +524,21 @@ class MainTable extends React.Component {
                     onChange={this.doFilterByPeople}
                   >
                     {
-                      getPeople().map(user => {
+                      this.state.data.getTeamUsersCopy().map(user => {
                         return (
                           <Select.Option
                             key={user.id} 
-                            value={user.userName}
+                            value={user.username}
                           >
                             <Avatar
                               size={20} 
                               style={{background: user.faceColor}}
                             >
-                              {user.smallName}
+                              {user.fname}
                             </Avatar>
                             &emsp;
                             {
-                              user.userName
+                              user.lname + user.fname
                             }
                           </Select.Option>
                         )
