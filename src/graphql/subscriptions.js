@@ -650,6 +650,7 @@ export const onCreateUser = /* GraphQL */ `
           id
           groupID
           creatorID
+          threadOnRowID
           rank
           parentId
           deleteFlag
@@ -730,6 +731,7 @@ export const onUpdateUser = /* GraphQL */ `
           id
           groupID
           creatorID
+          threadOnRowID
           rank
           parentId
           deleteFlag
@@ -810,6 +812,7 @@ export const onDeleteUser = /* GraphQL */ `
           id
           groupID
           creatorID
+          threadOnRowID
           rank
           parentId
           deleteFlag
@@ -1281,6 +1284,7 @@ export const onCreateGroup = /* GraphQL */ `
           id
           groupID
           creatorID
+          threadOnRowID
           rank
           parentId
           deleteFlag
@@ -1365,6 +1369,7 @@ export const onUpdateGroup = /* GraphQL */ `
           id
           groupID
           creatorID
+          threadOnRowID
           rank
           parentId
           deleteFlag
@@ -1449,6 +1454,7 @@ export const onDeleteGroup = /* GraphQL */ `
           id
           groupID
           creatorID
+          threadOnRowID
           rank
           parentId
           deleteFlag
@@ -1572,6 +1578,7 @@ export const onCreateRow = /* GraphQL */ `
           nextToken
         }
       }
+      threadOnRowID
       rank
       parentId
       deleteFlag
@@ -1656,6 +1663,7 @@ export const onUpdateRow = /* GraphQL */ `
           nextToken
         }
       }
+      threadOnRowID
       rank
       parentId
       deleteFlag
@@ -1740,6 +1748,7 @@ export const onDeleteRow = /* GraphQL */ `
           nextToken
         }
       }
+      threadOnRowID
       rank
       parentId
       deleteFlag
@@ -2187,6 +2196,42 @@ export const onCreateThreadOnRow = /* GraphQL */ `
     onCreateThreadOnRow {
       id
       rowID
+      row {
+        id
+        groupID
+        group {
+          id
+          name
+          boardID
+          creatorID
+          rank
+          deleteFlag
+          isCollapsed
+          color
+          createdAt
+        }
+        datas {
+          nextToken
+        }
+        creatorID
+        creator {
+          id
+          username
+          email
+          fname
+          lname
+          usertype
+          title
+          phone
+          avatar
+          createdAt
+        }
+        threadOnRowID
+        rank
+        parentId
+        deleteFlag
+        createdAt
+      }
       userID
       user {
         id
@@ -2242,6 +2287,42 @@ export const onUpdateThreadOnRow = /* GraphQL */ `
     onUpdateThreadOnRow {
       id
       rowID
+      row {
+        id
+        groupID
+        group {
+          id
+          name
+          boardID
+          creatorID
+          rank
+          deleteFlag
+          isCollapsed
+          color
+          createdAt
+        }
+        datas {
+          nextToken
+        }
+        creatorID
+        creator {
+          id
+          username
+          email
+          fname
+          lname
+          usertype
+          title
+          phone
+          avatar
+          createdAt
+        }
+        threadOnRowID
+        rank
+        parentId
+        deleteFlag
+        createdAt
+      }
       userID
       user {
         id
@@ -2297,6 +2378,42 @@ export const onDeleteThreadOnRow = /* GraphQL */ `
     onDeleteThreadOnRow {
       id
       rowID
+      row {
+        id
+        groupID
+        group {
+          id
+          name
+          boardID
+          creatorID
+          rank
+          deleteFlag
+          isCollapsed
+          color
+          createdAt
+        }
+        datas {
+          nextToken
+        }
+        creatorID
+        creator {
+          id
+          username
+          email
+          fname
+          lname
+          usertype
+          title
+          phone
+          avatar
+          createdAt
+        }
+        threadOnRowID
+        rank
+        parentId
+        deleteFlag
+        createdAt
+      }
       userID
       user {
         id

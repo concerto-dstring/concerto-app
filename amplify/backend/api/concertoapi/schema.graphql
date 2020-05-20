@@ -122,6 +122,7 @@ type Row @model
   datas: [Data]  @connection(keyName: "datasByRow", fields:["id"])
   creatorID: ID!
   creator: User!  @connection(fields: ["creatorID"])
+  threadOnRowID: ID
   rank: String!
   parentId: ID
   deleteFlag: Boolean
@@ -175,6 +176,7 @@ type Data @model
 type ThreadOnRow @model {
   id: ID!
   rowID: ID!
+  row: Row! @connection(fields:["rowID"])
   userID: ID!
   user: User @connection(fields:["userID"])
   content: String!

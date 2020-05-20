@@ -269,6 +269,7 @@ export const getUser = /* GraphQL */ `
           id
           groupID
           creatorID
+          threadOnRowID
           rank
           parentId
           deleteFlag
@@ -325,7 +326,7 @@ export const getBoard = /* GraphQL */ `
     getBoard(id: $id) {
       id
       name
-      groups {
+      groups(limit: 1000) {
         items {
           id
           name
@@ -336,14 +337,55 @@ export const getBoard = /* GraphQL */ `
           isCollapsed
           color
           createdAt
+          rows(limit: 10000) {
+            items {
+              id
+              parentId
+              groupID
+              creatorID
+              rank
+              deleteFlag
+              createdAt
+              datas {
+                items {
+                  id
+                  columnID
+                  rowID
+                  value
+                }
+                nextToken
+              }
+            }
+            nextToken
+          }
         }
         nextToken
       }
-      columns {
+      columns(limit: 1000) {
         items {
           id
           boardID
           columnID
+          column {
+            id
+            isTitle
+            name
+            deleteFlag
+            columntype
+            columnComponentType
+            creatorID
+            creator {
+              id
+              email
+              fname
+              lname
+              usertype
+              title
+              phone
+              createdAt
+            }
+            createdAt
+          }
           fixed
           level
           collpse
@@ -471,6 +513,7 @@ export const getGroup = /* GraphQL */ `
           id
           groupID
           creatorID
+          threadOnRowID
           rank
           parentId
           deleteFlag
@@ -637,6 +680,7 @@ export const getRow = /* GraphQL */ `
           nextToken
         }
       }
+      threadOnRowID
       rank
       parentId
       deleteFlag
@@ -681,6 +725,7 @@ export const listRows = /* GraphQL */ `
           avatar
           createdAt
         }
+        threadOnRowID
         rank
         parentId
         deleteFlag
@@ -800,7 +845,67 @@ export const getData = /* GraphQL */ `
     getData(id: $id) {
       id
       columnID
+      column {
+        id
+        board {
+          nextToken
+        }
+        name
+        columntype
+        columnComponentType
+        creatorID
+        creator {
+          id
+          username
+          email
+          fname
+          lname
+          usertype
+          title
+          phone
+          createdAt
+        }
+        createdAt
+        deleteFlag
+        datas {
+          nextToken
+        }
+      }
       rowID
+      row {
+        id
+        groupID
+        group {
+          id
+          name
+          boardID
+          creatorID
+          rank
+          deleteFlag
+          isCollapsed
+          color
+          createdAt
+        }
+        datas {
+          nextToken
+        }
+        creatorID
+        creator {
+          id
+          username
+          email
+          fname
+          lname
+          usertype
+          title
+          phone
+          createdAt
+        }
+        rank
+        parentId
+        deleteFlag
+        createdAt
+      }
       value
     }
   }
@@ -815,7 +920,25 @@ export const listDatas = /* GraphQL */ `
       items {
         id
         columnID
+        column {
+          id
+          name
+          columntype
+          columnComponentType
+          creatorID
+          createdAt
+          deleteFlag
+        }
         rowID
+        row {
+          id
+          groupID
+          creatorID
+          rank
+          parentId
+          deleteFlag
+          createdAt
+        }
         value
       }
       nextToken
@@ -827,6 +950,42 @@ export const getThreadOnRow = /* GraphQL */ `
     getThreadOnRow(id: $id) {
       id
       rowID
+      row {
+        id
+        groupID
+        group {
+          id
+          name
+          boardID
+          creatorID
+          rank
+          deleteFlag
+          isCollapsed
+          color
+          createdAt
+        }
+        datas {
+          nextToken
+        }
+        creatorID
+        creator {
+          id
+          username
+          email
+          fname
+          lname
+          usertype
+          title
+          phone
+          avatar
+          createdAt
+        }
+        threadOnRowID
+        rank
+        parentId
+        deleteFlag
+        createdAt
+      }
       userID
       user {
         id
@@ -887,6 +1046,16 @@ export const listThreadOnRows = /* GraphQL */ `
       items {
         id
         rowID
+        row {
+          id
+          groupID
+          creatorID
+          threadOnRowID
+          rank
+          parentId
+          deleteFlag
+          createdAt
+        }
         userID
         user {
           id

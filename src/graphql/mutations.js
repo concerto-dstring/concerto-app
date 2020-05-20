@@ -680,6 +680,7 @@ export const createUser = /* GraphQL */ `
           id
           groupID
           creatorID
+          threadOnRowID
           rank
           parentId
           deleteFlag
@@ -763,6 +764,7 @@ export const updateUser = /* GraphQL */ `
           id
           groupID
           creatorID
+          threadOnRowID
           rank
           parentId
           deleteFlag
@@ -846,6 +848,7 @@ export const deleteUser = /* GraphQL */ `
           id
           groupID
           creatorID
+          threadOnRowID
           rank
           parentId
           deleteFlag
@@ -1338,6 +1341,7 @@ export const createGroup = /* GraphQL */ `
           id
           groupID
           creatorID
+          threadOnRowID
           rank
           parentId
           deleteFlag
@@ -1425,6 +1429,7 @@ export const updateGroup = /* GraphQL */ `
           id
           groupID
           creatorID
+          threadOnRowID
           rank
           parentId
           deleteFlag
@@ -1512,6 +1517,7 @@ export const deleteGroup = /* GraphQL */ `
           id
           groupID
           creatorID
+          threadOnRowID
           rank
           parentId
           deleteFlag
@@ -1638,6 +1644,7 @@ export const createRow = /* GraphQL */ `
           nextToken
         }
       }
+      threadOnRowID
       rank
       parentId
       deleteFlag
@@ -1725,6 +1732,7 @@ export const updateRow = /* GraphQL */ `
           nextToken
         }
       }
+      threadOnRowID
       rank
       parentId
       deleteFlag
@@ -1812,6 +1820,7 @@ export const deleteRow = /* GraphQL */ `
           nextToken
         }
       }
+      threadOnRowID
       rank
       parentId
       deleteFlag
@@ -2289,6 +2298,42 @@ export const createThreadOnRow = /* GraphQL */ `
     createThreadOnRow(input: $input, condition: $condition) {
       id
       rowID
+      row {
+        id
+        groupID
+        group {
+          id
+          name
+          boardID
+          creatorID
+          rank
+          deleteFlag
+          isCollapsed
+          color
+          createdAt
+        }
+        datas {
+          nextToken
+        }
+        creatorID
+        creator {
+          id
+          username
+          email
+          fname
+          lname
+          usertype
+          title
+          phone
+          avatar
+          createdAt
+        }
+        threadOnRowID
+        rank
+        parentId
+        deleteFlag
+        createdAt
+      }
       userID
       user {
         id
@@ -2347,6 +2392,42 @@ export const updateThreadOnRow = /* GraphQL */ `
     updateThreadOnRow(input: $input, condition: $condition) {
       id
       rowID
+      row {
+        id
+        groupID
+        group {
+          id
+          name
+          boardID
+          creatorID
+          rank
+          deleteFlag
+          isCollapsed
+          color
+          createdAt
+        }
+        datas {
+          nextToken
+        }
+        creatorID
+        creator {
+          id
+          username
+          email
+          fname
+          lname
+          usertype
+          title
+          phone
+          avatar
+          createdAt
+        }
+        threadOnRowID
+        rank
+        parentId
+        deleteFlag
+        createdAt
+      }
       userID
       user {
         id
@@ -2405,6 +2486,42 @@ export const deleteThreadOnRow = /* GraphQL */ `
     deleteThreadOnRow(input: $input, condition: $condition) {
       id
       rowID
+      row {
+        id
+        groupID
+        group {
+          id
+          name
+          boardID
+          creatorID
+          rank
+          deleteFlag
+          isCollapsed
+          color
+          createdAt
+        }
+        datas {
+          nextToken
+        }
+        creatorID
+        creator {
+          id
+          username
+          email
+          fname
+          lname
+          usertype
+          title
+          phone
+          avatar
+          createdAt
+        }
+        threadOnRowID
+        rank
+        parentId
+        deleteFlag
+        createdAt
+      }
       userID
       user {
         id
