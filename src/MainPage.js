@@ -1,6 +1,6 @@
 
 import React from 'react';
-import {BrowserRouter as Router, Route, Link} from 'react-router-dom';
+import {BrowserRouter as Router, Route, Link, withRouter } from 'react-router-dom';
 import MainTable from './maintable/MainTable';
 import './MainPage.less';
 import { Layout, Menu, Breadcrumb, Input, Collapse, Button, Avatar } from 'antd';
@@ -21,6 +21,7 @@ const { Header, Content, Sider } = Layout;
 const defaultSiderWidth = 300
 
 @withApollo
+@withRouter
 class MainPage extends React.Component {
   constructor(props){
     super(props)
@@ -46,6 +47,7 @@ class MainPage extends React.Component {
       if (menus.length > 0 ) {
         selectedKey = menus[0].id
         contentTitle = menus[0].name
+        this.props.history.push('/board/' + menus[0].id)
       }
       this.setState({
         boardMenus: menus,
@@ -109,7 +111,7 @@ class MainPage extends React.Component {
     return (
       <>
         <div id="appBread">
-          <img src="./cover.png" className="body_content_cover" />
+          <img src="../cover.png" className="body_content_cover" />
           <div className="body_content_title_row">
             <div className="body_content_title">
               <h1>{contentTitle}</h1>
@@ -169,7 +171,7 @@ class MainPage extends React.Component {
                   siderWidth={siderWidth} 
                 />}
               />
-              <Route exact path="/borad" component={()=>
+              <Route exact path="/borad/:id" component={()=>
                 <MainTable
                   data={dataset} 
                   siderWidth={siderWidth} 
@@ -209,7 +211,7 @@ class MainPage extends React.Component {
         {
           menus.map(item => {
             let style = item.id === selectedKey ? {background: '#ECECEC', fontWeight: 500} : {}
-            let path = (isBoard ? 'board' : 'dashboard')
+            let path = (isBoard ? `/board/${item.id}` : '/dashboard')
             return (
               <div 
                 key={item.id} 

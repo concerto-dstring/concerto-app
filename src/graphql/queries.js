@@ -10,12 +10,14 @@ export const getCompany = /* GraphQL */ `
       phone
       admin {
         id
+        username
         email
         fname
         lname
         usertype
         title
         phone
+        avatar
         teams {
           nextToken
         }
@@ -65,12 +67,14 @@ export const listCompanys = /* GraphQL */ `
         phone
         admin {
           id
+          username
           email
           fname
           lname
           usertype
           title
           phone
+          avatar
           createdAt
         }
         teams {
@@ -89,12 +93,14 @@ export const getTeam = /* GraphQL */ `
       name
       admin {
         id
+        username
         email
         fname
         lname
         usertype
         title
         phone
+        avatar
         teams {
           nextToken
         }
@@ -123,12 +129,14 @@ export const getTeam = /* GraphQL */ `
         phone
         admin {
           id
+          username
           email
           fname
           lname
           usertype
           title
           phone
+          avatar
           createdAt
         }
         teams {
@@ -136,21 +144,11 @@ export const getTeam = /* GraphQL */ `
         }
         createdAt
       }
-      users(limit: 1000) {
+      users {
         items {
           id
           teamID
-          user {
-            id
-            email
-            fname
-            lname
-            usertype
-            title
-            phone
-            avatar
-            username
-          }
+          userID
         }
         nextToken
       }
@@ -172,12 +170,14 @@ export const listTeams = /* GraphQL */ `
         name
         admin {
           id
+          username
           email
           fname
           lname
           usertype
           title
           phone
+          avatar
           createdAt
         }
         companyID
@@ -203,6 +203,7 @@ export const getUser = /* GraphQL */ `
   query GetUser($id: ID!) {
     getUser(id: $id) {
       id
+      username
       email
       fname
       lname
@@ -210,7 +211,6 @@ export const getUser = /* GraphQL */ `
       title
       phone
       avatar
-      username
       teams {
         items {
           id
@@ -254,6 +254,7 @@ export const getUser = /* GraphQL */ `
       columnCreated {
         items {
           id
+          isTitle
           name
           columntype
           columnComponentType
@@ -287,12 +288,14 @@ export const listUsers = /* GraphQL */ `
     listUsers(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
+        username
         email
         fname
         lname
         usertype
         title
         phone
+        avatar
         teams {
           nextToken
         }
@@ -357,7 +360,7 @@ export const getBoard = /* GraphQL */ `
         }
         nextToken
       }
-      columns(limit: 1000) {
+      columns {
         items {
           id
           boardID
@@ -393,12 +396,14 @@ export const getBoard = /* GraphQL */ `
       creatorID
       creator {
         id
+        username
         email
         fname
         lname
         usertype
         title
         phone
+        avatar
         teams {
           nextToken
         }
@@ -450,12 +455,14 @@ export const listBoards = /* GraphQL */ `
         creatorID
         creator {
           id
+          username
           email
           fname
           lname
           usertype
           title
           phone
+          avatar
           createdAt
         }
         subscribers {
@@ -485,12 +492,14 @@ export const getGroup = /* GraphQL */ `
         creatorID
         creator {
           id
+          username
           email
           fname
           lname
           usertype
           title
           phone
+          avatar
           createdAt
         }
         subscribers {
@@ -513,12 +522,14 @@ export const getGroup = /* GraphQL */ `
       creatorID
       creator {
         id
+        username
         email
         fname
         lname
         usertype
         title
         phone
+        avatar
         teams {
           nextToken
         }
@@ -570,12 +581,14 @@ export const listGroups = /* GraphQL */ `
         creatorID
         creator {
           id
+          username
           email
           fname
           lname
           usertype
           title
           phone
+          avatar
           createdAt
         }
         rank
@@ -609,12 +622,14 @@ export const getRow = /* GraphQL */ `
         creatorID
         creator {
           id
+          username
           email
           fname
           lname
           usertype
           title
           phone
+          avatar
           createdAt
         }
         rank
@@ -635,12 +650,14 @@ export const getRow = /* GraphQL */ `
       creatorID
       creator {
         id
+        username
         email
         fname
         lname
         usertype
         title
         phone
+        avatar
         teams {
           nextToken
         }
@@ -695,12 +712,14 @@ export const listRows = /* GraphQL */ `
         creatorID
         creator {
           id
+          username
           email
           fname
           lname
           usertype
           title
           phone
+          avatar
           createdAt
         }
         rank
@@ -736,12 +755,14 @@ export const getColumn = /* GraphQL */ `
       creatorID
       creator {
         id
+        username
         email
         fname
         lname
         usertype
         title
         phone
+        avatar
         teams {
           nextToken
         }
@@ -788,18 +809,21 @@ export const listColumns = /* GraphQL */ `
         board {
           nextToken
         }
+        isTitle
         name
         columntype
         columnComponentType
         creatorID
         creator {
           id
+          username
           email
           fname
           lname
           usertype
           title
           phone
+          avatar
           createdAt
         }
         createdAt
@@ -817,65 +841,7 @@ export const getData = /* GraphQL */ `
     getData(id: $id) {
       id
       columnID
-      column {
-        id
-        board {
-          nextToken
-        }
-        name
-        columntype
-        columnComponentType
-        creatorID
-        creator {
-          id
-          email
-          fname
-          lname
-          usertype
-          title
-          phone
-          createdAt
-        }
-        createdAt
-        deleteFlag
-        datas {
-          nextToken
-        }
-      }
       rowID
-      row {
-        id
-        groupID
-        group {
-          id
-          name
-          boardID
-          creatorID
-          rank
-          deleteFlag
-          isCollapsed
-          color
-          createdAt
-        }
-        datas {
-          nextToken
-        }
-        creatorID
-        creator {
-          id
-          email
-          fname
-          lname
-          usertype
-          title
-          phone
-          createdAt
-        }
-        rank
-        parentId
-        deleteFlag
-        createdAt
-      }
       value
     }
   }
@@ -890,26 +856,254 @@ export const listDatas = /* GraphQL */ `
       items {
         id
         columnID
-        column {
-          id
-          name
-          columntype
-          columnComponentType
-          creatorID
-          createdAt
-          deleteFlag
-        }
         rowID
-        row {
+        value
+      }
+      nextToken
+    }
+  }
+`;
+export const getThreadOnRow = /* GraphQL */ `
+  query GetThreadOnRow($id: ID!) {
+    getThreadOnRow(id: $id) {
+      id
+      rowID
+      userID
+      user {
+        id
+        username
+        email
+        fname
+        lname
+        usertype
+        title
+        phone
+        avatar
+        teams {
+          nextToken
+        }
+        createdAt
+        boardCreated {
+          nextToken
+        }
+        boardSubscribed {
+          nextToken
+        }
+        groupCreated {
+          nextToken
+        }
+        columnCreated {
+          nextToken
+        }
+        rowCreated {
+          nextToken
+        }
+      }
+      content
+      createdAt
+      likedByUsersID
+      seenByUsersID
+      repliesByDate {
+        items {
           id
-          groupID
-          creatorID
-          rank
-          parentId
-          deleteFlag
+          threadID
+          userID
+          content
+          createdAt
+          likedByUsersID
+          seenByUsersID
+        }
+        nextToken
+      }
+    }
+  }
+`;
+export const listThreadOnRows = /* GraphQL */ `
+  query ListThreadOnRows(
+    $filter: ModelThreadOnRowFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listThreadOnRows(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        rowID
+        userID
+        user {
+          id
+          username
+          email
+          fname
+          lname
+          usertype
+          title
+          phone
+          avatar
           createdAt
         }
-        value
+        content
+        createdAt
+        likedByUsersID
+        seenByUsersID
+        repliesByDate {
+          nextToken
+        }
+      }
+      nextToken
+    }
+  }
+`;
+export const getReplyOnThread = /* GraphQL */ `
+  query GetReplyOnThread($id: ID!) {
+    getReplyOnThread(id: $id) {
+      id
+      threadID
+      userID
+      user {
+        id
+        username
+        email
+        fname
+        lname
+        usertype
+        title
+        phone
+        avatar
+        teams {
+          nextToken
+        }
+        createdAt
+        boardCreated {
+          nextToken
+        }
+        boardSubscribed {
+          nextToken
+        }
+        groupCreated {
+          nextToken
+        }
+        columnCreated {
+          nextToken
+        }
+        rowCreated {
+          nextToken
+        }
+      }
+      content
+      createdAt
+      likedByUsersID
+      seenByUsersID
+    }
+  }
+`;
+export const listReplyOnThreads = /* GraphQL */ `
+  query ListReplyOnThreads(
+    $filter: ModelReplyOnThreadFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listReplyOnThreads(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        threadID
+        userID
+        user {
+          id
+          username
+          email
+          fname
+          lname
+          usertype
+          title
+          phone
+          avatar
+          createdAt
+        }
+        content
+        createdAt
+        likedByUsersID
+        seenByUsersID
+      }
+      nextToken
+    }
+  }
+`;
+export const getInboxOnRow = /* GraphQL */ `
+  query GetInboxOnRow($id: ID!, $createdAt: String!) {
+    getInboxOnRow(id: $id, createdAt: $createdAt) {
+      id
+      rowID
+      userID
+      user {
+        id
+        username
+        email
+        fname
+        lname
+        usertype
+        title
+        phone
+        avatar
+        teams {
+          nextToken
+        }
+        createdAt
+        boardCreated {
+          nextToken
+        }
+        boardSubscribed {
+          nextToken
+        }
+        groupCreated {
+          nextToken
+        }
+        columnCreated {
+          nextToken
+        }
+        rowCreated {
+          nextToken
+        }
+      }
+      filelocations
+      createdAt
+    }
+  }
+`;
+export const listInboxOnRows = /* GraphQL */ `
+  query ListInboxOnRows(
+    $id: ID
+    $createdAt: ModelStringKeyConditionInput
+    $filter: ModelInboxOnRowFilterInput
+    $limit: Int
+    $nextToken: String
+    $sortDirection: ModelSortDirection
+  ) {
+    listInboxOnRows(
+      id: $id
+      createdAt: $createdAt
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+      sortDirection: $sortDirection
+    ) {
+      items {
+        id
+        rowID
+        userID
+        user {
+          id
+          username
+          email
+          fname
+          lname
+          usertype
+          title
+          phone
+          avatar
+          createdAt
+        }
+        filelocations
+        createdAt
       }
       nextToken
     }

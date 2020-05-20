@@ -13,7 +13,7 @@ import { ColumnType } from './data/MainTableType';
 import { COLOR } from '../helpers/section/header/StyleValues'
 import { ListAllBoards, GetBoardbyId } from '../helpers/data/fetchBoards'
 import gql from "graphql-tag";
-import { listBoards, getBoard, getGroup, getRow, getData, getUser, getTeam } from "../graphql/queries"
+import { listBoards, getBoard, getGroup, getRow, getData, listUsers, getUser, getTeam } from "../graphql/queries"
 import { 
   createGroup, updateGroup, 
   createColumn, updateColumn, 
@@ -91,17 +91,22 @@ class MainTableDataStore {
       switch (type) {
         case 'board':
           apolloClient
-            .query({
+            .watchQuery({
               query: gql(listBoards),
-              fetchPolicy: "no-cache"
+              fetchPolicy: "cache-and-network"
             })
-            .then(result => {
-              this._boardMenus = result.data.listBoards.items
-              if (this._boardMenus.length > 0) {
-                let defaultBoard = this._boardMenus[0]
-                this._currentBoardId =  defaultBoard.id
-                this.fetchBackendBoardData(defaultBoard.id, setMenus)
-              }
+            .subscribe({
+              next: ({data}) => {
+                if (data) {
+                  this._boardMenus = data.listBoards.items
+                  if (this._boardMenus.length > 0) {
+                    let defaultBoard = this._boardMenus[0]
+                    this._currentBoardId =  defaultBoard.id
+                    this.fetchBackendBoardData(defaultBoard.id, setMenus)
+                  }
+                }
+              },
+              error: (e) => console.log(e)
             });
           break;
       
@@ -122,119 +127,122 @@ class MainTableDataStore {
 
     fetchBoardData(boardId, setMenus, setBusy) {
       this._apolloClient
-        .query({
+        .watchQuery({
           query: gql(getBoard),
           variables: {
             id: boardId
           },
-          fetchPolicy: "no-cache"
+          fetchPolicy: "cache-and-network"
         })
-        .then(result => {
-          let board = result.data.getBoard
-          
-          this._columns = []
-          this._rowData = {}
-          this._groups = []
-          this._subRows = {}
-          this._subRowKeys = []
-          this._columnsComponentType = []
+        .subscribe({
+          next: ({data}) => {
+            if (data) {
+              let board = data.getBoard
+              console.log(board)
+              this._columns = []
+              this._rowData = {}
+              this._groups = []
+              this._subRows = {}
+              this._subRowKeys = []
+              this._columnsComponentType = []
 
-          let columns = this.sortDataByRank(board.columns.items)
-          columns.map(column => {
-            if(!column.deleteFlag) {
-              this._columnsComponentType[column.column.id] = column.column.columnComponentType
-              column.type = column.column.columntype
-              column.columnKey = column.column.id
-              column.columnComponentType = column.column.columnComponentType
-              column.isTitle = column.column.isTitle
-              let name = column.column.name
-              column.name = name
-              if (name === ColumnType.ROWACTION || name === ColumnType.ROWSELECT) {
-                column.width = 36
-              }
-              else if (column.isTitle) {
-                column.width = 360
+              // let columns = this.sortDataByRank(board.columns.items)
+              // columns.map(column => {
+              //   if(!column.deleteFlag) {
+              //     this._columnsComponentType[column.column.id] = column.column.columnComponentType
+              //     column.type = column.column.columntype
+              //     column.columnKey = column.column.id
+              //     column.columnComponentType = column.column.columnComponentType
+              //     column.isTitle = column.column.isTitle
+              //     let name = column.column.name
+              //     column.name = name
+              //     if (name === ColumnType.ROWACTION || name === ColumnType.ROWSELECT) {
+              //       column.width = 36
+              //     }
+              //     else if (column.isTitle) {
+              //       column.width = 360
+              //     }
+              //     else {
+              //       column.width = 200
+              //     }
+              //     this._columns.push(column)
+              //   }
+              // })
+
+              // let groups = this.sortDataByRank(board.groups.items)
+              // groups.map(group => {
+              //   if (!group.deleteFlag) {
+              //     group.groupKey = group.id
+              //     console.log(group.rows)
+              //     let groupRows = this.sortDataByRank(group.rows.items)
+              //     let rows = []
+              //     groupRows.map(row => {
+              //       if (!row.deleteFlag) {
+              //         if (row.parentId) {
+              //           if (Object.keys(this._subRows).indexOf(row.parentId) !== -1) {
+              //             let subRows = this._subRows[row.parentId].rows
+              //             subRows.push(row)
+              //           }
+              //           else {
+              //             this._subRows[row.parentId] = {}
+              //             let subRows = []
+              //             subRows.push(row)
+              //             this._subRows[row.parentId].rows = subRows
+              //             this._subRows[row.parentId].isExpanded = false
+              //           }
+              //           this._subRowKeys.push(row.id)
+              //         }
+              //         else {
+              //           rows.push(row)
+              //         }
+              //         this._rowData[row.id] = {}
+              //         this._rowColumnData[row.id] = {}
+              //         let dataItems = row.datas.items
+              //         dataItems.map(item => {
+              //           if (this._columnsComponentType[item.columnID] === PEOPLE) {
+              //             let userIds = item.value
+              //             if (userIds) {
+              //               let userIdArr = userIds.split(',')
+              //               let users = []
+              //               userIdArr.map(userId => {
+              //                 if (Object.keys(this._cacheUsers).indexOf(userId) !== -1) {
+              //                   users.push(this._cacheUsers[userId])
+              //                 }
+              //               })
+              //               this._rowData[item.rowID][item.columnID] = users
+              //             }
+              //             else {
+              //               this._rowData[item.rowID][item.columnID] = []
+              //             }
+              //           }
+              //           else {
+              //             this._rowData[item.rowID][item.columnID] = item.value
+              //           }
+                        
+              //           this._rowColumnData[item.rowID][item.columnID] = item.id
+              //         })
+              //       }
+              //     })
+
+              //     group.rows = rows
+              //     this._groups.push(group)
+              //   }
+              // })
+
+              // for (let key in this._subRows) {
+              //   let subRows = this.sortDataByRank(this._subRows[key].rows)
+              //   this._subRows[key].rows = subRows
+              // }
+
+              if (setMenus) {
+                setMenus(this._boardMenus, true)
               }
               else {
-                column.width = 200
+                setBusy(false)
               }
-              this._columns.push(column)
             }
-          })
-
-          let groups = this.sortDataByRank(board.groups.items)
-          groups.map(group => {
-            if (!group.deleteFlag) {
-              group.groupKey = group.id
-              let groupRows = this.sortDataByRank(group.rows.items)
-              let rows = []
-              groupRows.map(row => {
-                if (!row.deleteFlag) {
-                  if (row.parentId) {
-                    if (Object.keys(this._subRows).indexOf(row.parentId) !== -1) {
-                      let subRows = this._subRows[row.parentId].rows
-                      subRows.push(row)
-                    }
-                    else {
-                      this._subRows[row.parentId] = {}
-                      let subRows = []
-                      subRows.push(row)
-                      this._subRows[row.parentId].rows = subRows
-                      this._subRows[row.parentId].isExpanded = false
-                    }
-                    this._subRowKeys.push(row.id)
-                  }
-                  else {
-                    rows.push(row)
-                  }
-                  this._rowData[row.id] = {}
-                  this._rowColumnData[row.id] = {}
-                  let dataItems = row.datas.items
-                  dataItems.map(item => {
-                    if (this._columnsComponentType[item.columnID] === PEOPLE) {
-                      let userIds = item.value
-                      if (userIds) {
-                        let userIdArr = userIds.split(',')
-                        let users = []
-                        userIdArr.map(userId => {
-                          if (Object.keys(this._cacheUsers).indexOf(userId) !== -1) {
-                            users.push(this._cacheUsers[userId])
-                          }
-                        })
-                        this._rowData[item.rowID][item.columnID] = users
-                      }
-                      else {
-                        this._rowData[item.rowID][item.columnID] = []
-                      }
-                    }
-                    else {
-                      this._rowData[item.rowID][item.columnID] = item.value
-                    }
-                    
-                    this._rowColumnData[item.rowID][item.columnID] = item.id
-                  })
-                }
-              })
-
-              group.rows = rows
-              this._groups.push(group)
-            }
-          })
-
-          for (let key in this._subRows) {
-            let subRows = this.sortDataByRank(this._subRows[key].rows)
-            this._subRows[key].rows = subRows
-          }
-
-          if (setMenus) {
-            setMenus(this._boardMenus, true)
-          }
-          else {
-            setBusy(false)
-          }
-        })
-        .catch(error => {
-          console.log(error)
+          },
+          error: (e) => console.log(e)
         })
     }
 
@@ -292,40 +300,51 @@ class MainTableDataStore {
 
     getCurrentUser(apolloClient, userId) {
       apolloClient
-        .query({
+        .watchQuery({
           query: gql(getUser),
           variables: {
             id: userId
           },
-          fetchPolicy: "no-cache"
+          fetchPolicy: "cache-and-network"
         })
-        .then(result => this._currentUser = result.data.getUser);
+        .subscribe({
+          next: ({data}) => {
+            if (data) {
+              this._currentUser = data.getUser
+            }
+          },
+          error: (e) => console.error(e)
+        });
     }
 
     getTeamUsers(teamId, boardId, setMenus, setBusy) {
       this._apolloClient
-        .query({
-          query: gql(getTeam),
+        .watchQuery({
+          query: gql(listUsers),
           variables: {
-            id: teamId
+            limit: 10000,
           },
-          fetchPolicy: "no-cache"
+          fetchPolicy: "cache-and-network"
         })
-        .then(result => {
-          let teamUsers = result.data.getTeam.users.items
-          teamUsers.map(teamUser => {
-            let user = teamUser.user
-            if (user.avatar.startsWith('#')) {
-              user.faceColor = user.avatar
+        .subscribe({
+          next: ({data}) => {
+            if (data) {
+              let teamUsers = data.listUsers.items
+              teamUsers.map(user => {
+                if (user.avatar.startsWith('#')) {
+                  user.faceColor = user.avatar
+                }
+                else {
+                  user.faceColor = ''
+                }
+                this._teamUsers.push(user)
+                this._cacheUsers[user.id] = user
+              })
+    
+              this.fetchBoardData(boardId, setMenus, setBusy)
             }
-            else {
-              user.faceColor = ''
-            }
-            this._teamUsers.push(user)
-            this._cacheUsers[user.id] = user
-          })
-
-          this.fetchBoardData(boardId, setMenus, setBusy)
+          },
+          error: (e) => console.error(e)
         });
     }
 
