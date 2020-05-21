@@ -269,7 +269,6 @@ export const getUser = /* GraphQL */ `
           id
           groupID
           creatorID
-          threadOnRowID
           rank
           parentId
           deleteFlag
@@ -513,7 +512,6 @@ export const getGroup = /* GraphQL */ `
           id
           groupID
           creatorID
-          threadOnRowID
           rank
           parentId
           deleteFlag
@@ -680,7 +678,18 @@ export const getRow = /* GraphQL */ `
           nextToken
         }
       }
-      threadOnRowID
+      threadOnRow {
+        items {
+          id
+          rowID
+          userID
+          content
+          createdAt
+          likedByUsersID
+          seenByUsersID
+        }
+        nextToken
+      }
       rank
       parentId
       deleteFlag
@@ -725,7 +734,9 @@ export const listRows = /* GraphQL */ `
           avatar
           createdAt
         }
-        threadOnRowID
+        threadOnRow {
+          nextToken
+        }
         rank
         parentId
         deleteFlag
@@ -980,7 +991,9 @@ export const getThreadOnRow = /* GraphQL */ `
           avatar
           createdAt
         }
-        threadOnRowID
+        threadOnRow {
+          nextToken
+        }
         rank
         parentId
         deleteFlag
@@ -1050,7 +1063,6 @@ export const listThreadOnRows = /* GraphQL */ `
           id
           groupID
           creatorID
-          threadOnRowID
           rank
           parentId
           deleteFlag

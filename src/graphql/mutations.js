@@ -680,7 +680,6 @@ export const createUser = /* GraphQL */ `
           id
           groupID
           creatorID
-          threadOnRowID
           rank
           parentId
           deleteFlag
@@ -764,7 +763,6 @@ export const updateUser = /* GraphQL */ `
           id
           groupID
           creatorID
-          threadOnRowID
           rank
           parentId
           deleteFlag
@@ -848,7 +846,6 @@ export const deleteUser = /* GraphQL */ `
           id
           groupID
           creatorID
-          threadOnRowID
           rank
           parentId
           deleteFlag
@@ -1341,7 +1338,6 @@ export const createGroup = /* GraphQL */ `
           id
           groupID
           creatorID
-          threadOnRowID
           rank
           parentId
           deleteFlag
@@ -1429,7 +1425,6 @@ export const updateGroup = /* GraphQL */ `
           id
           groupID
           creatorID
-          threadOnRowID
           rank
           parentId
           deleteFlag
@@ -1517,7 +1512,6 @@ export const deleteGroup = /* GraphQL */ `
           id
           groupID
           creatorID
-          threadOnRowID
           rank
           parentId
           deleteFlag
@@ -1644,7 +1638,18 @@ export const createRow = /* GraphQL */ `
           nextToken
         }
       }
-      threadOnRowID
+      threadOnRow {
+        items {
+          id
+          rowID
+          userID
+          content
+          createdAt
+          likedByUsersID
+          seenByUsersID
+        }
+        nextToken
+      }
       rank
       parentId
       deleteFlag
@@ -1732,7 +1737,18 @@ export const updateRow = /* GraphQL */ `
           nextToken
         }
       }
-      threadOnRowID
+      threadOnRow {
+        items {
+          id
+          rowID
+          userID
+          content
+          createdAt
+          likedByUsersID
+          seenByUsersID
+        }
+        nextToken
+      }
       rank
       parentId
       deleteFlag
@@ -1820,7 +1836,18 @@ export const deleteRow = /* GraphQL */ `
           nextToken
         }
       }
-      threadOnRowID
+      threadOnRow {
+        items {
+          id
+          rowID
+          userID
+          content
+          createdAt
+          likedByUsersID
+          seenByUsersID
+        }
+        nextToken
+      }
       rank
       parentId
       deleteFlag
@@ -2328,7 +2355,9 @@ export const createThreadOnRow = /* GraphQL */ `
           avatar
           createdAt
         }
-        threadOnRowID
+        threadOnRow {
+          nextToken
+        }
         rank
         parentId
         deleteFlag
@@ -2422,7 +2451,9 @@ export const updateThreadOnRow = /* GraphQL */ `
           avatar
           createdAt
         }
-        threadOnRowID
+        threadOnRow {
+          nextToken
+        }
         rank
         parentId
         deleteFlag
@@ -2516,7 +2547,9 @@ export const deleteThreadOnRow = /* GraphQL */ `
           avatar
           createdAt
         }
-        threadOnRowID
+        threadOnRow {
+          nextToken
+        }
         rank
         parentId
         deleteFlag

@@ -122,7 +122,7 @@ type Row @model
   datas: [Data]  @connection(keyName: "datasByRow", fields:["id"])
   creatorID: ID!
   creator: User!  @connection(fields: ["creatorID"])
-  threadOnRowID: ID
+  threadOnRow: [ThreadOnRow] @connection(keyName: "threadOnRowByRow", fields: ["id"])
   rank: String!
   parentId: ID
   deleteFlag: Boolean
@@ -173,7 +173,8 @@ type Data @model
 }
 
 ## row-based interaction threading, sorted by the createdAt date-time
-type ThreadOnRow @model {
+type ThreadOnRow @model 
+ @key(name: "threadOnRowByRow", fields: ["rowID", "id"]) {
   id: ID!
   rowID: ID!
   row: Row! @connection(fields:["rowID"])
