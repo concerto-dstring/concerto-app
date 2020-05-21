@@ -20,7 +20,7 @@ import {
   getData, 
   listUsers, getUser, 
   getTeam,
-  getThreadOnRow
+  listThreadOnRows, getThreadOnRow
 } from "../graphql/queries"
 
 import { 
@@ -50,6 +50,7 @@ class MainTableDataStore {
         this._sizeColumns = 0;
         this._rowData = {};
         this._rowThreadData = {}
+        this._rowThreadSize = {}
         this._subRowKeys = []
         this._rowColumnData = {}
         this._groups = [];
@@ -73,6 +74,7 @@ class MainTableDataStore {
         this.isSubRowExpanded = this.isSubRowExpanded.bind(this);
         this.getSubRows = this.getSubRows.bind(this);
         this.toggleExpandSubRows = this.toggleExpandSubRows.bind(this);
+        this.getRowThreadData = this.getRowThreadData.bind(this)
         this._callbacks = [];
         this.runCallbacks = this.runCallbacks.bind(this);
     }
@@ -150,89 +152,14 @@ class MainTableDataStore {
           this._subRows = {}
           this._subRowKeys = []
           this._columnsComponentType = []
+          this._rowThreadData = {}
+          this._rowThreadSize = {}
 
           let columns = this.sortDataByRank(board.columns.items)
-          columns.map(column => {
-            if(!column.deleteFlag) {
-              this._columnsComponentType[column.column.id] = column.column.columnComponentType
-              column.type = column.column.columntype
-              column.columnKey = column.column.id
-              column.columnComponentType = column.column.columnComponentType
-              column.isTitle = column.column.isTitle
-              let name = column.column.name
-              column.name = name
-              if (name === ColumnType.ROWACTION || name === ColumnType.ROWSELECT) {
-                column.width = 36
-              }
-              else if (column.isTitle) {
-                column.width = 360
-              }
-              else {
-                column.width = 200
-              }
-              this._columns.push(column)
-            }
-          })
+          this.setColumns(columns)
 
           let groups = this.sortDataByRank(board.groups.items)
-          groups.map(group => {
-            if (!group.deleteFlag) {
-              group.groupKey = group.id
-              let groupRows = this.sortDataByRank(group.rows.items)
-              let rows = []
-              groupRows.map(row => {
-                if (!row.deleteFlag) {
-                  if (row.parentId) {
-                    if (Object.keys(this._subRows).indexOf(row.parentId) !== -1) {
-                      let subRows = this._subRows[row.parentId].rows
-                      subRows.push(row)
-                    }
-                    else {
-                      this._subRows[row.parentId] = {}
-                      let subRows = []
-                      subRows.push(row)
-                      this._subRows[row.parentId].rows = subRows
-                      this._subRows[row.parentId].isExpanded = false
-                    }
-                    this._subRowKeys.push(row.id)
-                  }
-                  else {
-                    rows.push(row)
-                  }
-                  this._rowData[row.id] = {}
-                  this._rowColumnData[row.id] = {}
-                  let dataItems = row.datas.items
-                  dataItems.map(item => {
-                    if (this._columnsComponentType[item.columnID] === PEOPLE) {
-                      let userIds = item.value
-                      if (userIds) {
-                        let userIdArr = userIds.split(',')
-                        let users = []
-                        userIdArr.map(userId => {
-                          if (Object.keys(this._cacheUsers).indexOf(userId) !== -1) {
-                            users.push(this._cacheUsers[userId])
-                          }
-                        })
-                        this._rowData[item.rowID][item.columnID] = users
-                      }
-                      else {
-                        this._rowData[item.rowID][item.columnID] = []
-                      }
-                    }
-                    else {
-                      this._rowData[item.rowID][item.columnID] = item.value
-                    }
-                    
-                    this._rowColumnData[item.rowID][item.columnID] = item.id
-                  })
-                }
-              })
-
-              group.rows = rows
-              this._groups.push(group)
-            }
-          })
-
+          this.setGroupAndRowData(groups)
           for (let key in this._subRows) {
             let subRows = this.sortDataByRank(this._subRows[key].rows)
             this._subRows[key].rows = subRows
@@ -248,6 +175,92 @@ class MainTableDataStore {
         .catch(error => {
           console.log(error)
         })
+    }
+
+    setColumns(columns) {
+      columns.map(column => {
+        if(!column.deleteFlag) {
+          this._columnsComponentType[column.column.id] = column.column.columnComponentType
+          column.type = column.column.columntype
+          column.columnKey = column.column.id
+          column.columnComponentType = column.column.columnComponentType
+          column.isTitle = column.column.isTitle
+          let name = column.column.name
+          column.name = name
+          if (name === ColumnType.ROWACTION || name === ColumnType.ROWSELECT) {
+            column.width = 36
+          }
+          else if (column.isTitle) {
+            column.width = 360
+          }
+          else {
+            column.width = 200
+          }
+          this._columns.push(column)
+        }
+      })
+    }
+
+    setGroupAndRowData(groups) {
+      groups.map(group => {
+        if (!group.deleteFlag) {
+          group.groupKey = group.id
+          let groupRows = this.sortDataByRank(group.rows.items)
+          let rows = []
+          groupRows.map(row => {
+            if (!row.deleteFlag) {
+              if (row.parentId) {
+                if (Object.keys(this._subRows).indexOf(row.parentId) !== -1) {
+                  let subRows = this._subRows[row.parentId].rows
+                  subRows.push(row)
+                }
+                else {
+                  this._subRows[row.parentId] = {}
+                  let subRows = []
+                  subRows.push(row)
+                  this._subRows[row.parentId].rows = subRows
+                  this._subRows[row.parentId].isExpanded = false
+                }
+                this._subRowKeys.push(row.id)
+              }
+              else {
+                rows.push(row)
+              }
+              this._rowData[row.id] = {}
+              this._rowColumnData[row.id] = {}
+              let dataItems = row.datas.items
+              dataItems.map(item => {
+                if (this._columnsComponentType[item.columnID] === PEOPLE) {
+                  let userIds = item.value
+                  if (userIds) {
+                    let userIdArr = userIds.split(',')
+                    let users = []
+                    userIdArr.map(userId => {
+                      if (Object.keys(this._cacheUsers).indexOf(userId) !== -1) {
+                        users.push(this._cacheUsers[userId])
+                      }
+                    })
+                    this._rowData[item.rowID][item.columnID] = users
+                  }
+                  else {
+                    this._rowData[item.rowID][item.columnID] = []
+                  }
+                }
+                else {
+                  this._rowData[item.rowID][item.columnID] = item.value
+                }
+                
+                this._rowColumnData[item.rowID][item.columnID] = item.id
+              })
+
+              this._rowThreadSize[row.id] = row.threadOnRow.items.length
+            }
+          })
+
+          group.rows = rows
+          this._groups.push(group)
+        }
+      })
     }
 
     sortDataByRank(arr) {
@@ -311,7 +324,16 @@ class MainTableDataStore {
           },
           fetchPolicy: "no-cache"
         })
-        .then(result => this._currentUser = result.data.getUser);
+        .then(result => {
+          let user = result.data.getUser
+          if (user.avatar.startsWith('#')) {
+            user.faceColor = user.avatar
+          }
+          else {
+            user.faceColor = ''
+          }
+          this._currentUser = user
+        });
     }
 
     getTeamUsers(teamId, boardId, setMenus, setBusy) {
@@ -1228,28 +1250,45 @@ class MainTableDataStore {
       }
     }
 
-    getRowThreadData(rowId, threadId) {
+    sortDataByCreatedAt(arr) {
+      if (arr && arr.length > 0) {
+        arr.sort(function(a, b){
+          let m = a.createdAt;
+          let n = b.createdAt;
+          if (m < n) return 1;
+          if (m > n) return -1;
+          return 0;
+         })
+      }
+
+       return arr
+    }
+
+    getRowThreadData(rowId) {
       if (Object.keys(this._rowThreadData).indexOf(rowId) !== -1) {
         return this._rowThreadData[rowId]
       }
       else {
         this._apolloClient
           .query({
-            query: gql(getThreadOnRow),
+            query: gql(listThreadOnRows),
             variables: {
-              id: threadId
+              limit: 10000,
+              filter: {
+                rowID: {
+                  eq: rowId
+                }
+              }
             },
             fetchPolicy: "no-cache"
           })
           .then(result => {
-            let threadData = result.data.getThreadOnRow
-            if (threadData) {
-              let threads = []
-              threads.push(threadData)
-              this._rowThreadData[rowId] = threads
-              this.runCallbacks()
-            }
+            let threads = this.sortDataByCreatedAt(result.data.listThreadOnRows.items)
+            this._rowThreadData[rowId] = threads
+       
+            this.runCallbacks()
           })
+
         return []
       }
     }
@@ -1265,15 +1304,18 @@ class MainTableDataStore {
         .then(result => {
           let threadData = result.data.createThreadOnRow
           let threads = this._rowThreadData[createData.rowID]
-
+          let size
           if (threads && threads.length > 0) {
+            size = this._rowThreadSize[createData.rowID] + 1
             threads.unshift(threadData)
           }
           else {
+            size = 1
             threads = []
             threads.push(threadData)
           }
-
+          
+          this._rowThreadSize[createData.rowID] = size
           this.runCallbacks(); 
         })
         .catch(error => {
@@ -1296,7 +1338,7 @@ class MainTableDataStore {
           let threadIndex = threads.findIndex(thread => thread.id === threadData.id)
           threads[threadIndex] = threadData
 
-          this.runCallbacks(); 
+          this.runCallbacks()
         })
         .catch(error => {
           console.log(error)
@@ -1318,7 +1360,7 @@ class MainTableDataStore {
           let replyList = thread.repliesByDate.items
           replyList.push(replyData)
 
-          this.runCallbacks(); 
+          this.runCallbacks()
         })
         .catch(error => {
           console.log(error)
@@ -1342,7 +1384,7 @@ class MainTableDataStore {
           let replyIndex = replyList.findIndex(reply => reply.id === replyData.id)
           replyList[replyIndex] = replyData
 
-          this.runCallbacks(); 
+          this.runCallbacks()
         })
         .catch(error => {
           console.log(error)

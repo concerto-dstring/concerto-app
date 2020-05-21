@@ -30,6 +30,7 @@ class RowHeaderDrawer extends PureComponent {
 
   constructor(props) {
     super(props)
+    let drawerData = this.getDrawerData(props)
     this.state = {
       current: ROW_HEADER_UPDATE.key,
       editorState: BraftEditor.createEditorState(null),
@@ -53,14 +54,35 @@ class RowHeaderDrawer extends PureComponent {
       filePercent: 0,
       fileUrl: '',
       isShowPeopleModal: false,
-      currentUser: props.tableData ? props.tableData.getCurrentUser() : {}
+      currentUser: drawerData.currentUser,
+      updateInfo: drawerData.updateInfo,
     }
   }
 
   componentWillReceiveProps(nextProps) {
+    let drawerData = this.getDrawerData(nextProps)
     this.setState({
-      currentUser: nextProps.tableData ? nextProps.tableData.getCurrentUser() : {}
+      currentUser: drawerData.currentUser,
+      updateInfo: drawerData.updateInfo,
     })
+  }
+
+  getDrawerData(props) {
+    const { tableData, rowId } = props
+    
+    let currentUser = {}
+    let updateInfo = []
+    if (tableData) {
+      currentUser = tableData.getCurrentUser()
+      updateInfo = tableData.getRowThreadData(rowId)
+    }
+
+    let drawerData = {
+      currentUser: currentUser,
+      updateInfo: updateInfo
+    }
+
+    return drawerData
   }
 
   handleEditorChange = (editorState) => {
@@ -173,6 +195,7 @@ class RowHeaderDrawer extends PureComponent {
           name='uploadFile'
           beforeUpload={this.checkUploadFile}
           onChange={this.uploadFile}
+          disabled={true}
         >
           <span className="row_header_drawer_editor_bottom_content_span">
             <PaperClipOutlined  />
@@ -213,23 +236,51 @@ class RowHeaderDrawer extends PureComponent {
       }
       else {
         infoHtml = infoHtml.replace(new RegExp("<p>", "gm"), "").replace(new RegExp("</p>", "gm"), "<br>")
-        const { updateInfo, data, rowIndex } = this.props
-        let updateInfoData = {}
-        updateInfoData = {
-          rowID: data.getRowKey(rowIndex),
+        const { tableData, rowId } = this.props
+        let createData = {
+          rowID: rowId,
           userID: this.state.currentUser.id,
           content: infoHtml,
           createdAt: new Date().toISOString()
         }
 
         // 设置值
-        data.createThreadData(updateInfoData)
+        tableData.createThreadData(createData)
 
         // 清除值
         this.setState({
           editorState: ContentUtils.clear(this.state.editorState)
         })
       }
+    }
+  }
+
+  getRowHeaderDrawerUpdate() {
+    const { updateInfo } = this.state
+    if (updateInfo && updateInfo.length > 0) {
+      let updateComponent = updateInfo.map(info => {
+        let user = info.user
+        if (user.avatar.startsWith('#')) {
+          user.faceColor = user.avatar
+        }
+        else {
+          user.faceColor = ''
+        }
+        user.userUrl = 'https://www.pynbo.com/user/' + user.id
+        return (
+          <RowHeaderDrawerUpdate
+            key={info.id} 
+            rowId={this.props.rowId}
+            data={this.props.tableData}
+            updateInfo={info}
+            currentUser={this.state.currentUser}
+          />
+        )
+      })
+      return updateComponent
+    }
+    else {
+      return null
     }
   }
 
@@ -298,21 +349,7 @@ class RowHeaderDrawer extends PureComponent {
               </Modal>
               <div className="row_header_drawer_padding">
                 {
-                  (this.props.updateInfo && this.props.updateInfo.length > 0)
-                  ?
-                  this.props.updateInfo.map(info => {
-                    return (
-                      <RowHeaderDrawerUpdate
-                        key={info.id} 
-                        rowIndex={this.props.rowIndex}
-                        data={this.props.tableData}
-                        updateInfo={info}
-                        currentUser={this.state.currentUser}
-                      />
-                    )
-                  })
-                  :
-                  null
+                  this.getRowHeaderDrawerUpdate()
                 }
               </div>
             </div>

@@ -76,6 +76,7 @@ class DataViewWrapper {
         this.updateThreadData = this.updateThreadData.bind(this)
         this.createReplyData = this.createReplyData.bind(this)
         this.updateReplyData = this.updateReplyData.bind(this)
+        this.getRowThreadCount = this.getRowThreadCount.bind(this)
     }
 
     /**
@@ -664,10 +665,13 @@ class DataViewWrapper {
       return dateSummary
     }
 
-    getRowThreadData(rowIndex) {
+    getRowThreadCount(rowIndex) {
       let rowId = this.getRowKey(rowIndex)
-      let threaId = 0
-      return this._dataset.getRowThreadData(rowId, threaId)
+      return this._dataset._rowThreadSize[rowId] ? this._dataset._rowThreadSize[rowId] : 0
+    }
+
+    getRowThreadData(rowId) {
+      return this._dataset.getRowThreadData(rowId)
     }
 
     createThreadData(createData) {
@@ -678,14 +682,12 @@ class DataViewWrapper {
       this._dataset.updateThreadData(updateData)
     }
 
-    createReplyData(createData, rowIndex) {
-      let rowId = this.getRowKey(rowIndex)
-      this.createReplyData(createData, rowId)
+    createReplyData(createData, rowId) {
+      this._dataset.createReplyData(createData, rowId)
     }
 
-    updateReplyData(updateData, rowIndex) {
-      let rowId = this.getRowKey(rowIndex)
-      this.updateReplyData(updateData, rowId)
+    updateReplyData(updateData, rowId) {
+      this._dataset.updateReplyData(updateData, rowId)
     }
 }
 

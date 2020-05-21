@@ -196,8 +196,8 @@ type ReplyOnThread @model
   user: User @connection(fields:["userID"])
   content: String!
   createdAt: String!
-  likedByUsersID: [ID!]
-  seenByUsersID: [ID!]
+  likedByUsersID: [ID]
+  seenByUsersID: [ID]
 }
 
 ## row-based attachments/inbox, , sorted by the createdAt date-time

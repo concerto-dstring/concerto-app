@@ -25,9 +25,8 @@ export const mapSectionHeaderStateToProps = (state) => {
 export const mapRowHeaderDrawerStateToProps = (state) => {
   return {
     isOpenRowHeaderDrawer: state.isOpenRowHeaderDrawer,
-    rowIndex: state.rowIndex,
+    rowId: state.rowId,
     tableData: state.data,
-    updateInfo: state.updateInfo,
     rowHeaderDrawerTitle: state.rowHeaderDrawerTitle
   }
 }

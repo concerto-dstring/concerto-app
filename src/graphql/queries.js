@@ -345,12 +345,24 @@ export const getBoard = /* GraphQL */ `
               rank
               deleteFlag
               createdAt
-              datas {
+              datas(limit: 1000000) {
                 items {
                   id
                   columnID
                   rowID
                   value
+                }
+                nextToken
+              }
+              threadOnRow(limit: 1000000) {
+                items {
+                  id
+                  rowID
+                  userID
+                  content
+                  createdAt
+                  likedByUsersID
+                  seenByUsersID
                 }
                 nextToken
               }
@@ -1085,7 +1097,28 @@ export const listThreadOnRows = /* GraphQL */ `
         createdAt
         likedByUsersID
         seenByUsersID
-        repliesByDate {
+        repliesByDate(limit: 1000) {
+          items {
+            id
+            threadID
+            userID
+            user {
+              id
+              username
+              email
+              fname
+              lname
+              usertype
+              title
+              phone
+              avatar
+              createdAt
+            }
+            content
+            createdAt
+            likedByUsersID
+            seenByUsersID
+          }
           nextToken
         }
       }

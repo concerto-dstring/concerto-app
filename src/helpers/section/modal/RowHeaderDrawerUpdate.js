@@ -38,7 +38,7 @@ class RowHeaderDrawerUpdate extends PureComponent {
       isShowReplyInput: false,
       isShowReplyUserInput: false,
       isLiked: false,
-      isExpandReplyList: props.updateInfo.replyList ? (props.updateInfo.replyList.length > 1 ? false : true) : true 
+      isExpandReplyList: props.updateInfo.repliesByDate.items ? (props.updateInfo.repliesByDate.items > 1 ? false : true) : true, 
     }
 
     this.replyEditor = createRef()
@@ -80,7 +80,7 @@ class RowHeaderDrawerUpdate extends PureComponent {
   }
 
   getCardHeader = () => {
-    const { user, createTime } = this.props.updateInfo
+    const { user, createdAt } = this.props.updateInfo
     return (
       <div className="row_drawer_card_header_between">
         <div>
@@ -88,14 +88,14 @@ class RowHeaderDrawerUpdate extends PureComponent {
             size={40} 
             style={{background: user.faceColor}}
           >
-            {user.fanme}
+            {user.fname}
           </Avatar>
           &nbsp;
           <a href={user.userUrl} target="_blank">{user.lname + user.fname}</a>
         </div>
         <div className="row_drawer_card_header_end">
           <span className="row_drawer_card_header_span secondary_color">
-            {moment(createTime, "YYYY-MM-DDTHH:mm:ss.sssZ").fromNow()}
+            {moment(createdAt, "YYYY-MM-DDTHH:mm:ss.sssZ").fromNow()}
           </span>
           <span className="row_drawer_card_header_span">
             <BellOutlined />
@@ -135,13 +135,51 @@ class RowHeaderDrawerUpdate extends PureComponent {
   /**
    * 点赞
    */
-  handleLikeClick = () => {
-    const { updateInfo, data, rowIndex } = this.props
-    let updateInfoData = updateInfo
-    updateInfoData.isLiked = !updateInfoData.isLiked
+  handleThreadLikeClick = (isLiked, likedByUsersID, currentUserId) => {
+    const { data, updateInfo } = this.props
+    let likeUsers = likedByUsersID.slice()
+    if (isLiked) {
+      // 原来是点赞，再点击就是不点赞
+      let likeIndex = likeUsers.findIndex(userId => userId === currentUserId)
+      likeUsers.splice(likeIndex, 1)
+    }
+    else {
+      likeUsers.push(currentUserId)
+    }
+
+    let updateData = {
+      id: updateInfo.id,
+      likedByUsersID: likeUsers
+    }
 
     // 设置值
-    data.setObjectAt(rowIndex, 'updateInfo', updateInfoData, 'update')
+    data.updateThreadData(updateData)
+
+    // 随便设值(为了重新渲染)
+    this.setState({
+      isLiked: !this.state.isLiked
+    })
+  }
+
+  handleReplyMsgLike = (replyId, isLiked, likedByUsersID, currentUserId) => {
+    const { data, rowId } = this.props
+    let likeUsers = likedByUsersID.slice()
+    if (isLiked) {
+      // 原来是点赞，再点击就是不点赞
+      let likeIndex = likeUsers.findIndex(userId => userId === currentUserId)
+      likeUsers.splice(likeIndex, 1)
+    }
+    else {
+      likeUsers.push(currentUserId)
+    }
+
+    let updateData = {
+      id: replyId,
+      likedByUsersID: likeUsers
+    }
+
+    // 设置值
+    data.updateReplyData(updateData, rowId)
 
     // 随便设值(为了重新渲染)
     this.setState({
@@ -150,18 +188,21 @@ class RowHeaderDrawerUpdate extends PureComponent {
   }
 
   getCardReplyComponent = () => {
-    const { seen, isLiked } = this.props.updateInfo
+    const { likedByUsersID, seenByUsersID } = this.props.updateInfo
+    const { currentUser } = this.state
+    let currentUserId = currentUser ? currentUser.id : ''
+    let isLiked = likedByUsersID ? likedByUsersID.indexOf(currentUserId) !== -1 : false
     return (
       <div>
         <div className="row_drawer_card_bottom_seen">
           <span style={{marginRight: 10}}><EyeOutlined /></span>
-          <span style={{marginRight: 36}}>{seen}</span>
+          <span style={{marginRight: 36}}>{seenByUsersID ? seenByUsersID.length : 0}</span>
         </div>
         <div className="row_drawer_card_bottom_btn_row not_allow_select_text">
           <div className="row_drawer_card_bottom_btn">
             <div 
               className="row_drawer_card_bottom_btn_inner"
-              onClick={this.handleLikeClick}
+              onClick={this.handleThreadLikeClick.bind(this, isLiked, likedByUsersID ? likedByUsersID : [], currentUserId)}
             >
               {
                 isLiked
@@ -258,22 +299,16 @@ class RowHeaderDrawerUpdate extends PureComponent {
       }
       else {
         replyHtml = replyHtml.replace(new RegExp("<p>", "gm"), "").replace(new RegExp("</p>", "gm"), "<br>")
-        const { updateInfo, data, rowIndex } = this.props
-        let updateInfoData = updateInfo
-        let id = updateInfoData.id + '_' + String(updateInfoData.replyList.length + 1)
-        let replyList = updateInfoData.replyList.slice()
-        replyList.push({
-          id: id,
-          replyMsg: replyHtml,
-          replyUser: this.state.currentUser,
-          isLiked: false,
-          createTime: moment(new Date()).format('YYYY-MM-DD HH:mm:ss')
-        })
-
-        updateInfoData.replyList = replyList
+        const { updateInfo, data, rowId } = this.props
+        let createData = {
+          threadID: updateInfo.id,
+          userID: this.state.currentUser.id,
+          content: replyHtml,
+          createdAt: new Date().toISOString(),
+        }
 
         // 设置值
-        data.setObjectAt(rowIndex, 'updateInfo', updateInfoData, 'update')
+        data.createReplyData(createData, rowId)
 
         this.setState({
           isShowReplyInput: false,
@@ -285,27 +320,9 @@ class RowHeaderDrawerUpdate extends PureComponent {
     }
   }
 
-  handleReplyMsgLike = (replyId) => {
-    const { updateInfo, data, rowIndex } = this.props
-    let updateInfoData = updateInfo
-    let replyList = updateInfoData.replyList.slice()
-    let replyIndex = replyList.findIndex(reply => reply.id === replyId)
-
-    if (replyIndex !== undefined && replyIndex !== null) {
-      replyList[replyIndex].isLiked = !replyList[replyIndex].isLiked
-      updateInfoData.replyList = replyList
-      // 设置值
-      data.setObjectAt(rowIndex, 'updateInfo', updateInfoData, 'update')
-
-      // 随便设值(为了重新渲染)
-      this.setState({
-        isLiked: !this.state.isLiked
-      })
-    }
-  }
-
   getReplyList = () => {
-    const { replyList } = this.props.updateInfo
+    const { repliesByDate } = this.props.updateInfo
+    let replyList = repliesByDate.items
     if (replyList) {
       if (replyList.length <= 1) {
         // 回复数小于等于1
@@ -330,8 +347,21 @@ class RowHeaderDrawerUpdate extends PureComponent {
   }
 
   getReplyMsg = (replyList, replyCount) => {
+    const { currentUser } = this.state
+    let currentUserId = currentUser ? currentUser.id : ''
+    
     return (
       replyList.map(reply => {
+        let user = reply.user
+        if (user.avatar.startsWith('#')) {
+          user.faceColor = user.avatar
+        }
+        else {
+          user.faceColor = ''
+        }
+        user.userUrl = 'https://www.pynbo.com/user/' + user.id
+        let likeUsers = reply.likedByUsersID ? reply.likedByUsersID : []
+        let isLiked = likeUsers.indexOf(currentUserId) !== -1
         return (
           <div
             key={reply.id} 
@@ -339,33 +369,33 @@ class RowHeaderDrawerUpdate extends PureComponent {
           >
             <Avatar 
               size={36} 
-              style={{background: reply.replyUser.faceColor, position: 'absolute'}}
+              style={{background: user.faceColor, position: 'absolute'}}
             >
-              {reply.replyUser.fanme}
+              {user.fname}
             </Avatar>
             <div className="reply_body_data">
               <div className="reply_body_data_wrapper">
-                <a href={reply.replyUser.userUrl} target="_blank">{reply.replyUser.lname + reply.replyUser.fname}:</a>
+                <a href={user.userUrl} target="_blank">{user.lname + user.fname}:</a>
                 &nbsp;
-                <span dangerouslySetInnerHTML={{__html: reply.replyMsg}} />
+                <span dangerouslySetInnerHTML={{__html: reply.content}} />
               </div>
               <div className="reply_body_data_tool">
                 <div>
                   <span>
-                    {moment(reply.createTime, "YYYY-MM-DD HH:mm:ss").fromNow()}
+                    {moment(reply.createdAt, "YYYY-MM-DDTHH:mm:ss.sssZ").fromNow()}
                   </span>
                 </div>
                 <div className="reply_body_data_tool_reply">
                   <span className="reply_body_data_tool_reply_btn">
-                    <EyeOutlined /> 3
+                    <EyeOutlined />&nbsp;{reply.seenByUsersID ? reply.seenByUsersID.length : 0}
                   </span>
                   {
-                    reply.isLiked
+                    isLiked
                     ?
                     <span 
                       className="reply_body_data_tool_reply_btn not_allow_select_text" 
                       style={{color: '#009AFF'}}
-                      onClick={this.handleReplyMsgLike.bind(this, reply.id)}
+                      onClick={this.handleReplyMsgLike.bind(this, reply.id, isLiked, likeUsers, currentUserId)}
                     >
                       <LikeFilled  />
                     </span>
@@ -373,14 +403,14 @@ class RowHeaderDrawerUpdate extends PureComponent {
                     <span 
                       className="reply_body_data_tool_reply_btn not_allow_select_text" 
                       style={{color: '#AAAAAA'}}
-                      onClick={this.handleReplyMsgLike.bind(this, reply.id)}
+                      onClick={this.handleReplyMsgLike.bind(this, reply.id, isLiked, likeUsers, currentUserId)}
                     >
                       <LikeOutlined  />
                     </span>
                   }
                   <span 
                     className="reply_body_data_tool_reply_btn"
-                    onClick={this.replyMsg.bind(this, reply.replyUser.lname + reply.replyUser.fname, reply.replyUser.userUrl)}
+                    onClick={this.replyMsg.bind(this, user.lname + user.fname, user.userUrl)}
                   >
                     <SendOutlined />
                   </span>
@@ -426,7 +456,7 @@ class RowHeaderDrawerUpdate extends PureComponent {
               size={36} 
               style={{background: currentUser.faceColor, position: 'absolute'}}
             >
-              {currentUser.fanme}
+              {currentUser.fname}
             </Avatar>
             <div className="reply_new_reply_component_all">
               <div className="reply_new_reply_component_wrapper">
@@ -589,6 +619,7 @@ class RowHeaderDrawerUpdate extends PureComponent {
           name='uploadFile'
           beforeUpload={this.checkUploadFile}
           onChange={this.uploadFile}
+          disabled={true}
         >
           <span 
             className="row_header_drawer_editor_bottom_content_span"
