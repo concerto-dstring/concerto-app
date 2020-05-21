@@ -52,12 +52,12 @@ class RowHeaderCell extends React.PureComponent {
 
     getRowUpdateInfo = (props) => {
       // 滑窗里菜单Update Info数据
-      let updateInfo 
-      if (!props.data || !props.data.getObjectAt(props.rowIndex) || !props.data.getObjectAt(props.rowIndex)['updateInfo']) {
+      let updateInfo
+      if (!props.data || !props.data.getObjectAt(props.rowIndex)) {
         updateInfo = []
       }
       else {
-        updateInfo = props.data.getObjectAt(props.rowIndex)['updateInfo']
+        updateInfo = props.data.getRowThreadData(props.rowIndex)
       }
       return updateInfo
     }

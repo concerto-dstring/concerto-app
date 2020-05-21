@@ -13,13 +13,24 @@ import { ColumnType } from './data/MainTableType';
 import { COLOR } from '../helpers/section/header/StyleValues'
 import { ListAllBoards, GetBoardbyId } from '../helpers/data/fetchBoards'
 import gql from "graphql-tag";
-import { listBoards, getBoard, getGroup, getRow, getData, listUsers, getUser, getTeam } from "../graphql/queries"
+import { 
+  listBoards, getBoard, 
+  getGroup, 
+  getRow, 
+  getData, 
+  listUsers, getUser, 
+  getTeam,
+  getThreadOnRow
+} from "../graphql/queries"
+
 import { 
   createGroup, updateGroup, 
   createColumn, updateColumn, 
   createColumnBoard, updateColumnBoard,
   createData, updateData,
-  createRow, updateRow 
+  createRow, updateRow,
+  createThreadOnRow, updateThreadOnRow, 
+  createReplyOnThread, updateReplyOnThread
 } from "../graphql/mutations"
 
 const rankBlock = 32768
@@ -38,6 +49,7 @@ class MainTableDataStore {
         this._columnsComponentType = {}
         this._sizeColumns = 0;
         this._rowData = {};
+        this._rowThreadData = {}
         this._subRowKeys = []
         this._rowColumnData = {}
         this._groups = [];
@@ -91,22 +103,17 @@ class MainTableDataStore {
       switch (type) {
         case 'board':
           apolloClient
-            .watchQuery({
+            .query({
               query: gql(listBoards),
-              fetchPolicy: "cache-and-network"
+              fetchPolicy: "no-cache"
             })
-            .subscribe({
-              next: ({data}) => {
-                if (data) {
-                  this._boardMenus = data.listBoards.items
-                  if (this._boardMenus.length > 0) {
-                    let defaultBoard = this._boardMenus[0]
-                    this._currentBoardId =  defaultBoard.id
-                    this.fetchBackendBoardData(defaultBoard.id, setMenus)
-                  }
-                }
-              },
-              error: (e) => console.log(e)
+            .then(result => {
+              this._boardMenus = result.data.listBoards.items
+              if (this._boardMenus.length > 0) {
+                let defaultBoard = this._boardMenus[0]
+                this._currentBoardId =  defaultBoard.id
+                this.fetchBackendBoardData(defaultBoard.id, setMenus)
+              }
             });
           break;
       
@@ -127,122 +134,119 @@ class MainTableDataStore {
 
     fetchBoardData(boardId, setMenus, setBusy) {
       this._apolloClient
-        .watchQuery({
+        .query({
           query: gql(getBoard),
           variables: {
             id: boardId
           },
-          fetchPolicy: "cache-and-network"
+          fetchPolicy: "no-cache"
         })
-        .subscribe({
-          next: ({data}) => {
-            if (data) {
-              let board = data.getBoard
-              console.log(board)
-              this._columns = []
-              this._rowData = {}
-              this._groups = []
-              this._subRows = {}
-              this._subRowKeys = []
-              this._columnsComponentType = []
+        .then(result => {
+          let board = result.data.getBoard
+          
+          this._columns = []
+          this._rowData = {}
+          this._groups = []
+          this._subRows = {}
+          this._subRowKeys = []
+          this._columnsComponentType = []
 
-              // let columns = this.sortDataByRank(board.columns.items)
-              // columns.map(column => {
-              //   if(!column.deleteFlag) {
-              //     this._columnsComponentType[column.column.id] = column.column.columnComponentType
-              //     column.type = column.column.columntype
-              //     column.columnKey = column.column.id
-              //     column.columnComponentType = column.column.columnComponentType
-              //     column.isTitle = column.column.isTitle
-              //     let name = column.column.name
-              //     column.name = name
-              //     if (name === ColumnType.ROWACTION || name === ColumnType.ROWSELECT) {
-              //       column.width = 36
-              //     }
-              //     else if (column.isTitle) {
-              //       column.width = 360
-              //     }
-              //     else {
-              //       column.width = 200
-              //     }
-              //     this._columns.push(column)
-              //   }
-              // })
-
-              // let groups = this.sortDataByRank(board.groups.items)
-              // groups.map(group => {
-              //   if (!group.deleteFlag) {
-              //     group.groupKey = group.id
-              //     console.log(group.rows)
-              //     let groupRows = this.sortDataByRank(group.rows.items)
-              //     let rows = []
-              //     groupRows.map(row => {
-              //       if (!row.deleteFlag) {
-              //         if (row.parentId) {
-              //           if (Object.keys(this._subRows).indexOf(row.parentId) !== -1) {
-              //             let subRows = this._subRows[row.parentId].rows
-              //             subRows.push(row)
-              //           }
-              //           else {
-              //             this._subRows[row.parentId] = {}
-              //             let subRows = []
-              //             subRows.push(row)
-              //             this._subRows[row.parentId].rows = subRows
-              //             this._subRows[row.parentId].isExpanded = false
-              //           }
-              //           this._subRowKeys.push(row.id)
-              //         }
-              //         else {
-              //           rows.push(row)
-              //         }
-              //         this._rowData[row.id] = {}
-              //         this._rowColumnData[row.id] = {}
-              //         let dataItems = row.datas.items
-              //         dataItems.map(item => {
-              //           if (this._columnsComponentType[item.columnID] === PEOPLE) {
-              //             let userIds = item.value
-              //             if (userIds) {
-              //               let userIdArr = userIds.split(',')
-              //               let users = []
-              //               userIdArr.map(userId => {
-              //                 if (Object.keys(this._cacheUsers).indexOf(userId) !== -1) {
-              //                   users.push(this._cacheUsers[userId])
-              //                 }
-              //               })
-              //               this._rowData[item.rowID][item.columnID] = users
-              //             }
-              //             else {
-              //               this._rowData[item.rowID][item.columnID] = []
-              //             }
-              //           }
-              //           else {
-              //             this._rowData[item.rowID][item.columnID] = item.value
-              //           }
-                        
-              //           this._rowColumnData[item.rowID][item.columnID] = item.id
-              //         })
-              //       }
-              //     })
-
-              //     group.rows = rows
-              //     this._groups.push(group)
-              //   }
-              // })
-
-              // for (let key in this._subRows) {
-              //   let subRows = this.sortDataByRank(this._subRows[key].rows)
-              //   this._subRows[key].rows = subRows
-              // }
-
-              if (setMenus) {
-                setMenus(this._boardMenus, true)
+          let columns = this.sortDataByRank(board.columns.items)
+          columns.map(column => {
+            if(!column.deleteFlag) {
+              this._columnsComponentType[column.column.id] = column.column.columnComponentType
+              column.type = column.column.columntype
+              column.columnKey = column.column.id
+              column.columnComponentType = column.column.columnComponentType
+              column.isTitle = column.column.isTitle
+              let name = column.column.name
+              column.name = name
+              if (name === ColumnType.ROWACTION || name === ColumnType.ROWSELECT) {
+                column.width = 36
+              }
+              else if (column.isTitle) {
+                column.width = 360
               }
               else {
-                setBusy(false)
+                column.width = 200
               }
+              this._columns.push(column)
             }
-          },
-          error: (e) => console.log(e)
+          })
+
+          let groups = this.sortDataByRank(board.groups.items)
+          groups.map(group => {
+            if (!group.deleteFlag) {
+              group.groupKey = group.id
+              let groupRows = this.sortDataByRank(group.rows.items)
+              let rows = []
+              groupRows.map(row => {
+                if (!row.deleteFlag) {
+                  if (row.parentId) {
+                    if (Object.keys(this._subRows).indexOf(row.parentId) !== -1) {
+                      let subRows = this._subRows[row.parentId].rows
+                      subRows.push(row)
+                    }
+                    else {
+                      this._subRows[row.parentId] = {}
+                      let subRows = []
+                      subRows.push(row)
+                      this._subRows[row.parentId].rows = subRows
+                      this._subRows[row.parentId].isExpanded = false
+                    }
+                    this._subRowKeys.push(row.id)
+                  }
+                  else {
+                    rows.push(row)
+                  }
+                  this._rowData[row.id] = {}
+                  this._rowColumnData[row.id] = {}
+                  let dataItems = row.datas.items
+                  dataItems.map(item => {
+                    if (this._columnsComponentType[item.columnID] === PEOPLE) {
+                      let userIds = item.value
+                      if (userIds) {
+                        let userIdArr = userIds.split(',')
+                        let users = []
+                        userIdArr.map(userId => {
+                          if (Object.keys(this._cacheUsers).indexOf(userId) !== -1) {
+                            users.push(this._cacheUsers[userId])
+                          }
+                        })
+                        this._rowData[item.rowID][item.columnID] = users
+                      }
+                      else {
+                        this._rowData[item.rowID][item.columnID] = []
+                      }
+                    }
+                    else {
+                      this._rowData[item.rowID][item.columnID] = item.value
+                    }
+                    
+                    this._rowColumnData[item.rowID][item.columnID] = item.id
+                  })
+                }
+              })
+
+              group.rows = rows
+              this._groups.push(group)
+            }
+          })
+
+          for (let key in this._subRows) {
+            let subRows = this.sortDataByRank(this._subRows[key].rows)
+            this._subRows[key].rows = subRows
+          }
+
+          if (setMenus) {
+            setMenus(this._boardMenus, true)
+          }
+          else {
+            setBusy(false)
+          }
+        })
+        .catch(error => {
+          console.log(error)
         })
     }
 
@@ -300,51 +304,39 @@ class MainTableDataStore {
 
     getCurrentUser(apolloClient, userId) {
       apolloClient
-        .watchQuery({
+        .query({
           query: gql(getUser),
           variables: {
             id: userId
           },
-          fetchPolicy: "cache-and-network"
+          fetchPolicy: "no-cache"
         })
-        .subscribe({
-          next: ({data}) => {
-            if (data) {
-              this._currentUser = data.getUser
-            }
-          },
-          error: (e) => console.error(e)
-        });
+        .then(result => this._currentUser = result.data.getUser);
     }
 
     getTeamUsers(teamId, boardId, setMenus, setBusy) {
       this._apolloClient
-        .watchQuery({
+        .query({
           query: gql(listUsers),
           variables: {
             limit: 10000,
           },
-          fetchPolicy: "cache-and-network"
+          fetchPolicy: "no-cache"
         })
-        .subscribe({
-          next: ({data}) => {
-            if (data) {
-              let teamUsers = data.listUsers.items
-              teamUsers.map(user => {
-                if (user.avatar.startsWith('#')) {
-                  user.faceColor = user.avatar
-                }
-                else {
-                  user.faceColor = ''
-                }
-                this._teamUsers.push(user)
-                this._cacheUsers[user.id] = user
-              })
-    
-              this.fetchBoardData(boardId, setMenus, setBusy)
+        .then(result => {
+          let teamUsers = result.data.listUsers.items
+          teamUsers.map(user => {
+            if (user.avatar.startsWith('#')) {
+              user.faceColor = user.avatar
             }
-          },
-          error: (e) => console.error(e)
+            else {
+              user.faceColor = ''
+            }
+            this._teamUsers.push(user)
+            this._cacheUsers[user.id] = user
+          })
+
+          this.fetchBoardData(boardId, setMenus, setBusy)
         });
     }
 
@@ -383,65 +375,39 @@ class MainTableDataStore {
     }
 
     setObjectAt(rowKey, columnKey, value, type) {
-        // skip the group row 
-        if (!rowKey || !columnKey) 
-            return;
+      // skip the group row 
+      if (!rowKey || !columnKey) 
+          return;
 
-        let column = this._columns.find(column => column.columnKey === columnKey)
+      let column = this._columns.find(column => column.columnKey === columnKey)
 
-        if (columnKey === 'updateInfo') {
-          if (type === 'update') {
-            // 更新
-            let updateInfo = this._rowData[rowKey][columnKey]
-            let infoIndex = updateInfo.findIndex(info => info.id === value.id)
-            updateInfo[infoIndex] = value
-          }
-          else if (type === 'add') {
-            // 新增
-            let updateInfo = this._rowData[rowKey][columnKey]
-            if (updateInfo && updateInfo.length > 0) {
-              updateInfo.unshift(value)
+      let newValue
+      if (column.columnComponentType === PEOPLE) {
+        if (value && value.length > 0) {
+          value.map((user, i) => {
+            if (i === 0) {
+              newValue = user.id
             }
             else {
-              updateInfo = []
-              updateInfo.push(value)
+              newValue = newValue + ',' + user.id
             }
-
-            this._rowData[rowKey][columnKey] = updateInfo
-          }
-          else {
-
-          }
+          })
         }
         else {
-          let newValue
-          if (column.columnComponentType === PEOPLE) {
-            if (value && value.length > 0) {
-              value.map((user, i) => {
-                if (i === 0) {
-                  newValue = user.id
-                }
-                else {
-                  newValue = newValue + ',' + user.id
-                }
-              })
-            }
-            else {
-              newValue = null
-            }
-          }
-          else {
-            newValue = value === "" ? null : value
-          }
-          
-          let dataId = this._rowColumnData[rowKey][columnKey]
-          if (dataId) {
-            this.updateCellData(rowKey, columnKey, dataId, newValue, column.columnComponentType, value)
-          }
-          else {
-            this.createCellData(rowKey, columnKey, newValue, column.columnComponentType, value)
-          }
+          newValue = null
         }
+      }
+      else {
+        newValue = value === "" ? null : value
+      }
+      
+      let dataId = this._rowColumnData[rowKey][columnKey]
+      if (dataId) {
+        this.updateCellData(rowKey, columnKey, dataId, newValue, column.columnComponentType, value)
+      }
+      else {
+        this.createCellData(rowKey, columnKey, newValue, column.columnComponentType, value)
+      }
     }
 
     updateCellData(rowKey, columnKey, dataId, value, columnComponentType, specialValue) {
@@ -1244,22 +1210,143 @@ class MainTableDataStore {
         }
         updateInput.id = columnKey
         this._apolloClient
+          .mutate({
+            mutation: gql(updateColumn),
+            variables: {
+              input: updateInput
+            }
+          })
+          .then(result => {
+            for (let key in columnData) {
+              column[key] = columnData[key]
+            }
+            this.runCallbacks(); 
+          })
+          .catch(error => {
+            console.log(error)
+          })
+      }
+    }
+
+    getRowThreadData(rowId, threadId) {
+      if (Object.keys(this._rowThreadData).indexOf(rowId) !== -1) {
+        return this._rowThreadData[rowId]
+      }
+      else {
+        this._apolloClient
+          .query({
+            query: gql(getThreadOnRow),
+            variables: {
+              id: threadId
+            },
+            fetchPolicy: "no-cache"
+          })
+          .then(result => {
+            let threadData = result.data.getThreadOnRow
+            if (threadData) {
+              let threads = []
+              threads.push(threadData)
+              this._rowThreadData[rowId] = threads
+              this.runCallbacks()
+            }
+          })
+        return []
+      }
+    }
+
+    createThreadData(createData) {
+      this._apolloClient
         .mutate({
-          mutation: gql(updateColumn),
+          mutation: gql(createThreadOnRow),
           variables: {
-            input: updateInput
+            input: createData
           }
         })
         .then(result => {
-          for (let key in columnData) {
-            column[key] = columnData[key]
+          let threadData = result.data.createThreadOnRow
+          let threads = this._rowThreadData[createData.rowID]
+
+          if (threads && threads.length > 0) {
+            threads.unshift(threadData)
           }
+          else {
+            threads = []
+            threads.push(threadData)
+          }
+
           this.runCallbacks(); 
         })
         .catch(error => {
           console.log(error)
         })
-      }
+    }
+
+    updateThreadData(updateData) {
+      this._apolloClient
+        .mutate({
+          mutation: gql(updateThreadOnRow),
+          variables: {
+            input: updateData
+          }
+        })
+        .then(result => {
+          let threadData = result.data.updateThreadOnRow
+          let threads = this._rowThreadData[threadData.rowID]
+
+          let threadIndex = threads.findIndex(thread => thread.id === threadData.id)
+          threads[threadIndex] = threadData
+
+          this.runCallbacks(); 
+        })
+        .catch(error => {
+          console.log(error)
+        })
+    }
+
+    createReplyData(createData, rowId) {
+      this._apolloClient
+        .mutate({
+          mutation: gql(createReplyOnThread),
+          variables: {
+            input: createData
+          }
+        })
+        .then(result => {
+          let replyData = result.data.createReplyOnThread
+          let threads = this._rowThreadData[rowId]
+          let thread = threads.find(thread => thread.id === replyData.threadID)
+          let replyList = thread.repliesByDate.items
+          replyList.push(replyData)
+
+          this.runCallbacks(); 
+        })
+        .catch(error => {
+          console.log(error)
+        })
+    }
+
+    updateReplyData(updateData, rowId) {
+      this._apolloClient
+        .mutate({
+          mutation: gql(updateReplyOnThread),
+          variables: {
+            input: updateData
+          }
+        })
+        .then(result => {
+          let replyData = result.data.updateReplyOnThread
+          let threads = this._rowThreadData[rowId]
+
+          let thread = threads.find(thread => thread.id === replyData.threadID)
+          let replyList = thread.repliesByDate.items
+          let replyIndex = replyList.findIndex(reply => reply.id === replyData.id)
+          replyList[replyIndex] = replyData
+
+          this.runCallbacks(); 
+        })
+        .catch(error => {
+          console.log(error)
+        })
     }
 
     /**

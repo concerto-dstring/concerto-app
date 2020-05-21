@@ -80,22 +80,22 @@ class RowHeaderDrawerUpdate extends PureComponent {
   }
 
   getCardHeader = () => {
-    const { author, createTime } = this.props.updateInfo
+    const { user, createTime } = this.props.updateInfo
     return (
       <div className="row_drawer_card_header_between">
         <div>
           <Avatar 
             size={40} 
-            style={{background: author.faceColor}}
+            style={{background: user.faceColor}}
           >
-            {author.smallName}
+            {user.fanme}
           </Avatar>
           &nbsp;
-          <a href={author.userUrl} target="_blank">{author.username}</a>
+          <a href={user.userUrl} target="_blank">{user.lname + user.fname}</a>
         </div>
         <div className="row_drawer_card_header_end">
           <span className="row_drawer_card_header_span secondary_color">
-            {moment(createTime, "YYYY-MM-DD HH:mm:ss").fromNow()}
+            {moment(createTime, "YYYY-MM-DDTHH:mm:ss.sssZ").fromNow()}
           </span>
           <span className="row_drawer_card_header_span">
             <BellOutlined />
@@ -341,11 +341,11 @@ class RowHeaderDrawerUpdate extends PureComponent {
               size={36} 
               style={{background: reply.replyUser.faceColor, position: 'absolute'}}
             >
-              {reply.replyUser.smallName}
+              {reply.replyUser.fanme}
             </Avatar>
             <div className="reply_body_data">
               <div className="reply_body_data_wrapper">
-                <a href={reply.replyUser.userUrl} target="_blank">{reply.replyUser.username}:</a>
+                <a href={reply.replyUser.userUrl} target="_blank">{reply.replyUser.lname + reply.replyUser.fname}:</a>
                 &nbsp;
                 <span dangerouslySetInnerHTML={{__html: reply.replyMsg}} />
               </div>
@@ -380,7 +380,7 @@ class RowHeaderDrawerUpdate extends PureComponent {
                   }
                   <span 
                     className="reply_body_data_tool_reply_btn"
-                    onClick={this.replyMsg.bind(this, reply.replyUser.username, reply.replyUser.userUrl)}
+                    onClick={this.replyMsg.bind(this, reply.replyUser.lname + reply.replyUser.fname, reply.replyUser.userUrl)}
                   >
                     <SendOutlined />
                   </span>
@@ -426,7 +426,7 @@ class RowHeaderDrawerUpdate extends PureComponent {
               size={36} 
               style={{background: currentUser.faceColor, position: 'absolute'}}
             >
-              {currentUser.smallName}
+              {currentUser.fanme}
             </Avatar>
             <div className="reply_new_reply_component_all">
               <div className="reply_new_reply_component_wrapper">

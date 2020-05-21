@@ -215,19 +215,15 @@ class RowHeaderDrawer extends PureComponent {
         infoHtml = infoHtml.replace(new RegExp("<p>", "gm"), "").replace(new RegExp("</p>", "gm"), "<br>")
         const { updateInfo, data, rowIndex } = this.props
         let updateInfoData = {}
-        let id = 'u_' + String(data.getRowMap()[rowIndex].rowKey) +  '_' + String(updateInfo.length + 1)
         updateInfoData = {
-          id: id,
-          author: this.state.currentUser,
-          createTime: moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
+          rowID: data.getRowKey(rowIndex),
+          userID: this.state.currentUser.id,
           content: infoHtml,
-          seen: 0,
-          isLiked: false,
-          replyList: []
+          createdAt: new Date().toISOString()
         }
 
         // 设置值
-        data.setObjectAt(rowIndex, 'updateInfo', updateInfoData, 'add')
+        data.createThreadData(updateInfoData)
 
         // 清除值
         this.setState({

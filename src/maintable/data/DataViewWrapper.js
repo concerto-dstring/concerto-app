@@ -71,6 +71,11 @@ class DataViewWrapper {
         this.getRowNameColumn = this.getRowNameColumn.bind(this)
         this.getTeamUsers = this.getTeamUsers.bind(this)
         this.filterTeamUsers = this.filterTeamUsers.bind(this)
+        this.getRowThreadData = this.getRowThreadData.bind(this)
+        this.createThreadData = this.createThreadData.bind(this)
+        this.updateThreadData = this.updateThreadData.bind(this)
+        this.createReplyData = this.createReplyData.bind(this)
+        this.updateReplyData = this.updateReplyData.bind(this)
     }
 
     /**
@@ -657,6 +662,30 @@ class DataViewWrapper {
       dateSummary.dateDiff = dateDiff
       dateSummary.datePercent = datePercent
       return dateSummary
+    }
+
+    getRowThreadData(rowIndex) {
+      let rowId = this.getRowKey(rowIndex)
+      let threaId = 0
+      return this._dataset.getRowThreadData(rowId, threaId)
+    }
+
+    createThreadData(createData) {
+      this._dataset.createThreadData(createData)
+    }
+
+    updateThreadData(updateData) {
+      this._dataset.updateThreadData(updateData)
+    }
+
+    createReplyData(createData, rowIndex) {
+      let rowId = this.getRowKey(rowIndex)
+      this.createReplyData(createData, rowId)
+    }
+
+    updateReplyData(updateData, rowIndex) {
+      let rowId = this.getRowKey(rowIndex)
+      this.updateReplyData(updateData, rowId)
     }
 }
 
