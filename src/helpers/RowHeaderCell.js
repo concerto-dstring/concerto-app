@@ -122,9 +122,10 @@ class RowHeaderCell extends React.PureComponent {
               {displayValue}
             </div>
           </div>
+          {count>0 && 
           <div style={{marginLeft: 4, lineHeight: `${height - 12}px`}} onClick={this.toggleSubRows.bind(this, count)}>
             <UnorderedListOutlined />&nbsp;{count}
-          </div>
+          </div>}
           <div 
             className="row_header_cell_update"
             style={{lineHeight: `${height - 12}px`}}
