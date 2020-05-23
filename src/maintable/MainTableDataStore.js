@@ -195,7 +195,6 @@ class MainTableDataStore {
               this._columns.push(column)
             }
           })
-          console.log(this._columns)
           if (setMenus) {
             setMenus(this._boardMenus, true)
           }

@@ -115,8 +115,12 @@ environment variables:
 
 3. In the user pool for "concertoapp2fea5048_userpool_2fea5048-rd" (rd or product later), attach the above lambda function as the "post confirmation" trigger
 
+4. obtain the logined user information
+https://docs.amplify.aws/lib/auth/manageusers/q/platform/js#retrieve-current-session
+
 ## references
 1. https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-lambda-post-confirmation.html
 2. https://medium.com/hackernoon/how-to-add-new-cognito-users-to-dynamodb-using-lambda-e3f55541297c
 3. https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/dynamodb-example-table-read-write.html 
 4. https://github.com/vbudilov/cognito-to-dynamodb-lambda
+5. https://medium.com/@dantasfiles/three-methods-to-get-user-information-in-aws-amplify-authentication-e4e39e658c33
