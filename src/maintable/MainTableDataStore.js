@@ -432,7 +432,8 @@ class MainTableDataStore {
       }
     }
 
-    updateCellData(rowKey, columnKey, dataId, value, columnComponentType, specialValue) {
+    updateCellData(rowKey, columnKey, dataId, value) {
+      let origValue = this._rowData[rowKey][columnKey];
       this._apolloClient
         .mutate({
           mutation: gql(updateData),
@@ -441,21 +442,27 @@ class MainTableDataStore {
               id: dataId,
               value: value
             }
+          },
+          optimisticResponse: {
+            __typename: "Mutation",
+            updateData: {
+              id: dataId,
+              __typename: "Data",
+              value: value
+            }
           }
         })
         .then(result => {
-          if (columnComponentType === PEOPLE) {
-            this._rowData[rowKey][columnKey] = specialValue
-          }
-          else {
-            this._rowData[rowKey][columnKey] = value
-          }
-          
-          this.runCallbacks();
+          this._rowData[rowKey][columnKey] = value;
         })
         .catch(error => {
-          console.log(error)
-        })
+          this._rowData[rowKey][columnKey] = origValue;
+          this.runCallbacks();
+          console.log(error);
+        });
+
+      this._rowData[rowKey][columnKey] = value;
+      this.runCallbacks();
     }
 
     getGroups() {
@@ -918,7 +925,7 @@ class MainTableDataStore {
         })
     }
 
-    createCellData(rowId, columnId, value, columnComponentType, specialValue) {
+    createCellData(rowId, columnId, value) {
       this._apolloClient
         .mutate({
           mutation: gql(createData),
@@ -928,24 +935,33 @@ class MainTableDataStore {
               columnID: columnId,
               rowID: rowId
             }
+          },
+          optimisticResponse: {
+            __typename: "Mutation",
+            createData: {
+              columnID: columnId,
+              rowID: rowId,
+              __typename: "Data",
+              value: value
+            }
           }
         })
         .then(result => {
-          let row = this._rowData[rowId];
           let rowColumn = this._rowColumnData[rowId]
           rowColumn[columnId] = result.data.createData.id
-          if (columnComponentType === PEOPLE) {
-            row[columnId] = specialValue
-          }
-          else {
-            row[columnId] = value
-          }
-          this.runCallbacks();
         })
         .catch(error => {
+          let row = this._rowData[rowId];
+          row[columnId] = '';
+          this.runCallbacks();
           console.log(error)
         })
+
+        let row = this._rowData[rowId];
+        row[columnId] = value;
+        this.runCallbacks();
     }
+
 
     removeColumn(columnKey) {
       let index = this._columns.findIndex(column => column.columnKey === columnKey);
