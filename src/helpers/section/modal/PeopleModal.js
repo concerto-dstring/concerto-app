@@ -31,7 +31,7 @@ class PeopleModal extends PureComponent {
     this.handleVisibleChange(false)
 
     // 编辑器赋值
-    this.props.insertPeople(user.lname + user.fname)
+    this.props.insertPeople(user.lname + user.fname, user.id)
   }
 
   render() {

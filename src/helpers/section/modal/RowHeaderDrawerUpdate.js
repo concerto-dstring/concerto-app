@@ -136,7 +136,7 @@ class RowHeaderDrawerUpdate extends PureComponent {
    * 点赞
    */
   handleThreadLikeClick = (isLiked, likedByUsersID, currentUserId) => {
-    const { data, updateInfo } = this.props
+    const { data, updateInfo, setUpdateInfo } = this.props
     let likeUsers = likedByUsersID.slice()
     if (isLiked) {
       // 原来是点赞，再点击就是不点赞
@@ -153,7 +153,7 @@ class RowHeaderDrawerUpdate extends PureComponent {
     }
 
     // 设置值
-    data.updateThreadData(updateData)
+    data.updateThreadData(updateData, setUpdateInfo)
 
     // 随便设值(为了重新渲染)
     this.setState({
@@ -162,7 +162,7 @@ class RowHeaderDrawerUpdate extends PureComponent {
   }
 
   handleReplyMsgLike = (replyId, isLiked, likedByUsersID, currentUserId) => {
-    const { data, rowId } = this.props
+    const { data, rowId, setUpdateInfo } = this.props
     let likeUsers = likedByUsersID.slice()
     if (isLiked) {
       // 原来是点赞，再点击就是不点赞
@@ -179,7 +179,7 @@ class RowHeaderDrawerUpdate extends PureComponent {
     }
 
     // 设置值
-    data.updateReplyData(updateData, rowId)
+    data.updateReplyData(updateData, rowId, setUpdateInfo)
 
     // 随便设值(为了重新渲染)
     this.setState({
@@ -299,7 +299,7 @@ class RowHeaderDrawerUpdate extends PureComponent {
       }
       else {
         replyHtml = replyHtml.replace(new RegExp("<p>", "gm"), "").replace(new RegExp("</p>", "gm"), "<br>")
-        const { updateInfo, data, rowId } = this.props
+        const { updateInfo, data, rowId, setUpdateInfo } = this.props
         let createData = {
           threadID: updateInfo.id,
           userID: this.state.currentUser.id,
@@ -308,7 +308,7 @@ class RowHeaderDrawerUpdate extends PureComponent {
         }
 
         // 设置值
-        data.createReplyData(createData, rowId)
+        data.createReplyData(createData, rowId, setUpdateInfo)
 
         this.setState({
           isShowReplyInput: false,
@@ -588,11 +588,11 @@ class RowHeaderDrawerUpdate extends PureComponent {
     });
   }
 
-  insertPeople = (username) => {
-    const userUrl = "https://www.baidu.com?" + username
-    const userData = '@' + username 
+  insertPeople = (userName, userId) => {
+    const userUrl = "https://www.pynbo.com/user/" + userId
+    const userData = '@' + userName 
     this.setState({
-      editorState: ContentUtils.insertHTML(this.state.editorState, `<a href=${userUrl} target="_blank">${userData}&nbsp</a>`)
+      editorState: ContentUtils.insertHTML(this.state.editorState, `<a href=${userUrl}>${userData}&nbsp</a>`)
     })
   }
 

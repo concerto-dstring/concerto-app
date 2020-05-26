@@ -670,24 +670,24 @@ class DataViewWrapper {
       return this._dataset._rowThreadSize[rowId] ? this._dataset._rowThreadSize[rowId] : 0
     }
 
-    getRowThreadData(rowId) {
-      return this._dataset.getRowThreadData(rowId)
+    getRowThreadData(rowId, setUpdateInfo) {
+      return this._dataset.getRowThreadData(rowId, setUpdateInfo)
     }
 
-    createThreadData(createData) {
-      this._dataset.createThreadData(createData)
+    createThreadData(createData, setUpdateInfo) {
+      this._dataset.createThreadData(createData, setUpdateInfo)
     }
 
-    updateThreadData(updateData) {
-      this._dataset.updateThreadData(updateData)
+    updateThreadData(updateData, setUpdateInfo) {
+      this._dataset.updateThreadData(updateData, setUpdateInfo)
     }
 
-    createReplyData(createData, rowId) {
-      this._dataset.createReplyData(createData, rowId)
+    createReplyData(createData, rowId, setUpdateInfo) {
+      this._dataset.createReplyData(createData, rowId, setUpdateInfo)
     }
 
-    updateReplyData(updateData, rowId) {
-      this._dataset.updateReplyData(updateData, rowId)
+    updateReplyData(updateData, rowId, setUpdateInfo) {
+      this._dataset.updateReplyData(updateData, rowId, setUpdateInfo)
     }
 }
 

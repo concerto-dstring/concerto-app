@@ -1264,9 +1264,9 @@ class MainTableDataStore {
        return arr
     }
 
-    getRowThreadData(rowId) {
+    getRowThreadData(rowId, setUpdateInfo) {
       if (Object.keys(this._rowThreadData).indexOf(rowId) !== -1) {
-        return this._rowThreadData[rowId]
+        setUpdateInfo(this._rowThreadData[rowId])
       }
       else {
         this._apolloClient
@@ -1285,15 +1285,12 @@ class MainTableDataStore {
           .then(result => {
             let threads = this.sortDataByCreatedAt(result.data.listThreadOnRows.items)
             this._rowThreadData[rowId] = threads
-       
-            this.runCallbacks()
+            setUpdateInfo(this._rowThreadData[rowId])
           })
-
-        return []
       }
     }
 
-    createThreadData(createData) {
+    createThreadData(createData, setUpdateInfo) {
       this._apolloClient
         .mutate({
           mutation: gql(createThreadOnRow),
@@ -1316,14 +1313,14 @@ class MainTableDataStore {
           }
           
           this._rowThreadSize[createData.rowID] = size
-          this.runCallbacks(); 
+          setUpdateInfo(threads)
         })
         .catch(error => {
           console.log(error)
         })
     }
 
-    updateThreadData(updateData) {
+    updateThreadData(updateData, setUpdateInfo) {
       this._apolloClient
         .mutate({
           mutation: gql(updateThreadOnRow),
@@ -1338,14 +1335,14 @@ class MainTableDataStore {
           let threadIndex = threads.findIndex(thread => thread.id === threadData.id)
           threads[threadIndex] = threadData
 
-          this.runCallbacks()
+          setUpdateInfo(threads)
         })
         .catch(error => {
           console.log(error)
         })
     }
 
-    createReplyData(createData, rowId) {
+    createReplyData(createData, rowId, setUpdateInfo) {
       this._apolloClient
         .mutate({
           mutation: gql(createReplyOnThread),
@@ -1360,14 +1357,14 @@ class MainTableDataStore {
           let replyList = thread.repliesByDate.items
           replyList.push(replyData)
 
-          this.runCallbacks()
+          setUpdateInfo(threads)
         })
         .catch(error => {
           console.log(error)
         })
     }
 
-    updateReplyData(updateData, rowId) {
+    updateReplyData(updateData, rowId, setUpdateInfo) {
       this._apolloClient
         .mutate({
           mutation: gql(updateReplyOnThread),
@@ -1384,7 +1381,7 @@ class MainTableDataStore {
           let replyIndex = replyList.findIndex(reply => reply.id === replyData.id)
           replyList[replyIndex] = replyData
 
-          this.runCallbacks()
+          setUpdateInfo(threads)
         })
         .catch(error => {
           console.log(error)

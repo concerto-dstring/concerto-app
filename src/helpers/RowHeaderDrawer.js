@@ -30,7 +30,6 @@ class RowHeaderDrawer extends PureComponent {
 
   constructor(props) {
     super(props)
-    let drawerData = this.getDrawerData(props)
     this.state = {
       current: ROW_HEADER_UPDATE.key,
       editorState: BraftEditor.createEditorState(null),
@@ -54,35 +53,34 @@ class RowHeaderDrawer extends PureComponent {
       filePercent: 0,
       fileUrl: '',
       isShowPeopleModal: false,
-      currentUser: drawerData.currentUser,
-      updateInfo: drawerData.updateInfo,
+      currentUser: props.tableData ? props.tableData.getCurrentUser() : {},
+      updateInfo: [],
+      isBusy: false
     }
+
+    this.setUpdateInfo = this.setUpdateInfo.bind(this)
   }
 
   componentWillReceiveProps(nextProps) {
-    let drawerData = this.getDrawerData(nextProps)
+    this.getDrawerData(nextProps)
     this.setState({
-      currentUser: drawerData.currentUser,
-      updateInfo: drawerData.updateInfo,
+      currentUser: nextProps.tableData ? nextProps.tableData.getCurrentUser() : {},
     })
   }
 
   getDrawerData(props) {
     const { tableData, rowId } = props
     
-    let currentUser = {}
-    let updateInfo = []
     if (tableData) {
-      currentUser = tableData.getCurrentUser()
-      updateInfo = tableData.getRowThreadData(rowId)
+      tableData.getRowThreadData(rowId, this.setUpdateInfo)
     }
+  }
 
-    let drawerData = {
-      currentUser: currentUser,
-      updateInfo: updateInfo
-    }
-
-    return drawerData
+  setUpdateInfo(updateInfo) {
+    this.setState({
+      updateInfo: updateInfo,
+      isBusy: !this.state.isBusy
+    })
   }
 
   handleEditorChange = (editorState) => {
@@ -208,8 +206,8 @@ class RowHeaderDrawer extends PureComponent {
     return uploadContent
   }
 
-  insertPeople = (userName) => {
-    const userUrl = "https://www.app.com/" + userName
+  insertPeople = (userName, userId) => {
+    const userUrl = "https://www.pynbo.com/user/" + userId
     const userData = '@' + userName 
     this.setState({
       editorState: ContentUtils.insertHTML(this.state.editorState, `<a href=${userUrl}>${userData}&nbsp</a>`)
@@ -245,7 +243,7 @@ class RowHeaderDrawer extends PureComponent {
         }
 
         // 设置值
-        tableData.createThreadData(createData)
+        tableData.createThreadData(createData, this.setUpdateInfo)
 
         // 清除值
         this.setState({
@@ -274,6 +272,8 @@ class RowHeaderDrawer extends PureComponent {
             data={this.props.tableData}
             updateInfo={info}
             currentUser={this.state.currentUser}
+            isBusy={this.state.isBusy}
+            setUpdateInfo={this.setUpdateInfo}
           />
         )
       })
