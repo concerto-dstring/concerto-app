@@ -623,7 +623,7 @@ class DataViewWrapper {
 
       if (rows && Object.keys(this._dataset._rowData).length > 0) {
         rows.map(rowKey => {
-          let dateValue = this._dataset.getObjectAt(rowKey)[columnKey]
+          let dateValue = this.getObjectAt(rowIndex) ? this.getObjectAt(rowIndex)[columnKey] : null
           
           if (dateValue) {
             // 只要日期不要时间
