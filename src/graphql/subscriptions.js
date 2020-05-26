@@ -2749,3 +2749,222 @@ export const onDeleteInboxOnRow = /* GraphQL */ `
     }
   }
 `;
+export const onCreateNotification = /* GraphQL */ `
+  subscription OnCreateNotification {
+    onCreateNotification {
+      id
+      subject
+      content
+      senderID
+      sender {
+        id
+        username
+        email
+        fname
+        lname
+        usertype
+        title
+        phone
+        avatar
+        teams {
+          nextToken
+        }
+        createdAt
+        boardCreated {
+          nextToken
+        }
+        boardSubscribed {
+          nextToken
+        }
+        groupCreated {
+          nextToken
+        }
+        columnCreated {
+          nextToken
+        }
+        rowCreated {
+          nextToken
+        }
+      }
+      receiverID
+      receiver {
+        id
+        username
+        email
+        fname
+        lname
+        usertype
+        title
+        phone
+        avatar
+        teams {
+          nextToken
+        }
+        createdAt
+        boardCreated {
+          nextToken
+        }
+        boardSubscribed {
+          nextToken
+        }
+        groupCreated {
+          nextToken
+        }
+        columnCreated {
+          nextToken
+        }
+        rowCreated {
+          nextToken
+        }
+      }
+      seenflag
+      createdAt
+    }
+  }
+`;
+export const onUpdateNotification = /* GraphQL */ `
+  subscription OnUpdateNotification {
+    onUpdateNotification {
+      id
+      subject
+      content
+      senderID
+      sender {
+        id
+        username
+        email
+        fname
+        lname
+        usertype
+        title
+        phone
+        avatar
+        teams {
+          nextToken
+        }
+        createdAt
+        boardCreated {
+          nextToken
+        }
+        boardSubscribed {
+          nextToken
+        }
+        groupCreated {
+          nextToken
+        }
+        columnCreated {
+          nextToken
+        }
+        rowCreated {
+          nextToken
+        }
+      }
+      receiverID
+      receiver {
+        id
+        username
+        email
+        fname
+        lname
+        usertype
+        title
+        phone
+        avatar
+        teams {
+          nextToken
+        }
+        createdAt
+        boardCreated {
+          nextToken
+        }
+        boardSubscribed {
+          nextToken
+        }
+        groupCreated {
+          nextToken
+        }
+        columnCreated {
+          nextToken
+        }
+        rowCreated {
+          nextToken
+        }
+      }
+      seenflag
+      createdAt
+    }
+  }
+`;
+export const onDeleteNotification = /* GraphQL */ `
+  subscription OnDeleteNotification {
+    onDeleteNotification {
+      id
+      subject
+      content
+      senderID
+      sender {
+        id
+        username
+        email
+        fname
+        lname
+        usertype
+        title
+        phone
+        avatar
+        teams {
+          nextToken
+        }
+        createdAt
+        boardCreated {
+          nextToken
+        }
+        boardSubscribed {
+          nextToken
+        }
+        groupCreated {
+          nextToken
+        }
+        columnCreated {
+          nextToken
+        }
+        rowCreated {
+          nextToken
+        }
+      }
+      receiverID
+      receiver {
+        id
+        username
+        email
+        fname
+        lname
+        usertype
+        title
+        phone
+        avatar
+        teams {
+          nextToken
+        }
+        createdAt
+        boardCreated {
+          nextToken
+        }
+        boardSubscribed {
+          nextToken
+        }
+        groupCreated {
+          nextToken
+        }
+        columnCreated {
+          nextToken
+        }
+        rowCreated {
+          nextToken
+        }
+      }
+      seenflag
+      createdAt
+    }
+  }
+`;
