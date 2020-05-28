@@ -24,6 +24,8 @@ import 'moment/locale/zh-cn';
 import SlideDrawer from './section/Drawer/SlideDrawer'
 import { connect } from 'react-redux'
 import { mapRowHeaderDrawerStateToProps } from '../maintable/data/mapStateToProps'
+import WebConstants from '../WebConstants'
+import { Route } from 'react-router-dom';
 
 @connect(mapRowHeaderDrawerStateToProps)
 class RowHeaderDrawer extends PureComponent {
@@ -55,7 +57,8 @@ class RowHeaderDrawer extends PureComponent {
       isShowPeopleModal: false,
       currentUser: props.tableData ? props.tableData.getCurrentUser() : {},
       updateInfo: [],
-      isBusy: false
+      isBusy: false,
+      notificationUsers: []
     }
 
     this.setUpdateInfo = this.setUpdateInfo.bind(this)
@@ -65,6 +68,7 @@ class RowHeaderDrawer extends PureComponent {
     this.getDrawerData(nextProps)
     this.setState({
       currentUser: nextProps.tableData ? nextProps.tableData.getCurrentUser() : {},
+      editorState: BraftEditor.createEditorState(null),
     })
   }
 
@@ -207,10 +211,13 @@ class RowHeaderDrawer extends PureComponent {
   }
 
   insertPeople = (userName, userId) => {
-    const userUrl = "https://www.pynbo.com/user/" + userId
+    const userUrl = WebConstants.baseUrl + WebConstants.userUrl + userId
+    let users = this.state.notificationUsers.slice()
+    users.push(userId)
     const userData = '@' + userName 
     this.setState({
-      editorState: ContentUtils.insertHTML(this.state.editorState, `<a href=${userUrl}>${userData}&nbsp</a>`)
+      editorState: ContentUtils.insertHTML(this.state.editorState, `<a href=${userUrl} target="_blank">${userData}&nbsp</a>`),
+      notificationUsers: users
     })
   }
 
@@ -234,7 +241,7 @@ class RowHeaderDrawer extends PureComponent {
       }
       else {
         infoHtml = infoHtml.replace(new RegExp("<p>", "gm"), "").replace(new RegExp("</p>", "gm"), "<br>")
-        const { tableData, rowId } = this.props
+        const { tableData, rowId, rowHeaderDrawerTitle } = this.props
         let createData = {
           rowID: rowId,
           userID: this.state.currentUser.id,
@@ -245,9 +252,30 @@ class RowHeaderDrawer extends PureComponent {
         // 设置值
         tableData.createThreadData(createData, this.setUpdateInfo)
 
+        // 通知
+        let nfUsers = [] // 通知过的用户
+        let currentUserName = this.state.currentUser.lname + this.state.currentUser.fname
+        this.state.notificationUsers.map(userId => {
+          if (infoHtml.indexOf(WebConstants.baseUrl + WebConstants.userUrl + userId) !== -1 
+              && nfUsers.indexOf(userId) === -1) {
+            let notificationData = {
+              subject: currentUserName + `在"${rowHeaderDrawerTitle}"的新动态中提及到了你`,
+              content: null,
+              senderID: this.state.currentUser.id,
+              receiverID: userId,
+              seenflag: false,
+              createdAt: new Date().toISOString()
+            }
+            // 创建通知
+            nfUsers.push(userId)
+            tableData.createNotification(notificationData)
+          }
+        })
+
         // 清除值
         this.setState({
-          editorState: ContentUtils.clear(this.state.editorState)
+          editorState: ContentUtils.clear(this.state.editorState),
+          notificationUsers: []
         })
       }
     }
@@ -264,7 +292,7 @@ class RowHeaderDrawer extends PureComponent {
         else {
           user.faceColor = ''
         }
-        user.userUrl = 'https://www.pynbo.com/user/' + user.id
+        user.userUrl = WebConstants.baseUrl + WebConstants.userUrl + user.id
         return (
           <RowHeaderDrawerUpdate
             key={info.id} 
@@ -365,21 +393,17 @@ class RowHeaderDrawer extends PureComponent {
     return menuContent
   }
 
-  // 关闭滑窗
-  onClose = () => {
-    this.props.closeRowDrawer()
-  }
-
   handleRowMove = (e) => {
     e.stopPropagation()
   }
 
   render() {
+    const { isOpenRowHeaderDrawer, rowHeaderDrawerTitle } = this.props
     return (
       <SlideDrawer
-        isVisible={this.props.isOpenRowHeaderDrawer}
+        isVisible={isOpenRowHeaderDrawer}
         onMouseDown={this.handleRowMove}
-        drawerHeader={this.props.rowHeaderDrawerTitle}
+        drawerHeader={rowHeaderDrawerTitle}
       >
         <Menu
           style={{padding: '0px 16px'}} 

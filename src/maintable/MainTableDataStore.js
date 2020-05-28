@@ -30,7 +30,8 @@ import {
   createData, updateData,
   createRow, updateRow,
   createThreadOnRow, updateThreadOnRow, 
-  createReplyOnThread, updateReplyOnThread
+  createReplyOnThread, updateReplyOnThread,
+  createNotification
 } from "../graphql/mutations"
 
 const rankBlock = 32768
@@ -433,6 +434,7 @@ class MainTableDataStore {
     }
 
     updateCellData(rowKey, columnKey, dataId, value, columnComponentType, specialValue) {
+      let origValue = this._rowData[rowKey][columnKey]
       this._apolloClient
         .mutate({
           mutation: gql(updateData),
@@ -441,21 +443,33 @@ class MainTableDataStore {
               id: dataId,
               value: value
             }
+          },
+          optimisticResponse: {
+            __typename: "Mutation",
+            updateData: {
+              id: dataId,
+              __typename: "Data",
+              value: value
+            }
           }
         })
         .then(result => {
-          if (columnComponentType === PEOPLE) {
-            this._rowData[rowKey][columnKey] = specialValue
-          }
-          else {
-            this._rowData[rowKey][columnKey] = value
-          }
           
-          this.runCallbacks();
         })
         .catch(error => {
-          console.log(error)
+          this._rowData[rowKey][columnKey] = origValue;
+          this.runCallbacks();
+          console.log(error);
         })
+
+        if (columnComponentType === PEOPLE) {
+          this._rowData[rowKey][columnKey] = specialValue
+        }
+        else {
+          this._rowData[rowKey][columnKey] = value
+        }
+        
+        this.runCallbacks();
     }
 
     getGroups() {
@@ -928,23 +942,36 @@ class MainTableDataStore {
               columnID: columnId,
               rowID: rowId
             }
+          },
+          optimisticResponse: {
+            __typename: "Mutation",
+            createData: {
+              columnID: columnId,
+              rowID: rowId,
+              __typename: "Data",
+              value: value
+            }
           }
         })
         .then(result => {
-          let row = this._rowData[rowId];
           let rowColumn = this._rowColumnData[rowId]
           rowColumn[columnId] = result.data.createData.id
-          if (columnComponentType === PEOPLE) {
-            row[columnId] = specialValue
-          }
-          else {
-            row[columnId] = value
-          }
-          this.runCallbacks();
         })
         .catch(error => {
+          let row = this._rowData[rowId];
+          row[columnId] = '';
+          this.runCallbacks();
           console.log(error)
         })
+
+        let row = this._rowData[rowId]
+        if (columnComponentType === PEOPLE) {
+          row[columnId] = specialValue
+        }
+        else {
+          row[columnId] = value
+        }
+        this.runCallbacks();
     }
 
     removeColumn(columnKey) {
@@ -1382,6 +1409,71 @@ class MainTableDataStore {
           replyList[replyIndex] = replyData
 
           setUpdateInfo(threads)
+        })
+        .catch(error => {
+          console.log(error)
+        })
+    }
+
+    updateThreadOrReplySeen(threadId, replyId, seenUserIds, rowId) {
+      if (threadId) {
+        this._apolloClient
+        .mutate({
+          mutation: gql(updateThreadOnRow),
+          variables: {
+            input: {
+              id: threadId,
+              seenByUsersID: seenUserIds
+            }
+          }
+        })
+        .then(result => {
+          let threadData = result.data.updateThreadOnRow
+          let threads = this._rowThreadData[rowId]
+
+          let threadIndex = threads.findIndex(thread => thread.id === threadData.id)
+          threads[threadIndex] = threadData
+        })
+        .catch(error => {
+          console.log(error)
+        })
+      }
+      else {
+        this._apolloClient
+          .mutate({
+            mutation: gql(updateReplyOnThread),
+            variables: {
+              input: {
+                id: replyId,
+                seenByUsersID: seenUserIds
+              }
+            }
+          })
+          .then(result => {
+            let replyData = result.data.updateReplyOnThread
+            let threads = this._rowThreadData[rowId]
+
+            let thread = threads.find(thread => thread.id === replyData.threadID)
+            let replyList = thread.repliesByDate.items
+            let replyIndex = replyList.findIndex(reply => reply.id === replyData.id)
+            replyList[replyIndex] = replyData
+          })
+          .catch(error => {
+            console.log(error)
+          })
+      }
+    }
+
+    createNotification(createData) {
+      this._apolloClient
+        .mutate({
+          mutation: gql(createNotification),
+          variables: {
+            input: createData
+          }
+        })
+        .then(result => {
+          
         })
         .catch(error => {
           console.log(error)

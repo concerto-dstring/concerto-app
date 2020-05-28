@@ -210,3 +210,16 @@ type InboxOnRow @model
   filelocations: String!  # s3 location
   createdAt: String!
 }
+
+## notification service
+type Notification @model {
+  id: ID!
+  subject: String!
+  content: String
+  senderID: ID!
+  sender: User @connection(fields:["senderID"])
+  receiverID: ID!
+  receiver: User @connection(fields:["receiverID"])
+  seenflag: Boolean
+  createdAt: String!
+}

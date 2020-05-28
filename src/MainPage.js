@@ -13,6 +13,7 @@ import {
    } from '@ant-design/icons';
 import logo from './logo.svg'
 import { withApollo } from 'react-apollo'
+import RowHeaderDrawer from './helpers/RowHeaderDrawer';
 
 const { Panel } = Collapse;
 const { Header, Content, Sider } = Layout;
@@ -80,6 +81,7 @@ class MainPage extends React.Component {
   nativeGetTableStore = (id, name, isBoard) => {
     const { dataset } = this.state
     if (isBoard) {
+      this.props.history.push('/board/' + id)
       dataset.fetchBackendBoardData(id, null, this.setBusy)
       this.setState({
         selectedKey: id,
@@ -171,7 +173,7 @@ class MainPage extends React.Component {
                   siderWidth={siderWidth} 
                 />}
               />
-              <Route exact path="/borad/:id" component={()=>
+              <Route exact path="/board/:id" component={()=>
                 <MainTable
                   data={dataset} 
                   siderWidth={siderWidth} 
@@ -181,6 +183,10 @@ class MainPage extends React.Component {
                 <MainTable
                   data={dataset} 
                   siderWidth={siderWidth} 
+                />}
+              />
+              <Route exact path="/board/:id/pulses/:rowId" component={()=>
+                <RowHeaderDrawer
                 />}
               />
         </Content>
