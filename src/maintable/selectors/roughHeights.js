@@ -51,6 +51,8 @@ export const ScrollbarState = {
  *   footerHeight: number,
  *   groupHeaderHeight: number,
  *   headerHeight: number,
+ *   addRowHeight: number,
+ *   titleHeight: number,
  * }} elementHeights
  * @param {{
  *   bufferRowCount: ?number,

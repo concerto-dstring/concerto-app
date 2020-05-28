@@ -108,76 +108,25 @@ export default class MainPage extends React.Component {
   getBodyContent = () => {
     const { dataset, siderWidth, collapsed, contentTitle } = this.state
     return (
-      <>
-        <div id="appBread">
-          <img src="./cover.png" className="body_content_cover" />
-          <div className="body_content_title_row">
-            <div className="body_content_title">
-              <h1>{contentTitle}</h1>
-            </div>
-            <div className="body_content_title_right">
-              <div className="body_content_title_right_item">
-                <span className="body_content_title_right_label">
-                  最后更新时间:&nbsp;
-                </span>
-                <span className="body_content_title_right_value">
-                  2020-04-22 13:57:45
-                </span>
-              </div>
-              <div className="body_content_title_right_separator" />
-              <div className="body_content_title_right_item">
-                <span className="body_content_title_right_label">
-                  更新人:&nbsp;
-                </span>
-                <span className="body_content_title_right_value">
-                  JGZ
-                </span>
-              </div>
-              <div className="body_content_title_right_separator" />
-              <div className="body_content_title_right_item">
-                <span className="body_content_title_right_label">
-                  成员数:&nbsp;
-                </span>
-                <span className="body_content_title_right_value">
-                  8
-                </span>
-              </div>
-              <div className="body_content_title_right_separator" />
-              <div className="body_content_title_right_item">
-                <span className="body_content_title_right_label">
-                  操作历史:&nbsp;
-                </span>
-                <span className="body_content_title_right_value">
-                  58
-                </span>
-              </div>
-              <div className="body_content_title_right_separator" />
-              <div className="body_content_title_right_item body_content_title_right_pointer">
-                <span className="body_content_title_right_label">
-                  <ShareAltOutlined />&nbsp;&nbsp;分享
-                </span>
-              </div>
-            </div>
-          </div>
-          <div className="body_content_title_desc">
-            相关具体的描述
-          </div>
-        </div>
+      <>        
         <Content style={{marginLeft: 24}}>
             <Route exact component={()=>
                 <MainTable
+                  title={contentTitle}
                   data={dataset} 
                   siderWidth={siderWidth} 
                 />}
               />
               <Route exact path="/borad" component={()=>
                 <MainTable
+                  title={contentTitle}
                   data={dataset} 
                   siderWidth={siderWidth} 
                 />}
               />
               <Route exact path="/dashborad" component={()=>
                 <MainTable
+                  title={contentTitle}
                   data={dataset} 
                   siderWidth={siderWidth} 
                 />}

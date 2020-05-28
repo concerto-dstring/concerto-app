@@ -215,7 +215,7 @@ class MainTableDataStore {
           if (index < 0) {
               return null;
           }
-          const group = this._groups[index]
+          const group = this._groups[index];
           this._groups.splice(index, 1, {groupKey: id, name: groupName + id, rows:[], color: COLOR.SECTION_DEFAULT})
           this._groups.splice(index + 1, 0, group)
         }

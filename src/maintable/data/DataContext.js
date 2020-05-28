@@ -6,6 +6,7 @@ import except from 'except';
 import DataPropTypes from './DataPropTypes';
 import { DataViewWrapper } from './DataViewWrapper';
 import { RowType } from './MainTableType';
+import FixedDataTable from '../FixedDataTable';
 
 const TableContext = React.createContext();
 
@@ -180,6 +181,8 @@ function AddFilter(TableComponent) {
       const dataset = this.props.data;
 
       let filteredIndexes = [];
+      filteredIndexes.push({rowType:RowType.TITLE, groupKey:"", rowKey:""});
+
       if (Object.keys(filters).length > 0) {
         for(let i = 0; i < dataset.getGroups().length; i ++) {
           let group = dataset.getGroups()[i];
@@ -372,6 +375,7 @@ function AddFilter(TableComponent) {
           data={filteredData}
           onRowReorderEndCallback={filteredData.reorderRow}
           onNewRowAddCallback={filteredData.addNewRow}
+          onNewGroupAddCallback={filteredData.addNewGroup}
           {...other}
         >
           {this.props.children}
@@ -379,9 +383,6 @@ function AddFilter(TableComponent) {
       );
     }
   }
-
-
-
   return FilterTable;
 }
 

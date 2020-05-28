@@ -17,6 +17,7 @@ import emptyFunction from './vendor_upstream/core/emptyFunction';
 import joinClasses from './vendor_upstream/core/joinClasses';
 import inRange from 'lodash/inRange';
 import MainTableAddRow from './MainTableAddRow';
+import MainTableTitleRow from './MainTableTitleRow';
 import { RowType, getSubLevel } from './data/MainTableType';
 
 //import FixedDataTableTranslateDOMPosition from './FixedDataTableTranslateDOMPosition';
@@ -47,6 +48,8 @@ class FixedDataTableBufferedRows extends React.Component {
     onRowTouchStart: PropTypes.func,
     onRowTouchEnd: PropTypes.func,
     onRowTouchMove: PropTypes.func,
+    onFilter: PropTypes.func,
+    onAddNewGroup: PropTypes.func,
     rowClassNameGetter: PropTypes.func,
     rowExpanded: PropTypes.oneOfType([
       PropTypes.element,
@@ -173,7 +176,7 @@ class FixedDataTableBufferedRows extends React.Component {
       siderWidth,
     } = props;
 
-    const { footerHeight,  headerHeight, addRowHeight } = elementHeights;
+    const { titleHeight, footerHeight,  headerHeight, addRowHeight } = elementHeights;
 
     const rowClassNameGetter = props.rowClassNameGetter || emptyFunction;
     const fake = rowIndex === undefined;
@@ -211,6 +214,25 @@ class FixedDataTableBufferedRows extends React.Component {
 
     if (rowProps.height > 0) {
       switch(type) {
+          case RowType.TITLE:
+            row = 
+            <MainTableTitleRow
+              key={key}
+              title={props.title}
+              index={rowIndex}
+              zIndex={1}
+              ariaRowIndex={ariaAddRowIndex}
+              isScrolling={props.isScrolling}
+              height={titleHeight}
+              width={props.width}
+              offsetTop={rowProps.offsetTop}
+              isRTL={props.isRTL}
+              container={props.container}
+              visible={visible} 
+              onFilter={props.onFilterChange}
+              onAddNewGroup={props.onAddNewGroup}            
+            />;
+            break;
           case RowType.HEADER:
             row = 
               <FixedDataTableRow

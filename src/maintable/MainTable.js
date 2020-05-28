@@ -36,9 +36,6 @@ import { DataVersionContext, TableContext } from './data/DataContext';
 import { connect } from 'react-redux'
 import { mapRowActionStateToProps } from './data/mapStateToProps'
 import SummaryCell from '../helpers/columnlib/cell/SummaryCell';
-import './css/style/Board.less'
-import { getPeople } from '../helpers/section/modal/PeopleName';
-import filterIcon from './helper/filterIcon.svg'
 import RowHeaderDrawer from '../helpers/RowHeaderDrawer';
 
 /**
@@ -213,8 +210,9 @@ const FilterableDataTable = AddFilter(DataContext(Table));
 class MainTable extends React.Component {
 
     static propTypes = {
+        title: PropTypes.string.isRequired,
         data: PropTypes.object.isRequired,
-    }
+    };
 
     constructor(props) {
         super(props);
@@ -468,106 +466,111 @@ class MainTable extends React.Component {
     render() {
         return (
           <div className='autoScrollContainer'>
-            {this.renderControls()}
-            <br />
             {this.renderTable()}
           </div>
         );
     }
 
-    /**
-     * 查询/过滤数据
-     */
-    filterTableData = (e) => {
-      this.setState({
-        filterInputValue: e.target.value.trim(),
-        filterType: null
-      })
-    }
+    // /**
+    //  * 查询/过滤数据
+    //  */
+    // filterTableData = (e) => {
+    //   this.setState({
+    //     filterInputValue: e.target.value.trim(),
+    //     filterType: null
+    //   })
+    // }
 
-     /**
-     * 根据人员过滤数据
-     */
-    doFilterByPeople = (value) => {
+    //  /**
+    //  * 根据人员过滤数据
+    //  */
+    // doFilterByPeople = (value) => {
+    //   this.setState({
+    //     filterInputValue: value,
+    //     filterType: 'PEOPLE'
+    //   })
+    // }
+
+    _onFilterChangeCallback = (value, type) => {
       this.setState({
         filterInputValue: value,
-        filterType: 'PEOPLE'
+        filterType: type
       })
     }
 
-    renderControls() {
-        return (
-            <div className="main_table_add_btn_row">
-              <Space size="middle">
-                <div id="addGroupBtn">
-                  <Button
-                    onClick={this._onAddNewGroupCallback}
-                    className="main_table_add_btn"
-                  >
-                    <div className="main_table_btn_layout">
-                      <span style={{}}>
-                        + 新增一行
-                      </span>
-                      <div className="main_table_add_btn_separator" />
-                      <div>
-                        <DownOutlined />
-                      </div>
-                    </div>
-                  </Button>
-                </div>
-                <div>
-                  <Select 
-                    className="main_table_select_user"
-                    placeholder="按人员分组显示"
-                    showSearch
-                    allowClear
-                    onChange={this.doFilterByPeople}
-                  >
-                    {
-                      getPeople().map(user => {
-                        return (
-                          <Select.Option
-                            key={user.id} 
-                            value={user.userName}
-                          >
-                            <Avatar
-                              size={20} 
-                              style={{background: user.faceColor}}
-                            >
-                              {user.smallName}
-                            </Avatar>
-                            &emsp;
-                            {
-                              user.userName
-                            }
-                          </Select.Option>
-                        )
-                      })
-                    }
-                  </Select>
-                </div>
-                <div>
-                  <Button className="main_table_filter_btn">
-                    <div className="main_table_btn_layout">
-                      <img src={filterIcon} />&nbsp;2
-                    </div>
-                  </Button>
-                </div>
-                <div>
-                  <EyeInvisibleOutlined className="main_table_eye" />
-                </div>
-              </Space>
-              <div className="main_table_search_input">
-                <Input
-                  prefix={<SearchOutlined />}
-                  placeholder="搜索工作板内容"
-                  onChange={this.filterTableData}
-                  style={{borderRadius:'15px', width: 240}}
-                />
-              </div>
-            </div>
-        )
-    }
+    // renderControls() {
+    //     return (
+    //         <div className="main_table_add_btn_row">
+    //           <Space size="middle">
+    //             <div id="addGroupBtn">
+    //               <Button
+    //                 onClick={this._onAddNewGroupCallback}
+    //                 className="main_table_add_btn"
+    //               >
+    //                 <div className="main_table_btn_layout">
+    //                   <span style={{}}>
+    //                     + 新增一行
+    //                   </span>
+    //                   <div className="main_table_add_btn_separator" />
+    //                   <div>
+    //                     <DownOutlined />
+    //                   </div>
+    //                 </div>
+    //               </Button>
+    //             </div>
+    //             <div>
+    //               <Select 
+    //                 className="main_table_select_user"
+    //                 placeholder="按人员分组显示"
+    //                 showSearch
+    //                 allowClear
+    //                 onChange={this.doFilterByPeople}
+    //               >
+    //                 {
+    //                   getPeople().map(user => {
+    //                     return (
+    //                       <Select.Option
+    //                         key={user.id} 
+    //                         value={user.userName}
+    //                       >
+    //                         <Avatar
+    //                           size={20} 
+    //                           style={{background: user.faceColor}}
+    //                         >
+    //                           {user.smallName}
+    //                         </Avatar>
+    //                         &emsp;
+    //                         {
+    //                           user.userName
+    //                         }
+    //                       </Select.Option>
+    //                     )
+    //                   })
+    //                 }
+    //               </Select>
+    //             </div>
+    //             <div>
+    //               <Button className="main_table_filter_btn">
+    //                 <div className="main_table_btn_layout">
+    //                   <img src={filterIcon} />&nbsp;2
+    //                 </div>
+    //               </Button>
+    //             </div>
+    //             <div>
+    //               <EyeInvisibleOutlined className="main_table_eye" />
+    //             </div>
+    //           </Space>
+    //           <div className="main_table_search_input">
+    //             <Input
+    //               prefix={<SearchOutlined />}
+    //               placeholder="搜索工作板内容"
+    //               onChange={this.filterTableData}
+    //               style={{borderRadius:'15px', width: 240}}
+    //             />
+    //           </div>
+    //         </div>
+    //     )
+    // }
    
     renderTable() {
         var { data, filters, filterInputValue, filterType } = this.state;
@@ -579,19 +582,22 @@ class MainTable extends React.Component {
             <div>
                 <FilterableDataTable
                     ref={this.handleRef}
+                    title={this.props.title}
+                    onAddNewGroupCallback={this._onAddNewGroupCallback}
                     onColumnReorderEndCallback={this._onColumnReorderEndCallback}
                     onColumnResizeEndCallback={this._onColumnResizeEndCallback}
+                    onFilterChangeCallback={this._onFilterChangeCallback}                    
                     columnNameGetter={this._getColumnName}
                     data={data}
-                    headerHeight={40}
+                    titleHeight={80}
+                    headerHeight={40}                    
                     rowHeight={40}
                     isColumnResizing={false}
                     addRowHeight={35}
                     footerHeight={40}
                     filters={filters}
                     filterInputValue={filterInputValue}
-                    filterType={filterType}  
-                    filterType={filterType}              
+                    filterType={filterType}             
                     height={this.props.containerHeight}
                     // 减去左侧Sider宽度 
                     width={this.props.containerWidth - this.props.siderWidth}
@@ -627,7 +633,7 @@ class MainTable extends React.Component {
 export default Dimensions({
     getHeight: function(element) {
       // 减去上面面包屑的高度
-      return window.innerHeight - document.getElementById("appBread").clientHeight - 94;
+      return window.innerHeight - 94;
     },
     getWidth: function(element) {
       return window.innerWidth - 24;

@@ -238,7 +238,7 @@ class DataViewWrapper {
           return this._subRowMap[rowIndex];
       }
       return '';
-  }
+    }
 
     addNewRow(rowIndex, newItem) {
         if (newItem !== '') {
@@ -307,6 +307,8 @@ class DataViewWrapper {
         let rowtype = this.getRowType(index);
         if (rowtype) {
             switch (rowtype) {
+                case RowType.TITLE:
+                    return 250;
                 case RowType.ADDROW: 
                     return 35;
                 case RowType.HEADER:

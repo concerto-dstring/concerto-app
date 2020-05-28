@@ -1,6 +1,8 @@
 'use strict';
 
-export const RowType = {
+export const RowType = 
+{
+    TITLE: "TITLE",
     HEADER: "HEADER",
     ROW: "ROW",
     ADDROW: "ADDROW",

@@ -20,6 +20,8 @@ import shallowEqualSelector from '../helper/shallowEqualSelector';
  *   footerHeight: number,
  *   groupHeaderHeight: number,
  *   headerHeight: number,
+ *   addRowHeight: number,
+ *   titleHeight: number,
  * }} elementHeights
  * @param {number|undefined} ownerHeight
  * @param {number} reservedHeight

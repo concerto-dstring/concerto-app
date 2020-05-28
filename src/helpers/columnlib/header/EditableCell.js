@@ -77,10 +77,10 @@ class EditableCell extends React.PureComponent {
       }
 
       cellData.isCollapsed =isCollapsed;
-      cellData.value = value
-      cellData.displayValue = displayValue
+      cellData.value = value;
+      cellData.displayValue = displayValue;
 
-      return cellData
+      return cellData;
     }
 
     componentWillReceiveProps(props) {
@@ -188,11 +188,11 @@ class EditableCell extends React.PureComponent {
             isHeaderOrFooter:isHeaderOrFooter,
             filterInputValue: this.props.filterInputValue
         })
-        const inputStyle = {
-            width: width - 10,
-            height: height - 5,
-            borderRadius: '0px',
-        }
+        // const inputStyle = {
+        //     width: width - 10,
+        //     height: height - 5,
+        //     borderRadius: '0px',
+        // }
 
         let classNameStr;
         if (!isHeaderOrFooter) {
