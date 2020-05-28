@@ -242,7 +242,7 @@ function reducers(state = getInitialState(), action) {
       return Object.assign({}, state, {
         isShowUndoModal: action.modalData.isShowUndoModal,
         data: action.modalData.data,
-        rowIndex: action.modalData.rowIndex,
+        oldSourceRow: action.modalData.oldSourceRow,
         rowKey: action.modalData.rowKey,
         sourceGroupKey: action.modalData.sourceGroupKey,
         targetGroupKey: action.modalData.targetGroupKey,

@@ -64,7 +64,6 @@ The AppSync Mock endpoint gives you access to:
 The "amplify mock storage" to have only the S3 storage, mocked locally.
 
 ## troubleshooting
-
 1. Q: when chaning the schema and re-compile, sometime has the problem "Attempting to add and remove a global secondary index at the same time on the BoardTable table in the Board stack.
 Cause: You may only change one global secondary index in a single CloudFormation stack update.
 How to fix: If using @key, change one @key at a time. If using @connection, add the new @connection, run `amplify push`, and then remove the new @connection with the new configuration."
@@ -82,6 +81,9 @@ This will delete all tables and remove all data. This can only work if your proj
 
 2. Q: undo the "amplify remove api"
 A:  amplify env pull --restore 
+
+3. how to customize congito webui
+https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-app-ui-customization.html
 
 ## Refereces:
 1. https://dashbird.io/blog/serverless-react-graphql/

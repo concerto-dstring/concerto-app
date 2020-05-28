@@ -102,11 +102,11 @@ class MoveToSectionMenu extends Component {
     this.props.hiddenSubMenu()
 
     let rowKey = data.getRowKey(rowIndex)
-    let sourceGroupRowIndex =  data.moveRow(this.state.curGroupKey, targetGroupKey, rowKey, -1)
+    let oldSourceRow =  data.moveRow(this.state.curGroupKey, targetGroupKey, rowKey, null)
     this.props.dealRowMoveModal({
       isShowUndoModal: true,
       data,
-      rowIndex: sourceGroupRowIndex,
+      oldSourceRow: oldSourceRow,
       rowKey,
       sourceGroupKey: this.state.curGroupKey,
       targetGroupKey
