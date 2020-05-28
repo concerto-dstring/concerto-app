@@ -72,7 +72,7 @@ class PeopleCell extends React.PureComponent {
           visible:false,
           selectedUsers:someusers
         })
-        handleChange(someusers);
+        handleChange(someusers, true);
 
       }
       const removeUser = (user) =>{

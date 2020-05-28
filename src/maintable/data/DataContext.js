@@ -13,7 +13,7 @@ const TableContext = React.createContext();
 const DataVersionContext = React.createContext({
   data: null,
   version: 0,
-  filterInputValue: null
+  filterInputValue: null,
 });
 
 function DataContext(Wrapped) {
@@ -28,18 +28,34 @@ function DataContext(Wrapped) {
       this.state = {
         data: props.data,
         version: 0,
-        filterInputValue: props.filterInputValue
+        filterInputValue: props.filterInputValue,
       };
     }
 
     componentWillReceiveProps(nextProps) {
-      if (JSON.stringify(nextProps.data) !== JSON.stringify(this.state.data) || 
-          this.state.filterInputValue !== nextProps.filterInputValue) {
+      // data比较时需要去除apolloClient否则报错
+      if (JSON.stringify(this.getData(nextProps.data)) !== JSON.stringify(this.getData(this.state.data)) || 
+        this.state.filterInputValue !== nextProps.filterInputValue) {
         this.setState({
           data: nextProps.data,
           filterInputValue: nextProps.filterInputValue
         });
       }
+    }
+
+    getData(data) {
+      let newData = {}
+      for (let key in data) {
+        if (key === '_dataset') {
+          let dataset = Object.assign({}, data[key])
+          dataset._apolloClient = null
+          newData[key] = dataset
+        }
+        else {
+          newData[key] = data[key]
+        }
+      }
+      return newData
     }
 
     // Force a refresh or the page doesn't re-render
@@ -115,8 +131,8 @@ function AddFilter(TableComponent) {
                   }
                   for(var rowKey in subRows){
                     const subRowArray = subRows[rowKey].rows;
-                    for(let z=0;z<subRowArray.length;z++){
-                       if(subRowArray[z] == rowKeysArray[y]&&newSubRowKeys.indexOf(subRowArray[z])<0){
+                    for(let z=0; z<subRowArray.length; z++){
+                       if(subRowArray[z].id == rowKeysArray[y] && newSubRowKeys.indexOf(subRowArray[z].id)<0) {
                          newSubRowKeys.push(subRowArray[z]);
                        }
                        if(thisRowKey === rowKey&&newFilteredIndexes.indexOf(filteredIndexes[x])<0){
@@ -224,7 +240,7 @@ function AddFilter(TableComponent) {
             let group = dataset.getGroups()[i];
             filteredIndexes.push({rowType:RowType.HEADER, groupKey:group.groupKey, rowKey:''});
             for (let j = 0; j < group.rows.length; j ++) {
-                filteredIndexes.push({rowType:RowType.ROW, groupKey:group.groupKey, rowKey:group.rows[j]});
+                filteredIndexes.push({rowType:RowType.ROW, groupKey:group.groupKey, rowKey:group.rows[j].id});
             }
             filteredIndexes.push({rowType:RowType.ADDROW, groupKey:group.groupKey, rowKey:''});
             filteredIndexes.push({rowType:RowType.FOOTER, groupKey:group.groupKey, rowKey:''});
@@ -329,8 +345,8 @@ function AddFilter(TableComponent) {
             let rows = dataset.getSubRowData()[rowKey].rows
             if (rows) {
               rows.map(row => {
-                if (filterData.rowKeys.indexOf(row) !== -1) {
-                  filterData.subRowKeys.push(row)
+                if (filterData.rowKeys.indexOf(row.id) !== -1) {
+                  filterData.subRowKeys.push(row.id)
                   if (filterData.rowKeys.indexOf(rowKey) === -1) {
                     filterData.rowKeys.push(rowKey)
                   }
@@ -344,7 +360,7 @@ function AddFilter(TableComponent) {
               let count = 0 // 计算分区里面的行有多少可以显示
               for (let i = 0; i < group.rows.length; i++) {
                 // 如果分区的行都不在过滤后的行里面则该分区不显示
-                if (filterData.rowKeys.indexOf(group.rows[i]) !== -1) {
+                if (filterData.rowKeys.indexOf(group.rows[i].id) !== -1) {
                   count++
                 }
               }

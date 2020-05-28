@@ -10,13 +10,13 @@ class StatusCell extends React.Component {
       super(props);
       this.state = {
         value:props.value||'',
-        styleClassName:this.renderStatusStyle(props.value)
+        styleClassName:this.renderStatusStyle(props.value||'')
       }
     }
     componentWillReceiveProps(nextProps) {
       this.setState({
-        value: nextProps.value,
-        styleClassName:this.renderStatusStyle(nextProps.value)
+        value: nextProps.value||'',
+        styleClassName:this.renderStatusStyle(nextProps.value||'')
       });
     }
     statusHashTable = {
@@ -43,7 +43,7 @@ class StatusCell extends React.Component {
           value:statusValue,
           styleClassName:selectedStyle,
         })
-        handleChange(statusValue);
+        handleChange(statusValue, true);
       }
       const menu = <Menu onClick={returnValue} className='statusCellMenu'>
           <Menu.Item key="working" className='workingItem'>

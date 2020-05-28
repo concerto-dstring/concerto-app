@@ -265,7 +265,7 @@ class MainTable extends React.Component {
      * @param {*} event 
      */
     _onAddNewGroupCallback(event) {
-        this._dataset.addNewGroup("新分区");
+        this._dataset.addNewGroup("新分区", null, this.props.client);
         this.refresh()
     }
 
@@ -336,6 +336,7 @@ class MainTable extends React.Component {
     getColumnTemplate(columnKey) {
         let columns = this.state.columns;
         let colTemplates = {};
+ 
         for (let i  = 0; i < columns.length; i ++) {
             let column = columns[i];
             if (columnKey === column.columnKey) {
