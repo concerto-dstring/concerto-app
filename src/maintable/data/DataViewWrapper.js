@@ -69,6 +69,16 @@ class DataViewWrapper {
         this.getStatusSummary = this.getStatusSummary.bind(this)
         this.getDateSummary = this.getDateSummary.bind(this)
         this.getRowNameColumn = this.getRowNameColumn.bind(this)
+        this.getTeamUsers = this.getTeamUsers.bind(this)
+        this.filterTeamUsers = this.filterTeamUsers.bind(this)
+        this.getRowThreadData = this.getRowThreadData.bind(this)
+        this.createThreadData = this.createThreadData.bind(this)
+        this.updateThreadData = this.updateThreadData.bind(this)
+        this.createReplyData = this.createReplyData.bind(this)
+        this.updateReplyData = this.updateReplyData.bind(this)
+        this.getRowThreadCount = this.getRowThreadCount.bind(this)
+        this.updateThreadOrReplySeen = this.updateThreadOrReplySeen.bind(this)
+        this.createNotification = this.createNotification.bind(this)
     }
 
     /**
@@ -445,6 +455,14 @@ class DataViewWrapper {
       return this._dataset._currentUser
     }
 
+    getTeamUsers() {
+      return this._dataset._teamUsers.slice()
+    }
+
+    filterTeamUsers(filterValue) {
+      return this._dataset.filterTeamUsers(filterValue)
+    }
+
     getColumnRows(rowIndex) {
       let rows
       if (getSubLevel(rowIndex) === 0) {
@@ -604,13 +622,12 @@ class DataViewWrapper {
       let dateText = '-'
       let dateDiff
       let datePercent = '0%'
-      let minDate
-      let maxDate
 
       if (rows && Object.keys(this._dataset._rowData).length > 0) {
         rows.map(rowKey => {
-          let dateValue = this._dataset.getObjectAt(rowKey)[columnKey]
-          
+          let dateValue = this.getObjectAt(rowIndex) ? this.getObjectAt(rowIndex)[columnKey] : null
+          let minDate
+          let maxDate
           if (dateValue) {
             // 只要日期不要时间
             dateValue = dateValue.substring(0, 10)
@@ -649,6 +666,43 @@ class DataViewWrapper {
       dateSummary.dateDiff = dateDiff
       dateSummary.datePercent = datePercent
       return dateSummary
+    }
+
+    getRowThreadCount(rowIndex) {
+      let rowId = this.getRowKey(rowIndex)
+      return this._dataset._rowThreadSize[rowId] ? this._dataset._rowThreadSize[rowId] : 0
+    }
+
+    getRowThreadData(rowId, setUpdateInfo) {
+      return this._dataset.getRowThreadData(rowId, setUpdateInfo)
+    }
+
+    createThreadData(createData, setUpdateInfo) {
+      this._dataset.createThreadData(createData, setUpdateInfo)
+    }
+
+    updateThreadData(updateData, setUpdateInfo) {
+      this._dataset.updateThreadData(updateData, setUpdateInfo)
+    }
+
+    createReplyData(createData, rowId, setUpdateInfo) {
+      this._dataset.createReplyData(createData, rowId, setUpdateInfo)
+    }
+
+    updateReplyData(updateData, rowId, setUpdateInfo) {
+      this._dataset.updateReplyData(updateData, rowId, setUpdateInfo)
+    }
+
+    updateThreadOrReplySeen(threadId, replyId, seenUserIds, rowId) {
+      this._dataset.updateThreadOrReplySeen(threadId, replyId, seenUserIds, rowId)
+    }
+
+    createNotification(notificationData) {
+      this._dataset.createNotification(notificationData)
+    }
+
+    getCurrentBoardId() {
+      return this._dataset._currentBoardId
     }
 }
 

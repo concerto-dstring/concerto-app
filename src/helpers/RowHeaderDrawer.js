@@ -24,6 +24,8 @@ import 'moment/locale/zh-cn';
 import SlideDrawer from './section/Drawer/SlideDrawer'
 import { connect } from 'react-redux'
 import { mapRowHeaderDrawerStateToProps } from '../maintable/data/mapStateToProps'
+import WebConstants from '../WebConstants'
+import { Route } from 'react-router-dom';
 
 @connect(mapRowHeaderDrawerStateToProps)
 class RowHeaderDrawer extends PureComponent {
@@ -53,13 +55,35 @@ class RowHeaderDrawer extends PureComponent {
       filePercent: 0,
       fileUrl: '',
       isShowPeopleModal: false,
-      currentUser: props.tableData ? props.tableData.getCurrentUser() : {}
+      currentUser: props.tableData ? props.tableData.getCurrentUser() : {},
+      updateInfo: [],
+      isBusy: false,
+      notificationUsers: []
     }
+
+    this.setUpdateInfo = this.setUpdateInfo.bind(this)
   }
 
   componentWillReceiveProps(nextProps) {
+    this.getDrawerData(nextProps)
     this.setState({
-      currentUser: nextProps.tableData ? nextProps.tableData.getCurrentUser() : {}
+      currentUser: nextProps.tableData ? nextProps.tableData.getCurrentUser() : {},
+      editorState: BraftEditor.createEditorState(null),
+    })
+  }
+
+  getDrawerData(props) {
+    const { tableData, rowId } = props
+    
+    if (tableData) {
+      tableData.getRowThreadData(rowId, this.setUpdateInfo)
+    }
+  }
+
+  setUpdateInfo(updateInfo) {
+    this.setState({
+      updateInfo: updateInfo,
+      isBusy: !this.state.isBusy
     })
   }
 
@@ -173,6 +197,7 @@ class RowHeaderDrawer extends PureComponent {
           name='uploadFile'
           beforeUpload={this.checkUploadFile}
           onChange={this.uploadFile}
+          disabled={true}
         >
           <span className="row_header_drawer_editor_bottom_content_span">
             <PaperClipOutlined  />
@@ -185,11 +210,14 @@ class RowHeaderDrawer extends PureComponent {
     return uploadContent
   }
 
-  insertPeople = (userName) => {
-    const userUrl = "https://www.app.com/" + userName
+  insertPeople = (userName, userId) => {
+    const userUrl = WebConstants.baseUrl + WebConstants.userUrl + userId
+    let users = this.state.notificationUsers.slice()
+    users.push(userId)
     const userData = '@' + userName 
     this.setState({
-      editorState: ContentUtils.insertHTML(this.state.editorState, `<a href=${userUrl}>${userData}&nbsp</a>`)
+      editorState: ContentUtils.insertHTML(this.state.editorState, `<a href=${userUrl} target="_blank">${userData}&nbsp</a>`),
+      notificationUsers: users
     })
   }
 
@@ -213,27 +241,74 @@ class RowHeaderDrawer extends PureComponent {
       }
       else {
         infoHtml = infoHtml.replace(new RegExp("<p>", "gm"), "").replace(new RegExp("</p>", "gm"), "<br>")
-        const { updateInfo, data, rowIndex } = this.props
-        let updateInfoData = {}
-        let id = 'u_' + String(data.getRowMap()[rowIndex].rowKey) +  '_' + String(updateInfo.length + 1)
-        updateInfoData = {
-          id: id,
-          author: this.state.currentUser,
-          createTime: moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
+        const { tableData, rowId, rowHeaderDrawerTitle } = this.props
+        let createData = {
+          rowID: rowId,
+          userID: this.state.currentUser.id,
           content: infoHtml,
-          seen: 0,
-          isLiked: false,
-          replyList: []
+          createdAt: new Date().toISOString()
         }
 
         // 设置值
-        data.setObjectAt(rowIndex, 'updateInfo', updateInfoData, 'add')
+        tableData.createThreadData(createData, this.setUpdateInfo)
+
+        // 通知
+        let nfUsers = [] // 通知过的用户
+        let currentUserName = this.state.currentUser.lname + this.state.currentUser.fname
+        this.state.notificationUsers.map(userId => {
+          if (infoHtml.indexOf(WebConstants.baseUrl + WebConstants.userUrl + userId) !== -1 
+              && nfUsers.indexOf(userId) === -1) {
+            let notificationData = {
+              subject: currentUserName + `在"${rowHeaderDrawerTitle}"的新动态中提及到了你`,
+              content: null,
+              senderID: this.state.currentUser.id,
+              receiverID: userId,
+              seenflag: false,
+              createdAt: new Date().toISOString()
+            }
+            // 创建通知
+            nfUsers.push(userId)
+            tableData.createNotification(notificationData)
+          }
+        })
 
         // 清除值
         this.setState({
-          editorState: ContentUtils.clear(this.state.editorState)
+          editorState: ContentUtils.clear(this.state.editorState),
+          notificationUsers: []
         })
       }
+    }
+  }
+
+  getRowHeaderDrawerUpdate() {
+    const { updateInfo } = this.state
+    if (updateInfo && updateInfo.length > 0) {
+      let updateComponent = updateInfo.map(info => {
+        let user = info.user
+        if (user.avatar.startsWith('#')) {
+          user.faceColor = user.avatar
+        }
+        else {
+          user.faceColor = ''
+        }
+        user.userUrl = WebConstants.baseUrl + WebConstants.userUrl + user.id
+        return (
+          <RowHeaderDrawerUpdate
+            key={info.id} 
+            rowId={this.props.rowId}
+            data={this.props.tableData}
+            updateInfo={info}
+            currentUser={this.state.currentUser}
+            isBusy={this.state.isBusy}
+            setUpdateInfo={this.setUpdateInfo}
+          />
+        )
+      })
+      return updateComponent
+    }
+    else {
+      return null
     }
   }
 
@@ -270,6 +345,7 @@ class RowHeaderDrawer extends PureComponent {
                         visible={this.state.isShowPeopleModal}
                         handlePeopleModalVisible={this.handlePeopleModalVisible}
                         insertPeople={this.insertPeople}
+                        data={this.props.tableData}
                       >
                         @
                       </PeopleModal>  
@@ -301,21 +377,7 @@ class RowHeaderDrawer extends PureComponent {
               </Modal>
               <div className="row_header_drawer_padding">
                 {
-                  (this.props.updateInfo && this.props.updateInfo.length > 0)
-                  ?
-                  this.props.updateInfo.map(info => {
-                    return (
-                      <RowHeaderDrawerUpdate
-                        key={info.id} 
-                        rowIndex={this.props.rowIndex}
-                        data={this.props.tableData}
-                        updateInfo={info}
-                        currentUser={this.state.currentUser}
-                      />
-                    )
-                  })
-                  :
-                  null
+                  this.getRowHeaderDrawerUpdate()
                 }
               </div>
             </div>
@@ -331,21 +393,17 @@ class RowHeaderDrawer extends PureComponent {
     return menuContent
   }
 
-  // 关闭滑窗
-  onClose = () => {
-    this.props.closeRowDrawer()
-  }
-
   handleRowMove = (e) => {
     e.stopPropagation()
   }
 
   render() {
+    const { isOpenRowHeaderDrawer, rowHeaderDrawerTitle } = this.props
     return (
       <SlideDrawer
-        isVisible={this.props.isOpenRowHeaderDrawer}
+        isVisible={isOpenRowHeaderDrawer}
         onMouseDown={this.handleRowMove}
-        drawerHeader={this.props.rowHeaderDrawerTitle}
+        drawerHeader={rowHeaderDrawerTitle}
       >
         <Menu
           style={{padding: '0px 16px'}} 

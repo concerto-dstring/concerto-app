@@ -35,7 +35,7 @@ class RowHeaderCell extends React.PureComponent {
           editing: false,
           handleChange:this.handleChange,
           handleKey:this.handleKey,
-          updateInfo: this.getRowUpdateInfo(props),
+          updateInfoCount: this.getRowUpdateInfoCount(props),
         }
     }
     
@@ -46,20 +46,14 @@ class RowHeaderCell extends React.PureComponent {
             displayValue: getHighlightText(value, props.filterInputValue),
             count: props.data ? props.data.getSubRowCount(props.rowIndex) : 0,
             version: props.dataVersion,
-            updateInfo: this.getRowUpdateInfo(props)
+            updateInfoCount: this.getRowUpdateInfoCount(props)
         });
     }
 
-    getRowUpdateInfo = (props) => {
+    getRowUpdateInfoCount = (props) => {
       // 滑窗里菜单Update Info数据
-      let updateInfo 
-      if (!props.data || !props.data.getObjectAt(props.rowIndex) || !props.data.getObjectAt(props.rowIndex)['updateInfo']) {
-        updateInfo = []
-      }
-      else {
-        updateInfo = props.data.getObjectAt(props.rowIndex)['updateInfo']
-      }
-      return updateInfo
+      let count = props.data.getRowThreadCount(props.rowIndex)
+      return count
     }
 
     setTargetRef = ref => (this.targetRef = ref);
@@ -108,14 +102,15 @@ class RowHeaderCell extends React.PureComponent {
     // 显示右侧滑窗
     showRowDrawer = (event) => {
       event.stopPropagation();
-      const { updateInfo, value } = this.state
+      const { value } = this.state
       const { data, rowIndex } = this.props
-      this.props.dealRowHeaderDrawer({rowHeaderDrawerTitle: value, updateInfo, data, rowIndex, isOpenRowHeaderDrawer: true})
+      let rowId = data.getRowKey(rowIndex)
+      this.props.dealRowHeaderDrawer({rowHeaderDrawerTitle: value, data, rowId, isOpenRowHeaderDrawer: true})
     }
 
     getCellComponent = () => {
       const { height } = this.props;
-      const { count, displayValue, updateInfo } = this.state;
+      const { count, displayValue, updateInfoCount } = this.state;
       return (
         <>
           <div className="row_header_cell_text_component" style={{lineHeight: `${height - 12}px`}}>
@@ -135,7 +130,7 @@ class RowHeaderCell extends React.PureComponent {
             style={{lineHeight: `${height - 12}px`}}
           >
             <span>
-              <Badge count={updateInfo.length} style={{backgroundColor: '#BB0000'}} />
+              <Badge count={updateInfoCount} style={{backgroundColor: '#BB0000'}} />
             </span>
           </div>
         </>

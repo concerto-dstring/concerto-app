@@ -36,6 +36,7 @@ import { DataVersionContext, TableContext } from './data/DataContext';
 import { connect } from 'react-redux'
 import { mapRowActionStateToProps } from './data/mapStateToProps'
 import SummaryCell from '../helpers/columnlib/cell/SummaryCell';
+
 import RowHeaderDrawer from '../helpers/RowHeaderDrawer';
 
 /**
@@ -498,80 +499,6 @@ class MainTable extends React.Component {
         filterType: type
       })
     }
-
-    // renderControls() {
-    //     return (
-    //         <div className="main_table_add_btn_row">
-    //           <Space size="middle">
-    //             <div id="addGroupBtn">
-    //               <Button
-    //                 onClick={this._onAddNewGroupCallback}
-    //                 className="main_table_add_btn"
-    //               >
-    //                 <div className="main_table_btn_layout">
-    //                   <span style={{}}>
-    //                     + 新增一行
-    //                   </span>
-    //                   <div className="main_table_add_btn_separator" />
-    //                   <div>
-    //                     <DownOutlined />
-    //                   </div>
-    //                 </div>
-    //               </Button>
-    //             </div>
-    //             <div>
-    //               <Select 
-    //                 className="main_table_select_user"
-    //                 placeholder="按人员分组显示"
-    //                 showSearch
-    //                 allowClear
-    //                 onChange={this.doFilterByPeople}
-    //               >
-    //                 {
-    //                   getPeople().map(user => {
-    //                     return (
-    //                       <Select.Option
-    //                         key={user.id} 
-    //                         value={user.userName}
-    //                       >
-    //                         <Avatar
-    //                           size={20} 
-    //                           style={{background: user.faceColor}}
-    //                         >
-    //                           {user.smallName}
-    //                         </Avatar>
-    //                         &emsp;
-    //                         {
-    //                           user.userName
-    //                         }
-    //                       </Select.Option>
-    //                     )
-    //                   })
-    //                 }
-    //               </Select>
-    //             </div>
-    //             <div>
-    //               <Button className="main_table_filter_btn">
-    //                 <div className="main_table_btn_layout">
-    //                   <img src={filterIcon} />&nbsp;2
-    //                 </div>
-    //               </Button>
-    //             </div>
-    //             <div>
-    //               <EyeInvisibleOutlined className="main_table_eye" />
-    //             </div>
-    //           </Space>
-    //           <div className="main_table_search_input">
-    //             <Input
-    //               prefix={<SearchOutlined />}
-    //               placeholder="搜索工作板内容"
-    //               onChange={this.filterTableData}
-    //               style={{borderRadius:'15px', width: 240}}
-    //             />
-    //           </div>
-    //         </div>
-    //     )
-    // }
    
     renderTable() {
         var { data, filters, filterInputValue, filterType } = this.state;
