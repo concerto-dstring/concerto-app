@@ -44,9 +44,9 @@ type User @model {
   id: ID!
   username: String!
   email: String!
-  fname: String!
-  lname: String!
-  usertype: String!
+  fname: String
+  lname: String
+  usertype: String
   title: String
   phone: String
   avatar: String
