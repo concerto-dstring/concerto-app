@@ -2948,6 +2948,140 @@ export const createNotification = /* GraphQL */ `
       }
       seenflag
       createdAt
+      boardID
+      board {
+        id
+        name
+        groups {
+          nextToken
+        }
+        columns {
+          nextToken
+        }
+        creatorID
+        creator {
+          id
+          username
+          email
+          fname
+          lname
+          usertype
+          title
+          phone
+          avatar
+          createdAt
+        }
+        subscribers {
+          nextToken
+        }
+        createdAt
+      }
+      groupID
+      group {
+        id
+        name
+        boardID
+        board {
+          id
+          name
+          creatorID
+          createdAt
+        }
+        rows {
+          nextToken
+        }
+        creatorID
+        creator {
+          id
+          username
+          email
+          fname
+          lname
+          usertype
+          title
+          phone
+          avatar
+          createdAt
+        }
+        rank
+        deleteFlag
+        isCollapsed
+        color
+        createdAt
+      }
+      rowID
+      row {
+        id
+        groupID
+        group {
+          id
+          name
+          boardID
+          creatorID
+          rank
+          deleteFlag
+          isCollapsed
+          color
+          createdAt
+        }
+        datas {
+          nextToken
+        }
+        creatorID
+        creator {
+          id
+          username
+          email
+          fname
+          lname
+          usertype
+          title
+          phone
+          avatar
+          createdAt
+        }
+        threadOnRow {
+          nextToken
+        }
+        rank
+        parentId
+        deleteFlag
+        createdAt
+      }
+      threadOnRowID
+      threadOnRow {
+        id
+        rowID
+        row {
+          id
+          groupID
+          creatorID
+          rank
+          parentId
+          deleteFlag
+          createdAt
+        }
+        userID
+        user {
+          id
+          username
+          email
+          fname
+          lname
+          usertype
+          title
+          phone
+          avatar
+          createdAt
+        }
+        content
+        createdAt
+        likedByUsersID
+        seenByUsersID
+        repliesByDate {
+          nextToken
+        }
+      }
     }
   }
 `;
@@ -3024,6 +3158,140 @@ export const updateNotification = /* GraphQL */ `
       }
       seenflag
       createdAt
+      boardID
+      board {
+        id
+        name
+        groups {
+          nextToken
+        }
+        columns {
+          nextToken
+        }
+        creatorID
+        creator {
+          id
+          username
+          email
+          fname
+          lname
+          usertype
+          title
+          phone
+          avatar
+          createdAt
+        }
+        subscribers {
+          nextToken
+        }
+        createdAt
+      }
+      groupID
+      group {
+        id
+        name
+        boardID
+        board {
+          id
+          name
+          creatorID
+          createdAt
+        }
+        rows {
+          nextToken
+        }
+        creatorID
+        creator {
+          id
+          username
+          email
+          fname
+          lname
+          usertype
+          title
+          phone
+          avatar
+          createdAt
+        }
+        rank
+        deleteFlag
+        isCollapsed
+        color
+        createdAt
+      }
+      rowID
+      row {
+        id
+        groupID
+        group {
+          id
+          name
+          boardID
+          creatorID
+          rank
+          deleteFlag
+          isCollapsed
+          color
+          createdAt
+        }
+        datas {
+          nextToken
+        }
+        creatorID
+        creator {
+          id
+          username
+          email
+          fname
+          lname
+          usertype
+          title
+          phone
+          avatar
+          createdAt
+        }
+        threadOnRow {
+          nextToken
+        }
+        rank
+        parentId
+        deleteFlag
+        createdAt
+      }
+      threadOnRowID
+      threadOnRow {
+        id
+        rowID
+        row {
+          id
+          groupID
+          creatorID
+          rank
+          parentId
+          deleteFlag
+          createdAt
+        }
+        userID
+        user {
+          id
+          username
+          email
+          fname
+          lname
+          usertype
+          title
+          phone
+          avatar
+          createdAt
+        }
+        content
+        createdAt
+        likedByUsersID
+        seenByUsersID
+        repliesByDate {
+          nextToken
+        }
+      }
     }
   }
 `;
@@ -3100,6 +3368,140 @@ export const deleteNotification = /* GraphQL */ `
       }
       seenflag
       createdAt
+      boardID
+      board {
+        id
+        name
+        groups {
+          nextToken
+        }
+        columns {
+          nextToken
+        }
+        creatorID
+        creator {
+          id
+          username
+          email
+          fname
+          lname
+          usertype
+          title
+          phone
+          avatar
+          createdAt
+        }
+        subscribers {
+          nextToken
+        }
+        createdAt
+      }
+      groupID
+      group {
+        id
+        name
+        boardID
+        board {
+          id
+          name
+          creatorID
+          createdAt
+        }
+        rows {
+          nextToken
+        }
+        creatorID
+        creator {
+          id
+          username
+          email
+          fname
+          lname
+          usertype
+          title
+          phone
+          avatar
+          createdAt
+        }
+        rank
+        deleteFlag
+        isCollapsed
+        color
+        createdAt
+      }
+      rowID
+      row {
+        id
+        groupID
+        group {
+          id
+          name
+          boardID
+          creatorID
+          rank
+          deleteFlag
+          isCollapsed
+          color
+          createdAt
+        }
+        datas {
+          nextToken
+        }
+        creatorID
+        creator {
+          id
+          username
+          email
+          fname
+          lname
+          usertype
+          title
+          phone
+          avatar
+          createdAt
+        }
+        threadOnRow {
+          nextToken
+        }
+        rank
+        parentId
+        deleteFlag
+        createdAt
+      }
+      threadOnRowID
+      threadOnRow {
+        id
+        rowID
+        row {
+          id
+          groupID
+          creatorID
+          rank
+          parentId
+          deleteFlag
+          createdAt
+        }
+        userID
+        user {
+          id
+          username
+          email
+          fname
+          lname
+          usertype
+          title
+          phone
+          avatar
+          createdAt
+        }
+        content
+        createdAt
+        likedByUsersID
+        seenByUsersID
+        repliesByDate {
+          nextToken
+        }
+      }
     }
   }
 `;
