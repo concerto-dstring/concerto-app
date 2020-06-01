@@ -166,7 +166,7 @@ class ColumnHeaderCell extends React.PureComponent {
       if (type === 'PEOPLE' && !editing && value && this.props.filterInputValue) {
         let filterInputValue = this.props.filterInputValue.toLowerCase()
         value.map(user => {
-          if (user.userName && user.userName.toLowerCase().indexOf(filterInputValue) !== -1) {
+          if (user.username && user.username.toLowerCase().indexOf(filterInputValue) !== -1) {
             style = { backgroundColor: '#CCE9FF' }
             return
           }

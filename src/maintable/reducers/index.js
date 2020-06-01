@@ -298,9 +298,9 @@ function reducers(state = getInitialState(), action) {
       return Object.assign({}, state, {
         isOpenRowHeaderDrawer: action.drawerData.isOpenRowHeaderDrawer,
         data: action.drawerData.data,
-        rowIndex: action.drawerData.rowIndex,
-        updateInfo: action.drawerData.updateInfo,
-        rowHeaderDrawerTitle: action.drawerData.rowHeaderDrawerTitle
+        rowId: action.drawerData.rowId,
+        rowHeaderDrawerTitle: action.drawerData.rowHeaderDrawerTitle,
+        boardId: action.drawerData.boardId,
       })
 
     default: {

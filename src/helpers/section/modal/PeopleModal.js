@@ -1,14 +1,19 @@
 import React, { PureComponent } from 'react';
 import { Popover, Divider, Input, Avatar } from 'antd'
-import { getPeople } from './PeopleName'
 
 class PeopleModal extends PureComponent {
 
   constructor(props) {
     super(props)
     this.state = {
-      people: getPeople(),
+      people: [],
     }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      people: nextProps.data ? nextProps.data.getTeamUsers() : [],
+    })
   }
 
   handleVisibleChange = (visible) => {
@@ -17,7 +22,7 @@ class PeopleModal extends PureComponent {
 
   filterPeople = (e) => {
     this.setState({
-      people: getPeople(e.target.value)
+      people: this.props.data.filterTeamUsers(e.target.value)
     })
   }
 
@@ -26,7 +31,7 @@ class PeopleModal extends PureComponent {
     this.handleVisibleChange(false)
 
     // 编辑器赋值
-    this.props.insertPeople(user.userName)
+    this.props.insertPeople(user.lname + user.fname, user.id)
   }
 
   render() {
@@ -48,10 +53,10 @@ class PeopleModal extends PureComponent {
                       &nbsp;
                       <Avatar size={25} 
                         style={{background:v.faceColor}}>
-                        {v.smallName}
+                        {v.fname}
                       </Avatar>
                       &nbsp;
-                      {v.userName}
+                      {v.lname + v.fname}
                     </div>
                 </div>
               ))

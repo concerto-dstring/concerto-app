@@ -1,6 +1,6 @@
 
 import React from 'react';
-import {BrowserRouter as Router, Route, Link} from 'react-router-dom';
+import {BrowserRouter as Router, Route, Link, withRouter } from 'react-router-dom';
 import MainTable from './maintable/MainTable';
 import './MainPage.less';
 import { Layout, Menu, Breadcrumb, Input, Collapse, Button, Avatar } from 'antd';
@@ -13,6 +13,7 @@ import {
    } from '@ant-design/icons';
 import logo from './logo.svg'
 import { withApollo } from 'react-apollo'
+import RowHeaderDrawer from './helpers/RowHeaderDrawer';
 
 const { Panel } = Collapse;
 const { Header, Content, Sider } = Layout;
@@ -21,6 +22,7 @@ const { Header, Content, Sider } = Layout;
 const defaultSiderWidth = 300
 
 @withApollo
+@withRouter
 class MainPage extends React.Component {
   constructor(props){
     super(props)
@@ -46,6 +48,7 @@ class MainPage extends React.Component {
       if (menus.length > 0 ) {
         selectedKey = menus[0].id
         contentTitle = menus[0].name
+        this.props.history.push('/board/' + menus[0].id)
       }
       this.setState({
         boardMenus: menus,
@@ -78,7 +81,8 @@ class MainPage extends React.Component {
   nativeGetTableStore = (id, name, isBoard) => {
     const { dataset } = this.state
     if (isBoard) {
-      dataset.fetchBackendBoardData(this.props.client, id, null, this.setBusy)
+      this.props.history.push('/board/' + id)
+      dataset.fetchBackendBoardData(id, null, this.setBusy)
       this.setState({
         selectedKey: id,
         contentTitle: name,
@@ -107,7 +111,6 @@ class MainPage extends React.Component {
   getBodyContent = () => {
     const { dataset, siderWidth, contentTitle } = this.state
     return (
-      <>        
         <Content style={{marginLeft: 24}}>
             <Route exact component={()=>
                 <MainTable
@@ -116,7 +119,7 @@ class MainPage extends React.Component {
                   siderWidth={siderWidth} 
                 />}
               />
-              <Route exact path="/borad" component={()=>
+              <Route exact path="/board/:id" component={()=>
                 <MainTable
                   title={contentTitle}
                   data={dataset} 
@@ -128,6 +131,10 @@ class MainPage extends React.Component {
                   title={contentTitle}
                   data={dataset} 
                   siderWidth={siderWidth} 
+                />}
+              />
+              <Route exact path="/board/:id/pulses/:rowId" component={()=>
+                <RowHeaderDrawer
                 />}
               />
         </Content>
@@ -158,7 +165,7 @@ class MainPage extends React.Component {
         {
           menus.map(item => {
             let style = item.id === selectedKey ? {background: '#ECECEC', fontWeight: 500} : {}
-            let path = (isBoard ? 'board' : 'dashboard')
+            let path = (isBoard ? `/board/${item.id}` : '/dashboard')
             return (
               <div 
                 key={item.id} 

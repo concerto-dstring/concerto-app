@@ -32,6 +32,7 @@ class EditableCell extends React.PureComponent {
             mouseIn:false,
             type:'TEXT',
             isHeaderOrFooter:false,
+            data: props.data,
             handleChange:this.handleChange,
             handleKey:this.handleKey,
             handleHide:this.handleHide
@@ -87,7 +88,8 @@ class EditableCell extends React.PureComponent {
         let cellData = this.getCellData(props)
         this.setState({ value: cellData.value,
                         displayValue: cellData.displayValue,
-                        isCollapsed: cellData.isCollapsed
+                        isCollapsed: cellData.isCollapsed,
+                        data: props.data,
                       });
         this.setState({ version: props.dataVersion });
     }
@@ -179,7 +181,7 @@ class EditableCell extends React.PureComponent {
       if (type === 'PEOPLE' && !editing && value && value instanceof Array && this.props.filterInputValue && this.props.data) {
         let filterInputValue = this.props.filterInputValue.toLowerCase()
         value.map(user => {
-          if (user.userName && user.userName.toLowerCase().indexOf(filterInputValue) !== -1) {
+          if (user.username && user.username.toLowerCase().indexOf(filterInputValue) !== -1) {
             style = { backgroundColor: '#CCE9FF' }
             return
           }
