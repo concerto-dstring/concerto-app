@@ -94,7 +94,6 @@ class MainTableTitleRow extends React.Component {
   getBodyContent = () => {
     return (
       <>
-          <img src="./cover.png" className="body_content_cover" />
           <div className="body_content_title_row">
             <div className="body_content_title">
               <h1>{this.props.title}</h1>
