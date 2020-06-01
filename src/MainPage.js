@@ -3,7 +3,7 @@ import React from 'react';
 import {BrowserRouter as Router, Route, Link, withRouter } from 'react-router-dom';
 import MainTable from './maintable/MainTable';
 import './MainPage.less';
-import { Layout, Menu, Breadcrumb, Input, Collapse, Button, Avatar } from 'antd';
+import { Layout, Input, Collapse, Button, Avatar, Dropdown, Menu } from 'antd';
 import { 
     SearchOutlined,
     LeftOutlined,
@@ -14,6 +14,8 @@ import {
 import logo from './logo.svg'
 import { withApollo } from 'react-apollo'
 import RowHeaderDrawer from './helpers/RowHeaderDrawer';
+import { USER_MENU_SIGN_OUT } from './maintable/MainTableRowKeyAndDesc';
+import { Auth } from 'aws-amplify'
 
 const { Panel } = Collapse;
 const { Header, Content, Sider } = Layout;
@@ -31,13 +33,14 @@ class MainPage extends React.Component {
       collapsed: false,
       dataset: props.dataset,
       boardMenus: [],
-      dashboardMenus: []
+      dashboardMenus: [],
+      contentTitle: ''
     };
   }
 
   componentDidMount() {
     let dataset = this.props.dataset;
-    dataset.fetchSideMenus(this.props.client, 'board', this.setMenus)
+    dataset.fetchSideMenus(this.props.client, 'board', this.props.location.state.userId, this.setMenus)
     // dataset.fetchSideMenus(this.props.client, 'dashboard', this.handleBusy)
   }
 
@@ -48,7 +51,7 @@ class MainPage extends React.Component {
       if (menus.length > 0 ) {
         selectedKey = menus[0].id
         contentTitle = menus[0].name
-        this.props.history.push('/board/' + menus[0].id)
+        // this.props.history.push('/board/' + menus[0].id)
       }
       this.setState({
         boardMenus: menus,
@@ -81,7 +84,7 @@ class MainPage extends React.Component {
   nativeGetTableStore = (id, name, isBoard) => {
     const { dataset } = this.state
     if (isBoard) {
-      this.props.history.push('/board/' + id)
+      // this.props.history.push('/board/' + id)
       dataset.fetchBackendBoardData(id, null, this.setBusy)
       this.setState({
         selectedKey: id,
@@ -119,14 +122,14 @@ class MainPage extends React.Component {
                   siderWidth={siderWidth} 
                 />}
               />
-              <Route exact path="/board/:id" component={()=>
+              {/* <Route path="/board/:id" component={()=>
                 <MainTable
                   title={contentTitle}
                   data={dataset} 
                   siderWidth={siderWidth} 
                 />}
-              />
-              <Route exact path="/dashborad" component={()=>
+              /> */}
+              {/* <Route exact path="/dashborad" component={()=>
                 <MainTable
                   title={contentTitle}
                   data={dataset} 
@@ -136,7 +139,7 @@ class MainPage extends React.Component {
               <Route exact path="/board/:id/pulses/:rowId" component={()=>
                 <RowHeaderDrawer
                 />}
-              />
+              /> */}
         </Content>
     )
   }
@@ -188,8 +191,39 @@ class MainPage extends React.Component {
     )
   }
 
+  getUserMenus = () => {
+    return (
+      <Menu 
+        onClick={this.hanldeUserMenuClick}
+        style={{width: 100, borderRadius: '8px', padding: '5px, 0px, 5px, 5px'}}
+      >
+        <Menu.Item 
+          key={USER_MENU_SIGN_OUT.key}
+        >
+          <span>{USER_MENU_SIGN_OUT.desc}</span>
+        </Menu.Item>
+      </Menu>
+    )
+  }
+
+  handleSignOut = async() => {
+    try {
+      await Auth.signOut( {global: true} );
+      this.props.history.push('/login')
+    } catch (error) {
+      console.log('error signing out: ', error);
+    }
+  }
+
+  hanldeUserMenuClick = ({ item, key, keyPath, selectedKeys, domEvent }) => {
+    if (key === USER_MENU_SIGN_OUT.key) {
+      this.handleSignOut()
+    }
+  }
+
   render(){
-    const { siderWidth, collapsed, boardMenus, dashboardMenus } = this.state
+    const { siderWidth, collapsed, boardMenus, dashboardMenus, dataset } = this.state
+    
     return (
       <Router>
         <Layout>
@@ -199,12 +233,17 @@ class MainPage extends React.Component {
             </div>
             <div className="header_right">
               <span>
-                <Avatar 
-                  size={24} 
-                  style={{background: '#9370DB'}}
+                <Dropdown
+                  overlay={this.getUserMenus()}
+                  placement='bottomCenter'
                 >
-                  LW
-                </Avatar>
+                  <Avatar 
+                    size={28} 
+                    style={{background: dataset._currentUser.faceColor ? dataset._currentUser.faceColor : '#000', cursor: 'pointer'}}
+                  >
+                    {dataset._currentUser.fname ? dataset._currentUser.fname : ''}
+                  </Avatar>
+                </Dropdown>
               </span>
               <span className="header_setting">
                 <SettingFilled />
