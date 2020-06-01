@@ -138,7 +138,6 @@ class MainPage extends React.Component {
                 />}
               />
         </Content>
-      </>
     )
   }
 
