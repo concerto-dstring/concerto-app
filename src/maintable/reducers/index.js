@@ -73,7 +73,8 @@ function getInitialState() {
       useMaxHeight: false,
       width: 0,
     },
-
+    isCellEditing: false,
+    CellEditingData: {},
     /*
      * Output state passed as props to the the rendered FixedDataTable
      * NOTE (jordan) rows may contain undefineds if we don't need all the buffer positions
@@ -211,6 +212,19 @@ function reducers(state = getInitialState(), action) {
       return Object.assign({}, state, {
         isRowReordering: false,
         RowReorderingData: {}
+      });
+    }
+    case ActionTypes.CELL_EDIT_START: {
+      const { editData } = action;
+      return Object.assign({}, state, {
+        isCellEditing: true,
+        CellEditingData: editData
+      });
+    }
+    case ActionTypes.CELL_EDIT_END: {
+      return Object.assign({}, state, {
+        isCellEditing: false,
+        CellEditingData: null
       });
     }
     case ActionTypes.SCROLL_TO_X: {

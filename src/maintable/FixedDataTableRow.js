@@ -248,8 +248,10 @@ class FixedDataTableRowImpl extends React.Component {
         //onColumnReorder={this.props.onColumnReorder}
         onColumnReorderMove={this.props.onColumnReorderMove}
         onColumnReorderEnd={this.props.onColumnReorderEnd}
-        isColumnReordering={this.props.isColumnReordering}
+        isColumnReordering={this.props.isColumnReordering}        
         columnReorderingData={this.props.columnReorderingData}
+        onCellEdit={this.props.onCellEdit}
+        onCellEditEnd={this.props.onCellEditEnd}
         rowHeight={this.props.height}
         rowIndex={this.props.index}
         isHeaderOrFooter={this.props.isHeaderOrFooter}
@@ -278,6 +280,8 @@ class FixedDataTableRowImpl extends React.Component {
         onColumnReorderEnd={this.props.onColumnReorderEnd}
         isColumnReordering={this.props.isColumnReordering}
         columnReorderingData={this.props.columnReorderingData}
+        onCellEdit={this.props.onCellEdit}
+        onCellEditEnd={this.props.onCellEditEnd}
         rowHeight={this.props.height}
         rowIndex={this.props.index}
         isHeaderOrFooter={this.props.isHeaderOrFooter}
@@ -307,6 +311,8 @@ class FixedDataTableRowImpl extends React.Component {
         onColumnReorderEnd={this.props.onColumnReorderEnd}
         isColumnReordering={this.props.isColumnReordering}
         columnReorderingData={this.props.columnReorderingData}
+        onCellEdit={this.props.onCellEdit}
+        onCellEditEnd={this.props.onCellEditEnd}
         rowHeight={this.props.height}
         rowIndex={this.props.index}
         isHeaderOrFooter={this.props.isHeaderOrFooter}

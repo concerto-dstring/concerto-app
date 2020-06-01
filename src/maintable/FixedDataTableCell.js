@@ -165,7 +165,7 @@ class FixedDataTableCell extends React.Component {
   }
 
   render() /*object*/ {
-    var { height, width, columnKey, isHeaderOrFooter, ...props } = this.props;
+    var { height, width, columnKey, isHeaderOrFooter, onCellEdit, onCellEditEnd, ...props } = this.props;
 
     var style = {
       height,
@@ -185,7 +185,8 @@ class FixedDataTableCell extends React.Component {
     }
 
     let replacingColumn = false;
-    if (props.isColumnReordering && isHeaderOrFooter && props.columnReorderingData.columnAfter === columnKey) { 
+    if (props.isColumnReordering && isHeaderOrFooter 
+      && props.columnReorderingData.columnAfter === columnKey) { 
       replacingColumn = true;
     } 
 
@@ -258,6 +259,8 @@ class FixedDataTableCell extends React.Component {
       columnKey,
       height,
       width,
+      onCellEdit,
+      onCellEditEnd,
       container: this.props.container,
     };
 

@@ -68,14 +68,15 @@ class RowHeaderCell extends React.PureComponent {
 
     handleClick = (e) => {
       // 防止document事件的冒泡
-      e.stopPropagation()
-      e.preventDefault()
+      e.stopPropagation();
+      e.preventDefault();
+      this.props.onCellEdit(this.props.rowIndex, this.props.columnKey)
       this.setState({ editing: true });
     }
 
     handleInputClick = (e) => {
-      e.stopPropagation()
-      e.preventDefault()
+      e.stopPropagation();
+      e.preventDefault();
     }
 
     handleHide = () => {
@@ -83,6 +84,7 @@ class RowHeaderCell extends React.PureComponent {
             this.props.data.setObjectAt(this.props.rowIndex, this.props.columnKey, this.state.value);
         }
         this.setState({ editing: false });
+        this.props.onCellEditEnd();
     }
 
     handleChange = (e)=> {
@@ -94,6 +96,7 @@ class RowHeaderCell extends React.PureComponent {
     handleKey = e => {
         if (e.keyCode == Keys.RETURN) {
             this.handleHide();
+            this.props.onCellEditEnd();
             return;
         }
     }
