@@ -44,9 +44,9 @@ type User @model {
   id: ID!
   username: String!
   email: String!
-  fname: String!
-  lname: String!
-  usertype: String!
+  fname: String
+  lname: String
+  usertype: String
   title: String
   phone: String
   avatar: String
@@ -222,4 +222,12 @@ type Notification @model {
   receiver: User @connection(fields:["receiverID"])
   seenflag: Boolean
   createdAt: String!
+  boardID: ID!
+  board: Board @connection(fields:["boardID"])
+  groupID: ID!
+  group: Group @connection(fields:["groupID"])
+  rowID: ID!
+  row: Row @connection(fields:["rowID"])
+  threadOnRowID: ID!
+  threadOnRow: ThreadOnRow @connection(fields:["threadOnRowID"])
 }
