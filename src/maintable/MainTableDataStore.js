@@ -101,7 +101,7 @@ class MainTableDataStore {
       });
     }
 
-    fetchSideMenus(apolloClient, type, setMenus) {
+    fetchSideMenus(apolloClient, type, currentUserId, setMenus) {
       this._apolloClient = apolloClient
       switch (type) {
         case 'board':
@@ -115,7 +115,7 @@ class MainTableDataStore {
               if (this._boardMenus.length > 0) {
                 let defaultBoard = this._boardMenus[0]
                 this._currentBoardId =  defaultBoard.id
-                this.fetchBackendBoardData(defaultBoard.id, setMenus)
+                this.fetchBackendBoardData(defaultBoard.id, setMenus, null, currentUserId)
               }
             });
           break;
@@ -128,10 +128,10 @@ class MainTableDataStore {
     /**
      * replaces the createFakeObjectData() with backend data
      */
-    fetchBackendBoardData(boardId, setMenus, setBusy){
+    fetchBackendBoardData(boardId, setMenus, setBusy, currentUserId){
       this._currentBoardId = boardId
       let teamId = "1933b9bc-f5a3-4f60-b55c-be979ea1a105"
-      this.getTeamUsers(teamId, boardId, setMenus, setBusy)
+      this.getTeamUsers(teamId, boardId, setMenus, setBusy, currentUserId)
       // return ret;
     }
 
@@ -337,7 +337,7 @@ class MainTableDataStore {
         });
     }
 
-    getTeamUsers(teamId, boardId, setMenus, setBusy) {
+    getTeamUsers(teamId, boardId, setMenus, setBusy, currentUserId) {
       this._apolloClient
         .query({
           query: gql(listUsers),
@@ -355,6 +355,11 @@ class MainTableDataStore {
             else {
               user.faceColor = ''
             }
+           
+            if (currentUserId === user.id) {
+              this._currentUser = user
+            }
+
             this._teamUsers.push(user)
             this._cacheUsers[user.id] = user
           })

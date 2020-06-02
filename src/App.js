@@ -12,13 +12,15 @@
   import gql from "graphql-tag";
   import { Auth } from 'aws-amplify';
  
-  import MainPage from './MainPage.js'
   import MainTableDataStore from './maintable/MainTableDataStore';
-  import { listCompanys } from "./graphql/queries"
-  import { createUser, deleteUser, createBoard, createGroup, createCompany } from "./graphql/mutations"
-  import { createStructuredSelector } from 'reselect';
 
-  import { withAuthenticator, AmplifySignOut } from '@aws-amplify/ui-react'
+  import { AmplifySignOut } from '@aws-amplify/ui-react'
+
+  import { Switch, Route, Redirect } from 'react-router-dom';
+  import MainPage from './MainPage.js';
+  import Login from './Login'
+  import Register from './Register'
+  import RegisterValidate from './RegisterValidate'
 
   /* AWSAppSyncClient integrates with the Apollo Client for GraphQL */
   const client = new AWSAppSyncClient({
@@ -32,42 +34,35 @@
     },
   });
 
-  class App extends React.Component {
-    state = {
-      userid: ''
-    }
-
-    async componentDidMount () {
-      await this.loadApp()
-    }
-
-    // Get the logged in users and remember them
-    loadApp = async () => {
-      await Auth.currentAuthenticatedUser()
-      .then(user => {
-        this.setState({
-          userid: user.attributes.sub
-        })
-      })
-      .catch(err => console.log(err))
-    }
-
+ class MainComponent extends React.Component {
     render() {
-        console.log("userid "+this.state.userid)
-
-        let dataset = new MainTableDataStore();
-        if (this.state.userid)
-          dataset.getCurrentUser(client, this.state.userid) //'4e8e53bc-80d7-4f4e-af84-704a737c9e98')
-        
-        return (
-          <ApolloProvider client={client}>
-            <Rehydrated>
-                <AmplifySignOut />
-                <MainPage dataset={dataset} />
-            </Rehydrated>
-          </ApolloProvider> 
-        );
-      }
+      let dataset = new MainTableDataStore()
+      return (
+        <ApolloProvider client={client}>
+          <Rehydrated>
+              <MainPage dataset={dataset} />
+          </Rehydrated>
+        </ApolloProvider>
+      )
+    }
   }
 
-  export default withAuthenticator(App, {includeGreetings:true});
+  class App extends React.Component {
+    
+    render() {
+
+      return (
+        <Switch>
+          <Route path="/login" exact component={Login} />
+          <Route path="/board" component={MainComponent} />
+          <Route path="/dashboard" exact component={MainComponent} />
+          <Route path="/register" exact component={Register} />
+          <Route path="/register/validate" exact component={RegisterValidate} />
+          <Redirect to="/login" from='/' exact />
+        </Switch>
+      )
+        
+    }
+  }
+
+  export default App;
