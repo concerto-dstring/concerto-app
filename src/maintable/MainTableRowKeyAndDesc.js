@@ -82,3 +82,13 @@ export const USER_MENU_SIGN_OUT = {
   key: 'USER_SIGN_OUT',
   desc: '注销'
 }
+
+export const RENAME_BOARD = {
+  key: 'RENAME_BOARD',
+  desc: '重命名'
+}
+
+export const DELETE_BOARD = {
+  key: 'DELETE_BOARD',
+  desc: '删  除'
+}

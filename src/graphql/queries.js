@@ -226,6 +226,7 @@ export const getUser = /* GraphQL */ `
           name
           creatorID
           createdAt
+          deleteFlag
         }
         nextToken
       }
@@ -445,6 +446,7 @@ export const getBoard = /* GraphQL */ `
         nextToken
       }
       createdAt
+      deleteFlag
     }
   }
 `;
@@ -481,6 +483,7 @@ export const listBoards = /* GraphQL */ `
           nextToken
         }
         createdAt
+        deleteFlag
       }
       nextToken
     }
@@ -518,6 +521,7 @@ export const getGroup = /* GraphQL */ `
           nextToken
         }
         createdAt
+        deleteFlag
       }
       rows {
         items {
@@ -586,6 +590,7 @@ export const listGroups = /* GraphQL */ `
           name
           creatorID
           createdAt
+          deleteFlag
         }
         rows {
           nextToken
@@ -627,6 +632,7 @@ export const getRow = /* GraphQL */ `
           name
           creatorID
           createdAt
+          deleteFlag
         }
         rows {
           nextToken
@@ -868,67 +874,7 @@ export const getData = /* GraphQL */ `
     getData(id: $id) {
       id
       columnID
-      column {
-        id
-        board {
-          nextToken
-        }
-        name
-        columntype
-        columnComponentType
-        creatorID
-        creator {
-          id
-          username
-          email
-          fname
-          lname
-          usertype
-          title
-          phone
-          createdAt
-        }
-        createdAt
-        deleteFlag
-        datas {
-          nextToken
-        }
-      }
       rowID
-      row {
-        id
-        groupID
-        group {
-          id
-          name
-          boardID
-          creatorID
-          rank
-          deleteFlag
-          isCollapsed
-          color
-          createdAt
-        }
-        datas {
-          nextToken
-        }
-        creatorID
-        creator {
-          id
-          username
-          email
-          fname
-          lname
-          usertype
-          title
-          phone
-          createdAt
-        }
-        rank
-        parentId
-        deleteFlag
-        createdAt
-      }
       value
     }
   }
@@ -943,25 +889,7 @@ export const listDatas = /* GraphQL */ `
       items {
         id
         columnID
-        column {
-          id
-          name
-          columntype
-          columnComponentType
-          creatorID
-          createdAt
-          deleteFlag
-        }
         rowID
-        row {
-          id
-          groupID
-          creatorID
-          rank
-          parentId
-          deleteFlag
-          createdAt
-        }
         value
       }
       nextToken
@@ -1046,7 +974,7 @@ export const getThreadOnRow = /* GraphQL */ `
       createdAt
       likedByUsersID
       seenByUsersID
-      repliesByDate(limit: 1000) {
+      repliesByDate {
         items {
           id
           threadID
@@ -1379,6 +1307,7 @@ export const getNotification = /* GraphQL */ `
           nextToken
         }
         createdAt
+        deleteFlag
       }
       groupID
       group {
@@ -1390,6 +1319,7 @@ export const getNotification = /* GraphQL */ `
           name
           creatorID
           createdAt
+          deleteFlag
         }
         rows {
           nextToken
@@ -1534,6 +1464,7 @@ export const listNotifications = /* GraphQL */ `
           name
           creatorID
           createdAt
+          deleteFlag
         }
         groupID
         group {
