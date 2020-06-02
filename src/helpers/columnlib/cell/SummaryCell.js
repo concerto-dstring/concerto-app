@@ -62,14 +62,14 @@ class SummaryCell extends PureComponent {
 
         // 获取最小和最大日期及相差天数
         let dateSummary = data.getDateSummary(rowIndex, columnKey)
-
+        let color = data.getGroupByRowIndex(rowIndex).color
         summaryCell = (
           <div className="summary_cell">
             <div className="summary_cell_date_container">
               {
                 dateSummary.dateDiff
                 ?
-                <div style={{background: `linear-gradient(to right, rgb(120, 75, 209) ${dateSummary.datePercent}, rgb(28, 31, 59) ${dateSummary.datePercent})`}}>
+                <div style={{background: `linear-gradient(to right, ${color} ${dateSummary.datePercent}, rgb(28, 31, 59) ${dateSummary.datePercent})`}}>
                   <span
                     className="summary_cell_date_container_span" 
                     contents={dateSummary.dateText} 

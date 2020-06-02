@@ -21,6 +21,7 @@ import * as rowActions from './actions/rowActions';
 import invariant from 'invariant';
 import pick from 'lodash/pick';
 import * as scrollActions from './actions/scrollActions';
+import * as cellActions from './actions/cellActions';
 
 class FixedDataTableContainer extends React.Component {
   constructor(props) {
@@ -34,6 +35,7 @@ class FixedDataTableContainer extends React.Component {
     this.scrollActions = bindActionCreators(scrollActions, this.reduxStore.dispatch);
     this.columnActions = bindActionCreators(columnActions, this.reduxStore.dispatch);
     this.rowActions = bindActionCreators(rowActions, this.reduxStore.dispatch);
+    this.cellActions = bindActionCreators(cellActions, this.reduxStore.dispatch);
   }
 
   componentWillMount() {
@@ -76,6 +78,7 @@ class FixedDataTableContainer extends React.Component {
         scrollActions={this.scrollActions}
         columnActions={this.columnActions}
         rowActions={this.rowActions}
+        cellActions={this.cellActions}
       />
     );
   }

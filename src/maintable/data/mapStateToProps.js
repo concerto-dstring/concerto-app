@@ -11,12 +11,23 @@ export const mapRowActionStateToProps = (state) => {
     groupIndex: state.groupIndex,
     sourceGroupKey: state.sourceGroupKey,
     targetGroupKey: state.targetGroupKey,
-    tableData: state.data
+    tableData: state.data,
+    oldSourceRow: state.oldSourceRow
   }
 }
 
 export const mapSectionHeaderStateToProps = (state) => {
   return {
     curGroup: state.curGroup
+  }
+}
+
+export const mapRowHeaderDrawerStateToProps = (state) => {
+  return {
+    isOpenRowHeaderDrawer: state.isOpenRowHeaderDrawer,
+    rowId: state.rowId,
+    tableData: state.data,
+    rowHeaderDrawerTitle: state.rowHeaderDrawerTitle,
+    boardId: state.boardId
   }
 }

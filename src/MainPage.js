@@ -1,73 +1,72 @@
 
 import React from 'react';
-import {BrowserRouter as Router, Route, Link} from 'react-router-dom';
+import {BrowserRouter as Router, Route, Link, withRouter } from 'react-router-dom';
 import MainTable from './maintable/MainTable';
 import './MainPage.less';
-import { Layout, Menu, Breadcrumb, Input, Collapse, Button, Avatar } from 'antd';
+import { Layout, Input, Collapse, Button, Avatar, Dropdown, Menu } from 'antd';
 import { 
     SearchOutlined,
-    NotificationOutlined,
-    MailOutlined,
-    CalendarOutlined,
-    AppstoreOutlined,
     LeftOutlined,
     RightOutlined,
-    DownloadOutlined,
-    CarryOutOutlined,
-    UserAddOutlined,
-    QuestionOutlined,
-    HomeFilled,
     SettingFilled,
     ShareAltOutlined,
    } from '@ant-design/icons';
-import MainTableDataStore from './maintable/MainTableDataStore';
 import logo from './logo.svg'
+import { withApollo } from 'react-apollo'
+import RowHeaderDrawer from './helpers/RowHeaderDrawer';
+import { USER_MENU_SIGN_OUT } from './maintable/MainTableRowKeyAndDesc';
+import { Auth } from 'aws-amplify'
 
 const { Panel } = Collapse;
-const { SubMenu } = Menu;
 const { Header, Content, Sider } = Layout;
-const { Search } = Input;
 
 // Sider默认宽度
 const defaultSiderWidth = 300
 
-export default class MainPage extends React.Component {
+@withApollo
+@withRouter
+class MainPage extends React.Component {
   constructor(props){
     super(props)
     this.state = {
       siderWidth: defaultSiderWidth,
       collapsed: false,
-      title:'',
+      dataset: props.dataset,
+      boardMenus: [],
+      dashboardMenus: [],
+      contentTitle: ''
     };
   }
 
-  componentWillMount(){
-    let dataset = new MainTableDataStore();
-    dataset.createSiderMenus()
-    const siderMenus = dataset._siderMenus
-    this.initData(dataset, siderMenus)
+  componentDidMount() {
+    let dataset = this.props.dataset;
+    dataset.fetchSideMenus(this.props.client, 'board', this.props.location.state.userId, this.setMenus)
+    // dataset.fetchSideMenus(this.props.client, 'dashboard', this.handleBusy)
   }
 
-  initData = (dataset, siderMenus) => {
-    if (siderMenus[0]['menus'] && siderMenus[0]['menus'].length > 0) {
-      const defaultMenu = siderMenus[0]['menus'][0]
-      dataset.createFakeObjectData(defaultMenu['dataUrl'])
+  setMenus = (menus, isBoard) => {
+    let selectedKey
+    let contentTitle
+    if (isBoard) {
+      if (menus.length > 0 ) {
+        selectedKey = menus[0].id
+        contentTitle = menus[0].name
+        // this.props.history.push('/board/' + menus[0].id)
+      }
       this.setState({
-        selectedKey: defaultMenu['id'],
-        contentTitle: defaultMenu['name'],
-        dataset: dataset,
-        siderMenus: siderMenus
+        boardMenus: menus,
+        selectedKey,
+        contentTitle,
+        dataset: this.props.dataset,
       })
     }
     else {
       this.setState({
-        selectedKey: null,
-        contentTitle: this.state.contentTitle,
-        dataset: dataset,
-        siderMenus: siderMenus
+        dashboardMenus: menus,
+        dataset: this.props.dataset,
       })
     }
-  } 
+  }
 
   toggle = () => {
     this.setState({
@@ -75,119 +74,156 @@ export default class MainPage extends React.Component {
       collapsed: !this.state.collapsed,
     });
   };
-  
-  nativeGetTableStore = (dataUrl, selectedKey, contentTitle) => {
-    let dataset = this.state.dataset;
-    dataset.createFakeObjectData(dataUrl);
+
+  setBusy = (busy) => {
     this.setState({
-      selectedKey: selectedKey,
-      contentTitle: contentTitle,
-      dataset: dataset
+      busy: busy
     })
   }
+  
+  nativeGetTableStore = (id, name, isBoard) => {
+    const { dataset } = this.state
+    if (isBoard) {
+      // this.props.history.push('/board/' + id)
+      dataset.fetchBackendBoardData(id, null, this.setBusy)
+      this.setState({
+        selectedKey: id,
+        contentTitle: name,
+        dataset: dataset
+      })
+    }
+  }
 
-  filterMenu = (menuId, e) => {
+  filterMenu = (isBoard, e) => {
     let value = e.target.value.trim()
-    const { dataset, siderMenus } = this.state
     if (value) {
       value = value.toLowerCase()
-      let siderMenusCopy = siderMenus.slice()
-      let menuIndex = siderMenusCopy.findIndex(menu => menu.id === menuId)
-      let menus = siderMenusCopy[menuIndex]['menus'].filter(item => item.name.toLowerCase().indexOf(value) !== -1)
-      siderMenusCopy[menuIndex]['menus'] = menus
-      this.initData(dataset, siderMenusCopy)
+      let menusCopy = isBoard ? this.state.dataset._boardMenus.slice() : []
+      let filterMenus = menusCopy.filter(item => item.name.toLowerCase().indexOf(value) !== -1)
+      this.setState({
+        boardMenus: filterMenus
+      })
     }
     else {
-      dataset.createSiderMenus()
-      const siderMenus = dataset._siderMenus
-      this.initData(dataset, siderMenus)
+      this.setState({
+        boardMenus: this.state.dataset._boardMenus
+      })
     }
   }
 
   getBodyContent = () => {
-    const { dataset, siderWidth, collapsed, contentTitle } = this.state
+    const { dataset, siderWidth, contentTitle } = this.state
     return (
-      <>
-        <div id="appBread">
-          <img src="./cover.png" className="body_content_cover" />
-          <div className="body_content_title_row">
-            <div className="body_content_title">
-              <h1>{contentTitle}</h1>
-            </div>
-            <div className="body_content_title_right">
-              <div className="body_content_title_right_item">
-                <span className="body_content_title_right_label">
-                  最后更新时间:&nbsp;
-                </span>
-                <span className="body_content_title_right_value">
-                  2020-04-22 13:57:45
-                </span>
-              </div>
-              <div className="body_content_title_right_separator" />
-              <div className="body_content_title_right_item">
-                <span className="body_content_title_right_label">
-                  更新人:&nbsp;
-                </span>
-                <span className="body_content_title_right_value">
-                  JGZ
-                </span>
-              </div>
-              <div className="body_content_title_right_separator" />
-              <div className="body_content_title_right_item">
-                <span className="body_content_title_right_label">
-                  成员数:&nbsp;
-                </span>
-                <span className="body_content_title_right_value">
-                  8
-                </span>
-              </div>
-              <div className="body_content_title_right_separator" />
-              <div className="body_content_title_right_item">
-                <span className="body_content_title_right_label">
-                  操作历史:&nbsp;
-                </span>
-                <span className="body_content_title_right_value">
-                  58
-                </span>
-              </div>
-              <div className="body_content_title_right_separator" />
-              <div className="body_content_title_right_item body_content_title_right_pointer">
-                <span className="body_content_title_right_label">
-                  <ShareAltOutlined />&nbsp;&nbsp;分享
-                </span>
-              </div>
-            </div>
-          </div>
-          <div className="body_content_title_desc">
-            相关具体的描述
-          </div>
-        </div>
         <Content style={{marginLeft: 24}}>
             <Route exact component={()=>
                 <MainTable
+                  title={contentTitle}
                   data={dataset} 
-                  siderWidth={siderWidth + (!collapsed ? -10 : 1)} 
+                  siderWidth={siderWidth} 
                 />}
               />
-              <Route exact path="/borad" component={()=>
+              {/* <Route path="/board/:id" component={()=>
                 <MainTable
+                  title={contentTitle}
                   data={dataset} 
-                  siderWidth={siderWidth + (!collapsed ? -10 : 1)} 
+                  siderWidth={siderWidth} 
                 />}
-              />
-              <Route exact path="/dashborad" component={()=>
+              /> */}
+              {/* <Route exact path="/dashborad" component={()=>
                 <MainTable
+                  title={contentTitle}
                   data={dataset} 
-                  siderWidth={siderWidth + (!collapsed ? -10 : 1)} 
+                  siderWidth={siderWidth} 
                 />}
               />
+              <Route exact path="/board/:id/pulses/:rowId" component={()=>
+                <RowHeaderDrawer
+                />}
+              /> */}
         </Content>
-      </>
     )
   }
 
+  getPanel = (menus, isBoard, name, key) => {
+    const { dataset, selectedKey } = this.state
+    return (
+      <Panel 
+        header={<span className="body_left_sider_panel_header">{name}（{menus.length}）</span>} 
+        showArrow={false} 
+        key={key}
+      >
+        {
+          isBoard
+          ?
+          <Input
+            prefix={<SearchOutlined />}
+            placeholder="搜索工作板..."
+            style={{margin:'0 0 16px 0',borderRadius:'15px'}}
+            onChange={this.filterMenu.bind(this, isBoard)}
+          />
+          :
+          null
+        }
+        {
+          menus.map(item => {
+            let style = item.id === selectedKey ? {background: '#ECECEC', fontWeight: 500} : {}
+            let path = (isBoard ? `/board/${item.id}` : '/dashboard')
+            return (
+              <div 
+                key={item.id} 
+                className="body_left_sider_panel_menu"
+                style={style}
+                onClick={this.nativeGetTableStore.bind(this, item.id, item.name, isBoard)}
+              >
+                <div className="body_left_sider_panel_menu_item_link" style={style}>
+                  <Link to={path}>
+                    {item.name}
+                  </Link>
+                </div>
+                <div className="body_left_sider_panel_menu_item_count" style={style}>
+                  {dataset ? Object.keys(dataset._rowData).length : 0}
+                </div>
+              </div>
+            )
+          })
+        }
+      </Panel>
+    )
+  }
+
+  getUserMenus = () => {
+    return (
+      <Menu 
+        onClick={this.hanldeUserMenuClick}
+        style={{width: 100, borderRadius: '8px', padding: '5px, 0px, 5px, 5px'}}
+      >
+        <Menu.Item 
+          key={USER_MENU_SIGN_OUT.key}
+        >
+          <span>{USER_MENU_SIGN_OUT.desc}</span>
+        </Menu.Item>
+      </Menu>
+    )
+  }
+
+  handleSignOut = async() => {
+    try {
+      await Auth.signOut( {global: true} );
+      this.props.history.push('/login')
+    } catch (error) {
+      console.log('error signing out: ', error);
+    }
+  }
+
+  hanldeUserMenuClick = ({ item, key, keyPath, selectedKeys, domEvent }) => {
+    if (key === USER_MENU_SIGN_OUT.key) {
+      this.handleSignOut()
+    }
+  }
+
   render(){
-    const { dataset, siderWidth, collapsed, siderMenus, contentTitle, selectedKey } = this.state
+    const { siderWidth, collapsed, boardMenus, dashboardMenus, dataset } = this.state
+    
     return (
       <Router>
         <Layout>
@@ -197,12 +233,17 @@ export default class MainPage extends React.Component {
             </div>
             <div className="header_right">
               <span>
-                <Avatar 
-                  size={24} 
-                  style={{background: '#9370DB'}}
+                <Dropdown
+                  overlay={this.getUserMenus()}
+                  placement='bottomCenter'
                 >
-                  LW
-                </Avatar>
+                  <Avatar 
+                    size={28} 
+                    style={{background: dataset._currentUser.faceColor ? dataset._currentUser.faceColor : '#000', cursor: 'pointer'}}
+                  >
+                    {dataset._currentUser.fname ? dataset._currentUser.fname : ''}
+                  </Avatar>
+                </Dropdown>
               </span>
               <span className="header_setting">
                 <SettingFilled />
@@ -222,54 +263,14 @@ export default class MainPage extends React.Component {
             >
               <Collapse accordion defaultActiveKey={['1']} style={{height:'100%'}} bordered={false}>
                 {
-                  siderMenus.map(menu => {
-                    return (
-                      <Panel 
-                        header={<span className="body_left_sider_panel_header">{menu.name}（{menu.menus.length}）</span>} 
-                        showArrow={false} 
-                        key={menu.id}
-                      >
-                        {
-                          menu.name === '工作板'
-                          ?
-                          <Input
-                            prefix={<SearchOutlined />}
-                            placeholder="搜索工作板..."
-                            style={{margin:'0 0 16px 0',borderRadius:'15px'}}
-                            onChange={this.filterMenu.bind(this, menu.id)}
-                          />
-                          :
-                          null
-                        }
-                        {
-                          menu.menus.map(item => {
-                            let style = item.id === selectedKey ? {background: '#ECECEC', fontWeight: 500} : {}
-                            return (
-                              <div 
-                                key={item.id} 
-                                className="body_left_sider_panel_menu"
-                                style={style}
-                                onClick={this.nativeGetTableStore.bind(this, item.dataUrl, item.id, item.name)}
-                              >
-                                <div className="body_left_sider_panel_menu_item_link" style={style}>
-                                  <Link to={item.path}>
-                                    {item.name}
-                                  </Link>
-                                </div>
-                                <div className="body_left_sider_panel_menu_item_count" style={style}>
-                                  {dataset ? dataset._sizeRows : 0}
-                                </div>
-                              </div>
-                            )
-                          })
-                        }
-                      </Panel>
-                    )
-                  })
+                  this.getPanel(boardMenus, true, '工作板', '1')
+                }
+                {
+                  this.getPanel(dashboardMenus, false, '仪表板', '2')
                 }
               </Collapse>
             </Sider>
-            <div style={{width:'20px', height:'100%',textAlign:'center', marginLeft: collapsed ? 10 : 0}}>
+            <div style={{width:'20px', height:'100%',textAlign:'center'}}>
               <div className="collpseBarTop"></div>
               <Button 
                 shape='circle'
@@ -296,3 +297,5 @@ export default class MainPage extends React.Component {
     );
   }
 }
+
+export default MainPage

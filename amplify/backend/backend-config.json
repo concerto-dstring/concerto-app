@@ -9,12 +9,20 @@
 					"defaultAuthentication": {
 						"authenticationType": "API_KEY",
 						"apiKeyConfig": {
-							"description": "concerto graphql api key",
+							"description": "api key for concertoapi",
 							"apiKeyExpirationDays": "365"
 						}
 					}
 				}
 			}
+		}
+	},
+	"auth": {
+		"concertoapp2fea5048": {
+			"service": "Cognito",
+			"providerPlugin": "awscloudformation",
+			"dependsOn": [],
+			"customAuth": false
 		}
 	}
 }

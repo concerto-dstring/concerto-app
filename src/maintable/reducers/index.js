@@ -43,6 +43,7 @@ function getInitialState() {
       header: [],
     },
     elementHeights: {
+      titleHeight: 0,
       footerHeight: 0,
       groupHeaderHeight: 0,
       headerHeight: 0,
@@ -72,7 +73,8 @@ function getInitialState() {
       useMaxHeight: false,
       width: 0,
     },
-
+    isCellEditing: false,
+    CellEditingData: {},
     /*
      * Output state passed as props to the the rendered FixedDataTable
      * NOTE (jordan) rows may contain undefineds if we don't need all the buffer positions
@@ -212,6 +214,19 @@ function reducers(state = getInitialState(), action) {
         RowReorderingData: {}
       });
     }
+    case ActionTypes.CELL_EDIT_START: {
+      const { editData } = action;
+      return Object.assign({}, state, {
+        isCellEditing: true,
+        CellEditingData: editData
+      });
+    }
+    case ActionTypes.CELL_EDIT_END: {
+      return Object.assign({}, state, {
+        isCellEditing: false,
+        CellEditingData: null
+      });
+    }
     case ActionTypes.SCROLL_TO_X: {
       const { scrollX } = action;
       return Object.assign({}, state, {
@@ -241,7 +256,7 @@ function reducers(state = getInitialState(), action) {
       return Object.assign({}, state, {
         isShowUndoModal: action.modalData.isShowUndoModal,
         data: action.modalData.data,
-        rowIndex: action.modalData.rowIndex,
+        oldSourceRow: action.modalData.oldSourceRow,
         rowKey: action.modalData.rowKey,
         sourceGroupKey: action.modalData.sourceGroupKey,
         targetGroupKey: action.modalData.targetGroupKey,
@@ -277,6 +292,15 @@ function reducers(state = getInitialState(), action) {
     case ActionTypes.DEAL_SECTION_COLOR_MENU:
       return  Object.assign({}, state, {
         curGroup: action.modalData.curGroup,
+      })
+
+    case ActionTypes.DEAL_ROW_HEADER_DRAWER:
+      return Object.assign({}, state, {
+        isOpenRowHeaderDrawer: action.drawerData.isOpenRowHeaderDrawer,
+        data: action.drawerData.data,
+        rowId: action.drawerData.rowId,
+        rowHeaderDrawerTitle: action.drawerData.rowHeaderDrawerTitle,
+        boardId: action.drawerData.boardId,
       })
 
     default: {
@@ -325,7 +349,7 @@ function setStateFromProps(state, props) {
     { columnGroupProps, columnProps, elementTemplates });
 
   newState.elementHeights = Object.assign({}, newState.elementHeights,
-    pick(props, ['cellGroupWrapperHeight', 'footerHeight', 'groupHeaderHeight', 'headerHeight', 'addRowHeight']));
+    pick(props, ['cellGroupWrapperHeight', 'footerHeight', 'groupHeaderHeight', 'headerHeight', 'addRowHeight', 'titleHeight']));
   if (!useGroupHeader) {
     newState.elementHeights.groupHeaderHeight = 0;
   }

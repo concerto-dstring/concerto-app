@@ -1,15 +1,38 @@
 {
-    "dev": {
+    "rd": {
         "awscloudformation": {
-            "AuthRoleName": "amplify-concerto-app-dev-144851-authRole",
-            "UnauthRoleArn": "arn:aws:iam::290655070383:role/amplify-concerto-app-dev-144851-unauthRole",
-            "AuthRoleArn": "arn:aws:iam::290655070383:role/amplify-concerto-app-dev-144851-authRole",
+            "AuthRoleName": "amplify-concerto-app-rd-231546-authRole",
+            "UnauthRoleArn": "arn:aws:iam::290655070383:role/amplify-concerto-app-rd-231546-unauthRole",
+            "AuthRoleArn": "arn:aws:iam::290655070383:role/amplify-concerto-app-rd-231546-authRole",
             "Region": "ap-northeast-2",
-            "DeploymentBucketName": "amplify-concerto-app-dev-144851-deployment",
-            "UnauthRoleName": "amplify-concerto-app-dev-144851-unauthRole",
-            "StackName": "amplify-concerto-app-dev-144851",
-            "StackId": "arn:aws:cloudformation:ap-northeast-2:290655070383:stack/amplify-concerto-app-dev-144851/da18f100-7c35-11ea-aa3b-0a70bc372970",
+            "DeploymentBucketName": "amplify-concerto-app-rd-231546-deployment",
+            "UnauthRoleName": "amplify-concerto-app-rd-231546-unauthRole",
+            "StackName": "amplify-concerto-app-rd-231546",
+            "StackId": "arn:aws:cloudformation:ap-northeast-2:290655070383:stack/amplify-concerto-app-rd-231546/3b4858a0-8b6b-11ea-81c0-02a3be530d22",
             "AmplifyAppId": "d5nz3bkn2128q"
+        },
+        "categories": {
+            "auth": {
+                "concertoapp2fea5048": {}
+            }
+        }
+    },
+    "test": {
+        "awscloudformation": {
+            "AuthRoleName": "amplify-concerto-app-test-214928-authRole",
+            "UnauthRoleArn": "arn:aws:iam::290655070383:role/amplify-concerto-app-test-214928-unauthRole",
+            "AuthRoleArn": "arn:aws:iam::290655070383:role/amplify-concerto-app-test-214928-authRole",
+            "Region": "ap-northeast-2",
+            "DeploymentBucketName": "amplify-concerto-app-test-214928-deployment",
+            "UnauthRoleName": "amplify-concerto-app-test-214928-unauthRole",
+            "StackName": "amplify-concerto-app-test-214928",
+            "StackId": "arn:aws:cloudformation:ap-northeast-2:290655070383:stack/amplify-concerto-app-test-214928/826b52a0-8cf1-11ea-8b0c-06f846be6a12",
+            "AmplifyAppId": "d5nz3bkn2128q"
+        },
+        "categories": {
+            "auth": {
+                "concertoapp2fea5048": {}
+            }
         }
     },
     "product": {

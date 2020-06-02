@@ -32,6 +32,7 @@ class EditableCell extends React.PureComponent {
             mouseIn:false,
             type:'TEXT',
             isHeaderOrFooter:false,
+            data: props.data,
             handleChange:this.handleChange,
             handleKey:this.handleKey,
             handleHide:this.handleHide
@@ -77,17 +78,18 @@ class EditableCell extends React.PureComponent {
       }
 
       cellData.isCollapsed =isCollapsed;
-      cellData.value = value
-      cellData.displayValue = displayValue
+      cellData.value = value;
+      cellData.displayValue = displayValue;
 
-      return cellData
+      return cellData;
     }
 
     componentWillReceiveProps(props) {
         let cellData = this.getCellData(props)
         this.setState({ value: cellData.value,
                         displayValue: cellData.displayValue,
-                        isCollapsed: cellData.isCollapsed
+                        isCollapsed: cellData.isCollapsed,
+                        data: props.data,
                       });
         this.setState({ version: props.dataVersion });
     }
@@ -97,21 +99,25 @@ class EditableCell extends React.PureComponent {
     getTargetRef = () => this.targetRef;
 
     updateValue = () => {
-        if (this.props.data) {
-            // 有行数据
-            if (this.props.data.getObjectAt(this.props.rowIndex)) {
-              this.props.data.setObjectAt(this.props.rowIndex, this.props.columnKey, this.state.value);
-            }
-            else {
-              // 修改列名
-              if (this.state.value) {
-                this.props.data.setColumnData(this.props.columnKey, {name: this.state.value})
-              }
-              else {
-                this.props.data.setColumnData(this.props.columnKey, {name: this.state.oldValue})
-              }
-            }
+      if (this.props.data) {
+        // 有行数据
+        if (this.props.data.getObjectAt(this.props.rowIndex)) {
+          this.props.data.setObjectAt(this.props.rowIndex, this.props.columnKey, this.state.value);
+        }
+        else {
+          // 修改列名
+          if (this.state.value) {
+            this.props.data.setColumnData(this.props.columnKey, {name: this.state.value})
           }
+          else {
+            this.props.data.setColumnData(this.props.columnKey, {name: this.state.oldValue})
+          }
+        }
+      }
+    }
+
+    saveData(value) {
+      this.props.data.setObjectAt(this.props.rowIndex, this.props.columnKey, value);
     }
 
     handleClick = (type) => {
@@ -119,30 +125,38 @@ class EditableCell extends React.PureComponent {
             const columnCanEditor = this.cellRenderValues[type] ;
             if(columnCanEditor){
                 this.setState({ editing: true });
+                this.props.onCellEdit(this.props.rowIndex, this.props.columnKey);
             }
         }else{
             this.setState({ editing: true });
+            this.props.onCellEdit(this.props.rowIndex, this.props.columnKey);
         }
     }
       
-    handleHide = () => {         
+    handleHide = () => { 
+        this.updateValue()        
         this.setState({ editing: false });
+        this.props.onCellEditEnd();
     }
 
 
-    handleChange = (value)=>
+    handleChange = (value, isSave)=>
     {
+      if (isSave) {
+        this.saveData(value)
+      }
+      else {
         this.setState({
-            value: value,
-        },this.updateValue);
-        
+          value: value,
+        });
+      }
     }
 
     handleKey = e =>
     {
         if (e.keyCode === Keys.RETURN) {
-            this.updateValue()
             this.handleHide();
+            this.props.onCellEditEnd();
             return;
         }
     }
@@ -164,10 +178,10 @@ class EditableCell extends React.PureComponent {
 
     getPeopleFilterStyle = (type, editing, value) => {
       let style = {}
-      if (type === 'PEOPLE' && !editing && value && this.props.filterInputValue && this.props.data) {
+      if (type === 'PEOPLE' && !editing && value && value instanceof Array && this.props.filterInputValue && this.props.data) {
         let filterInputValue = this.props.filterInputValue.toLowerCase()
         value.map(user => {
-          if (user.userName && user.userName.toLowerCase().indexOf(filterInputValue) !== -1) {
+          if (user.username && user.username.toLowerCase().indexOf(filterInputValue) !== -1) {
             style = { backgroundColor: '#CCE9FF' }
             return
           }
@@ -188,11 +202,11 @@ class EditableCell extends React.PureComponent {
             isHeaderOrFooter:isHeaderOrFooter,
             filterInputValue: this.props.filterInputValue
         })
-        const inputStyle = {
-            width: width - 10,
-            height: height - 5,
-            borderRadius: '0px',
-        }
+        // const inputStyle = {
+        //     width: width - 10,
+        //     height: height - 5,
+        //     borderRadius: '0px',
+        // }
 
         let classNameStr;
         if (!isHeaderOrFooter) {

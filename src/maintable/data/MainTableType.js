@@ -1,6 +1,8 @@
 'use strict';
 
-export const RowType = {
+export const RowType = 
+{
+    TITLE: "TITLE",
     HEADER: "HEADER",
     ROW: "ROW",
     ADDROW: "ADDROW",
@@ -18,6 +20,7 @@ export const ColumnType = {
     CHECKBOX: 'CHECKBOX',
     ROWACTION: 'ROWACTION',
     ROWSELECT: 'ROWSELECT',
+    GROUPTITLE: 'GROUPTITLE'
 }
 
 export function compareSubLevel(rowIndex1, rowIndex2) {

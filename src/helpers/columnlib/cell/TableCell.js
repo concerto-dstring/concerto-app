@@ -15,7 +15,7 @@ class TableCell extends React.Component{
     }
     initCellHashTable(table){
       const cellHashTable = {
-          PEOPLE:<PeopleCell  value={table.value} handleChange={table.handleChange} handleKey={table.handleKey}/>,
+          PEOPLE:<PeopleCell  value={table.value} handleChange={table.handleChange} handleKey={table.handleKey} data={table.data} />,
           TEXT:<TextCell  value={table.value} isHeaderOrFooter={table.isHeaderOrFooter} handleChange={table.handleChange} handleKey={table.handleKey}/>,
           NUMBER:<NumberCell  value={table.value} handleChange={table.handleChange} handleKey={table.handleKey}/>,
           SELECT:<SelectCell  value={table.value} handleChange={table.handleChange} handleKey={table.handleKey}/>,

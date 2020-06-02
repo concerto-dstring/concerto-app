@@ -45,6 +45,9 @@ class FixedDataTableCellGroupImpl extends React.Component {
     onColumnReorderMove: PropTypes.func,
     onColumnReorderEnd: PropTypes.func,
 
+    onCellEdit: PropTypes.func,
+    onCellEditEnd: PropTypes.func,
+
     height: PropTypes.number.isRequired,
 
     /**
@@ -158,6 +161,8 @@ class FixedDataTableCellGroupImpl extends React.Component {
         onColumnReorder={this.props.onColumnReorder}
         onColumnReorderMove={this.props.onColumnReorderMove}
         onColumnReorderEnd={this.props.onColumnReorderEnd}
+        onCellEdit={this.props.onCellEdit}
+        onCellEditEnd={this.props.onCellEditEnd}
         isColumnReordering={isColumnReordering}
         columnReorderingData={this.props.columnReorderingData}
         rowIndex={rowIndex}
@@ -228,7 +233,7 @@ class FixedDataTableCellGroup extends React.Component {
 
     let group = this.props.data.getGroupByRowIndex(this.props.rowIndex)
     let columns = this.props.columns
-    if (columns && group.isCollapsed && columns.findIndex(column => column.props.columnKey === '1000') < 0) {
+    if (columns && group.isCollapsed && columns.findIndex(column => column.template.name === 'DropDownHeader') < 0) {
       style.width = Math.floor(style.width)
       style.top = 7.2
       return (

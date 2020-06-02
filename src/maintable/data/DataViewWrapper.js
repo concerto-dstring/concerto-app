@@ -1,6 +1,6 @@
 "use strict";
 
-import { RowType, getSubLevel, getRootRowIndex } from './MainTableType';
+import { RowType, getSubLevel, getRootRowIndex, ColumnType } from './MainTableType';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
 
@@ -8,6 +8,7 @@ class DataViewWrapper {
     constructor(dataset, indexMap = null, subRowKeys) {
         this._indexMap = this.getIndexMap(dataset, indexMap);
         this._subRowMap = {};
+        this._subRowData = {}
         this._dataset = dataset;
         this._subRowKeys = subRowKeys
         this._indexMap.forEach((r, i) => {
@@ -17,20 +18,23 @@ class DataViewWrapper {
                   let j = 0;      
                   for (let k = 0; k < rows.length; k ++) {
                     if (this._subRowKeys && this._subRowKeys.length > 0) {
-                      if (this._subRowKeys.indexOf(rows[k]) !== -1) {
+                      if (this._subRowKeys.indexOf(rows[k].id) !== -1) {
                         j += 1 
                         const indexString = `${i}.${j}`;
-                        this._subRowMap[indexString] = rows[k];
+                        this._subRowMap[indexString] = rows[k].id;
+                        this._subRowData[indexString] = rows[k]
                       }
                     }
                     else {
                       j += 1
                       const indexString = `${i}.${j}`;
-                      this._subRowMap[indexString] = rows[k];
+                      this._subRowMap[indexString] = rows[k].id;
+                      this._subRowData[indexString] = rows[k]
                     }  
                   }
                   const indexString = `${i}.${j + 1}`;
                   this._subRowMap[indexString] = r.rowKey;
+                  this._subRowData[indexString] = r
               }
           }
         });
@@ -64,6 +68,17 @@ class DataViewWrapper {
         this.getCurrentUser = this.getCurrentUser.bind(this)
         this.getStatusSummary = this.getStatusSummary.bind(this)
         this.getDateSummary = this.getDateSummary.bind(this)
+        this.getRowNameColumn = this.getRowNameColumn.bind(this)
+        this.getTeamUsers = this.getTeamUsers.bind(this)
+        this.filterTeamUsers = this.filterTeamUsers.bind(this)
+        this.getRowThreadData = this.getRowThreadData.bind(this)
+        this.createThreadData = this.createThreadData.bind(this)
+        this.updateThreadData = this.updateThreadData.bind(this)
+        this.createReplyData = this.createReplyData.bind(this)
+        this.updateReplyData = this.updateReplyData.bind(this)
+        this.getRowThreadCount = this.getRowThreadCount.bind(this)
+        this.updateThreadOrReplySeen = this.updateThreadOrReplySeen.bind(this)
+        this.createNotification = this.createNotification.bind(this)
     }
 
     /**
@@ -179,8 +194,8 @@ class DataViewWrapper {
           offset ++;
           for (let k = 0; k < rows.length; k ++) {
               const indexString = `${rowIndex}.${offset}`;
-              this._subRowMap[indexString] = rows[k];
-              indexes.push({ rowType:RowType.SUBROW, rowKey:rows[k], parentRowKey: rowKey});
+              this._subRowMap[indexString] = rows[k].id;
+              indexes.push({ rowType:RowType.SUBROW, rowKey:rows[k].id, parentRowKey: rowKey});
               offset ++;
           }
           const indexString = `${rowIndex}.${offset}`;
@@ -210,7 +225,8 @@ class DataViewWrapper {
     getCellValue(rowIndex, columnKey) {
       let row = this.getObjectAt(rowIndex)
       if (row) {
-        return row[columnKey]
+        let value = row[columnKey]
+        return value === null ? '' : value
       }
 
       return ''
@@ -238,7 +254,7 @@ class DataViewWrapper {
           return this._subRowMap[rowIndex];
       }
       return '';
-  }
+    }
 
     addNewRow(rowIndex, newItem) {
         if (newItem !== '') {
@@ -250,8 +266,9 @@ class DataViewWrapper {
             }
             this._indexMap[rowIndex] = {rowType:RowType.ROW, groupKey:row.groupKey, rowKey:rowKey};
           } else {
-            let row = this._subRowMap[rowIndex];
-            this._dataset.addNewSubRow(row, newItem);
+            let rowKey = this._subRowMap[rowIndex];
+            let rowData = this._subRowData[rowIndex]
+            this._dataset.addNewSubRow(rowData.groupKey, rowKey, newItem);
           } 
         }
     }
@@ -307,6 +324,8 @@ class DataViewWrapper {
         let rowtype = this.getRowType(index);
         if (rowtype) {
             switch (rowtype) {
+                case RowType.TITLE:
+                    return 150;
                 case RowType.ADDROW: 
                     return 35;
                 case RowType.HEADER:
@@ -376,30 +395,8 @@ class DataViewWrapper {
       return this._dataset.getGroups()
     }
     
-    moveRow(sourceGroupKey, targetGroupKey, rowKey, rowIndex) {
-
-      let moveRow;
-      for  (let ridx = 0; ridx < this._indexMap.length; ridx ++) {
-        let row = this._indexMap[ridx];
-        if (row && row.rowKey === rowKey) {
-          moveRow = row
-          this._indexMap.splice(ridx, 1)
-        }
-      }
-
-      if (rowIndex < 0) {
-        for (let ridx = 0; ridx < this._indexMap.length; ridx ++) {
-          let row = this._indexMap[ridx];
-          if (row && row.groupKey === targetGroupKey && row.rowType === RowType.ADDROW) {
-            rowIndex = ridx
-            break
-          }
-        }
-      }
-
-      this._indexMap.splice(rowIndex, 0, moveRow)
-
-      return this._dataset.moveRow(sourceGroupKey, targetGroupKey, rowKey, rowIndex)
+    moveRow(sourceGroupKey, targetGroupKey, rowKey, oldSourceRow) {
+      return this._dataset.moveRow(sourceGroupKey, targetGroupKey, rowKey, oldSourceRow)
     }
 
     getGroupByRowIndex(rowIndex) {
@@ -422,6 +419,12 @@ class DataViewWrapper {
       return null
     }
 
+    getRowNameColumn() {
+      let columns = this._dataset.getColumns()
+      let column = columns.find(column => column.name === ColumnType.GROUPTITLE)
+      return column.columnKey
+    }
+
     changeGroupCollapseState(groupKey, isGroupCollapsed) {
       this._dataset.changeGroupCollapseState(groupKey, isGroupCollapsed)
     }
@@ -441,7 +444,7 @@ class DataViewWrapper {
     addNewSubSection(parentRowIndex, newItem) {
       let row = this._indexMap[parentRowIndex]
       if (row) {
-        this._dataset.addNewSubSection(row.rowKey, newItem)
+        this._dataset.addNewSubSection(row.groupKey, row.rowKey, newItem)
       }
     }
 
@@ -449,7 +452,15 @@ class DataViewWrapper {
      * 获取当前用户
      */
     getCurrentUser() {
-      return this._dataset.getCurrentUser()
+      return this._dataset._currentUser
+    }
+
+    getTeamUsers() {
+      return this._dataset._teamUsers.slice()
+    }
+
+    filterTeamUsers(filterValue) {
+      return this._dataset.filterTeamUsers(filterValue)
     }
 
     getColumnRows(rowIndex) {
@@ -458,14 +469,32 @@ class DataViewWrapper {
 
         let group = this.getGroupByRowIndex(rowIndex)
         if (group) {
-          rows = group.rows
-          return rows
+          let filterIndexMap = this._indexMap.filter(index => index.groupKey === group.groupKey && index.rowKey !== '')
+          if (filterIndexMap && filterIndexMap.length > 0) {
+            rows = []
+            filterIndexMap.map(index => {
+              rows.push(index.rowKey)
+            })
+            return rows
+          }
         }
       }
       else {
         let rootRowIndex = getRootRowIndex(rowIndex)
         rows = this._dataset.getSubRows(this._indexMap[rootRowIndex].rowKey)
-        return rows
+
+        if (this._subRowKeys.length > 0) {
+          let filterRows = rows.filter(row => {
+            if (this._subRowKeys.indexOf(row) !== -1) {
+              return row
+            }
+          })
+          
+          return filterRows
+        }
+        else {
+          return rows
+        }
       }
 
       return null
@@ -495,6 +524,7 @@ class DataViewWrapper {
         let defaultCount = 0
 
         rows.map(rowKey => {
+          if (!this._dataset.getObjectAt(rowKey) || !columnKey in this._dataset.getObjectAt(rowKey)) return
           let statusValue = this._dataset.getObjectAt(rowKey)[columnKey]
           switch (statusValue) {
             case status.finished:
@@ -592,13 +622,12 @@ class DataViewWrapper {
       let dateText = '-'
       let dateDiff
       let datePercent = '0%'
-      let minDate
-      let maxDate
 
-      if (rows) {
+      if (rows && Object.keys(this._dataset._rowData).length > 0) {
         rows.map(rowKey => {
-          let dateValue = this._dataset.getObjectAt(rowKey)[columnKey]
-          
+          let dateValue = this.getObjectAt(rowIndex) ? this.getObjectAt(rowIndex)[columnKey] : null
+          let minDate
+          let maxDate
           if (dateValue) {
             // 只要日期不要时间
             dateValue = dateValue.substring(0, 10)
@@ -637,6 +666,43 @@ class DataViewWrapper {
       dateSummary.dateDiff = dateDiff
       dateSummary.datePercent = datePercent
       return dateSummary
+    }
+
+    getRowThreadCount(rowIndex) {
+      let rowId = this.getRowKey(rowIndex)
+      return this._dataset._rowThreadSize[rowId] ? this._dataset._rowThreadSize[rowId] : 0
+    }
+
+    getRowThreadData(rowId, setUpdateInfo) {
+      return this._dataset.getRowThreadData(rowId, setUpdateInfo)
+    }
+
+    createThreadData(createData, setUpdateInfo) {
+      this._dataset.createThreadData(createData, setUpdateInfo)
+    }
+
+    updateThreadData(updateData, setUpdateInfo) {
+      this._dataset.updateThreadData(updateData, setUpdateInfo)
+    }
+
+    createReplyData(createData, rowId, setUpdateInfo) {
+      this._dataset.createReplyData(createData, rowId, setUpdateInfo)
+    }
+
+    updateReplyData(updateData, rowId, setUpdateInfo) {
+      this._dataset.updateReplyData(updateData, rowId, setUpdateInfo)
+    }
+
+    updateThreadOrReplySeen(threadId, replyId, seenUserIds, rowId) {
+      this._dataset.updateThreadOrReplySeen(threadId, replyId, seenUserIds, rowId)
+    }
+
+    createNotification(notificationData) {
+      this._dataset.createNotification(notificationData)
+    }
+
+    getCurrentBoardId() {
+      return this._dataset._currentBoardId
     }
 }
 

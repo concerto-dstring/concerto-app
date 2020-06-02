@@ -6,13 +6,14 @@ import except from 'except';
 import DataPropTypes from './DataPropTypes';
 import { DataViewWrapper } from './DataViewWrapper';
 import { RowType } from './MainTableType';
+import FixedDataTable from '../FixedDataTable';
 
 const TableContext = React.createContext();
 
 const DataVersionContext = React.createContext({
   data: null,
   version: 0,
-  filterInputValue: null
+  filterInputValue: null,
 });
 
 function DataContext(Wrapped) {
@@ -27,18 +28,34 @@ function DataContext(Wrapped) {
       this.state = {
         data: props.data,
         version: 0,
-        filterInputValue: props.filterInputValue
+        filterInputValue: props.filterInputValue,
       };
     }
 
     componentWillReceiveProps(nextProps) {
-      if (JSON.stringify(nextProps.data) !== JSON.stringify(this.state.data) || 
-          this.state.filterInputValue !== nextProps.filterInputValue) {
+      // data比较时需要去除apolloClient否则报错
+      if (JSON.stringify(this.getData(nextProps.data)) !== JSON.stringify(this.getData(this.state.data)) || 
+        this.state.filterInputValue !== nextProps.filterInputValue) {
         this.setState({
           data: nextProps.data,
           filterInputValue: nextProps.filterInputValue
         });
       }
+    }
+
+    getData(data) {
+      let newData = {}
+      for (let key in data) {
+        if (key === '_dataset') {
+          let dataset = Object.assign({}, data[key])
+          dataset._apolloClient = null
+          newData[key] = dataset
+        }
+        else {
+          newData[key] = data[key]
+        }
+      }
+      return newData
     }
 
     // Force a refresh or the page doesn't re-render
@@ -98,70 +115,6 @@ function AddFilter(TableComponent) {
       return filteredData;
     }
 
-    doFilterByPeople(filteredIndexes,people,columnPeople){
-        
-        const updateFilteredIndexes = (filteredIndexes,rowKeysArray) => {
-          let newFilteredIndexes = [],newSubRowKeys=[];
-          const subRows = this.props.data._subRows;
-          for(let x=0;x<filteredIndexes.length;x++){
-              const thisRowKey = filteredIndexes[x].rowKey;
-              if(thisRowKey===''){
-                newFilteredIndexes.push(filteredIndexes[x]);
-              }else{
-                for(let y=0;y<rowKeysArray.length;y++){
-                  if(thisRowKey === rowKeysArray[y]){
-                    newFilteredIndexes.push(filteredIndexes[x]);
-                  }
-                  for(var rowKey in subRows){
-                    const subRowArray = subRows[rowKey].rows;
-                    for(let z=0;z<subRowArray.length;z++){
-                       if(subRowArray[z] == rowKeysArray[y]&&newSubRowKeys.indexOf(subRowArray[z])<0){
-                         newSubRowKeys.push(subRowArray[z]);
-                       }
-                       if(thisRowKey === rowKey&&newFilteredIndexes.indexOf(filteredIndexes[x])<0){
-                         newFilteredIndexes.push(filteredIndexes[x]);
-                       }
-                    }
-                  }
-                }
-              }
-          }
-          return {
-            newFilteredIndexes:newFilteredIndexes,
-            newSubRowKeys:newSubRowKeys
-          };
-        }
-
-        const updateTableRows = (filteredIndexes) => {
-          const tableData   = this.props.data._rowData;
-          const tableColumn = this.props.data._columns;
-          let rowKeysArray  = [];
-          for(let i=0;i<tableColumn.length;i++){
-            const column = tableColumn[i];
-            const columnKey = column.columnKey;
-            if(columnPeople === column.columnComponentType){
-              for(var rowIndex in tableData){
-                  const row = tableData[rowIndex];
-                  for(var key in row){
-                    if(columnKey === key){
-                      if(row[key].length>0){
-                        for(let j=0;j<row[key].length;j++){
-                          const thePeople = row[key][j];
-                          if(people.userName === thePeople.userName&&rowKeysArray.indexOf(rowIndex)<0){
-                            rowKeysArray.push(rowIndex);
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-            return updateFilteredIndexes(filteredIndexes,rowKeysArray);
-        } 
-        return updateTableRows(filteredIndexes);
-    }
-
     filter() {
       // Get and prep filters
       // todo add filter here
@@ -180,6 +133,8 @@ function AddFilter(TableComponent) {
       const dataset = this.props.data;
 
       let filteredIndexes = [];
+      filteredIndexes.push({rowType:RowType.TITLE, groupKey:"", rowKey:""});
+
       if (Object.keys(filters).length > 0) {
         for(let i = 0; i < dataset.getGroups().length; i ++) {
           let group = dataset.getGroups()[i];
@@ -221,7 +176,7 @@ function AddFilter(TableComponent) {
             let group = dataset.getGroups()[i];
             filteredIndexes.push({rowType:RowType.HEADER, groupKey:group.groupKey, rowKey:''});
             for (let j = 0; j < group.rows.length; j ++) {
-                filteredIndexes.push({rowType:RowType.ROW, groupKey:group.groupKey, rowKey:group.rows[j]});
+                filteredIndexes.push({rowType:RowType.ROW, groupKey:group.groupKey, rowKey:group.rows[j].id});
             }
             filteredIndexes.push({rowType:RowType.ADDROW, groupKey:group.groupKey, rowKey:''});
             filteredIndexes.push({rowType:RowType.FOOTER, groupKey:group.groupKey, rowKey:''});
@@ -301,7 +256,7 @@ function AddFilter(TableComponent) {
               if (row[subKey] instanceof Array) {
                 let users = row[subKey]
                 users.map(user => {
-                  if (user.userName && user.userName.toLowerCase().indexOf(value) !== -1 && filterData.rowKeys.indexOf(key) === -1) {
+                  if (user.username && user.username.toLowerCase().indexOf(value) !== -1 && filterData.rowKeys.indexOf(key) === -1) {
                     filterData.rowKeys.push(key)
                     return
                   }
@@ -326,8 +281,8 @@ function AddFilter(TableComponent) {
             let rows = dataset.getSubRowData()[rowKey].rows
             if (rows) {
               rows.map(row => {
-                if (filterData.rowKeys.indexOf(row) !== -1) {
-                  filterData.subRowKeys.push(row)
+                if (filterData.rowKeys.indexOf(row.id) !== -1) {
+                  filterData.subRowKeys.push(row.id)
                   if (filterData.rowKeys.indexOf(rowKey) === -1) {
                     filterData.rowKeys.push(rowKey)
                   }
@@ -341,7 +296,7 @@ function AddFilter(TableComponent) {
               let count = 0 // 计算分区里面的行有多少可以显示
               for (let i = 0; i < group.rows.length; i++) {
                 // 如果分区的行都不在过滤后的行里面则该分区不显示
-                if (filterData.rowKeys.indexOf(group.rows[i]) !== -1) {
+                if (filterData.rowKeys.indexOf(group.rows[i].id) !== -1) {
                   count++
                 }
               }
@@ -372,6 +327,7 @@ function AddFilter(TableComponent) {
           data={filteredData}
           onRowReorderEndCallback={filteredData.reorderRow}
           onNewRowAddCallback={filteredData.addNewRow}
+          onNewGroupAddCallback={filteredData.addNewGroup}
           {...other}
         >
           {this.props.children}
@@ -379,9 +335,6 @@ function AddFilter(TableComponent) {
       );
     }
   }
-
-
-
   return FilterTable;
 }
 

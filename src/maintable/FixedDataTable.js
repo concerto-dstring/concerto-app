@@ -428,7 +428,21 @@ class FixedDataTable extends React.Component {
      */
     onColumnResizeEndCallback: PropTypes.func,
 
+    /**
+     * Add new row callback
+     */    
     onNewRowAddCallback: PropTypes.func,
+
+    /**
+     * Add new group callback
+     */ 
+    onNewGroupAddCallback: PropTypes.func,
+
+
+    /**
+     * On filter change callback
+     */ 
+    onFilterChangeCallback: PropTypes.func,
 
     /**
      * Callback that is called when reordering has been completed
@@ -476,6 +490,7 @@ class FixedDataTable extends React.Component {
      * @ignore
      */
     elementHeights: PropTypes.shape({
+      titleHeight: PropTypes.number,
       cellGroupWrapperHeight: PropTypes.number,
       footerHeight: PropTypes.number,
       groupHeaderHeight: PropTypes.number,
@@ -502,6 +517,7 @@ class FixedDataTable extends React.Component {
       groupHeaderHeight: 0,
       headerHeight: 40,
       addRowHeight: 35,
+      titleHeight: 80,
     },
     keyboardScrollEnabled: false,
     keyboardPageEnabled: false,
@@ -912,6 +928,7 @@ class FixedDataTable extends React.Component {
 
     return (
       <FixedDataTableBufferedRows
+        title={props.title}
         ariaRowIndexOffset={ariaRowIndexOffset}
         ariaGroupHeaderIndex={ariaGroupHeaderIndex}
         ariaHeaderIndex={ariaHeaderIndex}
@@ -933,10 +950,14 @@ class FixedDataTable extends React.Component {
         isColumnResizing={props.isColumnResizing}
         isRowReordering={props.isRowReordering}
         onNewRowAdd={props.onNewRowAddCallback}
+        onFilterChange={props.onFilterChangeCallback}
+        onAddNewGroup={props.onAddNewGroupCallback} 
         onColumnReorder={onColumnReorder}
         onColumnReorderMove={this._onColumnReorderMove}
         onColumnReorderEnd={this._onColumnReorderEnd}
         onColumnResize={this._onColumnResize}
+        onCellEdit={this._onCellEdit}
+        onCellEditEnd={this._onCellEditEnd}
         onRowClick={props.onRowClick}
         onRowContextMenu={props.onRowContextMenu}
         onRowDoubleClick={props.onRowDoubleClick}
@@ -1040,6 +1061,10 @@ class FixedDataTable extends React.Component {
         let type = this.props.rowTypeGetter(rowIndex);
         let dropRowIndex = rowIndex;
         switch (type) {
+          case RowType.TITLE:
+            if (this._draggingRowIndex > rowIndex)
+              dropRowIndex += 2;
+            break;
           case RowType.HEADER:
             if (this._draggingRowIndex > rowIndex)
               dropRowIndex++;
@@ -1118,7 +1143,20 @@ class FixedDataTable extends React.Component {
     };
   }
 
-  _onRowReorderStart = (event, rowIndex) => {
+  _onCellEdit = (rowIndex, columnKey) => {
+    this._isCellEditing = true;
+    this.props.cellActions.startCellEdit({rowIndex, columnKey});
+  }
+
+  _onCellEditEnd = () => {
+    this._isCellEditing = false;
+    this.props.cellActions.endCellEdit();
+  }
+
+  _onRowReorderStart = (event, rowIndex) => {   
+    if (this._isCellEditing) {
+      return;
+    } 
     let { rowOffsets, storedHeights, rowSettings } = this.props; 
     this._position = getPosition(event, this._divRef);
     let type = rowSettings.rowTypeGetter(rowIndex); 
@@ -1429,6 +1467,8 @@ class FixedDataTable extends React.Component {
               onClick={props.onRowClick}
               isRowReordering={props.isRowReordering}
               rowReorderingData={props.rowReorderingData}
+              onCellEdit={this._onCellEdit}
+              onCellEditEnd={this._onCellEditEnd}
               onContextMenu={props.onRowContextMenu}
               onDoubleClick={props.onRowDoubleClick}
               onMouseDown={this._onRowReorderStart}
