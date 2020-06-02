@@ -956,6 +956,8 @@ class FixedDataTable extends React.Component {
         onColumnReorderMove={this._onColumnReorderMove}
         onColumnReorderEnd={this._onColumnReorderEnd}
         onColumnResize={this._onColumnResize}
+        onCellEdit={this._onCellEdit}
+        onCellEditEnd={this._onCellEditEnd}
         onRowClick={props.onRowClick}
         onRowContextMenu={props.onRowContextMenu}
         onRowDoubleClick={props.onRowDoubleClick}
@@ -1141,7 +1143,20 @@ class FixedDataTable extends React.Component {
     };
   }
 
-  _onRowReorderStart = (event, rowIndex) => {
+  _onCellEdit = (rowIndex, columnKey) => {
+    this._isCellEditing = true;
+    this.props.cellActions.startCellEdit({rowIndex, columnKey});
+  }
+
+  _onCellEditEnd = () => {
+    this._isCellEditing = false;
+    this.props.cellActions.endCellEdit();
+  }
+
+  _onRowReorderStart = (event, rowIndex) => {   
+    if (this._isCellEditing) {
+      return;
+    } 
     let { rowOffsets, storedHeights, rowSettings } = this.props; 
     this._position = getPosition(event, this._divRef);
     let type = rowSettings.rowTypeGetter(rowIndex); 
@@ -1452,6 +1467,8 @@ class FixedDataTable extends React.Component {
               onClick={props.onRowClick}
               isRowReordering={props.isRowReordering}
               rowReorderingData={props.rowReorderingData}
+              onCellEdit={this._onCellEdit}
+              onCellEditEnd={this._onCellEditEnd}
               onContextMenu={props.onRowContextMenu}
               onDoubleClick={props.onRowDoubleClick}
               onMouseDown={this._onRowReorderStart}

@@ -125,15 +125,18 @@ class EditableCell extends React.PureComponent {
             const columnCanEditor = this.cellRenderValues[type] ;
             if(columnCanEditor){
                 this.setState({ editing: true });
+                this.props.onCellEdit(this.props.rowIndex, this.props.columnKey);
             }
         }else{
             this.setState({ editing: true });
+            this.props.onCellEdit(this.props.rowIndex, this.props.columnKey);
         }
     }
       
     handleHide = () => { 
         this.updateValue()        
         this.setState({ editing: false });
+        this.props.onCellEditEnd();
     }
 
 
@@ -153,6 +156,7 @@ class EditableCell extends React.PureComponent {
     {
         if (e.keyCode === Keys.RETURN) {
             this.handleHide();
+            this.props.onCellEditEnd();
             return;
         }
     }

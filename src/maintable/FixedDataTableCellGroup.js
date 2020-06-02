@@ -45,6 +45,9 @@ class FixedDataTableCellGroupImpl extends React.Component {
     onColumnReorderMove: PropTypes.func,
     onColumnReorderEnd: PropTypes.func,
 
+    onCellEdit: PropTypes.func,
+    onCellEditEnd: PropTypes.func,
+
     height: PropTypes.number.isRequired,
 
     /**
@@ -158,6 +161,8 @@ class FixedDataTableCellGroupImpl extends React.Component {
         onColumnReorder={this.props.onColumnReorder}
         onColumnReorderMove={this.props.onColumnReorderMove}
         onColumnReorderEnd={this.props.onColumnReorderEnd}
+        onCellEdit={this.props.onCellEdit}
+        onCellEditEnd={this.props.onCellEditEnd}
         isColumnReordering={isColumnReordering}
         columnReorderingData={this.props.columnReorderingData}
         rowIndex={rowIndex}
