@@ -46,6 +46,11 @@
             "StackName": "amplify-concerto-app-product-140556",
             "StackId": "arn:aws:cloudformation:ap-northeast-2:290655070383:stack/amplify-concerto-app-product-140556/947e5a30-8730-11ea-84ae-0a86bceb3baa",
             "AmplifyAppId": "d5nz3bkn2128q"
+        },
+        "categories": {
+            "auth": {
+                "concertoapp2fea5048": {}
+            }
         }
     }
 }
