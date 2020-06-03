@@ -61,7 +61,12 @@ class RegisterValidate extends Component {
     if (code) {
       try {
         await Auth.confirmSignUp(this.state.userName, code)
-        this.props.history.push('/login')
+        this.props.history.push({
+          pathname: '/login',
+          state: {
+            userName: this.state.userName
+          }
+        })
       } catch (error) {
         this.setState({
           isLoading: false,

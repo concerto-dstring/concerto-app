@@ -45,7 +45,7 @@ class PeopleModal extends PureComponent {
         content={
           <div>
             <Divider className="dividerStyle">People</Divider>
-            <div>
+            <div style={{height: 180, overflowY: 'auto'}}>
             {
               this.state.people.map((v, i) => (
                 <div key={i} className="user" onClick={this.handleClickPeople.bind(this, v)}>
