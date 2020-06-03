@@ -1,9 +1,10 @@
 
-import React, { createRef } from 'react';
+import React, { useContext, createRef } from 'react';
 import {BrowserRouter as Router, Route, Link, withRouter } from 'react-router-dom';
 import MainTable from './maintable/MainTable';
+import SessionContext from './App';
 import './MainPage.less';
-import './maintable/css/style/MoveToSectionMenu.less'
+import './maintable/css/style/MoveToSectionMenu.less';
 import { Layout, Input, Collapse, Button, Avatar, Dropdown, Menu, Modal, message } from 'antd';
 import { 
     SearchOutlined,
@@ -31,6 +32,8 @@ let intervalTimer
 @withApollo
 @withRouter
 class MainPage extends React.Component {
+
+  static contextType = SessionContext;
   constructor(props){
     super(props)
     this.state = {
@@ -53,7 +56,7 @@ class MainPage extends React.Component {
 
   componentDidMount() {
     let dataset = this.props.dataset;
-    dataset.fetchSideMenus(this.props.client, 'board', this.props.location.state.userId, this.setMenus)
+    dataset.fetchSideMenus(this.props.client, 'board', this.context.userId, this.setMenus);
     // dataset.fetchSideMenus(this.props.client, 'dashboard', this.handleBusy)
   }
 
@@ -255,7 +258,7 @@ class MainPage extends React.Component {
   }
 
   getBodyContent = () => {
-    const { dataset, siderWidth, contentTitle } = this.state
+    const { dataset, siderWidth, contentTitle } = this.state;
     return (
         <Content style={{marginLeft: 24}}>
             <Route exact component={()=>
@@ -400,7 +403,7 @@ class MainPage extends React.Component {
     }
     
     return (
-      <Router>
+      <>
         <Layout>
           <Header className="header">            
             <div>
@@ -526,7 +529,7 @@ class MainPage extends React.Component {
             />
           </div>
         </div>
-     </Router>
+      </>
     );
   }
 }

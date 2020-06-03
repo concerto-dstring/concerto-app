@@ -136,7 +136,7 @@ class EditableCell extends React.PureComponent {
     handleHide = () => { 
         this.updateValue()        
         this.setState({ editing: false });
-        this.props.onCellEditEnd();
+        this.props.onCellEditEnd(this.props.rowIndex, this.props.columnKey);
     }
 
 
@@ -156,7 +156,6 @@ class EditableCell extends React.PureComponent {
     {
         if (e.keyCode === Keys.RETURN) {
             this.handleHide();
-            this.props.onCellEditEnd();
             return;
         }
     }

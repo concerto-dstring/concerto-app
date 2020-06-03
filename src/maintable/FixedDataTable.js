@@ -1144,17 +1144,18 @@ class FixedDataTable extends React.Component {
   }
 
   _onCellEdit = (rowIndex, columnKey) => {
-    this._isCellEditing = true;
     this.props.cellActions.startCellEdit({rowIndex, columnKey});
   }
 
-  _onCellEditEnd = () => {
-    this._isCellEditing = false;
-    this.props.cellActions.endCellEdit();
+  _onCellEditEnd = (rowIndex, columnKey) => {
+    if (this.props.CellEditingData.rowIndex === rowIndex 
+      && this.props.CellEditingData.columnKey === columnKey) {
+      this.props.cellActions.endCellEdit();
+    }
   }
 
   _onRowReorderStart = (event, rowIndex) => {   
-    if (this._isCellEditing) {
+    if (this.props.isCellEditing) {
       return;
     } 
     let { rowOffsets, storedHeights, rowSettings } = this.props; 

@@ -66,6 +66,7 @@ class RowHeaderCell extends React.PureComponent {
       e.preventDefault();
       this.props.onCellEdit(this.props.rowIndex, this.props.columnKey)
       this.setState({ editing: true });
+      
     }
 
     handleInputClick = (e) => {
@@ -78,7 +79,7 @@ class RowHeaderCell extends React.PureComponent {
             this.props.data.setObjectAt(this.props.rowIndex, this.props.columnKey, this.state.value);
         }
         this.setState({ editing: false });
-        this.props.onCellEditEnd();
+        this.props.onCellEditEnd(this.props.rowIndex, this.props.columnKey);
     }
 
     handleChange = (e)=> {
@@ -90,7 +91,6 @@ class RowHeaderCell extends React.PureComponent {
     handleKey = e => {
         if (e.keyCode == Keys.RETURN) {
             this.handleHide();
-            this.props.onCellEditEnd();
             return;
         }
     }
