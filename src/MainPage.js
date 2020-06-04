@@ -5,7 +5,7 @@ import MainTable from './maintable/MainTable';
 import SessionContext from './App';
 import './MainPage.less';
 import './maintable/css/style/MoveToSectionMenu.less';
-import { Layout, Input, Collapse, Button, Avatar, Dropdown, Menu, Modal, message } from 'antd';
+import { Layout, Input, Collapse, Button, Avatar, Dropdown, Menu, Modal, message, Spin } from 'antd';
 import { 
     SearchOutlined,
     LeftOutlined,
@@ -35,6 +35,7 @@ class MainPage extends React.Component {
 
   constructor(props){
     super(props)
+
     this.state = {
       siderWidth: defaultSiderWidth,
       collapsed: false,
@@ -43,24 +44,29 @@ class MainPage extends React.Component {
       dashboardMenus: [],
       contentTitle: '',
       isShowCreateBoard: false,
-      isShowReNameBoard: false
+      isShowReNameBoard: false,
+      isLoading: false
     }
 
     this.createBoardRef = createRef();
     this.reNameBoardRef = createRef();
 
     this.setMenus = this.setMenus.bind(this)
+    this.setLoading = this.setLoading.bind(this)
     this.updateMenus = this.updateMenus.bind(this)
+    this.dealErrorBoardId = this.dealErrorBoardId.bind(this)
   }
 
   componentDidMount() {
     let dataset = this.props.dataset;
     const id = this.props.match.params.id;
-    dataset.fetchSideMenus(this.props.client, 'board', localStorage.getItem('CurrentUserId'), this.setMenus, id);
-    this.setState({
-      selectedKey: id
-    });
+    this.setLoading(true)
+    dataset.fetchSideMenus(this.props.client, 'board', localStorage.getItem('CurrentUserId'), this.setMenus, id, this.dealErrorBoardId);
     // dataset.fetchSideMenus(this.props.client, 'dashboard', this.handleBusy)
+  }
+
+  dealErrorBoardId = () => {
+    this.props.history.push('/notfound')
   }
 
   componentWillUnmount() {
@@ -81,22 +87,22 @@ class MainPage extends React.Component {
     let selectedKey
     let contentTitle
     if (isBoard) {
-      if (menus.length > 0 ) {
-        selectedKey = defaultBoard ? defaultBoard.id : menus[0].id
-        contentTitle = defaultBoard ? defaultBoard.name : menus[0].name
-        // this.props.history.push('/board/' + menus[0].id)
+      if (defaultBoard) {
+        selectedKey = defaultBoard.id
+        contentTitle = defaultBoard.name
+        this.props.history.push('/board/' + selectedKey)
       }
       this.setState({
         boardMenus: menus,
         selectedKey,
         contentTitle,
-        dataset: this.props.dataset,
+        isLoading: false
       })
     }
     else {
       this.setState({
         dashboardMenus: menus,
-        dataset: this.props.dataset,
+        isLoading: false
       })
     }
   }
@@ -119,17 +125,18 @@ class MainPage extends React.Component {
     });
   };
 
-  setBusy = (busy) => {
+  setLoading = (isLoading) => {
     this.setState({
-      busy: busy
+      isLoading: isLoading
     })
   }
   
-  nativeGetTableStore = (id, name, isBoard) => {
+  nativeGetTableStore = (id, name, isBoard, path) => {
     const { dataset } = this.state
+    this.setLoading(true)
+    this.props.history.push(path)
     if (isBoard) {
-      // this.props.history.push('/board/' + id)
-      dataset.fetchBackendBoardData(id, null, this.setBusy);
+      dataset.fetchBackendBoardData(id, null, this.setLoading, localStorage.getItem('CurrentUserId'));
       this.setState({
         selectedKey: id,
         contentTitle: name,
@@ -179,6 +186,7 @@ class MainPage extends React.Component {
   }
 
   handleCreateBoard = () => {
+    this.setLoading(true)
     let boardName = this.createBoardRef.current.input.value
     if (!boardName) {
       message.warning('工作板名称不能为空')
@@ -264,38 +272,19 @@ class MainPage extends React.Component {
     const { dataset, siderWidth, contentTitle } = this.state;
     return (
         <Content style={{marginLeft: 24}}>
-            <Route exact component={()=>
+          <Route exact component={()=>
                 <MainTable
                   title={contentTitle}
                   data={dataset} 
                   siderWidth={siderWidth} 
                 />}
               />
-              {/* <Route path="/board/:id" component={()=>
-                <MainTable
-                  title={contentTitle}
-                  data={dataset} 
-                  siderWidth={siderWidth} 
-                />}
-              /> */}
-              {/* <Route exact path="/dashborad" component={()=>
-                <MainTable
-                  title={contentTitle}
-                  data={dataset} 
-                  siderWidth={siderWidth} 
-                />}
-              />
-              <Route exact path="/board/:id/pulses/:rowId" component={()=>
-                <RowHeaderDrawer
-                />}
-              /> */}
         </Content>
     )
   }
 
   getPanel = (menus, isBoard, name, key) => {
     const { dataset, selectedKey } = this.state
-    console.log(selectedKey);
     return (
       <Panel 
         header={<div className="body_left_sider_panel_header">
@@ -326,7 +315,7 @@ class MainPage extends React.Component {
                 key={item.id} 
                 className="body_left_sider_panel_menu"
                 style={style}
-                onClick={this.nativeGetTableStore.bind(this, item.id, item.name, isBoard)}
+                onClick={this.nativeGetTableStore.bind(this, item.id, item.name, isBoard, path)}
               >
                 <div className="body_left_sider_panel_menu_item_link" style={style}>
                   <Link to={path}>
@@ -386,7 +375,7 @@ class MainPage extends React.Component {
   render(){
     const { siderWidth, collapsed, boardMenus, dashboardMenus, dataset, 
       isShowCreateBoard, isShowReNameBoard, isShowDeleteBoard, boardName,
-      isShowUndoModal, countdown } = this.state
+      isShowUndoModal, countdown, isLoading } = this.state
 
     // 更新时若isShowUndoModal为true则倒计时
     if (isShowUndoModal) {
@@ -407,7 +396,7 @@ class MainPage extends React.Component {
     }
     
     return (
-      <>
+      <Spin size="large" spinning={isLoading} style={{maxHeight: '100%'}}>
         <Layout>
           <Header className="header">            
             <div>
@@ -533,7 +522,7 @@ class MainPage extends React.Component {
             />
           </div>
         </div>
-      </>
+      </Spin>
     );
   }
 }

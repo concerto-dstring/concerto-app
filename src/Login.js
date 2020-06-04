@@ -33,6 +33,14 @@ class Login extends PureComponent {
     })
   }
 
+  componentDidMount() {
+    window.addEventListener('keyup', this.loginAppByKey);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('keyup', this.loginAppByKey);
+  }
+
   getUserName = (props) => {
     if (props.location && props.location.state && Object.keys(props.location.state).indexOf('userName') !== -1) {
       return props.location.state.userName
@@ -73,7 +81,7 @@ class Login extends PureComponent {
       try {
         const user = await Auth.signIn(userName, password);
         localStorage.setItem('CurrentUserId', user.attributes.sub);
-        this.props.history.push({ pathname: '/board', state: { userId: user.attributes.sub } })
+        this.props.history.push('/board')
       } catch (error) {
         if (error.code === 'UserNotFoundException') {
           this.setState({
@@ -99,6 +107,12 @@ class Login extends PureComponent {
     }
   }
 
+  loginAppByKey = (e) => {
+    if (e.key === 'Enter') {
+      this.loginApp()
+    }
+  }
+
   handleUserNameChange = () => {
     if (this.state.userNameBorderColor === errorColor) {
       this.setState({
@@ -118,10 +132,10 @@ class Login extends PureComponent {
   }
 
   render() {
-    const { isLoading, defaultUserName, userNameBorderColor, passwordBorderColor, userNameErrorMsg, passwordErrorMsg, userId} = this.state
+    const { isLoading, defaultUserName, userNameBorderColor, passwordBorderColor, userNameErrorMsg, passwordErrorMsg } = this.state
     return (
       <div className="login_layout">
-        <Spin tip="登录..." spinning={isLoading}>
+        <Spin spinning={isLoading}>
           <div className="login_container">
             <div className="login_header_component">
               <span className="login_header">欢迎使用 Pynbo 拼板</span>

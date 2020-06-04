@@ -566,7 +566,7 @@ class MainTable extends React.Component {
 export default Dimensions({
     getHeight: function(element) {
       // 减去上面面包屑的高度
-      return window.innerHeight - 94;
+      return window.innerHeight - 41;
     },
     getWidth: function(element) {
       return window.innerWidth - 24;

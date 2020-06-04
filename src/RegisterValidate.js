@@ -35,6 +35,19 @@ class RegisterValidate extends Component {
     if (!this.getUserName(this.props)) {
       this.props.history.push('/login')
     }
+    else {
+      window.addEventListener('keyup', this.completeRegisterByKey);
+    }
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('keyup', this.completeRegisterByKey);
+  }
+
+  completeRegisterByKey = (e) => {
+    if (e.key === 'Enter') {
+      this.completeRegister()
+    }
   }
 
   getUserName = (props) => {
@@ -89,7 +102,7 @@ class RegisterValidate extends Component {
 
     return (
       <div className="validate_layout">
-        <Spin tip="验证..." spinning={isLoading}>
+        <Spin spinning={isLoading}>
           <div className="validate_container">
             <div className="validate_header_component">
               <span className="validate_header">欢迎注册 Pynbo 拼板</span>
