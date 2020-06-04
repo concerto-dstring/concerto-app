@@ -226,7 +226,7 @@ class MainTable extends React.Component {
         this._onColumnReorderEndCallback = this._onColumnReorderEndCallback.bind(this);
         this._onRemoveColumnCallback = this._onRemoveColumnCallback.bind(this);
         this._onCollpseColumnCallback = this._onCollpseColumnCallback.bind(this);
-
+        this._onGetListUsers = this._onGetListUsers.bind(this)
         this._getColumnName = this._getColumnName.bind(this);
         this.refresh = this.refresh.bind(this);
         this._dataset.setCallback(this.refresh, 'main');
@@ -499,6 +499,10 @@ class MainTable extends React.Component {
         filterType: type
       })
     }
+
+    _onGetListUsers = () => {
+      return this.state.data.getListUsers()
+    }
    
     renderTable() {
         var { data, filters, filterInputValue, filterType } = this.state;
@@ -514,7 +518,8 @@ class MainTable extends React.Component {
                     onAddNewGroupCallback={this._onAddNewGroupCallback}
                     onColumnReorderEndCallback={this._onColumnReorderEndCallback}
                     onColumnResizeEndCallback={this._onColumnResizeEndCallback}
-                    onFilterChangeCallback={this._onFilterChangeCallback}                    
+                    onFilterChangeCallback={this._onFilterChangeCallback}
+                    onGetListUsers = {this._onGetListUsers}
                     columnNameGetter={this._getColumnName}
                     data={data}
                     titleHeight={80}

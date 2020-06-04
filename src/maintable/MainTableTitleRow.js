@@ -68,6 +68,11 @@ class MainTableTitleRow extends React.Component {
     onFilter: PropTypes.func,
 
     /**
+     * user list
+     */
+    onGetListUsers: PropTypes.func, 
+
+    /**
      * Whether the grid should be in RTL mode
      */
     isRTL: PropTypes.bool,
@@ -218,21 +223,21 @@ render() /*object*/ {
                     onChange={this._onFilterByPeople}
                   >
                     {
-                      getPeople().map(user => {
+                      this.props.onGetListUsers().map(user => {
                         return (
                           <Select.Option
                             key={user.id} 
-                            value={user.userName}
+                            value={user.username}
                           >
                             <Avatar
                               size={20} 
                               style={{background: user.faceColor}}
                             >
-                              {user.smallName}
+                              {user.fname}
                             </Avatar>
                             &emsp;
                             {
-                              user.userName
+                              user.lname + user.fname
                             }
                           </Select.Option>
                         )

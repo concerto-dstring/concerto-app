@@ -21,6 +21,7 @@
   import Login from './Login'
   import Register from './Register'
   import RegisterValidate from './RegisterValidate'
+  import { ForgetPassword } from './ForgetPassword'
 
   /* AWSAppSyncClient integrates with the Apollo Client for GraphQL */
   const client = new AWSAppSyncClient({
@@ -59,6 +60,7 @@
           <Route path="/dashboard" exact component={MainComponent} />
           <Route path="/register" exact component={Register} />
           <Route path="/register/validate" exact component={RegisterValidate} />
+          <Route path="/forget" exact component={ForgetPassword} />
           <Redirect to="/login" from='/' exact />
         </Switch>
       )

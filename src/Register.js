@@ -36,15 +36,9 @@ class Register extends PureComponent {
   }
 
   registerUser = async() => {
-    this.setState({
-      isLoading: true
-    })
     const { userName, password, confirmPassword, email, phone } = this.state
     
     if (!userName || !password || !confirmPassword || !email || !phone) {
-      this.setState({
-        isLoading: false
-      })
       if (!userName) {
         this.setState({
           userNameBorderColor: errorColor,
@@ -81,6 +75,9 @@ class Register extends PureComponent {
       }
     }
     else {
+      this.setState({
+        isLoading: true
+      })
       try {
         const user = await Auth.signUp({
           username: userName,
