@@ -13,8 +13,8 @@ const SessionContext = React.createContext({});
 
 @withRouter
 class Login extends PureComponent {
-  constructor() {
-    super()
+  constructor(props) {
+    super(props)
 
     this.state = {
       isLoading: false,
@@ -22,10 +22,24 @@ class Login extends PureComponent {
       passwordBorderColor: defaultColor,
       userNameErrorMsg: '',
       passwordErrorMsg: '',
+      defaultUserName: this.getUserName(props)
     }
 
     this.userNameRef = createRef()
     this.passwordRef = createRef()
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      defaultUserName: this.getUserName(nextProps)
+    })
+  }
+
+  getUserName = (props) => {
+    if (props.location && props.location.state && Object.keys(props.location.state).indexOf('userName') !== -1) {
+      return props.location.state.userName
+    }
+    return ''
   }
 
   loginApp = async() => {
@@ -106,8 +120,8 @@ class Login extends PureComponent {
   }
 
   render() {
-    const { isLoading, userNameBorderColor, passwordBorderColor, userNameErrorMsg, passwordErrorMsg, userId } = this.state;
-    console.log('test');
+    const { isLoading, defaultUserName, userNameBorderColor, passwordBorderColor, userNameErrorMsg, passwordErrorMsg, userId} = this.state
+
     return (
       <SessionContext.Provider value={{userId:userId}}>
       <div className="login_layout">
@@ -124,6 +138,7 @@ class Login extends PureComponent {
                   style={{borderColor: userNameBorderColor}}
                   placeholder='请输入用户名'
                   onChange={this.handleUserNameChange}
+                  defaultValue={defaultUserName}
                 />
               </div>
               <div className="login_error_item">

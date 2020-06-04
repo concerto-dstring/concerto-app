@@ -469,15 +469,17 @@ class MainTableDataStore {
               this._currentUser = user
             }
 
-            this._teamUsers.push(user)
-            this._cacheUsers[user.id] = user
+            if (Object.keys(this._cacheUsers).indexOf(user.id) === -1) {
+              this._teamUsers.push(user)
+              this._cacheUsers[user.id] = user
+            }
           })
 
           this.fetchBoardData(boardId, setMenus, setBusy)
         });
     }
 
-    getTeamUsersCopy() {
+    getListUsers() {
       return this._teamUsers.slice()
     }
 

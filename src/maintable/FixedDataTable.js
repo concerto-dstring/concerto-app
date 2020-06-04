@@ -445,6 +445,11 @@ class FixedDataTable extends React.Component {
     onFilterChangeCallback: PropTypes.func,
 
     /**
+     * user list
+     */
+    onGetListUsers: PropTypes.func,
+
+    /**
      * Callback that is called when reordering has been completed
      * and columns need to be updated.
      *
@@ -951,6 +956,7 @@ class FixedDataTable extends React.Component {
         isRowReordering={props.isRowReordering}
         onNewRowAdd={props.onNewRowAddCallback}
         onFilterChange={props.onFilterChangeCallback}
+        onGetListUsers={props.onGetListUsers}
         onAddNewGroup={props.onAddNewGroupCallback} 
         onColumnReorder={onColumnReorder}
         onColumnReorderMove={this._onColumnReorderMove}
