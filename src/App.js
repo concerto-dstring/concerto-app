@@ -36,11 +36,11 @@
 
  class MainComponent extends React.Component {
     render() {
-      let dataset = new MainTableDataStore()
+      let dataset = new MainTableDataStore();
       return (
         <ApolloProvider client={client}>
           <Rehydrated>
-              <MainPage dataset={dataset} />
+              <MainPage dataset={dataset}/>
           </Rehydrated>
         </ApolloProvider>
       )
@@ -54,7 +54,8 @@
       return (
         <Switch>
           <Route path="/login" exact component={Login} />
-          <Route path="/board" component={MainComponent} />
+          <Route exact path="/board" component={MainComponent} />
+          <Route exact path="/board/:id" component={MainComponent} />
           <Route path="/dashboard" exact component={MainComponent} />
           <Route path="/register" exact component={Register} />
           <Route path="/register/validate" exact component={RegisterValidate} />

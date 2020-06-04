@@ -9,8 +9,6 @@ import { withRouter, Link } from 'react-router-dom'
 const defaultColor = '#1890ff'
 const errorColor = '#f5222d'
 
-const SessionContext = React.createContext({});
-
 @withRouter
 class Login extends PureComponent {
   constructor() {
@@ -60,7 +58,7 @@ class Login extends PureComponent {
     else {
       try {
         const user = await Auth.signIn(userName, password);
-        this.setState({userId: user.attributes.sub});
+        localStorage.setItem('CurrentUserId', user.attributes.sub);
         this.props.history.push({ pathname: '/board', state: { userId: user.attributes.sub } })
       } catch (error) {
         if (error.code === 'UserNotFoundException') {
@@ -107,9 +105,7 @@ class Login extends PureComponent {
 
   render() {
     const { isLoading, userNameBorderColor, passwordBorderColor, userNameErrorMsg, passwordErrorMsg, userId } = this.state;
-    console.log('test');
     return (
-      <SessionContext.Provider value={{userId:userId}}>
       <div className="login_layout">
         <Spin tip="登录..." spinning={isLoading}>
           <div className="login_container">
@@ -160,7 +156,6 @@ class Login extends PureComponent {
           </div>
         </Spin>
       </div>
-      </SessionContext.Provider>
     );
   }
 }

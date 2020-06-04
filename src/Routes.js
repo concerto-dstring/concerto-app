@@ -5,8 +5,8 @@ import Login from './Login'
 
 export default (
     <Switch>
-      <Route path="/" component={Login} />
-      <Route path="/board" component={MainPage} />
+      <Route exact path="/" component={Login} />
+      <Route exact path="/board:" component={MainPage} />
       <Route path="/dashboard" component={MainPage} />
     </Switch>
   );

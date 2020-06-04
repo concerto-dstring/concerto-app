@@ -33,7 +33,6 @@ let intervalTimer
 @withRouter
 class MainPage extends React.Component {
 
-  static contextType = SessionContext;
   constructor(props){
     super(props)
     this.state = {
@@ -47,8 +46,8 @@ class MainPage extends React.Component {
       isShowReNameBoard: false
     }
 
-    this.createBoardRef = createRef()
-    this.reNameBoardRef = createRef()
+    this.createBoardRef = createRef();
+    this.reNameBoardRef = createRef();
 
     this.setMenus = this.setMenus.bind(this)
     this.updateMenus = this.updateMenus.bind(this)
@@ -56,7 +55,11 @@ class MainPage extends React.Component {
 
   componentDidMount() {
     let dataset = this.props.dataset;
-    dataset.fetchSideMenus(this.props.client, 'board', this.context.userId, this.setMenus);
+    const id = this.props.match.params.id;
+    dataset.fetchSideMenus(this.props.client, 'board', localStorage.getItem('CurrentUserId'), this.setMenus, id);
+    this.setState({
+      selectedKey: id
+    });
     // dataset.fetchSideMenus(this.props.client, 'dashboard', this.handleBusy)
   }
 
@@ -126,7 +129,7 @@ class MainPage extends React.Component {
     const { dataset } = this.state
     if (isBoard) {
       // this.props.history.push('/board/' + id)
-      dataset.fetchBackendBoardData(id, null, this.setBusy)
+      dataset.fetchBackendBoardData(id, null, this.setBusy);
       this.setState({
         selectedKey: id,
         contentTitle: name,
@@ -292,6 +295,7 @@ class MainPage extends React.Component {
 
   getPanel = (menus, isBoard, name, key) => {
     const { dataset, selectedKey } = this.state
+    console.log(selectedKey);
     return (
       <Panel 
         header={<div className="body_left_sider_panel_header">
