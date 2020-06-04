@@ -172,7 +172,7 @@ class MainTableDataStore {
         })
     }
 
-    fetchSideMenus(apolloClient, type, currentUserId, setMenus) {
+    fetchSideMenus(apolloClient, type, currentUserId, setMenus, defaultBoardId = null) {
       this._apolloClient = apolloClient
       switch (type) {
         case 'board':
@@ -190,11 +190,12 @@ class MainTableDataStore {
               fetchPolicy: "no-cache"
             })
             .then(result => {
-              this._boardMenus = this.sortDataByCreatedAt(result.data.listBoards.items)
+              this._boardMenus = this.sortDataByCreatedAt(result.data.listBoards.items);
               if (this._boardMenus.length > 0) {
-                let defaultBoard = this._boardMenus[0]
-                this._currentBoardId =  defaultBoard.id
-                this.fetchBackendBoardData(defaultBoard.id, setMenus, null, currentUserId)
+                if (!defaultBoardId) {
+                  defaultBoardId = this._boardMenus[0].id;
+                }
+                this.fetchBackendBoardData(defaultBoardId, setMenus, null, currentUserId)
               }
             });
           break;
