@@ -49,6 +49,7 @@ class FixedDataTableBufferedRows extends React.Component {
     onRowTouchEnd: PropTypes.func,
     onRowTouchMove: PropTypes.func,
     onFilter: PropTypes.func,
+    onGetListUsers: PropTypes.func, 
     onAddNewGroup: PropTypes.func,
     rowClassNameGetter: PropTypes.func,
     rowExpanded: PropTypes.oneOfType([
@@ -232,6 +233,7 @@ class FixedDataTableBufferedRows extends React.Component {
               container={props.container}
               visible={visible} 
               onFilter={props.onFilterChange}
+              onGetListUsers={props.onGetListUsers}
               onAddNewGroup={props.onAddNewGroup}            
             />;
             break;

@@ -107,26 +107,26 @@ class UndoMessage extends PureComponent {
 
     return (
       <div className='undo_message' style={{display: this.state.isShowUndoModal ? DISPLAY.BLOCK : DISPLAY.NONE}}>
-      <div className='undo_message_content'>
-        <span style={{margin: '10px 0px'}}>
-          &emsp;&emsp;{this.props.isSection ? '删除成功' : '移动成功'}
-        </span>
-        <Button 
-          shape='round'
-          type='primary'
-          style={{margin: '10px 10px 10px 110px', width: 92, backgroundColor: COLOR.UNDO, borderColor: COLOR.WHITE}}
-          onClick={this.cancelAction}
-        >
-          <span>撤 销&emsp;</span>
-          <span style={{width: 12}}>{this.state.countdown}</span>
-        </Button>
-        <Button 
-          icon={<CloseOutlined  />}
-          type='link'
-          style={{margin: '10px 10px 10px 16px'}}
-          onClick={this.handleCancelClick}
-        />
-      </div>
+        <div className='undo_message_content'>
+          <span style={{margin: '10px 0px'}}>
+            &emsp;&emsp;{this.props.isSection ? '删除成功' : '移动成功'}
+          </span>
+          <Button 
+            shape='round'
+            type='primary'
+            style={{margin: '10px 10px 10px 110px', width: 92, backgroundColor: COLOR.UNDO, borderColor: COLOR.WHITE}}
+            onClick={this.cancelAction}
+          >
+            <span>撤 销&emsp;</span>
+            <span style={{width: 12}}>{this.state.countdown}</span>
+          </Button>
+          <Button 
+            icon={<CloseOutlined  />}
+            type='link'
+            style={{margin: '10px 10px 10px 16px'}}
+            onClick={this.handleCancelClick}
+          />
+        </div>
       </div>
     );
   }

@@ -23,7 +23,8 @@ import {
   listThreadOnRows, getThreadOnRow
 } from "../graphql/queries"
 
-import { 
+import {
+  createBoard, updateBoard, 
   createGroup, updateGroup, 
   createColumn, updateColumn, 
   createColumnBoard, updateColumnBoard,
@@ -80,42 +81,121 @@ class MainTableDataStore {
         this.runCallbacks = this.runCallbacks.bind(this);
     }
     
-    createFakeObjectData(url) {
-      const self = this;
-      $.ajax({
-        url : url,
-        data:{},
-        cache : false, 
-        async : false,
-        type : "GET",
-        dataType : 'json',
-        success : function(data){
-          self._columns = data.columns;
-          self._groups  = data.groups;
-          self._rowData = data.rowData;
-          self._subRows = data.subRows;
-          self._sizeColumns = self._columns.length;
-          self._sizeGroups  = self._groups.length;
-          self._sizeRows    = Object.keys(self._rowData).length;   
-        }
-      });
+    /**
+     * 创建工作板
+     * @param {*} boardName 
+     */
+    createBoard(boardName, setMenus) {
+      this._apolloClient
+        .mutate({
+          mutation: gql(createBoard),
+          variables: {
+            input: {
+              name: boardName,
+              creatorID: this._currentUser.id,
+              createdAt: new Date().toISOString()
+            }
+          }
+        })
+        .then(result => {
+          let board = result.data.createBoard
+
+          // 创建默认列(三列：菜单列、复选框列、名称列)
+          this.createColumn(false, ColumnType.ROWACTION, true, 0, ColumnType.ROWACTION, null, false, String(rankBlock))
+          this.createColumn(false, ColumnType.ROWSELECT, true, 0, ColumnType.ROWACTION, null, false, String(rankBlock * 2))
+          this.createColumn(true, ColumnType.GROUPTITLE, true, 0, ColumnType.EDITBOX, "TEXT", false, String(rankBlock * 3))
+
+          // 更新工作板
+          this.reFetchSideMenus(board.id, setMenus)
+        })
+        .catch(error => {
+          console.log(error)
+        })
     }
 
-    fetchSideMenus(apolloClient, type, currentUserId, setMenus) {
+    /**
+     * 更新工作板名称
+     * @param {*} boardId 
+     * @param {*} boardName 
+     * @param {*} updateMenus 
+     */
+    updateBoard(boardId, boardName, boardNewName, updateMenus) {
+      this._apolloClient
+        .mutate({
+          mutation: gql(updateBoard),
+          variables: {
+            input: {
+              id: boardId,
+              name: boardNewName
+            }
+          }
+        })
+        .then(result => {
+          
+        })
+        .catch(error => {
+          updateMenus(boardId, boardName)
+        })
+
+        updateMenus(boardId, boardNewName)
+    }
+
+    /**
+     * 删除工作版(更新标识)
+     * @param {*} boardName 
+     * @param {*} setMenus 
+     */
+    deleteBoard(boardId, deleteFlag, setMenus) {
+      this._apolloClient
+        .mutate({
+          mutation: gql(updateBoard),
+          variables: {
+            input: {
+              id: boardId,
+              deleteFlag: deleteFlag
+            }
+          }
+        })
+        .then(result => {
+          let board = result.data.updateBoard
+
+          // 更新工作板
+          if (deleteFlag) {
+            this.reFetchSideMenus(null, setMenus)
+          }
+          else {
+            this.reFetchSideMenus(board.id, setMenus)
+          }
+        })
+        .catch(error => {
+          console.log(error)
+        })
+    }
+
+    fetchSideMenus(apolloClient, type, currentUserId, setMenus, defaultBoardId = null) {
       this._apolloClient = apolloClient
       switch (type) {
         case 'board':
           apolloClient
             .query({
               query: gql(listBoards),
+              variables: {
+                limit: 1000,
+                filter: {
+                  deleteFlag: {
+                    ne: true
+                  }
+                }
+              },
               fetchPolicy: "no-cache"
             })
             .then(result => {
-              this._boardMenus = result.data.listBoards.items
+              this._boardMenus = this.sortDataByCreatedAt(result.data.listBoards.items);
               if (this._boardMenus.length > 0) {
-                let defaultBoard = this._boardMenus[0]
-                this._currentBoardId =  defaultBoard.id
-                this.fetchBackendBoardData(defaultBoard.id, setMenus, null, currentUserId)
+                if (!defaultBoardId) {
+                  defaultBoardId = this._boardMenus[0].id;
+                }
+                this.fetchBackendBoardData(defaultBoardId, setMenus, null, currentUserId)
               }
             });
           break;
@@ -123,6 +203,36 @@ class MainTableDataStore {
         default:
           break;
       }
+    }
+
+    reFetchSideMenus(boardId, setMenus) {
+      this._apolloClient
+        .query({
+          query: gql(listBoards),
+          variables: {
+            limit: 1000,
+            filter: {
+              deleteFlag: {
+                ne: true
+              }
+            }
+          },
+          fetchPolicy: "no-cache"
+        })
+        .then(result => {
+          this._boardMenus = this.sortDataByCreatedAt(result.data.listBoards.items)
+          if (this._boardMenus.length > 0) {
+            let defaultBoard
+            if (boardId) {
+              defaultBoard = this._boardMenus.find(board => board.id === boardId)
+            }
+            else {
+              defaultBoard = this._boardMenus[0]
+            }
+            this._currentBoardId =  defaultBoard.id
+            this.fetchBoardData(defaultBoard.id, setMenus, null, defaultBoard)
+          }
+        })
     }
 
     /**
@@ -135,7 +245,7 @@ class MainTableDataStore {
       // return ret;
     }
 
-    fetchBoardData(boardId, setMenus, setBusy) {
+    fetchBoardData(boardId, setMenus, setBusy, defaultBoard) {
       this._apolloClient
         .query({
           query: gql(getBoard),
@@ -167,7 +277,7 @@ class MainTableDataStore {
           }
 
           if (setMenus) {
-            setMenus(this._boardMenus, true)
+            setMenus(this._boardMenus, true, defaultBoard)
           }
           else {
             setBusy(false)
@@ -360,15 +470,17 @@ class MainTableDataStore {
               this._currentUser = user
             }
 
-            this._teamUsers.push(user)
-            this._cacheUsers[user.id] = user
+            if (Object.keys(this._cacheUsers).indexOf(user.id) === -1) {
+              this._teamUsers.push(user)
+              this._cacheUsers[user.id] = user
+            }
           })
 
           this.fetchBoardData(boardId, setMenus, setBusy)
         });
     }
 
-    getTeamUsersCopy() {
+    getListUsers() {
       return this._teamUsers.slice()
     }
 
@@ -584,7 +696,7 @@ class MainTableDataStore {
         })
         .then(result => {
           let column = result.data.createColumn
-          this.createColumnBoard(column.id, name, fixed, level, columntype, columnComponentType, isSubColumn, rank)
+          this.createColumnBoard(column.id, name, fixed, level, columntype, columnComponentType, isSubColumn, rank, isTitle)
         })
         .catch(error => {
           console.log(error)
@@ -892,7 +1004,7 @@ class MainTableDataStore {
         })
     }
 
-    createColumnBoard(columnId, columnName, fixed, level, columnType, columnComponentType, isSubColumn, rank) {
+    createColumnBoard(columnId, columnName, fixed, level, columnType, columnComponentType, isSubColumn, rank, isTitle) {
       let rankValue = rank ? rank : this.getCreateColumnRank(level)
       this._apolloClient
         .mutate({
@@ -911,12 +1023,13 @@ class MainTableDataStore {
         })
         .then(result => {
           let column = result.data.createColumnBoard
-          column.width = 200
+          column.width = (fixed && !isTitle) ? 36 : 200
           column.type = columnType
           column.columnKey = columnId
           column.name = columnName
           column.columnComponentType = columnComponentType
           this._columns.push(column)
+          this._columns = this.sortDataByRank(this._columns)
           if (isSubColumn) {
             for(let key in this._rowData) {
               if (this._subRowKeys.indexOf(key) !== -1) {

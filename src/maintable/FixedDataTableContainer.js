@@ -112,6 +112,8 @@ class FixedDataTableContainer extends React.Component {
       'storedHeights',
       'isRowReordering',
       'rowReorderingData',
+      'CellEditingData',
+      'isCellEditing',
     ]);
 
     this.setState(boundState);

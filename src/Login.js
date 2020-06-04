@@ -11,8 +11,8 @@ const errorColor = '#f5222d'
 
 @withRouter
 class Login extends PureComponent {
-  constructor() {
-    super()
+  constructor(props) {
+    super(props)
 
     this.state = {
       isLoading: false,
@@ -20,10 +20,24 @@ class Login extends PureComponent {
       passwordBorderColor: defaultColor,
       userNameErrorMsg: '',
       passwordErrorMsg: '',
+      defaultUserName: this.getUserName(props)
     }
 
     this.userNameRef = createRef()
     this.passwordRef = createRef()
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      defaultUserName: this.getUserName(nextProps)
+    })
+  }
+
+  getUserName = (props) => {
+    if (props.location && props.location.state && Object.keys(props.location.state).indexOf('userName') !== -1) {
+      return props.location.state.userName
+    }
+    return ''
   }
 
   loginApp = async() => {
@@ -57,7 +71,8 @@ class Login extends PureComponent {
     }
     else {
       try {
-        const user = await Auth.signIn(userName, password)
+        const user = await Auth.signIn(userName, password);
+        localStorage.setItem('CurrentUserId', user.attributes.sub);
         this.props.history.push({ pathname: '/board', state: { userId: user.attributes.sub } })
       } catch (error) {
         if (error.code === 'UserNotFoundException') {
@@ -103,8 +118,7 @@ class Login extends PureComponent {
   }
 
   render() {
-    const { isLoading, userNameBorderColor, passwordBorderColor, userNameErrorMsg, passwordErrorMsg } = this.state
-
+    const { isLoading, defaultUserName, userNameBorderColor, passwordBorderColor, userNameErrorMsg, passwordErrorMsg, userId} = this.state
     return (
       <div className="login_layout">
         <Spin tip="登录..." spinning={isLoading}>
@@ -120,6 +134,7 @@ class Login extends PureComponent {
                   style={{borderColor: userNameBorderColor}}
                   placeholder='请输入用户名'
                   onChange={this.handleUserNameChange}
+                  defaultValue={defaultUserName}
                 />
               </div>
               <div className="login_error_item">

@@ -1,21 +1,25 @@
 
-import React from 'react';
+import React, { useContext, createRef } from 'react';
 import {BrowserRouter as Router, Route, Link, withRouter } from 'react-router-dom';
 import MainTable from './maintable/MainTable';
+import SessionContext from './App';
 import './MainPage.less';
-import { Layout, Input, Collapse, Button, Avatar, Dropdown, Menu } from 'antd';
+import './maintable/css/style/MoveToSectionMenu.less';
+import { Layout, Input, Collapse, Button, Avatar, Dropdown, Menu, Modal, message } from 'antd';
 import { 
     SearchOutlined,
     LeftOutlined,
     RightOutlined,
     SettingFilled,
     ShareAltOutlined,
+    CloseOutlined
    } from '@ant-design/icons';
 import logo from './logo.svg'
 import { withApollo } from 'react-apollo'
 import RowHeaderDrawer from './helpers/RowHeaderDrawer';
-import { USER_MENU_SIGN_OUT } from './maintable/MainTableRowKeyAndDesc';
+import { USER_MENU_SIGN_OUT, RENAME_BOARD, DELETE_BOARD } from './maintable/MainTableRowKeyAndDesc';
 import { Auth } from 'aws-amplify'
+import { DISPLAY, COLOR } from './helpers/section/header/StyleValues';
 
 const { Panel } = Collapse;
 const { Header, Content, Sider } = Layout;
@@ -23,9 +27,12 @@ const { Header, Content, Sider } = Layout;
 // Sider默认宽度
 const defaultSiderWidth = 300
 
+let intervalTimer
+
 @withApollo
 @withRouter
 class MainPage extends React.Component {
+
   constructor(props){
     super(props)
     this.state = {
@@ -34,23 +41,49 @@ class MainPage extends React.Component {
       dataset: props.dataset,
       boardMenus: [],
       dashboardMenus: [],
-      contentTitle: ''
-    };
+      contentTitle: '',
+      isShowCreateBoard: false,
+      isShowReNameBoard: false
+    }
+
+    this.createBoardRef = createRef();
+    this.reNameBoardRef = createRef();
+
+    this.setMenus = this.setMenus.bind(this)
+    this.updateMenus = this.updateMenus.bind(this)
   }
 
   componentDidMount() {
     let dataset = this.props.dataset;
-    dataset.fetchSideMenus(this.props.client, 'board', this.props.location.state.userId, this.setMenus)
+    const id = this.props.match.params.id;
+    dataset.fetchSideMenus(this.props.client, 'board', localStorage.getItem('CurrentUserId'), this.setMenus, id);
+    this.setState({
+      selectedKey: id
+    });
     // dataset.fetchSideMenus(this.props.client, 'dashboard', this.handleBusy)
   }
 
-  setMenus = (menus, isBoard) => {
+  componentWillUnmount() {
+    this.clearComponent()
+  }
+
+  clearComponent = () => {
+    // 清除异步操作
+    this.setState = (state, callback) => {
+      return
+    }
+
+    // 清除定时
+    clearInterval(intervalTimer)
+  }
+
+  setMenus = (menus, isBoard, defaultBoard) => {
     let selectedKey
     let contentTitle
     if (isBoard) {
       if (menus.length > 0 ) {
-        selectedKey = menus[0].id
-        contentTitle = menus[0].name
+        selectedKey = defaultBoard ? defaultBoard.id : menus[0].id
+        contentTitle = defaultBoard ? defaultBoard.name : menus[0].name
         // this.props.history.push('/board/' + menus[0].id)
       }
       this.setState({
@@ -66,6 +99,17 @@ class MainPage extends React.Component {
         dataset: this.props.dataset,
       })
     }
+  }
+
+  updateMenus = (boardId, boardName) => {
+    const { boardMenus } = this.state
+    let boardMenusCopy =  boardMenus.slice()
+    let boardIndex = boardMenusCopy.findIndex(board => board.id === boardId)
+    boardMenusCopy[boardIndex].name = boardName
+
+    this.setState({
+      boardMenus: boardMenusCopy
+    })
   }
 
   toggle = () => {
@@ -85,7 +129,7 @@ class MainPage extends React.Component {
     const { dataset } = this.state
     if (isBoard) {
       // this.props.history.push('/board/' + id)
-      dataset.fetchBackendBoardData(id, null, this.setBusy)
+      dataset.fetchBackendBoardData(id, null, this.setBusy);
       this.setState({
         selectedKey: id,
         contentTitle: name,
@@ -111,8 +155,113 @@ class MainPage extends React.Component {
     }
   }
 
+  /**
+   * 创建工作板
+   */
+  createBoard = (e) => {
+    // 防止document事件的冒泡
+    e.stopPropagation();
+    e.preventDefault();
+
+    this.setState({
+      isShowCreateBoard: true
+    })
+  }
+
+  handleCancelClick = () => {
+    clearInterval(intervalTimer)
+    this.setState({
+      isShowCreateBoard: false,
+      isShowReNameBoard: false,
+      isShowDeleteBoard: false,
+      isShowUndoModal: false
+    })
+  }
+
+  handleCreateBoard = () => {
+    let boardName = this.createBoardRef.current.input.value
+    if (!boardName) {
+      message.warning('工作板名称不能为空')
+      return
+    }
+
+    const { dataset } = this.state
+
+    dataset.createBoard(boardName, this.setMenus)
+    this.handleCancelClick()
+  }
+
+  handleBoardItemMenuClick = (boardId, boardName, { item, key, keyPath, selectedKeys, domEvent }) => {
+    domEvent.stopPropagation();
+    domEvent.preventDefault();
+
+    if (key === RENAME_BOARD.key) {
+      this.setState({
+        isShowReNameBoard: true,
+        boardId,
+        boardName
+      })
+    }
+    else if (key === DELETE_BOARD.key) {
+      this.setState({
+        isShowDeleteBoard: true,
+        boardId,
+        boardName
+      })
+    }
+  }
+
+  handleReNameBoard = () => {
+    let boardNewName = this.reNameBoardRef.current.input.value
+
+    if (!boardNewName) {
+      message.warning('工作板名称不能为空')
+      return
+    }
+    
+    const { dataset, boardId, boardName } = this.state
+    dataset.updateBoard(boardId, boardName, boardNewName, this.updateMenus)
+    this.handleCancelClick()
+  }
+
+  handleDeleteBoard = () => {
+    const { dataset, boardId } = this.state
+    dataset.deleteBoard(boardId, true, this.setMenus)
+    this.setState({
+      isShowDeleteBoard: false,
+      isShowUndoModal: true,
+      countdown: 10
+    })
+  }
+
+  undoDeleteBoard = () => {
+    const { dataset, boardId } = this.state
+    dataset.deleteBoard(boardId, false, this.setMenus)
+    this.handleCancelClick()
+  }
+
+  getBoardItemMenus = (boardId, boardName) => {
+    return (
+      <Menu 
+        onClick={this.handleBoardItemMenuClick.bind(this, boardId, boardName)}
+        style={{width: 100, borderRadius: '8px', padding: '5px, 0px, 5px, 5px'}}
+      >
+        <Menu.Item 
+          key={RENAME_BOARD.key}
+        >
+          <span>{RENAME_BOARD.desc}</span>
+        </Menu.Item>
+        <Menu.Item 
+          key={DELETE_BOARD.key}
+        >
+          <span>{DELETE_BOARD.desc}</span>
+        </Menu.Item>
+      </Menu>
+    )
+  }
+
   getBodyContent = () => {
-    const { dataset, siderWidth, contentTitle } = this.state
+    const { dataset, siderWidth, contentTitle } = this.state;
     return (
         <Content style={{marginLeft: 24}}>
             <Route exact component={()=>
@@ -146,9 +295,13 @@ class MainPage extends React.Component {
 
   getPanel = (menus, isBoard, name, key) => {
     const { dataset, selectedKey } = this.state
+    console.log(selectedKey);
     return (
       <Panel 
-        header={<span className="body_left_sider_panel_header">{name}（{menus.length}）</span>} 
+        header={<div className="body_left_sider_panel_header">
+                  <div style={{textAlign: "left"}}>{name}</div>
+                  <div style={{textAlign: "right"}} onClick={this.createBoard}>+</div>
+                </div>} 
         showArrow={false} 
         key={key}
       >
@@ -180,8 +333,17 @@ class MainPage extends React.Component {
                     {item.name}
                   </Link>
                 </div>
-                <div className="body_left_sider_panel_menu_item_count" style={style}>
-                  {dataset ? Object.keys(dataset._rowData).length : 0}
+                <div style={style}>
+                  <Dropdown
+                    overlay={this.getBoardItemMenus(item.id, item.name)}
+                    placement='bottomLeft'
+                  >
+                    <div className="body_left_sider_panel_menu_item_menu">
+                      <div className="menu_point"></div>
+                      <div className="menu_point"></div>
+                      <div className="menu_point"></div>
+                    </div>
+                  </Dropdown>
                 </div>
               </div>
             )
@@ -194,7 +356,7 @@ class MainPage extends React.Component {
   getUserMenus = () => {
     return (
       <Menu 
-        onClick={this.hanldeUserMenuClick}
+        onClick={this.handleUserMenuClick}
         style={{width: 100, borderRadius: '8px', padding: '5px, 0px, 5px, 5px'}}
       >
         <Menu.Item 
@@ -215,17 +377,37 @@ class MainPage extends React.Component {
     }
   }
 
-  hanldeUserMenuClick = ({ item, key, keyPath, selectedKeys, domEvent }) => {
+  handleUserMenuClick = ({ item, key, keyPath, selectedKeys, domEvent }) => {
     if (key === USER_MENU_SIGN_OUT.key) {
       this.handleSignOut()
     }
   }
 
   render(){
-    const { siderWidth, collapsed, boardMenus, dashboardMenus, dataset } = this.state
+    const { siderWidth, collapsed, boardMenus, dashboardMenus, dataset, 
+      isShowCreateBoard, isShowReNameBoard, isShowDeleteBoard, boardName,
+      isShowUndoModal, countdown } = this.state
+
+    // 更新时若isShowUndoModal为true则倒计时
+    if (isShowUndoModal) {
+      let countdownCopy = countdown
+      clearInterval(intervalTimer)
+      intervalTimer = setInterval(() => {
+        if (countdownCopy > 0) {
+          countdownCopy -= 1
+          this.setState({
+            countdown: countdownCopy
+          })
+        }
+        else {
+          // 自动关闭组件
+          this.handleCancelClick()
+        }
+      }, 1000);
+    }
     
     return (
-      <Router>
+      <>
         <Layout>
           <Header className="header">            
             <div>
@@ -293,7 +475,65 @@ class MainPage extends React.Component {
             </Layout>
           </Layout>
         </Layout>
-     </Router>
+        <Modal
+          title='添加工作板'
+          visible={isShowCreateBoard}
+          onCancel={this.handleCancelClick}
+          onOk={this.handleCreateBoard}
+          destroyOnClose={true}
+        >
+          <Input 
+            size='middle'
+            allowClear={true}
+            onPressEnter={this.handleCreateBoard}
+            ref={this.createBoardRef}
+          />
+        </Modal>
+        <Modal
+          title='工作板重命名'
+          visible={isShowReNameBoard}
+          onCancel={this.handleCancelClick}
+          onOk={this.handleReNameBoard}
+          destroyOnClose={true}
+        >
+          <Input 
+            size='middle'
+            allowClear={true}
+            onPressEnter={this.handleReNameBoard}
+            ref={this.reNameBoardRef}
+          />
+        </Modal>
+        <Modal
+          title={<span><strong>是否删除工作板 </strong>{boardName} ?</span>}
+          visible={isShowDeleteBoard}
+          onCancel={this.handleCancelClick}
+          onOk={this.handleDeleteBoard}
+        >
+          <span>删除后可以从回收站恢复</span>
+        </Modal>
+        <div className='undo_message' style={{display: isShowUndoModal ? DISPLAY.BLOCK : DISPLAY.NONE}}>
+          <div className='undo_message_content'>
+            <span style={{margin: '10px 0px'}}>
+              &emsp;&emsp;{'删除成功'}
+            </span>
+            <Button 
+              shape='round'
+              type='primary'
+              style={{margin: '10px 10px 10px 110px', width: 92, backgroundColor: COLOR.UNDO, borderColor: COLOR.WHITE}}
+              onClick={this.undoDeleteBoard}
+            >
+              <span>撤 销&emsp;</span>
+              <span style={{width: 12}}>{countdown}</span>
+            </Button>
+            <Button 
+              icon={<CloseOutlined  />}
+              type='link'
+              style={{margin: '10px 10px 10px 16px'}}
+              onClick={this.handleCancelClick}
+            />
+          </div>
+        </div>
+      </>
     );
   }
 }
