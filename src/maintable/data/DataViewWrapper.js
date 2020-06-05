@@ -79,6 +79,8 @@ class DataViewWrapper {
         this.getRowThreadCount = this.getRowThreadCount.bind(this)
         this.updateThreadOrReplySeen = this.updateThreadOrReplySeen.bind(this)
         this.createNotification = this.createNotification.bind(this)
+        this.updateRowReadMessageStatus = this.updateRowReadMessageStatus.bind(this)
+        this.getNotificationsByRowIndex = this.getNotificationsByRowIndex.bind(this)
     }
 
     /**
@@ -703,6 +705,14 @@ class DataViewWrapper {
 
     getCurrentBoardId() {
       return this._dataset._currentBoardId
+    }
+
+    updateRowReadMessageStatus(row){
+      this._dataset.updateRowReadMessageStatus(row)
+    }
+
+    getNotificationsByRowIndex(rowIndex){
+      return this._dataset.getNotificationsByRowIndex(rowIndex)
     }
 }
 
