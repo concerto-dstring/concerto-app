@@ -35,6 +35,25 @@ class ForgetPassword extends Component {
     this.validateCodeRef = createRef()
   }
 
+  componentDidMount() {
+    window.addEventListener('keyup', this.handleKeyUp);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('keyup', this.handleKeyUp);
+  }
+
+  handleKeyUp = (e) => {
+    if (e.key === 'Enter') {
+      if (this.state.isNext) {
+        this.confirmUpdatePassword()
+      }
+      else {
+        this.goToNextStep()
+      }
+    }
+  }
+
   goToNextStep = () => {
     this.setState({
       isLoading: true

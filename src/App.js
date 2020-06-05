@@ -16,12 +16,13 @@
 
   import { AmplifySignOut } from '@aws-amplify/ui-react'
 
-  import { Switch, Route, Redirect } from 'react-router-dom';
+  import { Switch, Route, Redirect, withRouter } from 'react-router-dom';
   import MainPage from './MainPage.js';
   import Login from './Login'
   import Register from './Register'
   import RegisterValidate from './RegisterValidate'
   import { ForgetPassword } from './ForgetPassword'
+import NotFound from './NotFound';
 
   /* AWSAppSyncClient integrates with the Apollo Client for GraphQL */
   const client = new AWSAppSyncClient({
@@ -35,7 +36,25 @@
     },
   });
 
+  @withRouter
  class MainComponent extends React.Component {
+
+    componentDidMount() {
+      this.getCurrentAuthUser()
+    }
+
+    getCurrentAuthUser = async() => {
+      try {
+        let user = await Auth.currentAuthenticatedUser({
+          bypassCache: false
+        })
+        localStorage.setItem('CurrentUserId', user.attributes.sub);
+      } catch (error) {
+        // 检查用户是否登录
+        this.props.history.push('/login')
+      }
+    }
+
     render() {
       let dataset = new MainTableDataStore();
       return (
@@ -61,7 +80,9 @@
           <Route path="/register" exact component={Register} />
           <Route path="/register/validate" exact component={RegisterValidate} />
           <Route path="/forget" exact component={ForgetPassword} />
+          <Route path="/notfound" exact component={NotFound} />
           <Redirect to="/login" from='/' exact />
+          <Redirect to="/notfound" />
         </Switch>
       )
         
