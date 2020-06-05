@@ -35,6 +35,20 @@ class Register extends PureComponent {
     }
   }
 
+  componentDidMount() {
+    window.addEventListener('keyup', this.registerUserByKey);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('keyup', this.registerUserByKey);
+  }
+
+  registerUserByKey = (e) => {
+    if (e.key === 'Enter') {
+      this.registerUser()
+    }
+  }
+
   registerUser = async() => {
     const { userName, password, confirmPassword, email, phone } = this.state
     
@@ -218,7 +232,7 @@ class Register extends PureComponent {
 
     return (
       <div className="register_layout">
-        <Spin tip="注册..." spinning={isLoading}>
+        <Spin spinning={isLoading}>
           <div className="register_container">
             <div className="register_header_component">
               <span className="register_header">欢迎注册 Pynbo 拼板</span>

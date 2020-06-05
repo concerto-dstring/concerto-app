@@ -100,9 +100,11 @@ class MainTableDataStore {
         .then(result => {
           let board = result.data.createBoard
 
+          this._currentBoardId = board.id
+
           // 创建默认列(三列：菜单列、复选框列、名称列)
           this.createColumn(false, ColumnType.ROWACTION, true, 0, ColumnType.ROWACTION, null, false, String(rankBlock))
-          this.createColumn(false, ColumnType.ROWSELECT, true, 0, ColumnType.ROWACTION, null, false, String(rankBlock * 2))
+          this.createColumn(false, ColumnType.ROWSELECT, true, 0, ColumnType.ROWSELECT, null, false, String(rankBlock * 2))
           this.createColumn(true, ColumnType.GROUPTITLE, true, 0, ColumnType.EDITBOX, "TEXT", false, String(rankBlock * 3))
 
           // 更新工作板
@@ -172,7 +174,7 @@ class MainTableDataStore {
         })
     }
 
-    fetchSideMenus(apolloClient, type, currentUserId, setMenus, defaultBoardId = null) {
+    fetchSideMenus(apolloClient, type, currentUserId, setMenus, defaultBoardId, dealErrorBoardId) {
       this._apolloClient = apolloClient
       switch (type) {
         case 'board':
@@ -194,8 +196,18 @@ class MainTableDataStore {
               if (this._boardMenus.length > 0) {
                 if (!defaultBoardId) {
                   defaultBoardId = this._boardMenus[0].id;
+                  this.fetchBackendBoardData(defaultBoardId, setMenus, null, currentUserId)
                 }
-                this.fetchBackendBoardData(defaultBoardId, setMenus, null, currentUserId)
+                else {
+                  // 防止Id有问题
+                  let boardIndex = this._boardMenus.findIndex(board => board.id === defaultBoardId)
+                  if (boardIndex < 0) {
+                    dealErrorBoardId()
+                  }
+                  else {
+                    this.fetchBackendBoardData(defaultBoardId, setMenus, null, currentUserId)
+                  }
+                }
               }
             });
           break;
@@ -230,7 +242,7 @@ class MainTableDataStore {
               defaultBoard = this._boardMenus[0]
             }
             this._currentBoardId =  defaultBoard.id
-            this.fetchBoardData(defaultBoard.id, setMenus, null, defaultBoard)
+            this.fetchBoardData(defaultBoard.id, setMenus)
           }
         })
     }
@@ -238,14 +250,13 @@ class MainTableDataStore {
     /**
      * replaces the createFakeObjectData() with backend data
      */
-    fetchBackendBoardData(boardId, setMenus, setBusy, currentUserId){
+    fetchBackendBoardData(boardId, setMenus, setLoading, currentUserId){
       this._currentBoardId = boardId
-      let teamId = "1933b9bc-f5a3-4f60-b55c-be979ea1a105"
-      this.getTeamUsers(teamId, boardId, setMenus, setBusy, currentUserId)
+      this.getAllUsers(boardId, setMenus, setLoading, currentUserId)
       // return ret;
     }
 
-    fetchBoardData(boardId, setMenus, setBusy, defaultBoard) {
+    fetchBoardData(boardId, setMenus, setLoading) {
       this._apolloClient
         .query({
           query: gql(getBoard),
@@ -268,7 +279,7 @@ class MainTableDataStore {
 
           let columns = this.sortDataByRank(board.columns.items)
           this.setColumns(columns)
-
+          
           let groups = this.sortDataByRank(board.groups.items)
           this.setGroupAndRowData(groups)
           for (let key in this._subRows) {
@@ -277,10 +288,10 @@ class MainTableDataStore {
           }
 
           if (setMenus) {
-            setMenus(this._boardMenus, true, defaultBoard)
+            setMenus(this._boardMenus, true, board)
           }
           else {
-            setBusy(false)
+            setLoading(false)
           }
         })
         .catch(error => {
@@ -447,7 +458,7 @@ class MainTableDataStore {
         });
     }
 
-    getTeamUsers(teamId, boardId, setMenus, setBusy, currentUserId) {
+    getAllUsers(boardId, setMenus, setLoading, currentUserId) {
       this._apolloClient
         .query({
           query: gql(listUsers),
@@ -476,7 +487,7 @@ class MainTableDataStore {
             }
           })
 
-          this.fetchBoardData(boardId, setMenus, setBusy)
+          this.fetchBoardData(boardId, setMenus, setLoading)
         });
     }
 
