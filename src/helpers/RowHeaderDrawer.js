@@ -75,7 +75,7 @@ class RowHeaderDrawer extends PureComponent {
   getDrawerData(props) {
     const { tableData, rowId } = props
     
-    if (tableData) {
+    if (tableData && rowId) {
       tableData.getRowThreadData(rowId, this.setUpdateInfo)
     }
   }
