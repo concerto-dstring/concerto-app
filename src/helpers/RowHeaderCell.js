@@ -1,13 +1,14 @@
 import React from 'react';
 import { Overlay } from 'react-overlays';
-import { Badge } from 'antd';
+import { Badge ,Icon } from 'antd';
 import { Input } from 'semantic-ui-react';
 import Keys from '../maintable/vendor_upstream/core/Keys';
 import styled from 'styled-components';
 import getHighlightText from '../maintable/getHighlightText'
 import {
   EditOutlined,
-  UnorderedListOutlined
+  UnorderedListOutlined,
+  MessageOutlined
 } from '@ant-design/icons'
 import '../maintable/css/style/RowHeaderCell.less'
 import { connect } from 'react-redux'
@@ -114,6 +115,12 @@ class RowHeaderCell extends React.PureComponent {
     getCellComponent = () => {
       const { height } = this.props;
       const { count, displayValue, updateInfoCount } = this.state;
+      
+      let rowIndex = this.props.rowIndex;
+      let rowId = this.props.data.getRowKey(rowIndex)
+      //当前行的回复是否都已读
+      let wasRead = this.props.data.getNotificationsByRowIndex(rowId);
+      let countColor = updateInfoCount&&!wasRead > 0 ? '#009AFF' : '#D3D3D3';
       return (
         <>
           <div className="row_header_cell_text_component" style={{lineHeight: `${height - 12}px`}}>
@@ -132,8 +139,23 @@ class RowHeaderCell extends React.PureComponent {
             className="row_header_cell_update"
             style={{lineHeight: `${height - 12}px`}}
           >
-            <span>
+            {/* <span>
               <Badge count={updateInfoCount} style={{backgroundColor: '#BB0000'}} />
+            </span> */}
+            <span>
+              <MessageOutlined style={{fontSize: 24, color: countColor}} />
+            </span>
+            <span>
+              <Badge count={updateInfoCount} 
+              style={{fontSize: 10,
+                  marginLeft: -15, 
+                  width: 14, 
+                  height: 14, 
+                  padding: '0px 0px 4px',
+                  minWidth: 'unset', 
+                  lineHeight: '14px', 
+                  backgroundColor: countColor
+              }} />
             </span>
           </div>
         </>
