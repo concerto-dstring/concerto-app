@@ -261,12 +261,12 @@ class DataViewWrapper {
     addNewRow(rowIndex, newItem) {
         if (newItem !== '') {
           if (getSubLevel(rowIndex) === 0) {
-            let row = this._indexMap[rowIndex];
-            let rowKey = this._dataset.addNewRow(row.groupKey, newItem);
+            let newrow = this._indexMap[rowIndex];
+            let rowKey = this._dataset.addNewRow(newrow.groupKey, newItem);
             for (let row = this._indexMap.length; row > rowIndex; row--) {
                 this._indexMap[row] = this._indexMap[row-1]; 
             }
-            this._indexMap[rowIndex] = {rowType:RowType.ROW, groupKey:row.groupKey, rowKey:rowKey};
+            this._indexMap[rowIndex] = {rowType:RowType.ROW, groupKey:newrow.groupKey, rowKey:rowKey};
           } else {
             let rowKey = this._subRowMap[rowIndex];
             let rowData = this._subRowData[rowIndex]

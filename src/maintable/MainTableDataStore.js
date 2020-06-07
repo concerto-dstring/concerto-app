@@ -731,6 +731,8 @@ class MainTableDataStore {
         .then(result => {
           let column = result.data.createColumn
           this.createColumnBoard(column.id, name, fixed, level, columntype, columnComponentType, isSubColumn, rank, isTitle)
+          //refresh
+          this.runCallbacks();
         })
         .catch(error => {
           console.log(error)
@@ -813,7 +815,6 @@ class MainTableDataStore {
           else {
             this._groups.push(group)
           }
-
           this.runCallbacks();
         })
         .catch(error => {
@@ -919,6 +920,8 @@ class MainTableDataStore {
           }
           let rows = this._groups[index].rows;
           rows.push(row);
+          //refresh
+          this.runCallbacks();
         })
         .catch(error => {
           console.log(error)
@@ -1008,6 +1011,8 @@ class MainTableDataStore {
               }
             }
             rows.push(row);
+            //refresh
+            this.runCallbacks();
           })
           .catch(error => {
             console.log(error)
@@ -1032,6 +1037,8 @@ class MainTableDataStore {
         .then(result => {
           let column = result.data.createColumn
           this.createColumnBoard(column.id, newItem, false, level, ColumnType.EDITBOX, columnComponentType, false, null)
+          //refresh
+          this.runCallbacks();
         })
         .catch(error => {
           console.log(error)
@@ -1144,6 +1151,8 @@ class MainTableDataStore {
         })
         .then(result => {
           this.removeColumnBoard(column.id, index)
+          //refresh
+          this.runCallbacks();
         })
         .catch(error => {
           console.log(error)
