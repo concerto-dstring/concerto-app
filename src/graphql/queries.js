@@ -367,6 +367,22 @@ export const getBoard = /* GraphQL */ `
                 }
                 nextToken
               }
+              notification(limit: 1000000) {
+                items {
+                  id
+                  subject
+                  content
+                  senderID
+                  receiverID
+                  seenflag
+                  createdAt
+                  boardID
+                  groupID
+                  rowID
+                  threadOnRowID
+                }
+                nextToken
+              }
             }
             nextToken
           }
@@ -708,6 +724,22 @@ export const getRow = /* GraphQL */ `
         }
         nextToken
       }
+      notification {
+        items {
+          id
+          subject
+          content
+          senderID
+          receiverID
+          seenflag
+          createdAt
+          boardID
+          groupID
+          rowID
+          threadOnRowID
+        }
+        nextToken
+      }
       rank
       parentId
       deleteFlag
@@ -753,6 +785,9 @@ export const listRows = /* GraphQL */ `
           createdAt
         }
         threadOnRow {
+          nextToken
+        }
+        notification {
           nextToken
         }
         rank
@@ -932,6 +967,9 @@ export const getThreadOnRow = /* GraphQL */ `
           createdAt
         }
         threadOnRow {
+          nextToken
+        }
+        notification {
           nextToken
         }
         rank
@@ -1375,6 +1413,9 @@ export const getNotification = /* GraphQL */ `
           createdAt
         }
         threadOnRow {
+          nextToken
+        }
+        notification {
           nextToken
         }
         rank

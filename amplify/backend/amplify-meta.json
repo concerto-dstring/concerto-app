@@ -36,12 +36,12 @@
 				"GraphQLAPIEndpointOutput": "https://dphzps7u4zb6pbfggbrladubbm.appsync-api.ap-northeast-2.amazonaws.com/graphql",
 				"GraphQLAPIKeyOutput": "da2-i5irngp7e5bd5ojxhbjyqf3af4"
 			},
-			"lastPushTimeStamp": "2020-06-03T04:27:29.898Z",
+			"lastPushTimeStamp": "2020-06-08T02:53:56.143Z",
 			"providerMetadata": {
 				"s3TemplateURL": "https://s3.amazonaws.com/amplify-concerto-app-rd-231546-deployment/amplify-cfn-templates/api/cloudformation-template.json",
 				"logicalId": "apiconcertoapi"
 			},
-			"lastPushDirHash": "5i0bF/lUli5rMZ10+qy7lKKmlGg="
+			"lastPushDirHash": "aMIBCAroBd16AFFrdGltZ1IwPXw="
 		}
 	},
 	"auth": {
@@ -59,7 +59,7 @@
 				"IdentityPoolName": "concertoapp2fea5048_identitypool_2fea5048__rd",
 				"UserPoolName": "concertoapp2fea5048_userpool_2fea5048"
 			},
-			"lastPushTimeStamp": "2020-06-03T04:27:23.562Z",
+			"lastPushTimeStamp": "2020-06-08T02:53:48.304Z",
 			"providerMetadata": {
 				"s3TemplateURL": "https://s3.amazonaws.com/amplify-concerto-app-rd-231546-deployment/amplify-cfn-templates/auth/concertoapp2fea5048-cloudformation-template.yml",
 				"logicalId": "authconcertoapp2fea5048"

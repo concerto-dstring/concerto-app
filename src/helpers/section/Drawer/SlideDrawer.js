@@ -10,12 +10,12 @@ import { dealRowHeaderDrawer } from '../../../maintable/actions/rowActions'
 @connect(null, { dealRowHeaderDrawer })
 class SlideDrawer extends PureComponent {
   constructor(props) {
-    const draweDefaultWidth = 600
+    const drawerDefaultWidth = 600
     super(props)
     this.state = {
-      isShowMisk: false,
-      draweDefaultWidth: draweDefaultWidth,
-      dawrerStyle: this.getDrawerStyle(props.dawrerStyle, draweDefaultWidth),
+      isShowMask: false,
+      drawerDefaultWidth: drawerDefaultWidth,
+      drawerStyle: this.getDrawerStyle(props.drawerStyle, drawerDefaultWidth),
       isResizing: false,
       isVisible: props.isVisible
     }
@@ -39,43 +39,43 @@ class SlideDrawer extends PureComponent {
     window.removeEventListener('mousemove', this.handleDrawerResize);
   }
 
-  showMisk = (e) => {
+  showMask = (e) => {
     this.setState({
-      isShowMisk: true
+      isShowMask: true
     })
   }
 
-  hiddenMisk = (e) => {
+  hiddenMask = (e) => {
     this.setState({
-      isShowMisk: false
+      isShowMask: false
     })
   }
 
   // 检查传来的宽度是否比默认宽度小
-  getDrawerStyle = (dawrerStyle, draweDefaultWidth) => {
-    let dawrerStyleCopy = Object.assign({}, dawrerStyle)
-    if (dawrerStyle) {
-      if (dawrerStyle.width) {
-        if (dawrerStyle.width < draweDefaultWidth) {
-          dawrerStyleCopy.width = draweDefaultWidth
+  getDrawerStyle = (drawerStyle, drawerDefaultWidth) => {
+    let drawerStyleCopy = Object.assign({}, drawerStyle)
+    if (drawerStyle) {
+      if (drawerStyle.width) {
+        if (drawerStyle.width < drawerDefaultWidth) {
+          drawerStyleCopy.width = drawerDefaultWidth
         }
       }
       else {
-        dawrerStyleCopy.width = draweDefaultWidth
+        drawerStyleCopy.width = drawerDefaultWidth
       }
     }
     else {
-      dawrerStyleCopy = {}
-      dawrerStyleCopy.width = draweDefaultWidth
+      drawerStyleCopy = {}
+      drawerStyleCopy.width = drawerDefaultWidth
     }
-    return dawrerStyleCopy
+    return drawerStyleCopy
   }
 
   handleResizeDown = (e) => {
     e.preventDefault()
     e.nativeEvent.stopImmediatePropagation();
-    this.drawerContent.current.onmouseenter = null
-    this.drawerContent.current.onmouseleave = null
+    this.drawerContent.current.onmouseover = null
+    this.drawerContent.current.onmouseout = null
     this.setState({
       isResizing: true,
     })
@@ -85,21 +85,21 @@ class SlideDrawer extends PureComponent {
     if (!this.state.isResizing) return
     e.preventDefault()
     e.stopPropagation()
-    const { draweDefaultWidth, dawrerStyle } = this.state
-    if (e.clientX < 300 || (window.innerWidth - e.clientX) < draweDefaultWidth) return
+    const { drawerDefaultWidth, drawerStyle } = this.state
+    if (e.clientX < 300 || (window.innerWidth - e.clientX) < drawerDefaultWidth) return
     let drawerWidth = window.innerWidth - e.clientX
-    let dawrerStyleCopy = Object.assign({}, dawrerStyle)
-    dawrerStyleCopy.width = drawerWidth > draweDefaultWidth ? drawerWidth : draweDefaultWidth
+    let drawerStyleCopy = Object.assign({}, drawerStyle)
+    drawerStyleCopy.width = drawerWidth > drawerDefaultWidth ? drawerWidth : drawerDefaultWidth
     this.setState({
-      dawrerStyle: dawrerStyleCopy,
-      isShowMisk: true
+      drawerStyle: drawerStyleCopy,
+      isShowMask: true
     })
   }
 
   handleMouseUp = (e) => {
     e.preventDefault()
-    this.drawerContent.current.onmouseenter = this.showMisk
-    this.drawerContent.current.onmouseleave = this.hiddenMisk
+    this.drawerContent.current.onmouseover = this.showMask
+    this.drawerContent.current.onmouseout = this.hiddenMask
     this.setState({
       isResizing: false
     })
@@ -108,24 +108,24 @@ class SlideDrawer extends PureComponent {
   closeDrawer = (e) => {
     this.setState({
       isVisible: false,
-      isShowMisk: false
+      isShowMask: false
     })
     this.props.dealRowHeaderDrawer({isOpenRowHeaderDrawer: false})
   }
 
   render() {
-    const { isShowMisk, dawrerStyle, isVisible } = this.state
+    const { isShowMask, drawerStyle, isVisible } = this.state
     const { headerStyle, bodyStyle, drawerHeader, children } = this.props
     return (
-      <div className={isVisible ? 'slide_drawer open' : 'slide_drawer'} style={dawrerStyle}>
-        <div className={isShowMisk ? 'slide_drawer_overlay show_misk' : 'slide_drawer_overlay'}>
-
-        </div>
+      <div className={isVisible ? 'slide_drawer open' : 'slide_drawer'} style={drawerStyle}>
+        <div 
+          className={isShowMask ? 'slide_drawer_overlay show_mask' : 'slide_drawer_overlay'}
+        />
         <div
           ref={this.drawerContent}
           className="slide_drawer_content"
-          onMouseEnter={this.showMisk}
-          onMouseLeave={this.hiddenMisk}
+          onMouseEnter={this.showMask}
+          onMouseLeave={this.hiddenMask}
         >
           <div
             className="slide_drawer_resizer"

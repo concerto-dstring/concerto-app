@@ -80,7 +80,8 @@ class DataViewWrapper {
         this.updateThreadOrReplySeen = this.updateThreadOrReplySeen.bind(this)
         this.createNotification = this.createNotification.bind(this)
         this.updateRowReadMessageStatus = this.updateRowReadMessageStatus.bind(this)
-        this.getNotificationsByRowIndex = this.getNotificationsByRowIndex.bind(this)
+        this.getNotificationsByRowId = this.getNotificationsByRowId.bind(this)
+        this.getCurrentBoardId = this.getCurrentBoardId.bind(this)
     }
 
     /**
@@ -679,8 +680,8 @@ class DataViewWrapper {
       return this._dataset.getRowThreadData(rowId, setUpdateInfo)
     }
 
-    createThreadData(createData, setUpdateInfo) {
-      this._dataset.createThreadData(createData, setUpdateInfo)
+    createThreadData(createData, setUpdateInfo, notifications) {
+      this._dataset.createThreadData(createData, setUpdateInfo, notifications)
     }
 
     updateThreadData(updateData, setUpdateInfo) {
@@ -711,8 +712,9 @@ class DataViewWrapper {
       this._dataset.updateRowReadMessageStatus(row)
     }
 
-    getNotificationsByRowIndex(rowIndex){
-      return this._dataset.getNotificationsByRowIndex(rowIndex)
+    getNotificationsByRowId(rowIndex){
+      let rowId = this.getRowKey(rowIndex)
+      return this._dataset.getNotificationsByRowId(rowId)
     }
 }
 
