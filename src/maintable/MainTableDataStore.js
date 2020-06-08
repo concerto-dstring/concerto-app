@@ -32,7 +32,7 @@ import {
   createRow, updateRow,
   createThreadOnRow, updateThreadOnRow, 
   createReplyOnThread, updateReplyOnThread,
-  createNotification
+  createNotification,updateNotification
 } from "../graphql/mutations"
 
 const rankBlock = 32768
@@ -76,10 +76,33 @@ class MainTableDataStore {
         this.isSubRowExpanded = this.isSubRowExpanded.bind(this);
         this.getSubRows = this.getSubRows.bind(this);
         this.toggleExpandSubRows = this.toggleExpandSubRows.bind(this);
-        this.getRowThreadData = this.getRowThreadData.bind(this)
+        this.getRowThreadData = this.getRowThreadData.bind(this);
+        this.updateRowReadMessageStatus = this.updateRowReadMessageStatus.bind(this);
+        this.getNotificationsByRowIndex = this.getNotificationsByRowIndex.bind(this);
         this._callbacks = [];
         this.runCallbacks = this.runCallbacks.bind(this);
     }
+
+    //修改行对象的评论是否已读
+    updateRowReadMessageStatus(id) {
+      this._apolloClient
+        .mutate({
+          mutation: gql(updateNotification),
+          variables: {
+            input: {
+              id:id,
+              seenflag: true
+            }
+          }
+        })
+        .then(result => {
+          this.runCallbacks();
+        })
+        .catch(error => {
+          console.log(error)
+        })
+
+  }
     
     /**
      * 创建工作板
@@ -711,6 +734,8 @@ class MainTableDataStore {
         .then(result => {
           let column = result.data.createColumn
           this.createColumnBoard(column.id, name, fixed, level, columntype, columnComponentType, isSubColumn, rank, isTitle)
+          //refresh
+          this.runCallbacks();
         })
         .catch(error => {
           console.log(error)
@@ -793,7 +818,6 @@ class MainTableDataStore {
           else {
             this._groups.push(group)
           }
-
           this.runCallbacks();
         })
         .catch(error => {
@@ -899,6 +923,8 @@ class MainTableDataStore {
           }
           let rows = this._groups[index].rows;
           rows.push(row);
+          //refresh
+          this.runCallbacks();
         })
         .catch(error => {
           console.log(error)
@@ -988,6 +1014,8 @@ class MainTableDataStore {
               }
             }
             rows.push(row);
+            //refresh
+            this.runCallbacks();
           })
           .catch(error => {
             console.log(error)
@@ -1012,6 +1040,8 @@ class MainTableDataStore {
         .then(result => {
           let column = result.data.createColumn
           this.createColumnBoard(column.id, newItem, false, level, ColumnType.EDITBOX, columnComponentType, false, null)
+          //refresh
+          this.runCallbacks();
         })
         .catch(error => {
           console.log(error)
@@ -1124,6 +1154,8 @@ class MainTableDataStore {
         })
         .then(result => {
           this.removeColumnBoard(column.id, index)
+          //refresh
+          this.runCallbacks();
         })
         .catch(error => {
           console.log(error)
@@ -1423,6 +1455,31 @@ class MainTableDataStore {
        return arr
     }
 
+    getNotificationsByRowIndex(rowId){
+      let hasRead = false;
+      this._apolloClient.query({
+        query: gql(listThreadOnRows),
+        variables: {
+          limit: 10000,
+          filter: {
+            rowID: {
+              eq: rowId
+            }
+          }
+        },
+        fetchPolicy: "no-cache"
+      })
+      .then(result => {
+        const items = result.data.listThreadOnRows.items;
+
+        items.forEach((item)=>{
+            hasRead = item.seenflag;
+        })
+        
+      })
+      return hasRead;
+    }
+
     getRowThreadData(rowId, setUpdateInfo) {
       if (Object.keys(this._rowThreadData).indexOf(rowId) !== -1) {
         setUpdateInfo(this._rowThreadData[rowId])
@@ -1442,9 +1499,14 @@ class MainTableDataStore {
             fetchPolicy: "no-cache"
           })
           .then(result => {
-            let threads = this.sortDataByCreatedAt(result.data.listThreadOnRows.items)
+            const items = result.data.listThreadOnRows.items;
+            let threads = this.sortDataByCreatedAt(items)
             this._rowThreadData[rowId] = threads
             setUpdateInfo(this._rowThreadData[rowId])
+            items.forEach((item)=>{
+              this.updateRowReadMessageStatus(item.id)
+            })
+            
           })
       }
     }
