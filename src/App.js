@@ -39,22 +39,6 @@ import NotFound from './NotFound';
   @withRouter
  class MainComponent extends React.Component {
 
-    componentDidMount() {
-      this.getCurrentAuthUser()
-    }
-
-    getCurrentAuthUser = async() => {
-      try {
-        let user = await Auth.currentAuthenticatedUser({
-          bypassCache: false
-        })
-        localStorage.setItem('CurrentUserId', user.attributes.sub);
-      } catch (error) {
-        // 检查用户是否登录
-        this.props.history.push('/login')
-      }
-    }
-
     render() {
       let dataset = new MainTableDataStore();
       return (
@@ -67,7 +51,28 @@ import NotFound from './NotFound';
     }
   }
 
+  @withRouter
   class App extends React.Component {
+
+    componentDidMount() {
+      this.getCurrentAuthUser()
+    }
+
+    getCurrentAuthUser = async() => {
+      try {
+        let user = await Auth.currentAuthenticatedUser({
+          bypassCache: false
+        })
+        // 如果是登录页面或者/则跳转到board
+        localStorage.setItem('CurrentUserId', user.attributes.sub);
+        if (this.props.location.pathname === '/' || this.props.location.pathname === '/login') {
+          this.props.history.push('/board')
+        }
+      } catch (error) {
+        // 检查用户是否登录
+        this.props.history.push('/login')
+      }
+    }
     
     render() {
 

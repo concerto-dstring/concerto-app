@@ -209,6 +209,9 @@ class MainTableDataStore {
                   }
                 }
               }
+              else {
+                setMenus([], true, null)
+              }
             });
           break;
       
