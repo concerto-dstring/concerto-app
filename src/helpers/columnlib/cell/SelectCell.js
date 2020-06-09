@@ -27,6 +27,7 @@ class SelectCell extends React.Component {
                 showSearch
                 value={this.state.value}
                 className="SelectCell"
+                getPopupContainer={()=>this.props.container}
                 placeholder="Select a option"
                 optionFilterProp="children"
                 filterOption={(input, option) =>

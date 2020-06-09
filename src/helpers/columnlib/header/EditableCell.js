@@ -90,6 +90,7 @@ class EditableCell extends React.PureComponent {
                         displayValue: cellData.displayValue,
                         isCollapsed: cellData.isCollapsed,
                         data: props.data,
+                        container: props.container,
                       });
         this.setState({ version: props.dataVersion });
     }
@@ -125,8 +126,8 @@ class EditableCell extends React.PureComponent {
             const columnCanEditor = this.cellRenderValues[type] ;
             if(columnCanEditor){
                 this.setState({ editing: true });
-                this.props.onCellEdit(this.props.rowIndex, this.props.columnKey);
             }
+            this.props.onCellEdit(this.props.rowIndex, this.props.columnKey);
         }else{
             this.setState({ editing: true });
             this.props.onCellEdit(this.props.rowIndex, this.props.columnKey);
@@ -150,6 +151,7 @@ class EditableCell extends React.PureComponent {
           value: value,
         });
       }
+      this.props.onCellEditEnd(this.props.rowIndex, this.props.columnKey);
     }
 
     handleKey = e =>
@@ -192,15 +194,16 @@ class EditableCell extends React.PureComponent {
 
     render() {
       
-        const {container, data, rowIndex, columnKey, dataVersion, width, height,  ...props} = this.props;
+        const {container, data, rowIndex, columnKey, dataVersion, width, height, ...props} = this.props;
         const { value, editing, displayValue } = this.state;
         const isHeaderOrFooter = false;
         const type = isHeaderOrFooter?'TEXT':this.getColumnCompentTypeByColumnKey(columnKey,data._dataset._columns);
         this.setState({
             type:type,
             isHeaderOrFooter:isHeaderOrFooter,
-            filterInputValue: this.props.filterInputValue
-        })
+            filterInputValue: this.props.filterInputValue,
+            //container: container
+        });
         // const inputStyle = {
         //     width: width - 10,
         //     height: height - 5,
@@ -245,7 +248,7 @@ class EditableCell extends React.PureComponent {
                                             ? this.targetRef.offsetHeight
                                             : -this.targetRef.offsetHeight,
                                 }}>
-                                <TableContext.Provider value={this.state}>
+                                <TableContext.Provider value={this.state} >
                                     <TableCell></TableCell>
                                 </TableContext.Provider>
                             </div>

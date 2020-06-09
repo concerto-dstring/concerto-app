@@ -35,73 +35,73 @@ class FixedDataTableCell extends React.Component {
    * down the FixedDataTable hugely in DEV mode. You can enable them back for
    * development, but please don't commit this component with enabled propTypes.
    */
-  static propTypes_DISABLED_FOR_PERFORMANCE = {
-    isScrolling: PropTypes.bool,
-    align: PropTypes.oneOf(['left', 'center', 'right']),
-    className: PropTypes.string,
-    highlighted: PropTypes.bool,
-    width: PropTypes.number.isRequired,
-    minWidth: PropTypes.number,
-    maxWidth: PropTypes.number,
-    height: PropTypes.number.isRequired,
+  // static propTypes_DISABLED_FOR_PERFORMANCE = {
+  //   isScrolling: PropTypes.bool,
+  //   align: PropTypes.oneOf(['left', 'center', 'right']),
+  //   className: PropTypes.string,
+  //   highlighted: PropTypes.bool,
+  //   width: PropTypes.number.isRequired,
+  //   minWidth: PropTypes.number,
+  //   maxWidth: PropTypes.number,
+  //   height: PropTypes.number.isRequired,
 
-    cell: PropTypes.oneOfType([
-      PropTypes.string,
-      PropTypes.element,
-      PropTypes.func,
-    ]),
+  //   cell: PropTypes.oneOfType([
+  //     PropTypes.string,
+  //     PropTypes.element,
+  //     PropTypes.func,
+  //   ]),
 
-    columnKey: PropTypes.oneOfType([
-      PropTypes.string,
-      PropTypes.number,
-    ]),
+  //   columnKey: PropTypes.oneOfType([
+  //     PropTypes.string,
+  //     PropTypes.number,
+  //   ]),
 
-    /**
-     * The row index that will be passed to `cellRenderer` to render.
-     */
-    rowIndex: PropTypes.number.isRequired,
+  //   /**
+  //    * The row index that will be passed to `cellRenderer` to render.
+  //    */
+  //   rowIndex: PropTypes.number.isRequired,
 
-    /**
-     * Callback for when resizer knob (in FixedDataTableCell) is clicked
-     * to initialize resizing. Please note this is only on the cells
-     * in the header.
-     * @param number combinedWidth
-     * @param number left
-     * @param number width
-     * @param number minWidth
-     * @param number maxWidth
-     * @param number|string columnKey
-     * @param object event
-     */
-    onColumnResize: PropTypes.func,
-    onColumnReorder: PropTypes.func,
+  //   /**
+  //    * Callback for when resizer knob (in FixedDataTableCell) is clicked
+  //    * to initialize resizing. Please note this is only on the cells
+  //    * in the header.
+  //    * @param number combinedWidth
+  //    * @param number left
+  //    * @param number width
+  //    * @param number minWidth
+  //    * @param number maxWidth
+  //    * @param number|string columnKey
+  //    * @param object event
+  //    */
+  //   onColumnResize: PropTypes.func,
+  //   onColumnReorder: PropTypes.func,
 
-    /**
-     * The left offset in pixels of the cell.
-     */
-    left: PropTypes.number,
+  //   /**
+  //    * The left offset in pixels of the cell.
+  //    */
+  //   left: PropTypes.number,
 
-    /**
-     * Flag for enhanced performance check
-     */
-    pureRendering: PropTypes.bool,
+  //   /**
+  //    * Flag for enhanced performance check
+  //    */
+  //   pureRendering: PropTypes.bool,
 
-    /**
-     * Whether touch is enabled or not.
-     */
-    touchEnabled: PropTypes.bool,
+  //   /**
+  //    * Whether touch is enabled or not.
+  //    */
+  //   touchEnabled: PropTypes.bool,
 
-    /**
-     * Whether the cell group is part of the header or footer
-     */
-    isHeaderOrFooter: PropTypes.bool,
-    isTableFooter: PropTypes.bool,
+  //   /**
+  //    * Whether the cell group is part of the header or footer
+  //    */
+  //   isHeaderOrFooter: PropTypes.bool,
+  //   isTableFooter: PropTypes.bool,
 
-    /**
-     * If the component should render for RTL direction
-     */
-    isRTL: PropTypes.bool,
-  }
+  //   /**
+  //    * If the component should render for RTL direction
+  //    */
+  //   isRTL: PropTypes.bool,
+  // }
 
   state = {
     isReorderingThisColumn: false,

@@ -94,8 +94,8 @@ class DateCell extends React.Component {
         })
         this.refs.datePicker.blur();
         this.props.handleChange("", true);
-
       }
+
       return (
         <div>
           <Row>
@@ -138,7 +138,12 @@ class DateCell extends React.Component {
           value:e
         })
       }
-      
+
+      const OpenOrDismiss = (open) => {
+        if (!open) {
+          this.props.handleChange("", false);
+        }
+      }      
       return (
         <Cell {...props} className="DateCell">
          <DatePicker 
@@ -147,7 +152,9 @@ class DateCell extends React.Component {
                 allowClear={false}
                 bordered={false}
                 placeholder=""
+                onOpenChange={OpenOrDismiss}
                 open={this.state.open}
+                getPopupContainer={()=>this.props.container}
                 suffixIcon={<div style={{lineHeight:'33px',color:'#8b8c8d'}}>{this.state.addDateTime}</div>}
                 renderExtraFooter={this.renderDatePicker} //antd官网提供的加入额外页脚的方法
                 value={this.state.value}
