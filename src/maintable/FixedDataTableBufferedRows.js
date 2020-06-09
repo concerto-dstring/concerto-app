@@ -27,54 +27,7 @@ import './css/style/fixedDataTable.css';
 
 
 class FixedDataTableBufferedRows extends React.Component {
-  static propTypes = {
-    ariaRowIndexOffset: PropTypes.number,
-    ariaGroupHeaderIndex: PropTypes.number,
-    ariaHeaderIndex: PropTypes.number,
-    ariaFooterIndex: PropTypes.number,
-    isScrolling: PropTypes.bool,
-    firstViewportRowIndex: PropTypes.number.isRequired,
-    endViewportRowIndex: PropTypes.number.isRequired,
-    fixedColumns: PropTypes.object.isRequired,
-    fixedRightColumns: PropTypes.object.isRequired,
-    height: PropTypes.number.isRequired,
-    onRowClick: PropTypes.func,
-    onRowContextMenu: PropTypes.func,
-    onRowDoubleClick: PropTypes.func,
-    onRowMouseDown: PropTypes.func,
-    onRowMouseUp: PropTypes.func,
-    onRowMouseEnter: PropTypes.func,
-    onRowMouseLeave: PropTypes.func,
-    onRowTouchStart: PropTypes.func,
-    onRowTouchEnd: PropTypes.func,
-    onRowTouchMove: PropTypes.func,
-    onFilter: PropTypes.func,
-    onGetListUsers: PropTypes.func, 
-    onAddNewGroup: PropTypes.func,
-    rowClassNameGetter: PropTypes.func,
-    rowExpanded: PropTypes.oneOfType([
-      PropTypes.element,
-      PropTypes.func,
-    ]),
-    rowOffsets: PropTypes.object.isRequired,
-    rowKeyGetter: PropTypes.func,
-    rowSettings: PropTypes.shape({
-      rowAttributesGetter: PropTypes.func,
-      rowHeightGetter: PropTypes.func,
-      rowsCount: PropTypes.number.isRequired,
-      subRowHeightGetter: PropTypes.func,
-      subRowTotalHeightGetter: PropTypes.func,
-    }),
-    rowsToRender: PropTypes.array.isRequired,
-    scrollLeft: PropTypes.number.isRequired,
-    scrollTop: PropTypes.number.isRequired,
-    scrollableColumns: PropTypes.object.isRequired,
-    showLastRowBorder: PropTypes.bool,
-    showScrollbarY: PropTypes.bool,
-    width: PropTypes.number.isRequired,
-    isRTL: PropTypes.bool,
-  }
-
+  
   componentWillMount() {
     this._staticRowArray = [];
     this._initialRender = true;
@@ -138,8 +91,23 @@ class FixedDataTableBufferedRows extends React.Component {
       }
     }
 
-    return <div>{this._staticRowArray}</div>;
+    let layerStyle = {
+      top: -this.props.scrollTop,
+      left: -this.props.scrollLeft,
+      position: 'absolute',
+      width: this.props.contentWidth,
+      height: this.props.contentHeight, 
+      zIndex: this.props.isCellEditing ? 2: -1,
+      overflow: 'hidden',
+    };
+    
+    return <div><div>{this._staticRowArray}</div><div style={layerStyle} ref={this._onRef}/></div>;
   }
+
+  _onRef = (div) => {
+    this._divRef = div;
+  }
+
 
   /**
    * type header, footer, row 
@@ -224,13 +192,14 @@ class FixedDataTableBufferedRows extends React.Component {
               title={props.title}
               index={rowIndex}
               zIndex={1}
+              isHeaderOrFooter={true}
               ariaRowIndex={ariaAddRowIndex}
               isScrolling={props.isScrolling}
               height={titleHeight}
               width={props.width}
               offsetTop={rowProps.offsetTop}
               isRTL={props.isRTL}
-              container={props.container}
+              container={this._divRef}
               visible={visible} 
               onFilter={props.onFilterChange}
               onGetListUsers={props.onGetListUsers}
@@ -267,7 +236,7 @@ class FixedDataTableBufferedRows extends React.Component {
                 isColumnReordering={!!isColumnReordering}
                 columnReorderingData={columnReorderingData}
                 showScrollbarY={scrollEnabledY}
-                container={props.container}
+                container={this._divRef}
                 data={props.data}
                 isRTL={props.isRTL}
                 siderWidth={siderWidth}
@@ -295,7 +264,7 @@ class FixedDataTableBufferedRows extends React.Component {
               scrollableColumns={scrollableColumns.cell}
               showScrollbarY={scrollEnabledY}
               isRTL={props.isRTL}
-              container={props.container}
+              container={this._divRef}
               data={props.data}
               visible={visible} 
               onNewRowAdd={onNewRowAdd}
@@ -327,7 +296,7 @@ class FixedDataTableBufferedRows extends React.Component {
                 scrollableColumns={scrollableColumns.footer}
                 scrollLeft={Math.round(props.scrollLeft)}
                 showScrollbarY={scrollEnabledY}
-                container={props.container}
+                container={this._divRef}
                 data={props.data}
                 isRTL={props.isRTL}
               />;
@@ -367,7 +336,7 @@ class FixedDataTableBufferedRows extends React.Component {
                 isRTL={props.isRTL}
                 visible={visible}
                 fake={fake}
-                container={props.container}
+                container={this._divRef}
                 data={props.data}
                 {...rowProps} 
               />

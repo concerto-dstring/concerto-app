@@ -522,7 +522,8 @@ class MainTable extends React.Component {
                     onGetListUsers = {this._onGetListUsers}
                     columnNameGetter={this._getColumnName}
                     data={data}
-                    titleHeight={80}
+                    titleHeight={0} 
+                    // set to zero
                     headerHeight={40}                    
                     rowHeight={40}
                     isColumnResizing={false}
