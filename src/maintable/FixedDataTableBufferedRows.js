@@ -99,6 +99,7 @@ class FixedDataTableBufferedRows extends React.Component {
       height: this.props.contentHeight, 
       zIndex: this.props.isCellEditing ? 2: -1,
       overflow: 'hidden',
+      pointerEvents: 'none',
     };
     
     return <div><div>{this._staticRowArray}</div><div style={layerStyle} ref={this._onRef}/></div>;
