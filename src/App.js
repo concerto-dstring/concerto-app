@@ -59,9 +59,11 @@ import NotFound from './NotFound';
       let dataset = new MainTableDataStore();
       return (
         <ApolloProvider client={client}>
-          <Rehydrated>
-              <MainPage dataset={dataset}/>
-          </Rehydrated>
+          <Rehydrated
+            render={({ rehydrated }) => (
+              rehydrated ?  <MainPage dataset={dataset}/> : <strong>Loading your data at pynbo.com...</strong>
+            )}
+          />
         </ApolloProvider>
       )
     }
