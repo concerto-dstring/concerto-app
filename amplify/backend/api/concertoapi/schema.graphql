@@ -124,6 +124,7 @@ type Row @model
   creatorID: ID!
   creator: User!  @connection(fields: ["creatorID"])
   threadOnRow: [ThreadOnRow] @connection(keyName: "threadOnRowByRow", fields: ["id"])
+  notification: [Notification] @connection(keyName: "notificationByRow", fields: ["id"])
   rank: String!
   parentId: ID
   deleteFlag: Boolean
@@ -213,7 +214,8 @@ type InboxOnRow @model
 }
 
 ## notification service
-type Notification @model {
+type Notification @model
+@key(name: "notificationByRow", fields: ["rowID", "id"]) {
   id: ID!
   subject: String!
   content: String

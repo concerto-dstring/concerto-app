@@ -1663,6 +1663,22 @@ export const createRow = /* GraphQL */ `
         }
         nextToken
       }
+      notification {
+        items {
+          id
+          subject
+          content
+          senderID
+          receiverID
+          seenflag
+          createdAt
+          boardID
+          groupID
+          rowID
+          threadOnRowID
+        }
+        nextToken
+      }
       rank
       parentId
       deleteFlag
@@ -1763,6 +1779,22 @@ export const updateRow = /* GraphQL */ `
         }
         nextToken
       }
+      notification {
+        items {
+          id
+          subject
+          content
+          senderID
+          receiverID
+          seenflag
+          createdAt
+          boardID
+          groupID
+          rowID
+          threadOnRowID
+        }
+        nextToken
+      }
       rank
       parentId
       deleteFlag
@@ -1860,6 +1892,22 @@ export const deleteRow = /* GraphQL */ `
           createdAt
           likedByUsersID
           seenByUsersID
+        }
+        nextToken
+      }
+      notification {
+        items {
+          id
+          subject
+          content
+          senderID
+          receiverID
+          seenflag
+          createdAt
+          boardID
+          groupID
+          rowID
+          threadOnRowID
         }
         nextToken
       }
@@ -2376,6 +2424,9 @@ export const createThreadOnRow = /* GraphQL */ `
         threadOnRow {
           nextToken
         }
+        notification {
+          nextToken
+        }
         rank
         parentId
         deleteFlag
@@ -2472,6 +2523,9 @@ export const updateThreadOnRow = /* GraphQL */ `
         threadOnRow {
           nextToken
         }
+        notification {
+          nextToken
+        }
         rank
         parentId
         deleteFlag
@@ -2566,6 +2620,9 @@ export const deleteThreadOnRow = /* GraphQL */ `
           createdAt
         }
         threadOnRow {
+          nextToken
+        }
+        notification {
           nextToken
         }
         rank
@@ -3063,6 +3120,9 @@ export const createNotification = /* GraphQL */ `
         threadOnRow {
           nextToken
         }
+        notification {
+          nextToken
+        }
         rank
         parentId
         deleteFlag
@@ -3275,6 +3335,9 @@ export const updateNotification = /* GraphQL */ `
         threadOnRow {
           nextToken
         }
+        notification {
+          nextToken
+        }
         rank
         parentId
         deleteFlag
@@ -3485,6 +3548,9 @@ export const deleteNotification = /* GraphQL */ `
           createdAt
         }
         threadOnRow {
+          nextToken
+        }
+        notification {
           nextToken
         }
         rank

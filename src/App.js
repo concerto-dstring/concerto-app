@@ -48,7 +48,11 @@ import NotFound from './NotFound';
         let user = await Auth.currentAuthenticatedUser({
           bypassCache: false
         })
+        // 如果是登录页面或者/则跳转到board
         localStorage.setItem('CurrentUserId', user.attributes.sub);
+        if (this.props.location.pathname === '/' || this.props.location.pathname === '/login') {
+          this.props.history.push('/board')
+        }
       } catch (error) {
         // 检查用户是否登录
         this.props.history.push('/login')
