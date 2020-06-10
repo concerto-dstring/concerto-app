@@ -233,78 +233,76 @@ class Register extends PureComponent {
     return (
       <div className="register_layout">
         <Spin spinning={isLoading}>
-          <div className="register_container">
-            <div className="register_header_component">
-              <span className="register_header">欢迎注册 Pynbo 拼板</span>
+          <div className="register_header_component">
+            <span className="register_header">欢迎注册 Pynbo 拼板</span>
+          </div>
+          <div className="register_body_component">
+            <div className="register_item">
+              <span className="register_label"><span className="register_required">*</span> 用户名：</span>
+              <Input
+                style={{borderColor: userNameBorderColor}}
+                placeholder='请输入用户名'
+                onChange={this.handleUserNameChange}
+              />
             </div>
-            <div className="register_body_component">
-              <div className="register_item">
-                <span className="register_label"><span className="register_required">*</span> 用户名：</span>
-                <Input
-                  style={{borderColor: userNameBorderColor}}
-                  placeholder='请输入用户名'
-                  onChange={this.handleUserNameChange}
-                />
-              </div>
-              <div className="register_error_item">
-                <span className="register_error_message">{userNameErrorMsg}</span>
-              </div>
-              <div className="register_item">
-                <span className="register_label"><span className="register_required">*</span> 密码：</span>
-                <Input.Password 
-                  style={{borderColor: passwordBorderColor}} 
-                  placeholder='请输入密码'
-                  onChange={this.handlePasswordChange}
-                />
-              </div>
-              <div className="register_error_item">
-                <span className="register_error_message">{passwordErrorMsg}</span>
-              </div>
-              <div className="register_item">
-                <span className="register_label"><span className="register_required">*</span> 确认密码：</span>
-                <Input.Password 
-                  style={{borderColor: confirmPasswordBorderColor}} 
-                  placeholder='请确认密码'
-                  onChange={this.handleConfirmPasswordChange}
-                />
-              </div>
-              <div className="register_error_item">
-                <span className="register_error_message">{confirmPasswordErrorMsg}</span>
-              </div>
-              <div className="register_item">
-                <span className="register_label"><span className="register_required">*</span> 邮箱地址：</span>
-                <Input
-                  style={{borderColor: emailBorderColor}} 
-                  placeholder='请输入邮箱地址'
-                  onChange={this.handleEmailChange}
-                />
-              </div>
-              <div className="register_error_item">
-                <span className="register_error_message">{emailErrorMsg}</span>
-              </div>
-              <div className="register_item">
-                <span className="register_label"><span className="register_required">*</span> 手机号码：</span>
-                <Input
-                  style={{borderColor: phoneBorderColor}} 
-                  placeholder='请输入手机号码'
-                  onChange={this.handlePhoneChange}
-                />
-              </div>
-              <div className="register_error_item">
-                <span className="register_error_message">{phoneErrorMsg}</span>
-              </div>
-              <br />
-              <div className="register_register_item">
-                <div className="register_link_left"><Link to="/login">登 录</Link></div>
-                <div className="register_link_right">
-                  <Button
-                    type='primary'
-                    style={{width: 120}}
-                    onClick={this.registerUser}
-                  >
-                    注&emsp;&emsp;册
-                  </Button>
-                </div>
+            <div className="register_error_item">
+              <span className="register_error_message">{userNameErrorMsg}</span>
+            </div>
+            <div className="register_item">
+              <span className="register_label"><span className="register_required">*</span> 密码：</span>
+              <Input.Password 
+                style={{borderColor: passwordBorderColor}} 
+                placeholder='请输入密码'
+                onChange={this.handlePasswordChange}
+              />
+            </div>
+            <div className="register_error_item">
+              <span className="register_error_message">{passwordErrorMsg}</span>
+            </div>
+            <div className="register_item">
+              <span className="register_label"><span className="register_required">*</span> 确认密码：</span>
+              <Input.Password 
+                style={{borderColor: confirmPasswordBorderColor}} 
+                placeholder='请确认密码'
+                onChange={this.handleConfirmPasswordChange}
+              />
+            </div>
+            <div className="register_error_item">
+              <span className="register_error_message">{confirmPasswordErrorMsg}</span>
+            </div>
+            <div className="register_item">
+              <span className="register_label"><span className="register_required">*</span> 邮箱地址：</span>
+              <Input
+                style={{borderColor: emailBorderColor}} 
+                placeholder='请输入邮箱地址'
+                onChange={this.handleEmailChange}
+              />
+            </div>
+            <div className="register_error_item">
+              <span className="register_error_message">{emailErrorMsg}</span>
+            </div>
+            <div className="register_item">
+              <span className="register_label"><span className="register_required">*</span> 手机号码：</span>
+              <Input
+                style={{borderColor: phoneBorderColor}} 
+                placeholder='请输入手机号码'
+                onChange={this.handlePhoneChange}
+              />
+            </div>
+            <div className="register_error_item">
+              <span className="register_error_message">{phoneErrorMsg}</span>
+            </div>
+            <br />
+            <div className="register_register_item">
+              <div className="register_link_left"><Link to="/login">登 录</Link></div>
+              <div className="register_link_right">
+                <Button
+                  type='primary'
+                  style={{width: 120}}
+                  onClick={this.registerUser}
+                >
+                  注&emsp;&emsp;册
+                </Button>
               </div>
             </div>
           </div>

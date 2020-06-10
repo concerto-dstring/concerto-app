@@ -1052,24 +1052,31 @@ class MainTableDataStore {
         })
         .then(result => {
           let column = result.data.createColumnBoard
-          column.width = (fixed && !isTitle) ? 36 : 200
+          column.width = isTitle ? 360 : ((fixed && !isTitle) ? 36 : 200)
           column.type = columnType
           column.columnKey = columnId
           column.name = columnName
           column.columnComponentType = columnComponentType
           this._columns.push(column)
           this._columns = this.sortDataByRank(this._columns)
-          if (isSubColumn) {
-            for(let key in this._rowData) {
-              if (this._subRowKeys.indexOf(key) !== -1) {
-                this.createCellData(key, columnId, null)
-              }
-            }
+
+          // 无行数据时需要刷新
+          if (Object.keys(this._rowThreadData).length === 0) {
+            this.runCallbacks();
           }
           else {
-            for(let key in this._rowData) {
-              if (this._subRowKeys.indexOf(key) === -1) {
-                this.createCellData(key, columnId, null)
+            if (isSubColumn) {
+              for(let key in this._rowData) {
+                if (this._subRowKeys.indexOf(key) !== -1) {
+                  this.createCellData(key, columnId, null)
+                }
+              }
+            }
+            else {
+              for(let key in this._rowData) {
+                if (this._subRowKeys.indexOf(key) === -1) {
+                  this.createCellData(key, columnId, null)
+                }
               }
             }
           }
@@ -1638,6 +1645,20 @@ class MainTableDataStore {
       }
 
       return notReadNotifications
+    }
+
+    getNotificationsByBoardId(){
+      let notReadCount = 0
+      let notifications = this._rowNotification
+      if (notifications && notifications.length > 0) {
+        notifications.map(notification => {
+          if (notification.receiverID === this._currentUser.id && !notification.seenflag) {
+            notReadCount++
+          }
+        })
+      }
+
+      return notReadCount
     }
 
     dealNotReadNotifications(rowId) {

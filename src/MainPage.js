@@ -114,7 +114,8 @@ class MainPage extends React.Component {
     boardMenusCopy[boardIndex].name = boardName
 
     this.setState({
-      boardMenus: boardMenusCopy
+      boardMenus: boardMenusCopy,
+      contentTitle: boardName
     })
   }
 
@@ -271,7 +272,7 @@ class MainPage extends React.Component {
   getBodyContent = () => {
     const { dataset, siderWidth, contentTitle } = this.state;
     return (
-        <Content style={{marginLeft: 24}}>
+        <Content style={{marginLeft: 24, width: '100%', height: '100%'}}>
           <Route exact component={()=>
                 <MainTable
                   title={contentTitle}
