@@ -205,7 +205,7 @@ render() /*object*/ {
                   >
                     <div className="main_table_btn_layout">
                       <span style={{}}>
-                        + 新增表
+                        + 工作项
                       </span>
                       <div className="main_table_add_btn_separator" />
                       <div>

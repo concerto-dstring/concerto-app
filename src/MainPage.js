@@ -14,7 +14,10 @@ import {
     ShareAltOutlined,
     DoubleRightOutlined,
     DoubleLeftOutlined,
-    CloseOutlined
+    CloseOutlined,
+    PlusOutlined,
+    EllipsisOutlined,
+    LogoutOutlined
    } from '@ant-design/icons';
 import logo from './logo.svg'
 import { withApollo } from 'react-apollo'
@@ -291,9 +294,9 @@ class MainPage extends React.Component {
       <Panel 
         header={<div className="body_left_sider_panel_header">
                   <div style={{textAlign: "left"}}>{name}</div>
-                  <div style={{textAlign: "right"}} onClick={this.createBoard}>+</div>
+                  <div style={{textAlign: "right"}} onClick={this.createBoard}><PlusOutlined style={{fontSize:"14px"}}/></div>
                 </div>} 
-        showArrow={false} 
+        showArrow={true} 
         key={key}
       >
         {
@@ -329,11 +332,8 @@ class MainPage extends React.Component {
                     overlay={this.getBoardItemMenus(item.id, item.name)}
                     placement='bottomLeft'
                   >
-                    <div className="body_left_sider_panel_menu_item_menu">
-                      <div className="menu_point"></div>
-                      <div className="menu_point"></div>
-                      <div className="menu_point"></div>
-                    </div>
+                    <EllipsisOutlined style={{fontSize:"14px"}}/>
+                  
                   </Dropdown>
                 </div>
               </div>
@@ -353,7 +353,7 @@ class MainPage extends React.Component {
         <Menu.Item 
           key={USER_MENU_SIGN_OUT.key}
         >
-          <span>{USER_MENU_SIGN_OUT.desc}</span>
+          <LogoutOutlined/><span>{USER_MENU_SIGN_OUT.desc}</span>
         </Menu.Item>
       </Menu>
     )
@@ -400,29 +400,6 @@ class MainPage extends React.Component {
     return (
       <Spin size="large" spinning={isLoading} style={{maxHeight: '100%'}}>
         <Layout>
-          {/* <Header className="header">            
-            <div>
-              <img className="header_logo" src={logo} />
-            </div>
-            <div className="header_right">
-              <span>
-                <Dropdown
-                  overlay={this.getUserMenus()}
-                  placement='bottomCenter'
-                >
-                  <Avatar 
-                    size={28} 
-                    style={{background: dataset._currentUser.faceColor ? dataset._currentUser.faceColor : '#000', cursor: 'pointer'}}
-                  >
-                    {dataset._currentUser.fname ? dataset._currentUser.fname : ''}
-                  </Avatar>
-                </Dropdown>
-              </span>
-              <span className="header_setting">
-                <SettingFilled />
-              </span>
-            </div>
-          </Header> */}
           <Layout>
             <Sider 
               collapsible={true} 
@@ -440,7 +417,7 @@ class MainPage extends React.Component {
                    <img className="header_logo" src="../pynbologo.png" />
                   </Col>
                   <Col span={4}>
-                    <h3 style={{fontWeight:'bold',lineHeight:'50px'}}>Pynbo</h3>
+                    <h3 style={{fontWeight:'bold',lineHeight:'40px'}}>Pynbo</h3>
                   </Col>
                   <Col span={16}>
                     <div className="collpseBar">
@@ -460,25 +437,23 @@ class MainPage extends React.Component {
                 }
               </Collapse>
               <div className="leftSiderFooter">
-                <Avatar className="loginuser" src="https://avatars1.githubusercontent.com/u/6828924?s=40&v=4" size={35}/>李寻欢
+                <Dropdown
+                  overlay={this.getUserMenus()}
+                  placement='bottomCenter'
+                >
+                  <span>
+                  <Avatar 
+                    size={35} 
+                    className="loginuser"
+                    style={{background: dataset._currentUser.faceColor ? dataset._currentUser.faceColor : '#000', cursor: 'pointer'}}
+                  >
+                    {dataset._currentUser.fname ? dataset._currentUser.fname : ''}
+                  </Avatar>
+                  {dataset._currentUser.lname+dataset._currentUser.fname}
+                  </span>
+                </Dropdown>
               </div>
             </Sider>
-            {/* <div style={{width:'20px', height:'100%',textAlign:'center'}}>
-              <div className="collpseBarTop"></div>
-              <Button 
-                shape='circle'
-                size='small'
-                className="collpseBar"
-                onClick={this.toggle}
-                icon={React.createElement(collapsed ? RightOutlined : LeftOutlined , {
-                  className: 'trigger',
-                  style:{
-                    fontSize:'15px'
-                  }
-                })}
-              ></Button>
-              <div className="collpseBarBottom"></div>
-            </div> */}
             <Layout style={{backgroundColor: '#FFFFFF',paddingLeft:"18px"}}>
               {
                 this.getBodyContent()
