@@ -5,13 +5,15 @@ import MainTable from './maintable/MainTable';
 import SessionContext from './App';
 import './MainPage.less';
 import './maintable/css/style/MoveToSectionMenu.less';
-import { Layout, Input, Collapse, Button, Avatar, Dropdown, Menu, Modal, message, Spin } from 'antd';
+import { Layout, Input, Collapse, Button, Avatar, Dropdown, Menu, Modal, message, Spin ,Row, Col } from 'antd';
 import { 
     SearchOutlined,
     LeftOutlined,
     RightOutlined,
     SettingFilled,
     ShareAltOutlined,
+    DoubleRightOutlined,
+    DoubleLeftOutlined,
     CloseOutlined
    } from '@ant-design/icons';
 import logo from './logo.svg'
@@ -398,7 +400,7 @@ class MainPage extends React.Component {
     return (
       <Spin size="large" spinning={isLoading} style={{maxHeight: '100%'}}>
         <Layout>
-          <Header className="header">            
+          {/* <Header className="header">            
             <div>
               <img className="header_logo" src={logo} />
             </div>
@@ -420,7 +422,7 @@ class MainPage extends React.Component {
                 <SettingFilled />
               </span>
             </div>
-          </Header>
+          </Header> */}
           <Layout>
             <Sider 
               collapsible={true} 
@@ -432,7 +434,24 @@ class MainPage extends React.Component {
               style={{
               }}
             >
-              <Collapse accordion defaultActiveKey={['1']} style={{height:'100%'}} bordered={false}>
+              <div style={{height:'60px'}}>
+                <Row>
+                  <Col span={4}>
+                   <img className="header_logo" src="../pynbologo.png" />
+                  </Col>
+                  <Col span={4}>
+                    <h3 style={{fontWeight:'bold',lineHeight:'50px'}}>Pynbo</h3>
+                  </Col>
+                  <Col span={16}>
+                    <div className="collpseBar">
+                      {
+                        collapsed ? <DoubleRightOutlined onClick={this.toggle}/> : <DoubleLeftOutlined onClick={this.toggle}/>
+                      }
+                    </div>                   
+                  </Col>
+                </Row>
+              </div>
+              <Collapse accordion defaultActiveKey={['1']} bordered={false}>
                 {
                   this.getPanel(boardMenus, true, '工作板', '1')
                 }
@@ -440,8 +459,11 @@ class MainPage extends React.Component {
                   this.getPanel(dashboardMenus, false, '仪表板', '2')
                 }
               </Collapse>
+              <div className="leftSiderFooter">
+                <Avatar className="loginuser" src="https://avatars1.githubusercontent.com/u/6828924?s=40&v=4" size={35}/>李寻欢
+              </div>
             </Sider>
-            <div style={{width:'20px', height:'100%',textAlign:'center'}}>
+            {/* <div style={{width:'20px', height:'100%',textAlign:'center'}}>
               <div className="collpseBarTop"></div>
               <Button 
                 shape='circle'
@@ -456,8 +478,8 @@ class MainPage extends React.Component {
                 })}
               ></Button>
               <div className="collpseBarBottom"></div>
-            </div>
-            <Layout style={{backgroundColor: '#FFFFFF'}}>
+            </div> */}
+            <Layout style={{backgroundColor: '#FFFFFF',paddingLeft:"18px"}}>
               {
                 this.getBodyContent()
               }
