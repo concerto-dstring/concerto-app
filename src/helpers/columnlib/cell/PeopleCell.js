@@ -9,6 +9,8 @@ import {
 import 'moment/locale/zh-cn'
 import {Cell} from '../../../maintable/FixedDataTableRoot'
 import './PeopleCell.less'
+import FixedDataTableTranslateDOMPosition from '../../../maintable/FixedDataTableTranslateDOMPosition';
+import { getNodeText } from '@testing-library/react'
 
 class PeopleCell extends React.PureComponent {
   constructor(props) {
@@ -29,12 +31,14 @@ class PeopleCell extends React.PureComponent {
     this.setState({
       selectedUsers: value,
       allPeoples: nextProps.data.getTeamUsers(),
+      left: nextProps.left,
+      top: nextProps.top
     })
   }
   showUserPanel = () => {
     this.setState({
       visible: true,
-    })
+    });
   }
 
   filterPeople(value) {
@@ -60,7 +64,12 @@ class PeopleCell extends React.PureComponent {
       handleKey,
       ...props
     } = this.props
-    const allPeoples = this.state.allPeoples || []
+
+    const dismiss = (e) => {
+      handleChange(this.state.selectedUsers, false);
+    }
+
+    const allPeoples = this.state.allPeoples || [];
     const defaultAllPeoples = () => {
       for (let i = 0, len = someusers.length; i < len; i++) {
         const user = someusers[i]
@@ -76,7 +85,7 @@ class PeopleCell extends React.PureComponent {
       }
     }
     const returnValue = (e) => {
-      let isHas = false
+      let isHas = false;
       for (let i = 0, len = someusers.length; i < len; i++) {
         if (e.username === someusers[i].username) {
           isHas = true
@@ -137,13 +146,18 @@ class PeopleCell extends React.PureComponent {
         },
       })
     }
-    defaultAllPeoples()
+    defaultAllPeoples();
+
+
     return (
       <Cell {...props} className="PeopleCell">
         <Popover
           placement="bottom"
           trigger="click"
           autoAdjustOverflow={false}
+          onVisibleChange={dismiss} 
+          getPopupContainer={()=>this.props.container}
+          style={{pointerEvents: 'visible'}}
           // visible={this.state.visible}
           onClick={this.showUserPanel}
           content={

@@ -367,22 +367,6 @@ export const getBoard = /* GraphQL */ `
                 }
                 nextToken
               }
-              notification(limit: 1000000) {
-                items {
-                  id
-                  subject
-                  content
-                  senderID
-                  receiverID
-                  seenflag
-                  createdAt
-                  boardID
-                  groupID
-                  rowID
-                  threadOnRowID
-                }
-                nextToken
-              }
             }
             nextToken
           }
@@ -1085,6 +1069,7 @@ export const listThreadOnRows = /* GraphQL */ `
             likedByUsersID
             seenByUsersID
           }
+        repliesByDate {
           nextToken
         }
       }

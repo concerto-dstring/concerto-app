@@ -44,41 +44,41 @@ import './css/style/fixedDataTableCell.css';
  * ```
  */
 class FixedDataTableCellDefault extends React.Component {
-  static propTypes = {
+  // static propTypes = {
 
-    /**
-     * Outer height of the cell.
-     */
-    height: PropTypes.number,
+  //   /**
+  //    * Outer height of the cell.
+  //    */
+  //   height: PropTypes.number,
 
-    /**
-     * Outer width of the cell.
-     */
-    width: PropTypes.number,
+  //   /**
+  //    * Outer width of the cell.
+  //    */
+  //   width: PropTypes.number,
 
-    /**
-     * Optional prop that if specified on the `Column` will be passed to the
-     * cell. It can be used to uniquely identify which column is the cell is in.
-     */
-    columnKey: PropTypes.oneOfType([
-      PropTypes.string,
-      PropTypes.number,
-    ]),
+  //   /**
+  //    * Optional prop that if specified on the `Column` will be passed to the
+  //    * cell. It can be used to uniquely identify which column is the cell is in.
+  //    */
+  //   columnKey: PropTypes.oneOfType([
+  //     PropTypes.string,
+  //     PropTypes.number,
+  //   ]),
 
-    /**
-     * Optional prop that represents the rows index in the table.
-     * it can be string or int type 
-     * For the 'cell' prop of a Column, this parameter will exist for any
-     * cell in a row with a positive index.
-     *
-     * Below that entry point the user is welcome to consume or
-     * pass the prop through at their discretion.
-     */   
-    rowIndex: PropTypes.oneOfType([
-      PropTypes.string,
-      PropTypes.number,
-    ]),
-  };
+  //   /**
+  //    * Optional prop that represents the rows index in the table.
+  //    * it can be string or int type 
+  //    * For the 'cell' prop of a Column, this parameter will exist for any
+  //    * cell in a row with a positive index.
+  //    *
+  //    * Below that entry point the user is welcome to consume or
+  //    * pass the prop through at their discretion.
+  //    */   
+  //   rowIndex: PropTypes.oneOfType([
+  //     PropTypes.string,
+  //     PropTypes.number,
+  //   ]),
+  // };
 
   render() {
     //Remove some props like columnKey and rowIndex so we don't pass it into the div

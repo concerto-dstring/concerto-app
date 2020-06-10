@@ -359,7 +359,8 @@ class MainTableDataStore {
               this._rowData[row.id] = {}
               this._rowColumnData[row.id] = {}
 
-              this._rowNotification[row.id] = row.notification.items
+              if (row.notification )
+                this._rowNotification[row.id] = row.notification.items
 
               let dataItems = row.datas.items
               dataItems.map(item => {

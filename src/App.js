@@ -39,21 +39,6 @@ import NotFound from './NotFound';
   @withRouter
  class MainComponent extends React.Component {
 
-    render() {
-      let dataset = new MainTableDataStore();
-      return (
-        <ApolloProvider client={client}>
-          <Rehydrated>
-              <MainPage dataset={dataset}/>
-          </Rehydrated>
-        </ApolloProvider>
-      )
-    }
-  }
-
-  @withRouter
-  class App extends React.Component {
-
     componentDidMount() {
       this.getCurrentAuthUser()
     }
@@ -73,6 +58,22 @@ import NotFound from './NotFound';
         this.props.history.push('/login')
       }
     }
+
+    render() {
+      let dataset = new MainTableDataStore();
+      return (
+        <ApolloProvider client={client}>
+          <Rehydrated
+            render={({ rehydrated }) => (
+              rehydrated ?  <MainPage dataset={dataset}/> : <strong>Loading your data at pynbo.com...</strong>
+            )}
+          />
+        </ApolloProvider>
+      )
+    }
+  }
+
+  class App extends React.Component {
     
     render() {
 

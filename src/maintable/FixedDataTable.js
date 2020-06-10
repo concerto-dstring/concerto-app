@@ -89,431 +89,431 @@ const DRAG_SCROLL_BUFFER = 40;
  *   vertically or horizontally.
  */
 class FixedDataTable extends React.Component {
-  static propTypes = {
+  // static propTypes = {
 
-    // TODO (jordan) Remove propType of width without losing documentation (moved to tableSize)
-    /**
-     * Pixel width of table. If all columns do not fit,
-     * a horizontal scrollbar will appear.
-     */
-    width: PropTypes.number.isRequired,
+  //   // TODO (jordan) Remove propType of width without losing documentation (moved to tableSize)
+  //   /**
+  //    * Pixel width of table. If all columns do not fit,
+  //    * a horizontal scrollbar will appear.
+  //    */
+  //   width: PropTypes.number.isRequired,
 
-    // TODO (jordan) Remove propType of height without losing documentation (moved to tableSize)
-    /**
-     * Pixel height of table. If all rows do not fit,
-     * a vertical scrollbar will appear.
-     *
-     * Either `height` or `maxHeight` must be specified.
-     */
-    height: PropTypes.number,
+  //   // TODO (jordan) Remove propType of height without losing documentation (moved to tableSize)
+  //   /**
+  //    * Pixel height of table. If all rows do not fit,
+  //    * a vertical scrollbar will appear.
+  //    *
+  //    * Either `height` or `maxHeight` must be specified.
+  //    */
+  //   height: PropTypes.number,
 
-    /**
-     * Class name to be passed into parent container
-     */
-    className: PropTypes.string,
+  //   /**
+  //    * Class name to be passed into parent container
+  //    */
+  //   className: PropTypes.string,
 
-    // TODO (jordan) Remove propType of maxHeight without losing documentation (moved to tableSize)
-    /**
-     * Maximum pixel height of table. If all rows do not fit,
-     * a vertical scrollbar will appear.
-     *
-     * Either `height` or `maxHeight` must be specified.
-     */
-    maxHeight: PropTypes.number,
+  //   // TODO (jordan) Remove propType of maxHeight without losing documentation (moved to tableSize)
+  //   /**
+  //    * Maximum pixel height of table. If all rows do not fit,
+  //    * a vertical scrollbar will appear.
+  //    *
+  //    * Either `height` or `maxHeight` must be specified.
+  //    */
+  //   maxHeight: PropTypes.number,
 
-    // TODO (jordan) Remove propType of ownerHeight without losing documentation (moved to tableSize)
-    /**
-     * Pixel height of table's owner, this is used in a managed scrolling
-     * situation when you want to slide the table up from below the fold
-     * without having to constantly update the height on every scroll tick.
-     * Instead, vary this property on scroll. By using `ownerHeight`, we
-     * over-render the table while making sure the footer and horizontal
-     * scrollbar of the table are visible when the current space for the table
-     * in view is smaller than the final, over-flowing height of table. It
-     * allows us to avoid resizing and reflowing table when it is moving in the
-     * view.
-     *
-     * This is used if `ownerHeight < height` (or `maxHeight`).
-     */
-    ownerHeight: PropTypes.number,
+  //   // TODO (jordan) Remove propType of ownerHeight without losing documentation (moved to tableSize)
+  //   /**
+  //    * Pixel height of table's owner, this is used in a managed scrolling
+  //    * situation when you want to slide the table up from below the fold
+  //    * without having to constantly update the height on every scroll tick.
+  //    * Instead, vary this property on scroll. By using `ownerHeight`, we
+  //    * over-render the table while making sure the footer and horizontal
+  //    * scrollbar of the table are visible when the current space for the table
+  //    * in view is smaller than the final, over-flowing height of table. It
+  //    * allows us to avoid resizing and reflowing table when it is moving in the
+  //    * view.
+  //    *
+  //    * This is used if `ownerHeight < height` (or `maxHeight`).
+  //    */
+  //   ownerHeight: PropTypes.number,
 
-    // TODO (jordan) Remove propType of overflowX & overflowY without losing documentation (moved to scrollFlags)
-    overflowX: PropTypes.oneOf(['hidden', 'auto']),
-    overflowY: PropTypes.oneOf(['hidden', 'auto']),
+  //   // TODO (jordan) Remove propType of overflowX & overflowY without losing documentation (moved to scrollFlags)
+  //   overflowX: PropTypes.oneOf(['hidden', 'auto']),
+  //   overflowY: PropTypes.oneOf(['hidden', 'auto']),
 
-    /**
-     * Boolean flag indicating of touch scrolling should be enabled
-     * This feature is current in beta and may have bugs
-     */
-    touchScrollEnabled: PropTypes.bool,
+  //   /**
+  //    * Boolean flag indicating of touch scrolling should be enabled
+  //    * This feature is current in beta and may have bugs
+  //    */
+  //   touchScrollEnabled: PropTypes.bool,
 
-    /**
-     * Boolean flags to control if scrolling with keys is enabled
-     */
-    keyboardScrollEnabled: PropTypes.bool,
-    keyboardPageEnabled: PropTypes.bool,
+  //   /**
+  //    * Boolean flags to control if scrolling with keys is enabled
+  //    */
+  //   keyboardScrollEnabled: PropTypes.bool,
+  //   keyboardPageEnabled: PropTypes.bool,
 
-    // TODO (jordan) Remove propType of showScrollbarX & showScrollbarY without losing documentation (moved to scrollFlags)
-    /**
-     * Hide the scrollbar but still enable scroll functionality
-     */
-    showScrollbarX: PropTypes.bool,
-    showScrollbarY: PropTypes.bool,
+  //   // TODO (jordan) Remove propType of showScrollbarX & showScrollbarY without losing documentation (moved to scrollFlags)
+  //   /**
+  //    * Hide the scrollbar but still enable scroll functionality
+  //    */
+  //   showScrollbarX: PropTypes.bool,
+  //   showScrollbarY: PropTypes.bool,
 
-    /**
-     * Callback when horizontally scrolling the grid.
-     *
-     * Return false to stop propagation.
-     */
-    onHorizontalScroll: PropTypes.func,
+  //   /**
+  //    * Callback when horizontally scrolling the grid.
+  //    *
+  //    * Return false to stop propagation.
+  //    */
+  //   onHorizontalScroll: PropTypes.func,
 
-    /**
-     * Callback when vertically scrolling the grid.
-     *
-     * Return false to stop propagation.
-     */
-    onVerticalScroll: PropTypes.func,
+  //   /**
+  //    * Callback when vertically scrolling the grid.
+  //    *
+  //    * Return false to stop propagation.
+  //    */
+  //   onVerticalScroll: PropTypes.func,
 
-    // TODO (jordan) Remove propType of rowsCount without losing documentation (moved to rowSettings)
-    /**
-     * Number of rows in the table.
-     */
-    rowsCount: PropTypes.number.isRequired,
+  //   // TODO (jordan) Remove propType of rowsCount without losing documentation (moved to rowSettings)
+  //   /**
+  //    * Number of rows in the table.
+  //    */
+  //   rowsCount: PropTypes.number.isRequired,
 
-    // TODO (jordan) Remove propType of rowHeight without losing documentation (moved to rowSettings)
-    /**
-     * Pixel height of rows unless `rowHeightGetter` is specified and returns
-     * different value.
-     */
-    rowHeight: PropTypes.number.isRequired,
+  //   // TODO (jordan) Remove propType of rowHeight without losing documentation (moved to rowSettings)
+  //   /**
+  //    * Pixel height of rows unless `rowHeightGetter` is specified and returns
+  //    * different value.
+  //    */
+  //   rowHeight: PropTypes.number.isRequired,
 
-    // TODO (jordan) Remove propType of rowHeightGetter without losing documentation (moved to rowSettings)
-    /**
-     * If specified, `rowHeightGetter(index)` is called for each row and the
-     * returned value overrides `rowHeight` for particular row.
-     */
-    rowHeightGetter: PropTypes.func,
+  //   // TODO (jordan) Remove propType of rowHeightGetter without losing documentation (moved to rowSettings)
+  //   /**
+  //    * If specified, `rowHeightGetter(index)` is called for each row and the
+  //    * returned value overrides `rowHeight` for particular row.
+  //    */
+  //   rowHeightGetter: PropTypes.func,
 
-    // TODO (jordan) Remove propType of subRowHeight without losing documentation (moved to rowSettings)
-    /**
-     * Pixel height of sub-row unless `subRowHeightGetter` is specified and returns
-     * different value.  Defaults to 0 and no sub-row being displayed.
-     */
-    subRowHeight: PropTypes.number,
+  //   // TODO (jordan) Remove propType of subRowHeight without losing documentation (moved to rowSettings)
+  //   /**
+  //    * Pixel height of sub-row unless `subRowHeightGetter` is specified and returns
+  //    * different value.  Defaults to 0 and no sub-row being displayed.
+  //    */
+  //   subRowHeight: PropTypes.number,
 
-    /**
-     * If specified, `subRowHeightGetter(index)` is called for each subrow.
-     */
-    subRowHeightGetter: PropTypes.func,
+  //   /**
+  //    * If specified, `subRowHeightGetter(index)` is called for each subrow.
+  //    */
+  //   subRowHeightGetter: PropTypes.func,
 
-    /**
-     * If specified, `subrowsGetter(index)` is called for each row and the
-     * returned value all `subRow` for particular row.
-     */
-    subRowsGetter: PropTypes.func,
+  //   /**
+  //    * If specified, `subrowsGetter(index)` is called for each row and the
+  //    * returned value all `subRow` for particular row.
+  //    */
+  //   subRowsGetter: PropTypes.func,
 
-    /**
-     * If specified, `subRowTotalHeightGetter(index)` is called for all sub rows.
-     */
-    subRowTotalHeightGetter: PropTypes.func,
+  //   /**
+  //    * If specified, `subRowTotalHeightGetter(index)` is called for all sub rows.
+  //    */
+  //   subRowTotalHeightGetter: PropTypes.func,
 
-    // TODO (jordan) Remove propType of subRowHeightGetter without losing documentation (moved to rowSettings)
-    /**
-     * If specified, `subRowHeightGetter(index)` is called for each row and the
-     * returned value overrides `subRowHeight` for particular row.
-     */
-    subRowHeightGetter: PropTypes.func,
+  //   // TODO (jordan) Remove propType of subRowHeightGetter without losing documentation (moved to rowSettings)
+  //   /**
+  //    * If specified, `subRowHeightGetter(index)` is called for each row and the
+  //    * returned value overrides `subRowHeight` for particular row.
+  //    */
+  //   subRowHeightGetter: PropTypes.func,
     
 
-    /**
-     * The row expanded for table row.
-     * This can either be a React element, or a function that generates
-     * a React Element. By default, the React element passed in can expect to
-     * receive the following props:
-     *
-     * ```
-     * props: {
-     *   rowIndex; number // (the row index)
-     *   height: number // (supplied from subRowHeight or subRowHeightGetter)
-     *   width: number // (supplied from the Table)
-     * }
-     * ```
-     *
-     * Because you are passing in your own React element, you can feel free to
-     * pass in whatever props you may want or need.
-     *
-     * If you pass in a function, you will receive the same props object as the
-     * first argument.
-     */
-    rowExpanded: PropTypes.oneOfType([
-      PropTypes.element,
-      PropTypes.func,
-    ]),
+  //   /**
+  //    * The row expanded for table row.
+  //    * This can either be a React element, or a function that generates
+  //    * a React Element. By default, the React element passed in can expect to
+  //    * receive the following props:
+  //    *
+  //    * ```
+  //    * props: {
+  //    *   rowIndex; number // (the row index)
+  //    *   height: number // (supplied from subRowHeight or subRowHeightGetter)
+  //    *   width: number // (supplied from the Table)
+  //    * }
+  //    * ```
+  //    *
+  //    * Because you are passing in your own React element, you can feel free to
+  //    * pass in whatever props you may want or need.
+  //    *
+  //    * If you pass in a function, you will receive the same props object as the
+  //    * first argument.
+  //    */
+  //   rowExpanded: PropTypes.oneOfType([
+  //     PropTypes.element,
+  //     PropTypes.func,
+  //   ]),
 
-    /**
-     * To get any additional CSS classes that should be added to a row,
-     * `rowClassNameGetter(index)` is called.
-     */
-    rowClassNameGetter: PropTypes.func,
+  //   /**
+  //    * To get any additional CSS classes that should be added to a row,
+  //    * `rowClassNameGetter(index)` is called.
+  //    */
+  //   rowClassNameGetter: PropTypes.func,
 
-    /**
-     * If specified, `rowKeyGetter(index)` is called for each row and the
-     * returned value overrides `key` for the particular row.
-     */
-    rowKeyGetter: PropTypes.func,
+  //   /**
+  //    * If specified, `rowKeyGetter(index)` is called for each row and the
+  //    * returned value overrides `key` for the particular row.
+  //    */
+  //   rowKeyGetter: PropTypes.func,
 
-    // TODO (jordan) Remove propType of groupHeaderHeight without losing documentation (moved to elementHeights)
-    /**
-     * Pixel height of the column group header.
-     */
-    groupHeaderHeight: PropTypes.number,
+  //   // TODO (jordan) Remove propType of groupHeaderHeight without losing documentation (moved to elementHeights)
+  //   /**
+  //    * Pixel height of the column group header.
+  //    */
+  //   groupHeaderHeight: PropTypes.number,
 
-    // TODO (jordan) Remove propType of headerHeight without losing documentation (moved to elementHeights)
-    /**
-     * Pixel height of header.
-     */
-    headerHeight: PropTypes.number.isRequired,
+  //   // TODO (jordan) Remove propType of headerHeight without losing documentation (moved to elementHeights)
+  //   /**
+  //    * Pixel height of header.
+  //    */
+  //   headerHeight: PropTypes.number.isRequired,
 
-    /**
-     * Pixel height of fixedDataTableCellGroupLayout/cellGroupWrapper.
-     * Default is headerHeight and groupHeaderHeight.
-     *
-     * This can be used with CSS to make a header cell span both the group & normal header row.
-     * Setting this to a value larger than height will cause the content to
-     * overflow the height. This is useful when adding a 2nd table as the group
-     * header and vertically merging the 2 headers when a column is not part
-     * of a group. Here are the necessary CSS changes:
-     *
-     * Both headers:
-     *  - cellGroupWrapper needs overflow-x: hidden and pointer-events: none
-     *  - cellGroup needs pointer-events: auto to reenable them on child els
-     * Group header:
-     *  - Layout/main needs overflow: visible and a higher z-index
-     *  - CellLayout/main needs overflow-y: visible
-     *  - cellGroup needs overflow: visible
-     */
-    cellGroupWrapperHeight: PropTypes.number,
+  //   /**
+  //    * Pixel height of fixedDataTableCellGroupLayout/cellGroupWrapper.
+  //    * Default is headerHeight and groupHeaderHeight.
+  //    *
+  //    * This can be used with CSS to make a header cell span both the group & normal header row.
+  //    * Setting this to a value larger than height will cause the content to
+  //    * overflow the height. This is useful when adding a 2nd table as the group
+  //    * header and vertically merging the 2 headers when a column is not part
+  //    * of a group. Here are the necessary CSS changes:
+  //    *
+  //    * Both headers:
+  //    *  - cellGroupWrapper needs overflow-x: hidden and pointer-events: none
+  //    *  - cellGroup needs pointer-events: auto to reenable them on child els
+  //    * Group header:
+  //    *  - Layout/main needs overflow: visible and a higher z-index
+  //    *  - CellLayout/main needs overflow-y: visible
+  //    *  - cellGroup needs overflow: visible
+  //    */
+  //   cellGroupWrapperHeight: PropTypes.number,
 
-    // TODO (jordan) Remove propType of footerHeight without losing documentation (moved to elementHeights)
-    /**
-     * Pixel height of footer.
-     */
-    footerHeight: PropTypes.number,
+  //   // TODO (jordan) Remove propType of footerHeight without losing documentation (moved to elementHeights)
+  //   /**
+  //    * Pixel height of footer.
+  //    */
+  //   footerHeight: PropTypes.number,
 
-    /**
-     * Value of horizontal scroll.
-     */
-    scrollLeft: PropTypes.number,
+  //   /**
+  //    * Value of horizontal scroll.
+  //    */
+  //   scrollLeft: PropTypes.number,
 
-    // TODO (jordan) Remove propType of scrollToRow & scrollToColumn without losing documentation
-    /**
-     * Index of column to scroll to.
-     */
-    scrollToColumn: PropTypes.number,
+  //   // TODO (jordan) Remove propType of scrollToRow & scrollToColumn without losing documentation
+  //   /**
+  //    * Index of column to scroll to.
+  //    */
+  //   scrollToColumn: PropTypes.number,
 
-    /**
-     * Value of vertical scroll.
-     */
-    scrollTop: PropTypes.number,
+  //   /**
+  //    * Value of vertical scroll.
+  //    */
+  //   scrollTop: PropTypes.number,
 
-    /**
-     * Index of row to scroll to.
-     */
-    scrollToRow: PropTypes.number,
+  //   /**
+  //    * Index of row to scroll to.
+  //    */
+  //   scrollToRow: PropTypes.number,
 
-    /**
-     * Callback that is called when scrolling starts. The current horizontal and vertical scroll values,
-     * and the current first and last row indexes will be provided to the callback.
-     */
-    onScrollStart: PropTypes.func,
+  //   /**
+  //    * Callback that is called when scrolling starts. The current horizontal and vertical scroll values,
+  //    * and the current first and last row indexes will be provided to the callback.
+  //    */
+  //   onScrollStart: PropTypes.func,
 
-    /**
-     * Callback that is called when scrolling ends. The new horizontal and vertical scroll values,
-     * and the new first and last row indexes will be provided to the callback.
-     */
-    onScrollEnd: PropTypes.func,
+  //   /**
+  //    * Callback that is called when scrolling ends. The new horizontal and vertical scroll values,
+  //    * and the new first and last row indexes will be provided to the callback.
+  //    */
+  //   onScrollEnd: PropTypes.func,
 
-    /**
-     * If enabled scroll events will not be propagated outside of the table.
-     */
-    stopReactWheelPropagation: PropTypes.bool,
+  //   /**
+  //    * If enabled scroll events will not be propagated outside of the table.
+  //    */
+  //   stopReactWheelPropagation: PropTypes.bool,
 
-    /**
-     * If enabled scroll events will never be bubbled to the browser default handler.
-     * If disabled (default when unspecified), scroll events will be bubbled up if the scroll
-     * doesn't lead to a change in scroll offsets, which is preferable if you like
-     * the page/container to scroll up when the table is already scrolled up max.
-     */
-    stopScrollDefaultHandling: PropTypes.bool,
+  //   /**
+  //    * If enabled scroll events will never be bubbled to the browser default handler.
+  //    * If disabled (default when unspecified), scroll events will be bubbled up if the scroll
+  //    * doesn't lead to a change in scroll offsets, which is preferable if you like
+  //    * the page/container to scroll up when the table is already scrolled up max.
+  //    */
+  //   stopScrollDefaultHandling: PropTypes.bool,
 
-    /**
-     * If enabled scroll events will not be propagated outside of the table.
-     */
-    stopScrollPropagation: PropTypes.bool,
+  //   /**
+  //    * If enabled scroll events will not be propagated outside of the table.
+  //    */
+  //   stopScrollPropagation: PropTypes.bool,
 
-    /**
-     * Callback that is called when `rowHeightGetter` returns a different height
-     * for a row than the `rowHeight` prop. This is necessary because initially
-     * table estimates heights of some parts of the content.
-     */
-    onContentHeightChange: PropTypes.func,
+  //   /**
+  //    * Callback that is called when `rowHeightGetter` returns a different height
+  //    * for a row than the `rowHeight` prop. This is necessary because initially
+  //    * table estimates heights of some parts of the content.
+  //    */
+  //   onContentHeightChange: PropTypes.func,
 
-    /**
-     * Callback that is called when a row is clicked.
-     */
-    onRowClick: PropTypes.func,
+  //   /**
+  //    * Callback that is called when a row is clicked.
+  //    */
+  //   onRowClick: PropTypes.func,
 
-    /**
-     * Callback that is called when a contextual-menu event happens on a row.
-     */
-    onRowContextMenu: PropTypes.func,
+  //   /**
+  //    * Callback that is called when a contextual-menu event happens on a row.
+  //    */
+  //   onRowContextMenu: PropTypes.func,
 
-    /**
-     * Callback that is called when a row is double clicked.
-     */
-    onRowDoubleClick: PropTypes.func,
+  //   /**
+  //    * Callback that is called when a row is double clicked.
+  //    */
+  //   onRowDoubleClick: PropTypes.func,
 
-    /**
-     * Callback that is called when a mouse-down event happens on a row.
-     */
-    onRowMouseDown: PropTypes.func,
+  //   /**
+  //    * Callback that is called when a mouse-down event happens on a row.
+  //    */
+  //   onRowMouseDown: PropTypes.func,
 
-    /**
-     * Callback that is called when a mouse-up event happens on a row.
-     */
-    onRowMouseUp: PropTypes.func,
+  //   /**
+  //    * Callback that is called when a mouse-up event happens on a row.
+  //    */
+  //   onRowMouseUp: PropTypes.func,
 
-    /**
-     * Callback that is called when a mouse-enter event happens on a row.
-     */
-    onRowMouseEnter: PropTypes.func,
+  //   /**
+  //    * Callback that is called when a mouse-enter event happens on a row.
+  //    */
+  //   onRowMouseEnter: PropTypes.func,
 
-    /**
-     * Callback that is called when a mouse-leave event happens on a row.
-     */
-    onRowMouseLeave: PropTypes.func,
+  //   /**
+  //    * Callback that is called when a mouse-leave event happens on a row.
+  //    */
+  //   onRowMouseLeave: PropTypes.func,
 
-    /**
-     * Callback that is called when a touch-start event happens on a row.
-     */
-    onRowTouchStart: PropTypes.func,
+  //   /**
+  //    * Callback that is called when a touch-start event happens on a row.
+  //    */
+  //   onRowTouchStart: PropTypes.func,
 
-    /**
-     * Callback that is called when a touch-end event happens on a row.
-     */
-    onRowTouchEnd: PropTypes.func,
+  //   /**
+  //    * Callback that is called when a touch-end event happens on a row.
+  //    */
+  //   onRowTouchEnd: PropTypes.func,
 
-    /**
-     * Callback that is called when a touch-move event happens on a row.
-     */
-    onRowTouchMove: PropTypes.func,
+  //   /**
+  //    * Callback that is called when a touch-move event happens on a row.
+  //    */
+  //   onRowTouchMove: PropTypes.func,
 
-     /**
-     * Callback that is called when a touch-move event happens on a row.
-     */
-    onRowReorderEndCallback: PropTypes.func,
+  //    /**
+  //    * Callback that is called when a touch-move event happens on a row.
+  //    */
+  //   onRowReorderEndCallback: PropTypes.func,
 
-    /**
-     * Callback that is called when resizer has been released
-     * and column needs to be updated.
-     *
-     * Required if the isResizable property is true on any column.
-     *
-     * ```
-     * function(
-     *   newColumnWidth: number,
-     *   columnKey: string,
-     * )
-     * ```
-     */
-    onColumnResizeEndCallback: PropTypes.func,
+  //   /**
+  //    * Callback that is called when resizer has been released
+  //    * and column needs to be updated.
+  //    *
+  //    * Required if the isResizable property is true on any column.
+  //    *
+  //    * ```
+  //    * function(
+  //    *   newColumnWidth: number,
+  //    *   columnKey: string,
+  //    * )
+  //    * ```
+  //    */
+  //   onColumnResizeEndCallback: PropTypes.func,
 
-    /**
-     * Add new row callback
-     */    
-    onNewRowAddCallback: PropTypes.func,
+  //   /**
+  //    * Add new row callback
+  //    */    
+  //   onNewRowAddCallback: PropTypes.func,
 
-    /**
-     * Add new group callback
-     */ 
-    onNewGroupAddCallback: PropTypes.func,
+  //   /**
+  //    * Add new group callback
+  //    */ 
+  //   onNewGroupAddCallback: PropTypes.func,
 
 
-    /**
-     * On filter change callback
-     */ 
-    onFilterChangeCallback: PropTypes.func,
+  //   /**
+  //    * On filter change callback
+  //    */ 
+  //   onFilterChangeCallback: PropTypes.func,
 
-    /**
-     * user list
-     */
-    onGetListUsers: PropTypes.func,
+  //   /**
+  //    * user list
+  //    */
+  //   onGetListUsers: PropTypes.func,
 
-    /**
-     * Callback that is called when reordering has been completed
-     * and columns need to be updated.
-     *
-     * ```
-     * function(
-     *   event {
-     *     columnBefore: string|undefined, // the column before the new location of this one
-     *     columnAfter: string|undefined,  // the column after the new location of this one
-     *     reorderColumn: string,          // the column key that was just reordered
-     *   }
-     * )
-     * ```
-     */
-    onColumnReorderEndCallback: PropTypes.func,
+  //   /**
+  //    * Callback that is called when reordering has been completed
+  //    * and columns need to be updated.
+  //    *
+  //    * ```
+  //    * function(
+  //    *   event {
+  //    *     columnBefore: string|undefined, // the column before the new location of this one
+  //    *     columnAfter: string|undefined,  // the column after the new location of this one
+  //    *     reorderColumn: string,          // the column key that was just reordered
+  //    *   }
+  //    * )
+  //    * ```
+  //    */
+  //   onColumnReorderEndCallback: PropTypes.func,
 
-    /**
-     * Whether a column is currently being resized.
-     */
-    isColumnResizing: PropTypes.bool,
+  //   /**
+  //    * Whether a column is currently being resized.
+  //    */
+  //   isColumnResizing: PropTypes.bool,
 
-    /**
-     * Whether columns are currently being reordered.
-     */
-    isColumnReordering: PropTypes.bool,
+  //   /**
+  //    * Whether columns are currently being reordered.
+  //    */
+  //   isColumnReordering: PropTypes.bool,
 
-    /**
-     * Whether the grid should be in RTL mode
-     */
-    isRTL: PropTypes.bool,
+  //   /**
+  //    * Whether the grid should be in RTL mode
+  //    */
+  //   isRTL: PropTypes.bool,
 
-    // TODO (jordan) Remove propType of bufferRowCount without losing documentation
-    /**
-     * The number of rows outside the viewport to prerender. Defaults to roughly
-     * half of the number of visible rows.
-     */
-    bufferRowCount: PropTypes.number,
+  //   // TODO (jordan) Remove propType of bufferRowCount without losing documentation
+  //   /**
+  //    * The number of rows outside the viewport to prerender. Defaults to roughly
+  //    * half of the number of visible rows.
+  //    */
+  //   bufferRowCount: PropTypes.number,
 
-    // TODO (pradeep): Move elementHeights to a selector instead of passing it through redux as state variables
-    /**
-     * Row heights of the header, groupheader, footer, and cell group wrapper
-     * grouped into a single object.
-     *
-     * @ignore
-     */
-    elementHeights: PropTypes.shape({
-      titleHeight: PropTypes.number,
-      cellGroupWrapperHeight: PropTypes.number,
-      footerHeight: PropTypes.number,
-      groupHeaderHeight: PropTypes.number,
-      headerHeight: PropTypes.number,
-      addRowHeight: PropTypes.number,
-    }),
+  //   // TODO (pradeep): Move elementHeights to a selector instead of passing it through redux as state variables
+  //   /**
+  //    * Row heights of the header, groupheader, footer, and cell group wrapper
+  //    * grouped into a single object.
+  //    *
+  //    * @ignore
+  //    */
+  //   elementHeights: PropTypes.shape({
+  //     titleHeight: PropTypes.number,
+  //     cellGroupWrapperHeight: PropTypes.number,
+  //     footerHeight: PropTypes.number,
+  //     groupHeaderHeight: PropTypes.number,
+  //     headerHeight: PropTypes.number,
+  //     addRowHeight: PropTypes.number,
+  //   }),
 
-    /**
-     * Callback that returns an object of html attributes to add to the grid element
-     */
-    gridAttributesGetter: PropTypes.func,
+  //   /**
+  //    * Callback that returns an object of html attributes to add to the grid element
+  //    */
+  //   gridAttributesGetter: PropTypes.func,
 
-    /**
-     * Callback to get column name
-     */
-    columnNameGetter: PropTypes.func,
+  //   /**
+  //    * Callback to get column name
+  //    */
+  //   columnNameGetter: PropTypes.func,
 
-  }
+  // }
 
   static defaultProps = /*object*/ {
     elementHeights: {
@@ -522,7 +522,7 @@ class FixedDataTable extends React.Component {
       groupHeaderHeight: 0,
       headerHeight: 40,
       addRowHeight: 35,
-      titleHeight: 80,
+      titleHeight: 0,
     },
     keyboardScrollEnabled: false,
     keyboardPageEnabled: false,
@@ -874,7 +874,7 @@ class FixedDataTable extends React.Component {
     let tableClassName = className;
     if (this.props.isRTL) {
       tableClassName = joinClasses(tableClassName, 'fixedDataTable_isRTL');
-    } 
+    }
 
     return (
       <div
@@ -895,7 +895,7 @@ class FixedDataTable extends React.Component {
         style={{
           height: componentHeight,
           width
-        }}>
+        }}> 
         <div
           className={cx('fixedDataTableLayout/rowsContainer')}
           style={{
@@ -930,7 +930,7 @@ class FixedDataTable extends React.Component {
     } = columnTemplatesSelector({props:props, level:0});
 
     const onColumnReorder = props.onColumnReorderEndCallback ? this._onColumnReorder : null;
-
+    
     return (
       <FixedDataTableBufferedRows
         title={props.title}
@@ -939,6 +939,7 @@ class FixedDataTable extends React.Component {
         ariaHeaderIndex={ariaHeaderIndex}
         ariaFooterIndex={ariaFooterIndex}
         isScrolling={props.scrolling}
+        isCellEditing={props.isCellEditing}
         fixedColumnGroups={fixedColumnGroups}
         fixedColumns={fixedColumns}        
         fixedRightColumnGroups={fixedRightColumnGroups}
@@ -946,6 +947,8 @@ class FixedDataTable extends React.Component {
         firstViewportRowIndex={props.firstRowIndex}
         endViewportRowIndex={props.endRowIndex}
         elementHeights={props.elementHeights}
+        contentHeight={props.scrollContentHeight}
+        contentWidth={props.width + props.maxScrollX}
         height={bodyHeight}
         componentHeight={componentHeight}
         columnReorderingData={props.columnReorderingData}
@@ -1086,8 +1089,7 @@ class FixedDataTable extends React.Component {
               dropRowIndex--;
             break;
           case RowType.SUBROW: // drag subrow item
-            // Todo will add sub row logic here            
-
+            // Todo will add sub row logic here
             break;
         }
         return dropRowIndex;
@@ -1154,7 +1156,7 @@ class FixedDataTable extends React.Component {
   }
 
   _onCellEditEnd = (rowIndex, columnKey) => {
-    if (this.props.CellEditingData.rowIndex === rowIndex 
+    if (this.props.CellEditingData && this.props.CellEditingData.rowIndex === rowIndex 
       && this.props.CellEditingData.columnKey === columnKey) {
       this.props.cellActions.endCellEdit();
     }
@@ -1233,6 +1235,7 @@ class FixedDataTable extends React.Component {
         scrollTop: Math.round(this.props.scrollY),
       });
       event.preventDefault();
+      event.stopPropagation();
     }
  
   }
@@ -1249,6 +1252,7 @@ class FixedDataTable extends React.Component {
           this.props.rowReorderingData.newRowIndex);
       };
       event.preventDefault();
+      event.stopPropagation();
     }
   }
 

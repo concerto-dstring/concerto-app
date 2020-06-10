@@ -28,47 +28,47 @@ class FixedDataTableCellGroupImpl extends React.Component {
    * down the FixedDataTable hugely in DEV mode. You can enable them back for
    * development, but please don't commit this component with enabled propTypes.
    */
-  static propTypes_DISABLED_FOR_PERFORMANCE = {
+  // static propTypes_DISABLED_FOR_PERFORMANCE = {
 
-    /**
-     * Array of per column configuration properties.
-     */
-    columns: PropTypes.array.isRequired,
+  //   /**
+  //    * Array of per column configuration properties.
+  //    */
+  //   columns: PropTypes.array.isRequired,
 
-    isScrolling: PropTypes.bool,
+  //   isScrolling: PropTypes.bool,
 
-    left: PropTypes.number,
+  //   left: PropTypes.number,
 
-    onColumnResize: PropTypes.func,
+  //   onColumnResize: PropTypes.func,
 
-    onColumnReorder: PropTypes.func,
-    onColumnReorderMove: PropTypes.func,
-    onColumnReorderEnd: PropTypes.func,
+  //   onColumnReorder: PropTypes.func,
+  //   onColumnReorderMove: PropTypes.func,
+  //   onColumnReorderEnd: PropTypes.func,
 
-    onCellEdit: PropTypes.func,
-    onCellEditEnd: PropTypes.func,
+  //   onCellEdit: PropTypes.func,
+  //   onCellEditEnd: PropTypes.func,
 
-    height: PropTypes.number.isRequired,
+  //   height: PropTypes.number.isRequired,
 
-    /**
-     * Height of fixedDataTableCellGroupLayout/cellGroupWrapper.
-     */
-    cellGroupWrapperHeight: PropTypes.number,
+  //   /**
+  //    * Height of fixedDataTableCellGroupLayout/cellGroupWrapper.
+  //    */
+  //   cellGroupWrapperHeight: PropTypes.number,
 
-    rowHeight: PropTypes.number.isRequired,
+  //   rowHeight: PropTypes.number.isRequired,
 
-    rowIndex: PropTypes.number.isRequired,
+  //   rowIndex: PropTypes.number.isRequired,
 
-    width: PropTypes.number.isRequired,
+  //   width: PropTypes.number.isRequired,
 
-    zIndex: PropTypes.number.isRequired,
+  //   zIndex: PropTypes.number.isRequired,
 
-    touchEnabled: PropTypes.bool,
+  //   touchEnabled: PropTypes.bool,
 
-    isHeaderOrFooter: PropTypes.bool,
+  //   isHeaderOrFooter: PropTypes.bool,
 
-    isRTL: PropTypes.bool,
-  }
+  //   isRTL: PropTypes.bool,
+  // }
 
   componentWillMount() {
     this._initialRender = true;
