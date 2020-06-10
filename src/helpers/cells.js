@@ -604,37 +604,6 @@ class CheckBoxCell extends React.PureComponent {
 }
 
 class CheckBoxHeader extends React.PureComponent {
-  constructor() {
-    super()
-    this.state = {
-      tipText: ''
-    }
-  }
-
-  getBtnIcon = () => {
-    const { data, rowIndex } = this.props;
-    let isCollapsed;
-    if (typeof rowIndex === 'string') {
-      isCollapsed = false;
-    } else {
-      isCollapsed = data._indexMap[rowIndex].isCollapsed;
-    }
-    this.setState({
-      tipText: isCollapsed ? EXPAND_SECTION.desc : COLLAPSE_SECTION.desc
-    })
-    return (
-      <div>
-        {
-          isCollapsed
-          ?
-          <DownOutlined style={{fontSize: '18px'}} />
-          :
-          <UpOutlined style={{fontSize: '18px'}} />
-        }
-      </div>
-    )
-  }
-
   changeGroupCollapseState = () => {
     const { data, rowIndex } = this.props
 
@@ -643,19 +612,32 @@ class CheckBoxHeader extends React.PureComponent {
   }
 
   render() {
+
+    const { data, rowIndex } = this.props;
+    let isCollapsed;
+    if (typeof rowIndex === 'string') {
+      isCollapsed = false;
+    } else {
+      isCollapsed = data._indexMap[rowIndex].isCollapsed;
+    }
     
     // 子阶不显示展开折叠图标
-    let rowIndex = String(this.props.rowIndex)
-    if (rowIndex.indexOf('.') !== -1) return null
+    if (String(rowIndex).indexOf('.') !== -1) return null
 
     return (
       <Tooltip
         arrowPointAtCenter={true}
-        title={this.state.tipText}
+        title={isCollapsed ? EXPAND_SECTION.desc : COLLAPSE_SECTION.desc}
         mouseEnterDelay={0.8}
       >
         <AntdButton 
-          icon={this.getBtnIcon()}
+          icon={
+            isCollapsed
+            ?
+            <DownOutlined style={{fontSize: '18px'}} />
+            :
+            <UpOutlined style={{fontSize: '18px'}} />
+          }
           shape='circle'
           size='small'
           type='primary'

@@ -35,6 +35,7 @@ import {
   createNotification,updateNotification
 } from "../graphql/mutations"
 import { notification } from 'antd';
+import { getRandomColor } from '../helpers/section/header/SectionColor';
 
 const rankBlock = 32768
 const PEOPLE = 'PEOPLE'
@@ -46,6 +47,7 @@ class MainTableDataStore {
 
     constructor() {
         this._apolloClient = null
+        this._boardNotifications = {}
         this._sizeRows = 0;
         this._sizeSubrows = 0;
         this._columns= [];
@@ -82,6 +84,7 @@ class MainTableDataStore {
         this.updateRowReadMessageStatus = this.updateRowReadMessageStatus.bind(this);
         this.getNotificationsByRowId = this.getNotificationsByRowId.bind(this);
         this._callbacks = [];
+        this._mainPageCallBack = null
         this.runCallbacks = this.runCallbacks.bind(this);
     }
 
@@ -178,8 +181,9 @@ class MainTableDataStore {
         })
     }
 
-    fetchSideMenus(apolloClient, type, currentUserId, setMenus, defaultBoardId, dealErrorBoardId) {
+    fetchSideMenus(apolloClient, type, currentUserId, setMenus, defaultBoardId, dealErrorBoardId, mainPageCallBack) {
       this._apolloClient = apolloClient
+      this._mainPageCallBack = mainPageCallBack
       switch (type) {
         case 'board':
           apolloClient
@@ -212,6 +216,8 @@ class MainTableDataStore {
                     this.fetchBackendBoardData(defaultBoardId, setMenus, null, currentUserId)
                   }
                 }
+
+                this.setBoardNotReadNotifications(this._boardMenus, currentUserId)
               }
               else {
                 setMenus([], true, null)
@@ -249,9 +255,46 @@ class MainTableDataStore {
               defaultBoard = this._boardMenus[0]
             }
             this._currentBoardId =  defaultBoard.id
+            this.setBoardNotReadNotifications(this._boardMenus, this._currentUser.id)
             this.fetchBoardData(defaultBoard.id, setMenus)
           }
         })
+    }
+
+    /**
+     * 查询每个Board未读的通知条目数
+     * @param {*} boardId 
+     */
+    getNotificationsByBoardId(boardId){
+      if (!boardId || Object.keys(this._boardNotifications).indexOf(boardId) === -1) {
+        return 0
+      }
+      let notReadCount = 0
+
+      for (let key in this._boardNotifications[boardId]) {
+        notReadCount = notReadCount + this._boardNotifications[boardId][key]
+      }
+
+      return notReadCount
+    }
+
+    /**
+     * 设置每个Board未读的通知条目数
+     * @param {*} boards 
+     */
+    setBoardNotReadNotifications(boards, currentUserId) {
+      this._boardNotifications = {}
+      boards.map(board => {
+        let groups = board.groups.items.filter(item => !item.deleteFlag)
+        this._boardNotifications[board.id] = {}
+        groups.map(group => {
+          let rows = group.rows.items.filter(item => !item.deleteFlag)
+          rows.map(row => {
+            let notifications = row.notification.items.filter(item => item.receiverID === currentUserId && !item.seenflag)
+            this._boardNotifications[board.id][row.id] = notifications.length
+          })
+        })
+      })
     }
 
     /**
@@ -790,7 +833,7 @@ class MainTableDataStore {
               creatorID: this._currentUser.id,
               isCollapsed: false,
               deleteFlag: false,
-              color: COLOR.DEFAULT
+              color: getRandomColor()
             }
           }
         })
@@ -1449,6 +1492,7 @@ class MainTableDataStore {
     }
 
     getRowThreadData(rowId, setUpdateInfo) {
+      let boardId = this._currentBoardId
       if (Object.keys(this._rowThreadData).indexOf(rowId) !== -1) {
         setUpdateInfo(this._rowThreadData[rowId])
       }
@@ -1471,7 +1515,7 @@ class MainTableDataStore {
             let threads = this.sortDataByCreatedAt(items)
             this._rowThreadData[rowId] = threads
             setUpdateInfo(this._rowThreadData[rowId])
-            this.dealNotReadNotifications(rowId)
+            this.dealNotReadNotifications(rowId, boardId)
           })
       }
     }
@@ -1647,29 +1691,18 @@ class MainTableDataStore {
 
       return notReadNotifications
     }
-
-    getNotificationsByBoardId(){
-      let notReadCount = 0
-      let notifications = this._rowNotification
-      if (notifications && notifications.length > 0) {
-        notifications.map(notification => {
-          if (notification.receiverID === this._currentUser.id && !notification.seenflag) {
-            notReadCount++
-          }
-        })
-      }
-
-      return notReadCount
-    }
-
-    dealNotReadNotifications(rowId) {
+    
+    dealNotReadNotifications(rowId, boardId) {
       let notifications = this._rowNotification[rowId]
       let notificationsSlice = []
+      let boardNotReadCount = this._boardNotifications[boardId][rowId]
       if (notifications && notifications.length > 0) {
+        
         for (let i = 0; i < notifications.length; i++) {
           let notification = notifications[i]
 
           if (notification.receiverID === this._currentUser.id && !notification.seenflag) {
+            boardNotReadCount--
             notification.seenflag = true
             notificationsSlice.push(notification)
             this.updateRowReadMessageStatus(notification.id)
@@ -1679,8 +1712,9 @@ class MainTableDataStore {
           }
         }
       }
-
+      this._boardNotifications[boardId][rowId] = boardNotReadCount
       this._rowNotification[rowId] = notificationsSlice
+      this._mainPageCallBack()
       this.runCallbacks()
     }
 

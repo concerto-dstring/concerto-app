@@ -29,9 +29,9 @@ class Register extends PureComponent {
       emailBorderColor: defaultColor,
       emailErrorMsg: '',
       email: null,
-      phoneBorderColor: defaultColor,
-      phoneErrorMsg: '',
-      phone: null
+      // phoneBorderColor: defaultColor,
+      // phoneErrorMsg: '',
+      // phone: null
     }
   }
 
@@ -50,9 +50,11 @@ class Register extends PureComponent {
   }
 
   registerUser = async() => {
-    const { userName, password, confirmPassword, email, phone } = this.state
+    // const { userName, password, confirmPassword, email, phone } = this.state
+    const { userName, password, confirmPassword, email } = this.state
     
-    if (!userName || !password || !confirmPassword || !email || !phone) {
+    // if (!userName || !password || !confirmPassword || !email || !phone) {
+    if (!userName || !password || !confirmPassword || !email) {
       if (!userName) {
         this.setState({
           userNameBorderColor: errorColor,
@@ -81,12 +83,12 @@ class Register extends PureComponent {
         })
       }
 
-      if (!phone) {
-        this.setState({
-          phoneBorderColor: errorColor,
-          phoneErrorMsg: ErrorMsg.phone_is_empty
-        })
-      }
+      // if (!phone) {
+      //   this.setState({
+      //     phoneBorderColor: errorColor,
+      //     phoneErrorMsg: ErrorMsg.phone_is_empty
+      //   })
+      // }
     }
     else {
       this.setState({
@@ -98,7 +100,7 @@ class Register extends PureComponent {
           password,
           attributes: {
               email,          // optional
-              phone_number: '+86' + phone,   // optional - E.164 number convention
+              // phone_number: '+86-1234567',   // optional - E.164 number convention
               // other custom attributes 
           }
         })
@@ -227,7 +229,7 @@ class Register extends PureComponent {
       passwordBorderColor, passwordErrorMsg,
       confirmPasswordBorderColor, confirmPasswordErrorMsg,
       emailBorderColor, emailErrorMsg,
-      phoneBorderColor, phoneErrorMsg
+      // phoneBorderColor, phoneErrorMsg
      } = this.state
 
     return (
@@ -281,7 +283,7 @@ class Register extends PureComponent {
             <div className="register_error_item">
               <span className="register_error_message">{emailErrorMsg}</span>
             </div>
-            <div className="register_item">
+            {/* <div className="register_item">
               <span className="register_label"><span className="register_required">*</span> 手机号码：</span>
               <Input
                 style={{borderColor: phoneBorderColor}} 
@@ -291,10 +293,10 @@ class Register extends PureComponent {
             </div>
             <div className="register_error_item">
               <span className="register_error_message">{phoneErrorMsg}</span>
-            </div>
+            </div> */}
             <br />
             <div className="register_register_item">
-              <div className="register_link_left"><Link to="/login">登 录</Link></div>
+              <div className="register_link_left"><Link to="/login">登&emsp;录</Link></div>
               <div className="register_link_right">
                 <Button
                   type='primary'
