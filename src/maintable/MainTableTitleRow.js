@@ -103,7 +103,7 @@ class MainTableTitleRow extends React.Component {
             <div className="body_content_title">
               <h1>{this.props.title}</h1>
             </div>
-            <div className="body_content_title_right">
+            {/* <div className="body_content_title_right">
               <div className="body_content_title_right_item">
                 <span className="body_content_title_right_label">
                   最后更新时间:&nbsp;
@@ -144,8 +144,8 @@ class MainTableTitleRow extends React.Component {
                 <span className="body_content_title_right_label">
                   <ShareAltOutlined />&nbsp;&nbsp;分享
                 </span>
-              </div>
-            </div>
+              </div> 
+            </div> */}
           </div>
           <div className="body_content_title_desc">
             相关具体的描述
@@ -245,7 +245,7 @@ render() /*object*/ {
                     }
                   </Select>
                 </div>
-                <div>
+                {/* <div>
                   <Button className="main_table_filter_btn">
                     <div className="main_table_btn_layout">
                       <img src={filterIcon} />&nbsp;
@@ -254,7 +254,7 @@ render() /*object*/ {
                 </div>
                 <div>
                   <EyeInvisibleOutlined className="main_table_eye" />
-                </div>
+                </div> */}
               </Space>
               <div className="main_table_search_input">
                 <Input

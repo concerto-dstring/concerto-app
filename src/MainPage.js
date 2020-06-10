@@ -420,11 +420,11 @@ class MainPage extends React.Component {
                     <h3 style={{fontWeight:'bold',lineHeight:'40px'}}>Pynbo</h3>
                   </Col>
                   <Col span={16}>
-                    <div className="collpseBar">
+                    {/* <div className="collpseBar">
                       {
                         collapsed ? <DoubleRightOutlined onClick={this.toggle}/> : <DoubleLeftOutlined onClick={this.toggle}/>
                       }
-                    </div>                   
+                    </div>                    */}
                   </Col>
                 </Row>
               </div>
@@ -432,9 +432,9 @@ class MainPage extends React.Component {
                 {
                   this.getPanel(boardMenus, true, '工作板', '1')
                 }
-                {
+                {/* {
                   this.getPanel(dashboardMenus, false, '仪表板', '2')
-                }
+                } */}
               </Collapse>
               <div className="leftSiderFooter">
                 <Dropdown
@@ -445,6 +445,7 @@ class MainPage extends React.Component {
                   <Avatar 
                     size={35} 
                     className="loginuser"
+                    src=""
                     style={{background: dataset._currentUser.faceColor ? dataset._currentUser.faceColor : '#000', cursor: 'pointer'}}
                   >
                     {dataset._currentUser.fname ? dataset._currentUser.fname : ''}
