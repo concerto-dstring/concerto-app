@@ -1116,6 +1116,7 @@ export const listThreadOnRows = /* GraphQL */ `
       nextToken
     }
   }
+}
 `;
 export const getReplyOnThread = /* GraphQL */ `
   query GetReplyOnThread($id: ID!) {
