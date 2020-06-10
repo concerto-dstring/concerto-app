@@ -1,5 +1,5 @@
 import React, { PureComponent, createRef } from 'react'
-import { Input, Button, Spin } from 'antd'
+import { Input, Button, Spin, message } from 'antd'
 import { Auth } from 'aws-amplify'
 import ErrorMsg from './ErrorMsg'
 import './Login.less'
@@ -95,6 +95,14 @@ class Login extends PureComponent {
             isLoading: false,
             passwordBorderColor: errorColor,
             passwordErrorMsg: ErrorMsg.password_error
+          })
+        }
+        else if (error.code === 'UserNotConfirmedException') {
+          message.warning('该用户还未验证,请先进行验证')
+          await Auth.resendSignUp(userName)
+          this.props.history.push({
+            pathname: '/register/validate',
+            state: { userName }
           })
         }
         else {
