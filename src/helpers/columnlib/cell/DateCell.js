@@ -147,6 +147,7 @@ class DateCell extends React.Component {
       return (
         <Cell {...props} className="DateCell">
          <DatePicker 
+                style={{pointerEvents: 'visible'}}
                 ref="datePicker"
                 className="DateCell"
                 allowClear={false}

@@ -53,7 +53,7 @@ class StatusCell extends React.Component {
       }
 
       const menu =
-          <Menu onClick={returnValue} className='statusCellMenu'>
+          <Menu onClick={returnValue} className='statusCellMenu' style={{pointerEvents: 'visible'}}>
             <Menu.Item key="working" className='workingItem'>
             {this.statusHashTable.working}
             </Menu.Item>

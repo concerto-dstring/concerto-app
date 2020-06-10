@@ -27,6 +27,7 @@ import {
     CheckSquareOutlined,
     StrikethroughOutlined,
     AccountBookOutlined,
+    ShareAltOutlined,
     DownOutlined,
     EyeInvisibleOutlined,
     SearchOutlined
@@ -438,6 +439,10 @@ class MainTable extends React.Component {
                 <Menu.Item key={"STATUS-"+level}>
                     <StrikethroughOutlined />
                     状态
+                </Menu.Item>
+                <Menu.Item key={"LINK-"+level}>
+                    <ShareAltOutlined />
+                    关联
                 </Menu.Item>
             </Menu>
         );

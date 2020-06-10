@@ -157,6 +157,7 @@ class PeopleCell extends React.PureComponent {
           autoAdjustOverflow={false}
           onVisibleChange={dismiss} 
           getPopupContainer={()=>this.props.container}
+          style={{pointerEvents: 'visible'}}
           // visible={this.state.visible}
           onClick={this.showUserPanel}
           content={
