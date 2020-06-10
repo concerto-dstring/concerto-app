@@ -150,18 +150,17 @@ class PeopleCell extends React.PureComponent {
 
 
     return (
-      <Cell {...props} className="PeopleCell">
+      <Cell {...props} className="PeopleCell" >
         <Popover
           placement="bottom"
           trigger="click"
           autoAdjustOverflow={false}
           onVisibleChange={dismiss} 
           getPopupContainer={()=>this.props.container}
-          style={{pointerEvents: 'visible'}}
           // visible={this.state.visible}
           onClick={this.showUserPanel}
           content={
-            <div>
+            <div style={{pointerEvents: 'visible'}}>
               <Divider className="dividerStyle">People</Divider>
               <div>
                 {this.state.allPeoples.map((v, i) => (
@@ -184,7 +183,7 @@ class PeopleCell extends React.PureComponent {
             </div>
           }
           title={
-            <div>
+            <div style={{pointerEvents: 'visible'}}>
               <div style={{paddingBottom: '10px'}}>
                 {someusers.map((v, i) => (
                   <Tag

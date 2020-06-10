@@ -1015,7 +1015,7 @@ class MainTableDataStore {
           variables: {
             input: {
               name: newItem,
-              columntype: ColumnType.EDITBOX,
+              columntype: ColumnType,
               columnComponentType: columnComponentType,
               createdAt: new Date().toISOString(),
               creatorID: this._currentUser.id,
