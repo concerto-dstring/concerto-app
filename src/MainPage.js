@@ -332,17 +332,14 @@ class MainPage extends React.Component {
                 onClick={this.nativeGetTableStore.bind(this, item.id, item.name, isBoard, path)}
               >
                 <div className="body_left_sider_panel_menu_item_link" style={style}>
-                <Dropdown
-                    overlay={this.getBoardItemMenus(item.id, item.name)}
-                    placement='bottomLeft'
-                  >
+                
                   <Link to={path}>
                    {item.name}
                   </Link>
-                  </Dropdown>
+                 
                 </div>
                 
-                {/* <div className="body_left_sider_panel_menu_item" style={style}>
+                <div className="body_left_sider_panel_menu_item" style={style}>
                   <Dropdown
                     overlay={this.getBoardItemMenus(item.id, item.name)}
                     placement='bottomLeft'
@@ -351,7 +348,7 @@ class MainPage extends React.Component {
                   
                   </Dropdown>
                   
-                </div> */}
+                </div>
                 <div style={{width: 24,paddingLeft:'8px'}}>
                     <Badge count={dataset.getNotificationsByBoardId(item.id)} style={{width: 20, height: 20, padding: 0}} />
                 </div>
