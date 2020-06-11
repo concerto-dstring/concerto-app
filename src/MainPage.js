@@ -305,7 +305,7 @@ class MainPage extends React.Component {
           <Input
             prefix={<SearchOutlined />}
             placeholder="搜索工作板..."
-            style={{margin:'0 0 16px 0',borderRadius:'15px'}}
+            style={{margin:'5px 16px 16px 16px',borderRadius:'15px',width:'265px'}}
             onChange={this.filterMenu.bind(this, isBoard)}
           />
           :
