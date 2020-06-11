@@ -48,3 +48,10 @@ export const getSectionColors = (color) => {
 
   return filterSectiopnColors
 }
+
+export const getRandomColor = () => {
+  let sectionColorsCopy = sectionColors.slice()
+  let index = Math.floor((Math.random()*sectionColorsCopy.length))
+
+  return sectionColorsCopy[index].color
+}

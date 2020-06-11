@@ -1616,7 +1616,7 @@ class HorizontalScrollbar extends React.PureComponent {
       width: size,
       top: offset,
     };
-
+    
     return (
       <div
         className={joinClasses(
