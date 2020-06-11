@@ -591,9 +591,44 @@ class TooltipCell extends React.PureComponent {
 }
 
 class CheckBoxCell extends React.PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = {
+      checkbox:{
+        display:'none',
+        paddingBottom: '12px'
+      },
+      index:{
+        display:'block'
+      }
+    }
+  }
+  showCheckbox = (e) => {
+    this.setState({
+      checkbox:{
+        display:'block',
+        paddingBottom: '12px'
+      },
+      index:{
+        display:'none'
+      }
+    })
+  }
+  hideCheckbox = (e) => {
+    this.setState({
+      checkbox:{
+        display:'none',
+        paddingBottom: '12px'
+      },
+      index:{
+        display:'block'
+      }
+    })
+  }
   render() {
     const {data, rowIndex, columnKey, ...props} = this.props;
     const value = data.getObjectAt(rowIndex);
+    
     let group = data.getGroupByRowIndex(rowIndex);
     let groupColor = group ? group.color : "#f1f3f5";
     let css_style={
@@ -602,13 +637,10 @@ class CheckBoxCell extends React.PureComponent {
       lineHeight:'40px',
       borderLeft:'3px solid '+groupColor
     }
-    return <div style={css_style}>{rowIndex}</div>;
-      //  (
-      //   <Checkbox 
-      //     checked={false}
-      //     style={{padding: '9.2px 10px'}}
-      //   />
-      // );
+    return <div style={css_style} onMouseEnter={this.showCheckbox} onMouseLeave={this.hideCheckbox}>
+              <Checkbox style={this.state.checkbox} />
+              <span style={this.state.index}>{rowIndex}</span>
+           </div>;
     }
 }
 
