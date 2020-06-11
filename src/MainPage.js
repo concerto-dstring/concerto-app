@@ -294,12 +294,12 @@ class MainPage extends React.Component {
       <Panel 
         header={<div className="body_left_sider_panel_header">
                   <div style={{textAlign: "left"}}>{name}</div>
-                  <div style={{textAlign: "right"}} onClick={this.createBoard}><PlusOutlined style={{fontSize:"14px"}}/></div>
+                  <div style={{textAlign: "right"}} onClick={this.createBoard}><PlusOutlined style={{fontSize:"14px",marginRight:'13px'}}/></div>
                 </div>} 
         showArrow={true} 
         key={key}
       >
-        {
+        {/* {
           isBoard
           ?
           <Input
@@ -310,7 +310,7 @@ class MainPage extends React.Component {
           />
           :
           null
-        }
+        } */}
         {
           menus.map(item => {
             let style = item.id === selectedKey ? {background: '#ECECEC', fontWeight: 500} : {}
@@ -413,13 +413,13 @@ class MainPage extends React.Component {
             >
               <div style={{height:'60px'}}>
                 <Row>
-                  <Col span={4}>
+                  <Col span={5}>
                    <img className="header_logo" src="../pynbologo.png" />
                   </Col>
                   <Col span={4}>
-                    <h3 style={{fontWeight:'bold',lineHeight:'40px'}}>Pynbo</h3>
+                    <h3 style={{fontWeight:'bold',lineHeight:'55px'}}>Pynbo</h3>
                   </Col>
-                  <Col span={16}>
+                  <Col span={15}>
                     {/* <div className="collpseBar">
                       {
                         collapsed ? <DoubleRightOutlined onClick={this.toggle}/> : <DoubleLeftOutlined onClick={this.toggle}/>
@@ -428,6 +428,12 @@ class MainPage extends React.Component {
                   </Col>
                 </Row>
               </div>
+              <Input
+                prefix={<SearchOutlined />}
+                placeholder="搜索工作板..."
+                style={{margin:'10px 26px 0px 16px',borderRadius:'15px',width:'255px'}}
+                onChange={this.filterMenu.bind(this, true)}
+              />
               <Collapse accordion defaultActiveKey={['1']} bordered={false}>
                 {
                   this.getPanel(boardMenus, true, '工作板', '1')
