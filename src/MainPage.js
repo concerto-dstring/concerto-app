@@ -313,7 +313,7 @@ class MainPage extends React.Component {
         } */}
         {
           menus.map(item => {
-            let style = item.id === selectedKey ? {background: '#ECECEC', fontWeight: 500} : {}
+            let style = item.id === selectedKey ? {background: '#f2f3f3', fontWeight: 500} : {}
             let path = (isBoard ? `/board/${item.id}` : '/dashboard')
             return (
               <div 
