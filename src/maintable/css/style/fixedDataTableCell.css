@@ -16,9 +16,11 @@
   background-color: #fff;
   border-color: #d3d3d3;
 }
-
+.public_fixedDataTableCell_main:hover  .sc-AxiKw{
+  border:dashed rgb(168, 164, 164) 1px;
+}
 .public_fixedDataTableCell_highlighted {
-  background-color: #f4f4f4;
+  background-color: #d3d3d3;
 }
 
 .public_fixedDataTableCell_cellContent {

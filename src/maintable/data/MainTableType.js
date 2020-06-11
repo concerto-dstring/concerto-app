@@ -20,7 +20,7 @@ export const ColumnType = {
     CHECKBOX: 'CHECKBOX',
     ROWACTION: 'ROWACTION',
     ROWSELECT: 'ROWSELECT',
-    GROUPTITLE: 'GROUPTITLE'
+    GROUPTITLE: 'GROUPTITLE',
 }
 
 export function compareSubLevel(rowIndex1, rowIndex2) {

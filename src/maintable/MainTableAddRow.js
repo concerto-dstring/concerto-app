@@ -156,6 +156,7 @@ class MainTableAddRow extends React.Component {
       width: width,
       height: this.props.height,
       zIndex: this.props.zIndex,
+      border:'1px solid white'
     }
 
     var style = {

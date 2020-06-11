@@ -708,6 +708,22 @@ export const getRow = /* GraphQL */ `
         }
         nextToken
       }
+      notification {
+        items {
+          id
+          subject
+          content
+          senderID
+          receiverID
+          seenflag
+          createdAt
+          boardID
+          groupID
+          rowID
+          threadOnRowID
+        }
+        nextToken
+      }
       rank
       parentId
       deleteFlag
@@ -753,6 +769,9 @@ export const listRows = /* GraphQL */ `
           createdAt
         }
         threadOnRow {
+          nextToken
+        }
+        notification {
           nextToken
         }
         rank
@@ -934,6 +953,9 @@ export const getThreadOnRow = /* GraphQL */ `
         threadOnRow {
           nextToken
         }
+        notification {
+          nextToken
+        }
         rank
         parentId
         deleteFlag
@@ -1047,6 +1069,7 @@ export const listThreadOnRows = /* GraphQL */ `
             likedByUsersID
             seenByUsersID
           }
+        repliesByDate {
           nextToken
         }
       }
@@ -1375,6 +1398,9 @@ export const getNotification = /* GraphQL */ `
           createdAt
         }
         threadOnRow {
+          nextToken
+        }
+        notification {
           nextToken
         }
         rank

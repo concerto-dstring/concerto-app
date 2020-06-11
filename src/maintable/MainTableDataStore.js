@@ -34,6 +34,7 @@ import {
   createReplyOnThread, updateReplyOnThread,
   createNotification,updateNotification
 } from "../graphql/mutations"
+import { notification } from 'antd';
 
 const rankBlock = 32768
 const PEOPLE = 'PEOPLE'
@@ -51,6 +52,7 @@ class MainTableDataStore {
         this._columnsComponentType = {}
         this._sizeColumns = 0;
         this._rowData = {};
+        this._rowNotification = {}
         this._rowThreadData = {}
         this._rowThreadSize = {}
         this._subRowKeys = []
@@ -78,32 +80,11 @@ class MainTableDataStore {
         this.toggleExpandSubRows = this.toggleExpandSubRows.bind(this);
         this.getRowThreadData = this.getRowThreadData.bind(this);
         this.updateRowReadMessageStatus = this.updateRowReadMessageStatus.bind(this);
-        this.getNotificationsByRowIndex = this.getNotificationsByRowIndex.bind(this);
+        this.getNotificationsByRowId = this.getNotificationsByRowId.bind(this);
         this._callbacks = [];
         this.runCallbacks = this.runCallbacks.bind(this);
     }
 
-    //修改行对象的评论是否已读
-    updateRowReadMessageStatus(id) {
-      this._apolloClient
-        .mutate({
-          mutation: gql(updateNotification),
-          variables: {
-            input: {
-              id:id,
-              seenflag: true
-            }
-          }
-        })
-        .then(result => {
-          this.runCallbacks();
-        })
-        .catch(error => {
-          console.log(error)
-        })
-
-  }
-    
     /**
      * 创建工作板
      * @param {*} boardName 
@@ -232,6 +213,9 @@ class MainTableDataStore {
                   }
                 }
               }
+              else {
+                setMenus([], true, null)
+              }
             });
           break;
       
@@ -299,6 +283,7 @@ class MainTableDataStore {
           this._columnsComponentType = []
           this._rowThreadData = {}
           this._rowThreadSize = {}
+          this._rowNotification = {}
 
           let columns = this.sortDataByRank(board.columns.items)
           this.setColumns(columns)
@@ -373,6 +358,10 @@ class MainTableDataStore {
               }
               this._rowData[row.id] = {}
               this._rowColumnData[row.id] = {}
+
+              if (row.notification )
+                this._rowNotification[row.id] = row.notification.items
+
               let dataItems = row.datas.items
               dataItems.map(item => {
                 if (this._columnsComponentType[item.columnID] === PEOPLE) {
@@ -1452,31 +1441,6 @@ class MainTableDataStore {
        return arr
     }
 
-    getNotificationsByRowIndex(rowId){
-      let hasRead = false;
-      this._apolloClient.query({
-        query: gql(listThreadOnRows),
-        variables: {
-          limit: 10000,
-          filter: {
-            rowID: {
-              eq: rowId
-            }
-          }
-        },
-        fetchPolicy: "no-cache"
-      })
-      .then(result => {
-        const items = result.data.listThreadOnRows.items;
-
-        items.forEach((item)=>{
-            hasRead = item.seenflag;
-        })
-        
-      })
-      return hasRead;
-    }
-
     getRowThreadData(rowId, setUpdateInfo) {
       if (Object.keys(this._rowThreadData).indexOf(rowId) !== -1) {
         setUpdateInfo(this._rowThreadData[rowId])
@@ -1500,15 +1464,13 @@ class MainTableDataStore {
             let threads = this.sortDataByCreatedAt(items)
             this._rowThreadData[rowId] = threads
             setUpdateInfo(this._rowThreadData[rowId])
-            items.forEach((item)=>{
-              this.updateRowReadMessageStatus(item.id)
-            })
-            
+            this.dealNotReadNotifications(rowId)
           })
       }
     }
 
-    createThreadData(createData, setUpdateInfo) {
+    createThreadData(createData, setUpdateInfo, notifications) {
+      let boardId = this._currentBoardId
       this._apolloClient
         .mutate({
           mutation: gql(createThreadOnRow),
@@ -1532,6 +1494,16 @@ class MainTableDataStore {
           
           this._rowThreadSize[createData.rowID] = size
           setUpdateInfo(threads)
+
+          if (notifications && notifications.length > 0) {
+            notifications.map(notification => {
+              notification.boardID = boardId
+              notification.threadOnRowID = threadData.id
+
+              // 创建通知
+              this.createNotification(notification)
+            })
+          }
         })
         .catch(error => {
           console.log(error)
@@ -1655,12 +1627,68 @@ class MainTableDataStore {
       }
     }
 
+    getNotificationsByRowId(rowId){
+      let notReadNotifications = []
+      let notifications = this._rowNotification[rowId]
+      if (notifications && notifications.length > 0) {
+        notifications.map(notification => {
+          if (notification.receiverID === this._currentUser.id && !notification.seenflag) {
+            notReadNotifications.push(notification)
+          }
+        })
+      }
+
+      return notReadNotifications
+    }
+
+    dealNotReadNotifications(rowId) {
+      let notifications = this._rowNotification[rowId]
+      let notificationsSlice = []
+      if (notifications && notifications.length > 0) {
+        for (let i = 0; i < notifications.length; i++) {
+          let notification = notifications[i]
+
+          if (notification.receiverID === this._currentUser.id && !notification.seenflag) {
+            notification.seenflag = true
+            notificationsSlice.push(notification)
+            this.updateRowReadMessageStatus(notification.id)
+          }
+          else {
+            notificationsSlice.push(notification)
+          }
+        }
+      }
+
+      this._rowNotification[rowId] = notificationsSlice
+      this.runCallbacks()
+    }
+
     createNotification(createData) {
       this._apolloClient
         .mutate({
           mutation: gql(createNotification),
           variables: {
             input: createData
+          }
+        })
+        .then(result => {
+          
+        })
+        .catch(error => {
+          console.log(error)
+        })
+    }
+
+    //修改行对象的评论是否已读
+    updateRowReadMessageStatus(id) {
+      this._apolloClient
+        .mutate({
+          mutation: gql(updateNotification),
+          variables: {
+            input: {
+              id: id,
+              seenflag: true
+            }
           }
         })
         .then(result => {

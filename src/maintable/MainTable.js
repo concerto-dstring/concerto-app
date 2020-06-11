@@ -27,6 +27,7 @@ import {
     CheckSquareOutlined,
     StrikethroughOutlined,
     AccountBookOutlined,
+    ShareAltOutlined,
     DownOutlined,
     EyeInvisibleOutlined,
     SearchOutlined
@@ -439,6 +440,10 @@ class MainTable extends React.Component {
                     <StrikethroughOutlined />
                     状态
                 </Menu.Item>
+                <Menu.Item key={"LINK-"+level}>
+                    <ShareAltOutlined />
+                    关联
+                </Menu.Item>
             </Menu>
         );
         let colTemplate = {};
@@ -522,7 +527,8 @@ class MainTable extends React.Component {
                     onGetListUsers = {this._onGetListUsers}
                     columnNameGetter={this._getColumnName}
                     data={data}
-                    titleHeight={80}
+                    titleHeight={0} 
+                    // set to zero
                     headerHeight={40}                    
                     rowHeight={40}
                     isColumnResizing={false}

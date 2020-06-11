@@ -1,6 +1,6 @@
 import React from 'react';
 import 'antd/dist/antd.css'
-import {Button ,Menu, Dropdown} from 'antd';
+import {Button ,Menu, Dropdown, Tooltip} from 'antd';
 import 'moment/locale/zh-cn';
 import { Cell } from '../../../maintable/FixedDataTableRoot';
 import './StatusCell.less';
@@ -33,6 +33,7 @@ class StatusCell extends React.Component {
          }
        }
     }
+
     render() {
       const {data, rowIndex, columnKey, collapsedRows, callback, value, handleChange, handleKey, displayValue, ...props} = this.props;
       const returnValue = (e) => {
@@ -44,27 +45,37 @@ class StatusCell extends React.Component {
           styleClassName:selectedStyle,
         })
         handleChange(statusValue, true);
+        e.domEvent.stopPropagation();
       }
-      const menu = <Menu onClick={returnValue} className='statusCellMenu'>
-          <Menu.Item key="working" className='workingItem'>
-          {this.statusHashTable.working}
-          </Menu.Item>
-          <Menu.Item key="block" className='blockItem'>
-          {this.statusHashTable.block}
-          </Menu.Item>
-          <Menu.Item key="finished" className='finishedItem'>
-          {this.statusHashTable.finished}
-          </Menu.Item>
-          <Menu.Item key="todo" className='todoItem'>
-          {this.statusHashTable.todo}
-          </Menu.Item>
-          <Menu.Item key="default" className='defaultItem'>
-          </Menu.Item>
-      </Menu>
+
+      const dismiss = (e) => {
+        handleChange(this.state.value, false);
+      }
+
+      const menu =
+          <Menu onClick={returnValue} className='statusCellMenu' style={{pointerEvents: 'visible'}}>
+            <Menu.Item key="working" className='workingItem'>
+            {this.statusHashTable.working}
+            </Menu.Item>
+            <Menu.Item key="block" className='blockItem'>
+            {this.statusHashTable.block}
+            </Menu.Item>
+            <Menu.Item key="finished" className='finishedItem'>
+            {this.statusHashTable.finished}
+            </Menu.Item>
+            <Menu.Item key="todo" className='todoItem'>
+            {this.statusHashTable.todo}
+            </Menu.Item>
+            <Menu.Item key="default" className='defaultItem'>
+            </Menu.Item>
+        </Menu>
+
       let cellStatusTextStyle = this.state.styleClassName + ' statusWidth longText';
       return (
         <Cell {...props} className='statusCell'>
-            <Dropdown overlay={menu} trigger={['click']}>
+            <Dropdown overlay={menu} trigger={['click']} 
+              onVisibleChange={dismiss} 
+            getPopupContainer={()=>this.props.container}>
               <div className={cellStatusTextStyle}>
                 {displayValue}
               </div>

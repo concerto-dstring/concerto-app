@@ -44,145 +44,145 @@ class FixedDataTableRowImpl extends React.Component {
    */
   mouseLeaveIndex = null;
 
-  static propTypes = {
+  // static propTypes = {
 
-    isScrolling: PropTypes.bool,
+  //   isScrolling: PropTypes.bool,
 
-    /**
-     * Array of data for the fixed columns.
-     */
-    fixedColumns: PropTypes.array.isRequired,
+  //   /**
+  //    * Array of data for the fixed columns.
+  //    */
+  //   fixedColumns: PropTypes.array.isRequired,
 
-    /**
-     * Array of <FixedDataTableColumn /> for the fixed columns positioned at end of the table.
-     */
-    fixedRightColumns: PropTypes.array.isRequired,
+  //   /**
+  //    * Array of <FixedDataTableColumn /> for the fixed columns positioned at end of the table.
+  //    */
+  //   fixedRightColumns: PropTypes.array.isRequired,
 
-    /**
-     * Height of the row.
-     */
-    height: PropTypes.number.isRequired,
+  //   /**
+  //    * Height of the row.
+  //    */
+  //   height: PropTypes.number.isRequired,
 
-    /**
-     * Height of fixedDataTableCellGroupLayout/cellGroupWrapper.
-     */
-    cellGroupWrapperHeight: PropTypes.number,
+  //   /**
+  //    * Height of fixedDataTableCellGroupLayout/cellGroupWrapper.
+  //    */
+  //   cellGroupWrapperHeight: PropTypes.number,
 
-    /**
-     * Height of the content to be displayed below the row.
-     */
-    subRowHeight: PropTypes.number,
+  //   /**
+  //    * Height of the content to be displayed below the row.
+  //    */
+  //   subRowHeight: PropTypes.number,
 
-    /**
-     * the row expanded.
-     */
-    rowExpanded: PropTypes.oneOfType([
-      PropTypes.element,
-      PropTypes.func,
-    ]),
+  //   /**
+  //    * the row expanded.
+  //    */
+  //   rowExpanded: PropTypes.oneOfType([
+  //     PropTypes.element,
+  //     PropTypes.func,
+  //   ]),
 
-    /**
-     * The row index.
-     */
-    index: PropTypes.oneOfType([
-      PropTypes.string,
-      PropTypes.number,
-    ]),
+  //   /**
+  //    * The row index.
+  //    */
+  //   index: PropTypes.oneOfType([
+  //     PropTypes.string,
+  //     PropTypes.number,
+  //   ]),
 
-    /**
-     * Array of data for the scrollable columns.
-     */
-    scrollableColumns: PropTypes.array.isRequired,
+  //   /**
+  //    * Array of data for the scrollable columns.
+  //    */
+  //   scrollableColumns: PropTypes.array.isRequired,
 
-    /**
-     * The distance between the left edge of the table and the leftmost portion
-     * of the row currently visible in the table.
-     */
-    scrollLeft: PropTypes.number.isRequired,
+  //   /**
+  //    * The distance between the left edge of the table and the leftmost portion
+  //    * of the row currently visible in the table.
+  //    */
+  //   scrollLeft: PropTypes.number.isRequired,
 
-    /**
-     * Pass true to not render the row. This is used internally for buffering rows.
-     */
-    fake: PropTypes.bool,
+  //   /**
+  //    * Pass true to not render the row. This is used internally for buffering rows.
+  //    */
+  //   fake: PropTypes.bool,
 
-    /**
-     * Width of the row.
-     */
-    width: PropTypes.number.isRequired,
+  //   /**
+  //    * Width of the row.
+  //    */
+  //   width: PropTypes.number.isRequired,
 
-    /**
-     * Fire when a row is clicked.
-     */
-    onClick: PropTypes.func,
+  //   /**
+  //    * Fire when a row is clicked.
+  //    */
+  //   onClick: PropTypes.func,
 
-    /**
-     * Fire when a contextual-menu is requested above a row.
-     */
-    onContextMenu: PropTypes.func,
+  //   /**
+  //    * Fire when a contextual-menu is requested above a row.
+  //    */
+  //   onContextMenu: PropTypes.func,
 
-    /**
-     * Fire when a row is double clicked.
-     */
-    onDoubleClick: PropTypes.func,
+  //   /**
+  //    * Fire when a row is double clicked.
+  //    */
+  //   onDoubleClick: PropTypes.func,
 
-    /**
-     * Callback for when resizer knob (in FixedDataTableCell) is clicked
-     * to initialize resizing. Please note this is only on the cells
-     * in the header.
-     * @param number combinedWidth
-     * @param number leftOffset
-     * @param number cellWidth
-     * @param number|string columnKey
-     * @param object event
-     */
-    onColumnResize: PropTypes.func,
+  //   /**
+  //    * Callback for when resizer knob (in FixedDataTableCell) is clicked
+  //    * to initialize resizing. Please note this is only on the cells
+  //    * in the header.
+  //    * @param number combinedWidth
+  //    * @param number leftOffset
+  //    * @param number cellWidth
+  //    * @param number|string columnKey
+  //    * @param object event
+  //    */
+  //   onColumnResize: PropTypes.func,
 
-    isColumnReordering: PropTypes.bool,
-    /**
-     * Callback for when reorder handle (in FixedDataTableCell) is clicked
-     * to initialize reordering. Please note this is only on the cells
-     * in the header.
-     * @param number|string columnKey
-     * @param number cellWidth
-     * @param number leftOffset
-     * @param object event
-     */
-    onColumnReorder: PropTypes.func,
+  //   isColumnReordering: PropTypes.bool,
+  //   /**
+  //    * Callback for when reorder handle (in FixedDataTableCell) is clicked
+  //    * to initialize reordering. Please note this is only on the cells
+  //    * in the header.
+  //    * @param number|string columnKey
+  //    * @param number cellWidth
+  //    * @param number leftOffset
+  //    * @param object event
+  //    */
+  //   onColumnReorder: PropTypes.func,
 
-    /**
-     * Callback for when a cell is moved while reordering.
-     * @param number distance
-     */
-    onColumnReorderMove: PropTypes.func,
+  //   /**
+  //    * Callback for when a cell is moved while reordering.
+  //    * @param number distance
+  //    */
+  //   onColumnReorderMove: PropTypes.func,
 
-    /**
-     * Callback for when the mouse is released to complete reordering.
-     * @param number distance
-     */
-    onColumnReorderEnd: PropTypes.func,
+  //   /**
+  //    * Callback for when the mouse is released to complete reordering.
+  //    * @param number distance
+  //    */
+  //   onColumnReorderEnd: PropTypes.func,
 
-    touchEnabled: PropTypes.bool,
+  //   touchEnabled: PropTypes.bool,
 
-    /**
-     * Whether the row is part of the header or footer.
-     */
-    isHeaderOrFooter: PropTypes.bool,
+  //   /**
+  //    * Whether the row is part of the header or footer.
+  //    */
+  //   isHeaderOrFooter: PropTypes.bool,
 
-    /**
-     * The value of the aria-rowindex attribute.
-     */
-    ariaRowIndex: PropTypes.number,
+  //   /**
+  //    * The value of the aria-rowindex attribute.
+  //    */
+  //   ariaRowIndex: PropTypes.number,
 
-    /**
-     * Whether the grid should be in RTL mode
-     */
-    isRTL: PropTypes.bool,
+  //   /**
+  //    * Whether the grid should be in RTL mode
+  //    */
+  //   isRTL: PropTypes.bool,
 
-    /**
-     * DOM attributes to be applied to the row.
-     */
-    attributes: PropTypes.object,
-  };
+  //   /**
+  //    * DOM attributes to be applied to the row.
+  //    */
+  //   attributes: PropTypes.object,
+  // };
 
   render() /*object*/ {
     if (this.props.fake) {
@@ -571,7 +571,7 @@ class FixedDataTableRow extends React.Component {
     };
     let top = offsetTop;
     if (isMovingRow) {
-      if (getSubLevel(rowProps.index) ===0) {
+      if (getSubLevel(rowProps.index) === 0) {
         top = this.props.rowReorderingData.top - this.props.rowReorderingData.dragDistanceY - this.props.rowReorderingData.oldScrollTop; 
       } else {
         //todo add subitem top calculation
@@ -582,6 +582,7 @@ class FixedDataTableRow extends React.Component {
     if (this.props.isRowReordering 
       && this.props.rowReorderingData 
       && rowProps.index === this.props.rowReorderingData.newRowIndex) {
+ 
       let placeStyle = {
         height: this.props.rowReorderingData.height,
         width: this.props.width,
@@ -589,15 +590,16 @@ class FixedDataTableRow extends React.Component {
         border: '1px dashed gray',
       }
       let height = 0;
-      if (rowProps.index > this.props.rowReorderingData.oldRowIndex) {
+      if (rowProps.index > this.props.rowReorderingData.oldRowIndex ) {
         height = this.props.rowReorderingData.height - this.props.height;
       }
-      FixedDataTableTranslateDOMPosition(placeStyle, 0, offsetTop - height, this._initialRender, this.props.isRTL);
 
+      FixedDataTableTranslateDOMPosition(placeStyle, 0, offsetTop - height, this._initialRender, this.props.isRTL);
       dropPlace = <div style={placeStyle}></div>;
     }  
 
     FixedDataTableTranslateDOMPosition(style, 0, top, this._initialRender, this.props.isRTL);
+
     return (
       <div>
         {dropPlace}
