@@ -11,7 +11,7 @@ import FixedDataTableTranslateDOMPosition from './FixedDataTableTranslateDOMPosi
 
 import './MainTableTitleRow.less';
 import './css/style/Board.less';
-
+import { getRandomColor } from '../helpers/section/header/SectionColor';
 import { 
     SearchOutlined,
     ShareAltOutlined,
@@ -104,6 +104,7 @@ class MainTableTitleRow extends React.Component {
             <div className="body_content_title">
               <h1>
                 {/* <DoubleRightOutlined style={{fontSize:'16px'}}/>&nbsp;&nbsp; */}
+                <div className="item_color" style={{background:getRandomColor()}}></div>
                 {this.props.title}
               </h1>
             </div>

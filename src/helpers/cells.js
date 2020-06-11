@@ -594,13 +594,22 @@ class CheckBoxCell extends React.PureComponent {
   render() {
     const {data, rowIndex, columnKey, ...props} = this.props;
     const value = data.getObjectAt(rowIndex);
-    return (
-      <Checkbox 
-        checked={false}
-        style={{padding: '9.2px 10px'}}
-      />
-    );
-  }
+    let group = data.getGroupByRowIndex(rowIndex);
+    let groupColor = group ? group.color : "#f1f3f5";
+    let css_style={
+      width:'100%',
+      textAlign:'center',
+      lineHeight:'40px',
+      borderLeft:'3px solid '+groupColor
+    }
+    return <div style={css_style}>{rowIndex}</div>;
+      //  (
+      //   <Checkbox 
+      //     checked={false}
+      //     style={{padding: '9.2px 10px'}}
+      //   />
+      // );
+    }
 }
 
 class CheckBoxHeader extends React.PureComponent {

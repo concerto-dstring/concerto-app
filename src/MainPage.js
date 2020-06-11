@@ -26,7 +26,7 @@ import RowHeaderDrawer from './helpers/RowHeaderDrawer';
 import { USER_MENU_SIGN_OUT, RENAME_BOARD, DELETE_BOARD } from './maintable/MainTableRowKeyAndDesc';
 import { Auth } from 'aws-amplify'
 import { DISPLAY, COLOR } from './helpers/section/header/StyleValues';
-
+import { getRandomColor } from './helpers/section/header/SectionColor';
 const { Panel } = Collapse;
 const { Header, Content, Sider } = Layout;
 
@@ -310,7 +310,7 @@ class MainPage extends React.Component {
   }
 
   getPanel = (menus, isBoard, name, key) => {
-    const { dataset, selectedKey } = this.state
+    const { dataset, selectedKey } = this.state;
     return (
       <Panel 
         header={<div className="body_left_sider_panel_header">
@@ -334,7 +334,8 @@ class MainPage extends React.Component {
                 <div className="body_left_sider_panel_menu_item_link" style={style}>
                 
                   <Link to={path}>
-                   {item.name}
+                     <div className="item_color" style={{background:getRandomColor()}}></div>
+                     <span className="item_title">{item.name}</span> 
                   </Link>
                  
                 </div>
