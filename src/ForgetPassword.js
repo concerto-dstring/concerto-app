@@ -206,83 +206,81 @@ class ForgetPassword extends Component {
     return (
       <div className="forget_layout" style={{height: isNext ? 500 : 300}}>
         <Spin spinning={isLoading}>
-          <div className="forget_container">
-            <div className="forget_header_component">
-              <span className="forget_header">欢迎使用 Pynbo 拼板</span>
+          <div className="forget_header_component">
+            <span className="forget_header">欢迎使用 Pynbo 拼板</span>
+          </div>
+          <div className="forget_body_component">
+            <div className="forget_item">
+              <span className="forget_label">用户名：</span>
+              <Input
+                ref={this.userNameRef}
+                style={{borderColor: userNameCodeBorderColor}}
+                onChange={this.handleUserNameChange}
+                disabled={isNext}
+                placeholder='请输入用户名'
+              />
             </div>
-            <div className="forget_body_component">
-              <div className="forget_item">
-                <span className="forget_label">用户名：</span>
-                <Input
-                  ref={this.userNameRef}
-                  style={{borderColor: userNameCodeBorderColor}}
-                  onChange={this.handleUserNameChange}
-                  disabled={isNext}
-                  placeholder='请输入用户名'
-                />
-              </div>
-              {
-                isNext
-                ?
-                <>
-                  <br />
-                  <div className="forget_item">
-                    <span className="forget_label"><span className="forget_required">*</span> 新密码：</span>
-                    <Input.Password
-                      style={{borderColor: passwordBorderColor}}
-                      onChange={this.handlePasswordChange}
-                      placeholder='请输入新密码'
-                    />
-                  </div>
-                  <div className="forget_error_item">
-                    <span className="forget_error_message">{passwordErrorMsg}</span>
-                  </div>
-                  <div className="forget_item">
-                    <span className="forget_label"><span className="forget_required">*</span> 确认新密码：</span>
-                    <Input.Password 
-                      style={{borderColor: confirmPasswordBorderColor}} 
-                      placeholder='请确认新密码'
-                      onChange={this.handleConfirmPasswordChange}
-                    />
-                  </div>
-                  <div className="forget_error_item">
-                    <span className="forget_error_message">{confirmPasswordErrorMsg}</span>
-                  </div>
-                  <div className="forget_item">
-                    <span className="forget_label">验证码：</span>
-                    <Input
-                      ref={this.validateCodeRef}
-                      style={{borderColor: validateCodeBorderColor}}
-                      placeholder='请输入发送至邮箱的验证码'
-                    />
-                  </div>
-                  <div className="forget_error_item">
-                    <span className="forget_error_message">{validateCodeErrorMsg}</span>
-                  </div>
-                  <br />
-                  <div className="forget_forget_item">
-                    <div className="forget_link_left"><Button onClick={this.reSendValidateCode}>重新发送验证码</Button></div>
-                    <div className="forget_link_right"><Button type='primary' onClick={this.confirmUpdatePassword}>确认重置密码</Button></div>
-                  </div>
-                </>
-                :
-                <>
-                  <div className="forget_error_item">
-                    <span className="forget_error_message">{userNameCodeErrorMsg}</span>
-                  </div>
-                  <br />
-                  <div className="forget_item">
-                    <Button 
-                      style={{width: 360, borderRadius: 12}} 
-                      type='primary'
-                      onClick={this.goToNextStep}
-                    >
-                      下一步
-                    </Button>
-                  </div>
-                </>
-              }
-            </div>
+            {
+              isNext
+              ?
+              <>
+                <br />
+                <div className="forget_item">
+                  <span className="forget_label"><span className="forget_required">*</span> 新密码：</span>
+                  <Input.Password
+                    style={{borderColor: passwordBorderColor}}
+                    onChange={this.handlePasswordChange}
+                    placeholder='请输入新密码'
+                  />
+                </div>
+                <div className="forget_error_item">
+                  <span className="forget_error_message">{passwordErrorMsg}</span>
+                </div>
+                <div className="forget_item">
+                  <span className="forget_label"><span className="forget_required">*</span> 确认新密码：</span>
+                  <Input.Password 
+                    style={{borderColor: confirmPasswordBorderColor}} 
+                    placeholder='请确认新密码'
+                    onChange={this.handleConfirmPasswordChange}
+                  />
+                </div>
+                <div className="forget_error_item">
+                  <span className="forget_error_message">{confirmPasswordErrorMsg}</span>
+                </div>
+                <div className="forget_item">
+                  <span className="forget_label">验证码：</span>
+                  <Input
+                    ref={this.validateCodeRef}
+                    style={{borderColor: validateCodeBorderColor}}
+                    placeholder='请输入发送至邮箱的验证码'
+                  />
+                </div>
+                <div className="forget_error_item">
+                  <span className="forget_error_message">{validateCodeErrorMsg}</span>
+                </div>
+                <br />
+                <div className="forget_forget_item">
+                  <div className="forget_link_left"><Button onClick={this.reSendValidateCode}>重新发送验证码</Button></div>
+                  <div className="forget_link_right"><Button type='primary' onClick={this.confirmUpdatePassword}>确认重置密码</Button></div>
+                </div>
+              </>
+              :
+              <>
+                <div className="forget_error_item">
+                  <span className="forget_error_message">{userNameCodeErrorMsg}</span>
+                </div>
+                <br />
+                <div className="forget_item">
+                  <Button 
+                    style={{width: 360, borderRadius: 12}} 
+                    type='primary'
+                    onClick={this.goToNextStep}
+                  >
+                    下一步
+                  </Button>
+                </div>
+              </>
+            }
           </div>
         </Spin>
       </div>
