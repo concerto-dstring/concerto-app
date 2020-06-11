@@ -562,7 +562,6 @@ class MainTable extends React.Component {
                 <UndoMessage 
                   isShowUndoModal={this.state.isShowUndoModal}
                 />
-                <RowHeaderDrawer />
               </div>   
             </TableContext.Provider>   
         );
