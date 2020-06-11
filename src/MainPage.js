@@ -50,7 +50,10 @@ class MainPage extends React.Component {
       contentTitle: '',
       isShowCreateBoard: false,
       isShowReNameBoard: false,
-      isLoading: false
+      isLoading: false,
+      mainPanelPaddingLeft:{
+        paddingLeft:'18px'
+      }
     }
 
     this.createBoardRef = createRef();
@@ -127,6 +130,13 @@ class MainPage extends React.Component {
     this.setState({
       siderWidth: !this.state.collapsed ? 0 : defaultSiderWidth,
       collapsed: !this.state.collapsed,
+      mainPanelPaddingLeft:!this.state.collapsed ?{
+        paddingLeft:"0px"
+      }
+      :
+      {
+        paddingLeft:"18px"
+      }
     });
   };
 
@@ -299,18 +309,6 @@ class MainPage extends React.Component {
         showArrow={true} 
         key={key}
       >
-        {/* {
-          isBoard
-          ?
-          <Input
-            prefix={<SearchOutlined />}
-            placeholder="搜索工作板..."
-            style={{margin:'5px 16px 16px 16px',borderRadius:'15px',width:'265px'}}
-            onChange={this.filterMenu.bind(this, isBoard)}
-          />
-          :
-          null
-        } */}
         {
           menus.map(item => {
             let style = item.id === selectedKey ? {background: '#f2f3f3', fontWeight: 500} : {}
@@ -324,7 +322,7 @@ class MainPage extends React.Component {
               >
                 <div className="body_left_sider_panel_menu_item_link" style={style}>
                   <Link to={path}>
-                    {item.name}
+                    <span><div className="item_color"></div>{item.name}</span>
                   </Link>
                 </div>
                 <div style={style}>
@@ -461,7 +459,7 @@ class MainPage extends React.Component {
                 </Dropdown>
               </div>
             </Sider>
-            <Layout style={{backgroundColor: '#FFFFFF',paddingLeft:"18px"}}>
+            <Layout style={this.state.mainPanelPaddingLeft}>
               {
                 this.getBodyContent()
               }

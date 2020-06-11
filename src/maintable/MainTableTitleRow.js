@@ -17,6 +17,7 @@ import {
     ShareAltOutlined,
     DownOutlined,
     EyeInvisibleOutlined,
+    DoubleRightOutlined
 } from '@ant-design/icons';
 
 /**
@@ -101,7 +102,10 @@ class MainTableTitleRow extends React.Component {
       <>
           <div className="body_content_title_row">
             <div className="body_content_title">
-              <h1>{this.props.title}</h1>
+              <h1>
+                {/* <DoubleRightOutlined style={{fontSize:'16px'}}/>&nbsp;&nbsp; */}
+                {this.props.title}
+              </h1>
             </div>
             {/* <div className="body_content_title_right">
               <div className="body_content_title_right_item">
@@ -147,9 +151,9 @@ class MainTableTitleRow extends React.Component {
               </div> 
             </div> */}
           </div>
-          <div className="body_content_title_desc">
+          {/* <div className="body_content_title_desc">
             相关具体的描述
-          </div>
+          </div> */}
       </>
     )
   }
