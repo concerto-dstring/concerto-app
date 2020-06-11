@@ -47,7 +47,7 @@ class DateCell extends React.Component {
     showDatePicker = () => {
       this.setState({
         open:true
-      })
+      });
     }
     switchAddTime = (checked) => {
       this.setState({
@@ -97,7 +97,7 @@ class DateCell extends React.Component {
       }
 
       return (
-        <div>
+        <div >
           <Row>
             <Col span={12}>
               <div style={{float:'left'}}>Add time&nbsp;<Switch size="small" onChange={this.switchAddTime}/>
@@ -142,14 +142,14 @@ class DateCell extends React.Component {
       const OpenOrDismiss = (open) => {
         if (!open) {
           this.props.handleChange("", false);
-        }
+        } 
       }      
       return (
         <Cell {...props} className="DateCell">
          <DatePicker 
-                style={{pointerEvents: 'visible'}}
                 ref="datePicker"
                 className="DateCell"
+                popupStyle ={{pointerEvents: 'visible'}}
                 allowClear={false}
                 bordered={false}
                 placeholder=""

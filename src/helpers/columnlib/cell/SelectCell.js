@@ -19,7 +19,7 @@ class SelectCell extends React.Component {
         this.setState({
             value:option.children
         });
-        return handleChange(option.children); 
+        handleChange(option.children, true);
       }
       return (
         <Cell {...props} className="SelectCell">
@@ -27,6 +27,7 @@ class SelectCell extends React.Component {
                 showSearch
                 value={this.state.value}
                 className="SelectCell"
+                dropdownStyle={{pointerEvents: 'visible'}}
                 getPopupContainer={()=>this.props.container}
                 placeholder="Select a option"
                 optionFilterProp="children"
