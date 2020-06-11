@@ -78,7 +78,7 @@
 					"DynamoDBBillingMode": "PAY_PER_REQUEST",
 					"DynamoDBEnableServerSideEncryption": "false",
 					"S3DeploymentBucket": "amplify-concerto-app-product-140556-deployment",
-					"S3DeploymentRootKey": "amplify-appsync-files/13685aaa4bc48722f044c6843d58f4da687afcae",
+					"S3DeploymentRootKey": "amplify-appsync-files/3de3d7c6d87c25b13cd3e61b0d9159e9b17c6f3a",
 					"env": "product"
 				}
 			}
