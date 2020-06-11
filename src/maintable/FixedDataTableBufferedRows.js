@@ -97,8 +97,7 @@ class FixedDataTableBufferedRows extends React.Component {
       position: 'absolute',
       width: this.props.contentWidth,
       height: this.props.contentHeight, 
-      // zIndex: this.props.isCellEditing ? 2: -1,
-      zIndex: 2,
+      zIndex: this.props.isCellEditing ? 2: -1,
       overflow: 'hidden',
       pointerEvents: 'none',
     };
@@ -242,6 +241,8 @@ class FixedDataTableBufferedRows extends React.Component {
                 data={props.data}
                 isRTL={props.isRTL}
                 siderWidth={siderWidth}
+                onCellEdit={props.onCellEdit}
+                onCellEditEnd={props.onCellEditEnd}
               >
               </FixedDataTableRow>
             break;

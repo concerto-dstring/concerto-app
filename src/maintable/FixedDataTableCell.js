@@ -251,7 +251,14 @@ class FixedDataTableCell extends React.Component {
       );
       
       tableColumnMenu = (
-        <TableColumnMenu columnKey={columnKey} menuBarStyle={this.state.menuBar} container={this.props.container}/>
+        <TableColumnMenu 
+          columnKey={columnKey} 
+          menuBarStyle={this.state.menuBar} 
+          container={this.props.container}
+          onCellEdit={onCellEdit}
+          onCellEditEnd={onCellEditEnd}
+          rowIndex={this.props.rowIndex}
+        />
       )
     }
 

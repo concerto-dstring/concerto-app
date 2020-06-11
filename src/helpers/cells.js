@@ -368,6 +368,15 @@ class DropDownMenuHeader extends React.PureComponent {
     }
   }
 
+  handleVisibleChange = (visible) => {
+    if (visible) {
+      this.props.onCellEdit(this.props.rowIndex, this.props.columnKey)
+    }
+    else {
+      this.props.onCellEditEnd(this.props.rowIndex, this.props.columnKey)
+    }
+  }
+
   render() {
     
     const { groupColor, headerBtnColor, headerBtnBorderColor, headerBtnType, 
@@ -389,6 +398,7 @@ class DropDownMenuHeader extends React.PureComponent {
           // visible={isBtnClicked && isShowHeaderMenu}
           trigger='click'
           getPopupContainer={() => this.props.container}
+          onVisibleChange={this.handleVisibleChange}
         >
           <AntdButton 
             icon={<CaretDownOutlined />}
@@ -544,6 +554,12 @@ class DropDownMenuCell extends React.PureComponent {
     this.setState({
       isShowDropDown: visible
     })
+    if (visible) {
+      this.props.onCellEdit(this.props.rowIndex, this.props.columnKey)
+    }
+    else {
+      this.props.onCellEditEnd(this.props.rowIndex, this.props.columnKey)
+    }
   }
 
   render() {

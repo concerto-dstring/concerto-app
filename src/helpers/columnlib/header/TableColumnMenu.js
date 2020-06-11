@@ -23,6 +23,12 @@ class TableColumnMenu extends React.Component {
     this.setState({
       isShowDropDown: visible
     })
+    if (visible) {
+      this.props.onCellEdit(this.props.rowIndex, this.props.columnKey)
+    }
+    else {
+      this.props.onCellEditEnd(this.props.rowIndex, this.props.columnKey)
+    }
   }
 
   render() {

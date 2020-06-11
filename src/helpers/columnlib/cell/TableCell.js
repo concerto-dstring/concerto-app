@@ -20,7 +20,7 @@ class TableCell extends React.Component{
           TEXT:<TextCell  value={table.value} isHeaderOrFooter={table.isHeaderOrFooter} handleChange={table.handleChange} handleKey={table.handleKey}/>,
           NUMBER:<NumberCell  value={table.value} handleChange={table.handleChange} handleKey={table.handleKey}/>,
           SELECT:<SelectCell  value={table.value} handleChange={table.handleChange} handleKey={table.handleKey} container={table.container}/>,
-          DATE:<DateCell  value={table.value} handleChange={table.handleChange} handleKey={table.handleKey} container={table.container} mouseIn={table.mouseIn} />,
+          DATE:<DateCell  value={table.value} handleChange={table.handleChange} handleKey={table.handleKey} container={table.container} />,
           STATUS:<StatusCell  value={table.value} handleChange={table.handleChange} handleKey={table.handleKey} 
                               displayValue={table.displayValue} container={table.container}/>
       }
