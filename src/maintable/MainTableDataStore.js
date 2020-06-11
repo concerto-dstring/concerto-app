@@ -604,7 +604,12 @@ class MainTableDataStore {
         }
       }
       else {
-        newValue = value === "" ? null : value
+        if (value) {
+          newValue = value.trim() === "" ? null : value.trim()
+        }
+        else {
+          newValue = null
+        }
       }
       
       let dataId = this._rowColumnData[rowKey][columnKey]

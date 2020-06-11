@@ -97,7 +97,8 @@ class FixedDataTableBufferedRows extends React.Component {
       position: 'absolute',
       width: this.props.contentWidth,
       height: this.props.contentHeight, 
-      zIndex: this.props.isCellEditing ? 2: -1,
+      // zIndex: this.props.isCellEditing ? 2: -1,
+      zIndex: 2,
       overflow: 'hidden',
       pointerEvents: 'none',
     };
