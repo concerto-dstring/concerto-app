@@ -5,7 +5,8 @@ import MainTable from './maintable/MainTable';
 import SessionContext from './App';
 import './MainPage.less';
 import './maintable/css/style/MoveToSectionMenu.less';
-import { Layout, Input, Collapse, Button, Avatar, Dropdown, Menu, Modal, message, Spin ,Row, Col } from 'antd';
+import { Layout, Input, Collapse, Button, Avatar, Dropdown, Menu, Modal, message, Spin ,Row, Col ,Badge} from 'antd';
+ 
 import { 
     SearchOutlined,
     LeftOutlined,
@@ -51,6 +52,7 @@ class MainPage extends React.Component {
       isShowCreateBoard: false,
       isShowReNameBoard: false,
       isLoading: false,
+      isDataChanged: false,
       mainPanelPaddingLeft:{
         paddingLeft:'18px'
       }
@@ -63,13 +65,14 @@ class MainPage extends React.Component {
     this.setLoading = this.setLoading.bind(this)
     this.updateMenus = this.updateMenus.bind(this)
     this.dealErrorBoardId = this.dealErrorBoardId.bind(this)
+    this.mainPageCallBack = this.mainPageCallBack.bind(this)
   }
 
   componentDidMount() {
     let dataset = this.props.dataset;
     const id = this.props.match.params.id;
     this.setLoading(true)
-    dataset.fetchSideMenus(this.props.client, 'board', localStorage.getItem('CurrentUserId'), this.setMenus, id, this.dealErrorBoardId);
+    dataset.fetchSideMenus(this.props.client, 'board', localStorage.getItem('CurrentUserId'), this.setMenus, id, this.dealErrorBoardId, this.mainPageCallBack);
     // dataset.fetchSideMenus(this.props.client, 'dashboard', this.handleBusy)
   }
 
@@ -89,6 +92,12 @@ class MainPage extends React.Component {
 
     // 清除定时
     clearInterval(intervalTimer)
+  }
+
+  mainPageCallBack = () => {
+    this.setState({
+      isDataChanged: !this.state.isDataChanged
+    })
   }
 
   setMenus = (menus, isBoard, defaultBoard) => {
@@ -122,7 +131,8 @@ class MainPage extends React.Component {
     boardMenusCopy[boardIndex].name = boardName
 
     this.setState({
-      boardMenus: boardMenusCopy
+      boardMenus: boardMenusCopy,
+      contentTitle: boardName
     })
   }
 
@@ -285,6 +295,7 @@ class MainPage extends React.Component {
 
   getBodyContent = () => {
     const { dataset, siderWidth, contentTitle } = this.state;
+    if (!contentTitle) return null
     return (
         <Content style={{marginLeft: 24}}>
           <Route exact component={()=>
@@ -321,18 +332,28 @@ class MainPage extends React.Component {
                 onClick={this.nativeGetTableStore.bind(this, item.id, item.name, isBoard, path)}
               >
                 <div className="body_left_sider_panel_menu_item_link" style={style}>
+                <Dropdown
+                    overlay={this.getBoardItemMenus(item.id, item.name)}
+                    placement='bottomLeft'
+                  >
                   <Link to={path}>
-                    <span><div className="item_color"></div>{item.name}</span>
+                   {item.name}
                   </Link>
+                  </Dropdown>
                 </div>
-                <div style={style}>
+                
+                {/* <div className="body_left_sider_panel_menu_item" style={style}>
                   <Dropdown
                     overlay={this.getBoardItemMenus(item.id, item.name)}
                     placement='bottomLeft'
                   >
-                    <EllipsisOutlined style={{fontSize:"14px"}}/>
+                    <EllipsisOutlined style={{fontSize:"14px",paddingRight:"10px"}}/>
                   
                   </Dropdown>
+                  
+                </div> */}
+                <div style={{width: 24,paddingLeft:'8px'}}>
+                    <Badge count={dataset.getNotificationsByBoardId(item.id)} style={{width: 20, height: 20, padding: 0}} />
                 </div>
               </div>
             )
