@@ -19,7 +19,7 @@ function FixedDataTableTranslateDOMPosition(/*object*/ style, /*number*/ x, /*nu
   }
   if (initialRender) {
     style.left = x + 'px';
-    style.top = y + 'px';
+    style.top = y+5 + 'px';
   } else {
     if (BrowserSupportCore.hasCSSTransforms()) {
       x *= (isRTL ? -1 : 1);

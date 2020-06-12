@@ -88,9 +88,23 @@ class DataViewWrapper {
      * 根据是否折叠初始化indeMap
      */
     getIndexMap = (dataset, indexMap) => {
+      let isFristRow = false;
+      indexMap.forEach((row,i)=>{
+        if(row.rowType === RowType.HEADER){
+          if(!isFristRow){
+            isFristRow = true;
+          }else{
+            row.rowType = RowType.SECTIONGROUP;
+          }
+          
+        } 
+      })
+      indexMap.splice(2, 0, {
+        rowType:RowType.SECTIONGROUP,
+        groupKey:indexMap[1].groupKey
+      });
       // 先过滤折叠的分区
       let groups = dataset._groups.filter(group => group.isCollapsed)
-
       let indexMapData = [] 
       if (groups.length > 0 && indexMap) {
         for (let j = 0; j < indexMap.length; j++) {
@@ -112,7 +126,7 @@ class DataViewWrapper {
       else if (groups.length === 0) {
         indexMapData.push(...indexMap)
       }
-
+      // indexMapData.splice(2, 0, indexMap[1]);
       return indexMapData
     }
 

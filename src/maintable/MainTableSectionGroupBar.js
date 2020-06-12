@@ -3,6 +3,11 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { Input } from 'semantic-ui-react';
+import {
+  DownOutlined,
+  UpOutlined
+} from '@ant-design/icons'
+
 
 import cx from './vendor_upstream/stubs/cx';
 import { sumPropWidths } from './helper/widthHelper';
@@ -20,7 +25,7 @@ import './css/style/fixedDataTable.css';
  * only <FixedDataTable /> should use the component internally.
  */
 
-class MainTableAddRow extends React.Component {
+class MainTableSectionGroupBar extends React.Component {
 
   static propTypes = {
 
@@ -115,9 +120,10 @@ class MainTableAddRow extends React.Component {
   handleChange(event) {
     this.setState({newItem: event.target.value});
   }
-
-  render() /*object*/ {
-    const { offsetTop, zIndex, visible,data, ...rowProps } = this.props;
+   
+  render() {
+    debugger;
+    const { offsetTop, zIndex, visible,data,rowIndex, ...rowProps } = this.props;
 
     const className = cx({
       'fixedDataTableRowLayout/main': true
@@ -133,7 +139,7 @@ class MainTableAddRow extends React.Component {
         marginBottom: '-3px',
         border: '1px dashed gray',
       }
-      FixedDataTableTranslateDOMPosition(placeStyle, 0, offsetTop, this._initialRender, this.props.isRTL);
+      this.FixedDataTableTranslateDOMPosition(placeStyle, 0, offsetTop, this._initialRender, this.props.isRTL);
 
       dropPlace = <div style={placeStyle}></div>;
     }  
@@ -150,22 +156,17 @@ class MainTableAddRow extends React.Component {
     }
 
     const width = fixedColumnsWidth + scrollableColumnsWidth + fixedRightColumnsWidth - this.props.scrollLeft;
-    let group = data.getGroupByRowIndex(this.props.index);
-    let groupColor = group ? group.color : "rgba(0, 0, 0, 0.65)";
-    var inputStyle = {
-      marginLeft: '36px',
-      width: width-36,
-      height: this.props.height,
-      zIndex: this.props.zIndex,
-      borderRadius:'0px',
-      borderLeft:'3px solid '+groupColor
-    }
-
+     
     var style = {
       height: this.props.height,
       zIndex: (this.props.zIndex ? this.props.zIndex : 0),
       display: (this.props.visible ? 'block' : 'none'),
-     
+      borderRadius:'7px 7px 0 0',
+      minWidth:'100px',
+      maxWidth:'300px',
+      lineHeight:'35px',
+      marginTop: '5px',
+      background:'#fafafa'
     };
 
     let offset = this.props.offsetTop;
@@ -184,42 +185,30 @@ class MainTableAddRow extends React.Component {
     }
 
     FixedDataTableTranslateDOMPosition(style, 0, offset, this._initialRender, this.props.isRTL);
-
-    var scrollbarOffset = this.props.showScrollbarY ? Scrollbar.SIZE : 0;
-    
-    let scrollbarSpacer = null;
-    if (this.props.showScrollbarY) {
-      var spacerStyles = {
-        width: scrollbarOffset,
-        height: this.props.height,
-        // Since the box-sizing = border-box the border on the table is included in the width
-        // so we need to account for the left and right border
-        left: this.props.width - scrollbarOffset - 2,
-      };
-      scrollbarSpacer =
-        <div 
-          style={spacerStyles} 
-          className={cx('public/fixedDataTable/scrollbarSpacer')}
-        />;
+ 
+    let group = data.getGroupByRowIndex(this.props.index);
+    let groupColor = group ? group.color : "rgba(0, 0, 0, 0.65)";
+    let titleStyle = {
+      paddingLeft:'10px',
+      fontWeight:'bold',
+      color:groupColor
     }
-
+     
     return ( 
+          
           <div> 
-            {dropPlace}
-            <div style={style} className={className} >
-              <Input 
-                style={inputStyle} 
-                action= {{content:'添加', onClick:() => this._onNewrowButton(this.props) }} 
-                placeholder='+ 添加' 
-                onKeyPress={this._onKeyPress} 
-                value={this.state.newItem} 
-                onChange={this.handleChange} 
-              />
-              {scrollbarSpacer}
+            <div style={style} className={className}>
+              {
+                group.isCollapsed&&<UpOutlined style={titleStyle}/>
+              }
+              {
+                !group.isCollapsed&&<DownOutlined style={titleStyle}/>
+              }
+              <span style={titleStyle}>{group.name}</span>
             </div>
           </div>
           );
   }
 }
 
-export default MainTableAddRow;
+export default MainTableSectionGroupBar;

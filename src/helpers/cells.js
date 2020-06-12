@@ -19,7 +19,8 @@ import {
 import {
     CaretDownOutlined,
     DownOutlined,
-    UpOutlined
+    UpOutlined,
+    SettingFilled
 } from '@ant-design/icons';
 
 import {
@@ -306,7 +307,7 @@ class DropDownMenuHeader extends React.PureComponent {
     return (
       <Menu 
         onClick={this.hanldeRowHeaderMenuClick}
-        style={{width: 180, borderRadius: '8px', padding: '5px, 0px, 5px, 5px', pointerEvents: 'visible'}}
+        style={{width: 180, borderRadius: '8px', padding: '5px, 0px, 5px, 5px'}}
       >
         <Menu.Item 
           key={RENAME_SECTION.key}
@@ -368,15 +369,6 @@ class DropDownMenuHeader extends React.PureComponent {
     }
   }
 
-  handleVisibleChange = (visible) => {
-    if (visible) {
-      this.props.onCellEdit(this.props.rowIndex, this.props.columnKey)
-    }
-    else {
-      this.props.onCellEditEnd(this.props.rowIndex, this.props.columnKey)
-    }
-  }
-
   render() {
     
     const { groupColor, headerBtnColor, headerBtnBorderColor, headerBtnType, 
@@ -388,17 +380,15 @@ class DropDownMenuHeader extends React.PureComponent {
 
     return (
       <div 
-        // onMouseEnter={this.changeHeaderMenuBtnColor.bind(this, COLOR.WHITE, COLOR.DEFAULT, ANTD_BTN_TYPE.DEFAULT)}
-        // onMouseLeave={this.changeHeaderMenuBtnColor.bind(this, groupColor, groupColor, ANTD_BTN_TYPE.PRIMARY)}
-        // onWheel={this.changeHeaderMenuBtnColor.bind(this, groupColor, groupColor, ANTD_BTN_TYPE.PRIMARY)}
+        onMouseEnter={this.changeHeaderMenuBtnColor.bind(this, COLOR.WHITE, COLOR.DEFAULT, ANTD_BTN_TYPE.DEFAULT)}
+        onMouseLeave={this.changeHeaderMenuBtnColor.bind(this, groupColor, groupColor, ANTD_BTN_TYPE.PRIMARY)}
+        onWheel={this.changeHeaderMenuBtnColor.bind(this, groupColor, groupColor, ANTD_BTN_TYPE.PRIMARY)}
       >
         <Dropdown 
           overlay={this.getHeaderMenu()}
           overlayClassName='menu_item_bgcolor'
-          // visible={isBtnClicked && isShowHeaderMenu}
-          trigger='click'
+          visible={isBtnClicked && isShowHeaderMenu}
           getPopupContainer={() => this.props.container}
-          onVisibleChange={this.handleVisibleChange}
         >
           <AntdButton 
             icon={<CaretDownOutlined />}
@@ -411,7 +401,7 @@ class DropDownMenuHeader extends React.PureComponent {
                     borderColor: headerBtnBorderColor,
                     visibility: isCollapsed ? VISIBILITY.HIDDEN : VISIBILITY.VISIBLE
                   }}
-            // onClick={this.handleBtnClick}
+            onClick={this.handleBtnClick}
           >
           </AntdButton>
         </Dropdown>
@@ -428,7 +418,6 @@ class DropDownMenuCell extends React.PureComponent {
     this.state = {
       isShowRowActionBtn: VISIBILITY.HIDDEN,
       isBtnClicked: false,
-      isShowDropDown: false,
       isShowSubMenu: DISPLAY.NONE,
     }
   }
@@ -499,7 +488,7 @@ class DropDownMenuCell extends React.PureComponent {
     return (
       <Menu 
         onClick={this.hanldeRowCellMenuClick}
-        style={{width: 180, borderRadius: '8px', padding: '5px, 0px, 5px, 5px', pointerEvents: 'visible'}}
+        style={{width: 180, borderRadius: '8px', padding: '5px, 0px, 5px, 5px'}}
       >
         <Menu.Item 
           key={ADD_SUB_TABLE.key}
@@ -550,22 +539,10 @@ class DropDownMenuCell extends React.PureComponent {
     )
   }
 
-  handleVisibleChange = (visible) => {
-    this.setState({
-      isShowDropDown: visible
-    })
-    if (visible) {
-      this.props.onCellEdit(this.props.rowIndex, this.props.columnKey)
-    }
-    else {
-      this.props.onCellEditEnd(this.props.rowIndex, this.props.columnKey)
-    }
-  }
-
   render() {
     const { data, rowIndex } = this.props
     
-    const { isBtnClicked, isShowRowActionBtn, isShowDropDown } = this.state
+    const { isBtnClicked, isShowRowActionBtn } = this.state
 
     // 子阶菜单暂时不返回
     let rowIndexStr = String(rowIndex)
@@ -575,22 +552,20 @@ class DropDownMenuCell extends React.PureComponent {
       <div 
         onMouseEnter={this.showRowActionBtn}
         onMouseLeave={this.hiddenRowActionBtn}
-        // onWheel={this.hiddenRowActionBtn}
+        onWheel={this.hiddenRowActionBtn}
       >
         <Dropdown 
           overlay={this.getRowMenu(data, rowIndex)} 
           overlayClassName='menu_item_bgcolor'
-          trigger='click'
-          // visible={isBtnClicked ? (isShowRowActionBtn === VISIBILITY.HIDDEN ? false : true) : false}
+          visible={isBtnClicked ? (isShowRowActionBtn === VISIBILITY.HIDDEN ? false : true) : false}
           getPopupContainer={() => this.props.container}
-          onVisibleChange={this.handleVisibleChange}
         >
           <AntdButton
             icon={<CaretDownOutlined />} 
             shape='circle'
             size='small'
-            style={{margin: '8px 6px', visibility: isShowDropDown ? VISIBILITY.VISIBLE : isShowRowActionBtn}}
-            // onClick={this.showRowActionMenu}
+            style={{margin: '8px 6px', visibility: isShowRowActionBtn}}
+            onClick={this.showRowActionMenu}
           />
         </Dropdown>
       </div>
@@ -717,6 +692,22 @@ class CheckBoxHeader extends React.PureComponent {
 }
 
 
+class SettingBarHeader extends React.PureComponent {
+  
+  render() {
+    const { data, rowIndex } = this.props;
+    const style={
+      width: '36px',
+      lineHeight: '40px',
+      textalign: 'center'
+    }
+
+    return (
+      <SettingFilled style={style}/>
+    );
+  }
+}
+
 export { 
   CollapseCell, 
   ColoredTextCell, 
@@ -729,5 +720,6 @@ export {
   DropDownMenuHeader, 
   DropDownMenuCell,
   CheckBoxCell,
-  CheckBoxHeader 
+  CheckBoxHeader,
+  SettingBarHeader
 };

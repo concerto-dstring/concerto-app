@@ -10,7 +10,7 @@ import PropTypes from 'prop-types';
 import { Button } from 'semantic-ui-react';
 import { Table, Cell, Column } from './FixedDataTableRoot';
 import { ColumnType,  RowType, ColumnKey } from './data/MainTableType';
-import { TextCell, DropDownMenuHeader, DropDownMenuCell, CheckBoxCell, CheckBoxHeader } from '../helpers/cells';
+import { TextCell, DropDownMenuHeader, DropDownMenuCell, CheckBoxCell, CheckBoxHeader, SettingBarHeader } from '../helpers/cells';
 import { RowHeaderCell } from '../helpers/RowHeaderCell';
 import { ColumnHeaderCell } from '../helpers/ColumnHeaderCell';
 import ReNameModal from '../helpers/section/modal/ReNameModal'
@@ -159,6 +159,21 @@ const DataCheckBoxCell = function(props) {
         )}
     </DataVersionContext.Consumer>
   )
+}
+
+const DataSettingBarHeader = function(props) {
+    this.props = props;
+    return (
+      <DataVersionContext.Consumer>
+          {({data, version}) => (
+              <SettingBarHeader
+                  data={data}
+                  dataVersion={version}
+                  {...this.props}
+              />
+          )}
+      </DataVersionContext.Consumer>
+    )
 }
 
 const DataCheckBoxHeader = function(props) {
@@ -375,7 +390,7 @@ class MainTable extends React.Component {
       if (column.type === ColumnType.ROWACTION) {
         rowTemplates.width = column.width;
         rowTemplates.columnKey = columnKey;
-        rowTemplates.header = DropDownHeader;
+        // rowTemplates.header = DropDownHeader;
         rowTemplates.footer = DataSummaryCell;
         rowTemplates.isResizable = false;
         rowTemplates.cell = DropDownCell;
@@ -384,7 +399,8 @@ class MainTable extends React.Component {
       else if (column.type === ColumnType.ROWSELECT) {
         rowTemplates.width = column.width;
         rowTemplates.columnKey = columnKey;
-        rowTemplates.header = DataCheckBoxHeader;
+        // rowTemplates.header = DataCheckBoxHeader;
+        rowTemplates.header = DataSettingBarHeader;
         rowTemplates.footer = DataSummaryCell;
         rowTemplates.isResizable = false;
         rowTemplates.cell = DataCheckBoxCell;
@@ -562,6 +578,7 @@ class MainTable extends React.Component {
                 <UndoMessage 
                   isShowUndoModal={this.state.isShowUndoModal}
                 />
+                <RowHeaderDrawer />
               </div>   
             </TableContext.Provider>   
         );
