@@ -543,6 +543,7 @@ class MainPage extends React.Component {
             />
           </div>
         </div>
+        <RowHeaderDrawer />
       </Spin>
     );
   }
