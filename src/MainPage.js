@@ -5,14 +5,20 @@ import MainTable from './maintable/MainTable';
 import SessionContext from './App';
 import './MainPage.less';
 import './maintable/css/style/MoveToSectionMenu.less';
-import { Layout, Input, Collapse, Button, Avatar, Dropdown, Menu, Modal, message, Spin, Badge } from 'antd';
+import { Layout, Input, Collapse, Button, Avatar, Dropdown, Menu, Modal, message, Spin ,Row, Col ,Badge} from 'antd';
+ 
 import { 
     SearchOutlined,
     LeftOutlined,
     RightOutlined,
     SettingFilled,
     ShareAltOutlined,
-    CloseOutlined
+    DoubleRightOutlined,
+    DoubleLeftOutlined,
+    CloseOutlined,
+    PlusOutlined,
+    EllipsisOutlined,
+    LogoutOutlined
    } from '@ant-design/icons';
 import logo from './logo.svg'
 import { withApollo } from 'react-apollo'
@@ -20,7 +26,7 @@ import RowHeaderDrawer from './helpers/RowHeaderDrawer';
 import { USER_MENU_SIGN_OUT, RENAME_BOARD, DELETE_BOARD } from './maintable/MainTableRowKeyAndDesc';
 import { Auth } from 'aws-amplify'
 import { DISPLAY, COLOR } from './helpers/section/header/StyleValues';
-
+import { getRandomColor } from './helpers/section/header/SectionColor';
 const { Panel } = Collapse;
 const { Header, Content, Sider } = Layout;
 
@@ -46,7 +52,10 @@ class MainPage extends React.Component {
       isShowCreateBoard: false,
       isShowReNameBoard: false,
       isLoading: false,
-      isDataChanged: false
+      isDataChanged: false,
+      mainPanelPaddingLeft:{
+        paddingLeft:'18px'
+      }
     }
 
     this.createBoardRef = createRef();
@@ -131,6 +140,13 @@ class MainPage extends React.Component {
     this.setState({
       siderWidth: !this.state.collapsed ? 0 : defaultSiderWidth,
       collapsed: !this.state.collapsed,
+      mainPanelPaddingLeft:!this.state.collapsed ?{
+        paddingLeft:"0px"
+      }
+      :
+      {
+        paddingLeft:"18px"
+      }
     });
   };
 
@@ -294,31 +310,19 @@ class MainPage extends React.Component {
   }
 
   getPanel = (menus, isBoard, name, key) => {
-    const { dataset, selectedKey } = this.state
+    const { dataset, selectedKey } = this.state;
     return (
       <Panel 
         header={<div className="body_left_sider_panel_header">
                   <div style={{textAlign: "left"}}>{name}</div>
-                  <div style={{textAlign: "right"}} onClick={this.createBoard}>+</div>
+                  <div style={{textAlign: "right"}} onClick={this.createBoard}><PlusOutlined style={{fontSize:"14px",marginRight:'13px'}}/></div>
                 </div>} 
-        showArrow={false} 
+        showArrow={true} 
         key={key}
       >
         {
-          isBoard
-          ?
-          <Input
-            prefix={<SearchOutlined />}
-            placeholder="搜索工作板..."
-            style={{margin:'0 0 16px 0',borderRadius:'15px'}}
-            onChange={this.filterMenu.bind(this, isBoard)}
-          />
-          :
-          null
-        }
-        {
           menus.map(item => {
-            let style = item.id === selectedKey ? {background: '#ECECEC', fontWeight: 500} : {}
+            let style = item.id === selectedKey ? {background: '#f2f3f3', fontWeight: 500} : {}
             let path = (isBoard ? `/board/${item.id}` : '/dashboard')
             return (
               <div 
@@ -328,24 +332,26 @@ class MainPage extends React.Component {
                 onClick={this.nativeGetTableStore.bind(this, item.id, item.name, isBoard, path)}
               >
                 <div className="body_left_sider_panel_menu_item_link" style={style}>
+                
                   <Link to={path}>
-                    {item.name}
+                     <div className="item_color" style={{background:getRandomColor()}}></div>
+                     <span className="item_title">{item.name}</span> 
                   </Link>
+                 
                 </div>
-                <div className="body_left_sider_panel_menu_item">
+                
+                <div className="body_left_sider_panel_menu_item" style={style}>
                   <Dropdown
                     overlay={this.getBoardItemMenus(item.id, item.name)}
                     placement='bottomLeft'
                   >
-                    <div className="body_left_sider_panel_menu_item_menu">
-                      <div className="menu_point"></div>
-                      <div className="menu_point"></div>
-                      <div className="menu_point"></div>
-                    </div>
+                    <EllipsisOutlined style={{fontSize:"14px",paddingRight:"10px"}}/>
+                  
                   </Dropdown>
-                  <div style={{width: 24, display: 'flex'}}>
+                  
+                </div>
+                <div style={{width: 24,paddingLeft:'8px'}}>
                     <Badge count={dataset.getNotificationsByBoardId(item.id)} style={{width: 20, height: 20, padding: 0}} />
-                  </div>
                 </div>
               </div>
             )
@@ -364,7 +370,7 @@ class MainPage extends React.Component {
         <Menu.Item 
           key={USER_MENU_SIGN_OUT.key}
         >
-          <span>{USER_MENU_SIGN_OUT.desc}</span>
+          <LogoutOutlined/><span>{USER_MENU_SIGN_OUT.desc}</span>
         </Menu.Item>
       </Menu>
     )
@@ -411,29 +417,6 @@ class MainPage extends React.Component {
     return (
       <Spin size="large" spinning={isLoading} style={{maxHeight: '100%'}}>
         <Layout>
-          <Header className="header">            
-            <div>
-              <img className="header_logo" src={logo} />
-            </div>
-            <div className="header_right">
-              <span>
-                <Dropdown
-                  overlay={this.getUserMenus()}
-                  placement='bottomCenter'
-                >
-                  <Avatar 
-                    size={28} 
-                    style={{background: dataset._currentUser.faceColor ? dataset._currentUser.faceColor : '#000', cursor: 'pointer'}}
-                  >
-                    {dataset._currentUser.fname ? dataset._currentUser.fname : ''}
-                  </Avatar>
-                </Dropdown>
-              </span>
-              <span className="header_setting">
-                <SettingFilled />
-              </span>
-            </div>
-          </Header>
           <Layout>
             <Sider 
               collapsible={true} 
@@ -445,32 +428,57 @@ class MainPage extends React.Component {
               style={{
               }}
             >
-              <Collapse accordion defaultActiveKey={['1']} style={{height:'100%'}} bordered={false}>
+              <div style={{height:'60px'}}>
+                <Row>
+                  <Col span={5}>
+                   <img className="header_logo" src="../pynbologo.png" />
+                  </Col>
+                  <Col span={4}>
+                    <h3 style={{fontWeight:'bold',lineHeight:'55px'}}>Pynbo</h3>
+                  </Col>
+                  <Col span={15}>
+                    {/* <div className="collpseBar">
+                      {
+                        collapsed ? <DoubleRightOutlined onClick={this.toggle}/> : <DoubleLeftOutlined onClick={this.toggle}/>
+                      }
+                    </div>                    */}
+                  </Col>
+                </Row>
+              </div>
+              <Input
+                prefix={<SearchOutlined />}
+                placeholder="搜索工作板..."
+                style={{margin:'10px 26px 0px 16px',borderRadius:'15px',width:'255px'}}
+                onChange={this.filterMenu.bind(this, true)}
+              />
+              <Collapse accordion defaultActiveKey={['1']} bordered={false}>
                 {
                   this.getPanel(boardMenus, true, '工作板', '1')
                 }
-                {
+                {/* {
                   this.getPanel(dashboardMenus, false, '仪表板', '2')
-                }
+                } */}
               </Collapse>
+              <div className="leftSiderFooter">
+                <Dropdown
+                  overlay={this.getUserMenus()}
+                  placement='bottomCenter'
+                >
+                  <span>
+                  <Avatar 
+                    size={35} 
+                    className="loginuser"
+                    src=""
+                    style={{background: dataset._currentUser.faceColor ? dataset._currentUser.faceColor : '#000', cursor: 'pointer'}}
+                  >
+                    {dataset._currentUser.fname ? dataset._currentUser.fname : ''}
+                  </Avatar>
+                  {dataset._currentUser.lname+dataset._currentUser.fname}
+                  </span>
+                </Dropdown>
+              </div>
             </Sider>
-            <div style={{width:'20px', height:'100%',textAlign:'center'}}>
-              <div className="collpseBarTop"></div>
-              <Button 
-                shape='circle'
-                size='small'
-                className="collpseBar"
-                onClick={this.toggle}
-                icon={React.createElement(collapsed ? RightOutlined : LeftOutlined , {
-                  className: 'trigger',
-                  style:{
-                    fontSize:'15px'
-                  }
-                })}
-              ></Button>
-              <div className="collpseBarBottom"></div>
-            </div>
-            <Layout style={{backgroundColor: '#FFFFFF'}}>
+            <Layout style={this.state.mainPanelPaddingLeft}>
               {
                 this.getBodyContent()
               }
@@ -535,6 +543,7 @@ class MainPage extends React.Component {
             />
           </div>
         </div>
+        <RowHeaderDrawer />
       </Spin>
     );
   }

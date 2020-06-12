@@ -177,7 +177,7 @@ class RowHeaderCell extends React.PureComponent {
         let group = data.getGroupByRowIndex(rowIndex);
         let groupColor = group ? group.color : "#f1f3f5"
         let cellStyle = {
-          borderLeft: '3px solid '+groupColor,
+          // borderLeft: '3px solid '+groupColor,
         }
 
         if (editing) {

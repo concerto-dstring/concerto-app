@@ -604,7 +604,12 @@ class MainTableDataStore {
         }
       }
       else {
-        newValue = value === "" ? null : value
+        if (value) {
+          newValue = value.trim() === "" ? null : value.trim()
+        }
+        else {
+          newValue = null
+        }
       }
       
       let dataId = this._rowColumnData[rowKey][columnKey]
@@ -1514,8 +1519,7 @@ class MainTableDataStore {
             const items = result.data.listThreadOnRows.items;
             let threads = this.sortDataByCreatedAt(items)
             this._rowThreadData[rowId] = threads
-            setUpdateInfo(this._rowThreadData[rowId])
-            this.dealNotReadNotifications(rowId, boardId)
+            this.dealNotReadNotifications(rowId, boardId, threads, setUpdateInfo)
           })
       }
     }
@@ -1692,7 +1696,7 @@ class MainTableDataStore {
       return notReadNotifications
     }
     
-    dealNotReadNotifications(rowId, boardId) {
+    dealNotReadNotifications(rowId, boardId, threads, setUpdateInfo) {
       let notifications = this._rowNotification[rowId]
       let notificationsSlice = []
       let boardNotReadCount = this._boardNotifications[boardId][rowId]
@@ -1714,8 +1718,11 @@ class MainTableDataStore {
       }
       this._boardNotifications[boardId][rowId] = boardNotReadCount
       this._rowNotification[rowId] = notificationsSlice
+
+      // 刷新工作板和行通知
       this._mainPageCallBack()
-      this.runCallbacks()
+      // 刷新动态数据
+      setUpdateInfo(threads)
     }
 
     createNotification(createData) {

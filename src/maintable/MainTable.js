@@ -562,7 +562,6 @@ class MainTable extends React.Component {
                 <UndoMessage 
                   isShowUndoModal={this.state.isShowUndoModal}
                 />
-                <RowHeaderDrawer />
               </div>   
             </TableContext.Provider>   
         );
@@ -572,7 +571,7 @@ class MainTable extends React.Component {
 export default Dimensions({
     getHeight: function(element) {
       // 减去上面面包屑的高度
-      return window.innerHeight - 41;
+      return window.innerHeight;
     },
     getWidth: function(element) {
       return window.innerWidth - 24;

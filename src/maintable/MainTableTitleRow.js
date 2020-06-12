@@ -11,12 +11,13 @@ import FixedDataTableTranslateDOMPosition from './FixedDataTableTranslateDOMPosi
 
 import './MainTableTitleRow.less';
 import './css/style/Board.less';
-
+import { getRandomColor } from '../helpers/section/header/SectionColor';
 import { 
     SearchOutlined,
     ShareAltOutlined,
     DownOutlined,
     EyeInvisibleOutlined,
+    DoubleRightOutlined
 } from '@ant-design/icons';
 
 /**
@@ -101,9 +102,13 @@ class MainTableTitleRow extends React.Component {
       <>
           <div className="body_content_title_row">
             <div className="body_content_title">
-              <h1>{this.props.title}</h1>
+              <h1>
+                {/* <DoubleRightOutlined style={{fontSize:'16px'}}/>&nbsp;&nbsp; */}
+                <div className="item_color" style={{background:getRandomColor()}}></div>
+                {this.props.title}
+              </h1>
             </div>
-            <div className="body_content_title_right">
+            {/* <div className="body_content_title_right">
               <div className="body_content_title_right_item">
                 <span className="body_content_title_right_label">
                   最后更新时间:&nbsp;
@@ -144,12 +149,12 @@ class MainTableTitleRow extends React.Component {
                 <span className="body_content_title_right_label">
                   <ShareAltOutlined />&nbsp;&nbsp;分享
                 </span>
-              </div>
-            </div>
+              </div> 
+            </div> */}
           </div>
-          <div className="body_content_title_desc">
+          {/* <div className="body_content_title_desc">
             相关具体的描述
-          </div>
+          </div> */}
       </>
     )
   }
@@ -205,7 +210,7 @@ render() /*object*/ {
                   >
                     <div className="main_table_btn_layout">
                       <span style={{}}>
-                        + 新增表
+                        + 工作项
                       </span>
                       <div className="main_table_add_btn_separator" />
                       <div>
@@ -245,7 +250,7 @@ render() /*object*/ {
                     }
                   </Select>
                 </div>
-                <div>
+                {/* <div>
                   <Button className="main_table_filter_btn">
                     <div className="main_table_btn_layout">
                       <img src={filterIcon} />&nbsp;
@@ -254,7 +259,7 @@ render() /*object*/ {
                 </div>
                 <div>
                   <EyeInvisibleOutlined className="main_table_eye" />
-                </div>
+                </div> */}
               </Space>
               <div className="main_table_search_input">
                 <Input
