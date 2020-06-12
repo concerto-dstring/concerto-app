@@ -209,10 +209,25 @@ class MainTableSectionGroupBar extends React.Component {
       cursor:'pointer'
     }
      
+    const showMoreBar = (e)=> {
+       this.setState({
+         style:{
+           display:'block'
+         }
+       })
+    }
+
+    const hideMoreBar = (e)=> {
+      this.setState({
+        style:{
+          display:'none'
+        }
+      })
+   }
     return ( 
           
           <div> 
-            <div style={style} className={className}>
+            <div style={style} className={className} onMouseEnter={showMoreBar} onMouseLeave={hideMoreBar}>
               {
                 isCollapsed&&<UpOutlined style={titleStyle} onClick={this.changeGroupCollapseState}/>
               }
@@ -221,11 +236,13 @@ class MainTableSectionGroupBar extends React.Component {
               }
               <span style={titleStyle}>{group.name}</span>
               {/* <EllipsisOutlined style={{paddingLeft:'30px'}}/> */}
-              <DropDownMenuHeader
-                data={data}
-                rowIndex = {this.props.index}
-                {...this.props}
-              />
+                 <DropDownMenuHeader
+                  style={this.state.style}
+                  data={data}
+                  rowIndex = {this.props.index}
+                  {...this.props}
+                />
+               
             </div>
           </div>
           

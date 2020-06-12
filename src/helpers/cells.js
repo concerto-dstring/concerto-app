@@ -397,8 +397,10 @@ class DropDownMenuHeader extends React.PureComponent {
             size='small'
             style={{
                     margin: '8px 6px', 
-                    backgroundColor: headerBtnColor, 
-                    borderColor: headerBtnBorderColor,
+                    float:'right',
+                    cursor:'pointer',
+                    // backgroundColor: headerBtnColor, 
+                    // borderColor: headerBtnBorderColor,
                     // visibility: isCollapsed ? VISIBILITY.HIDDEN : VISIBILITY.VISIBLE
                   }}
             onClick={this.handleBtnClick}
@@ -698,7 +700,7 @@ class SettingBarHeader extends React.PureComponent {
     const { data, rowIndex } = this.props;
     const style={
       width: '36px',
-      lineHeight: '40px',
+      lineHeight: '45px',
       textalign: 'center'
     }
 

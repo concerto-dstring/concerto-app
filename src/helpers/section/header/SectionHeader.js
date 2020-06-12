@@ -206,7 +206,7 @@ class SectionHeader extends PureComponent {
       <CellContainer 
         ref={this.setTargetRef} 
         onClick={this.handleClick}
-        style={{color: isSubSection ? '' : groupColor}}
+        // style={{color: isSubSection ? '' : groupColor}}
       >
         {!editing && inputValue}
         {editing && this.targetRef && (
@@ -232,7 +232,7 @@ class SectionHeader extends PureComponent {
                 }}
                 onWheel={this.hiddenSectionColorMenu}
               >
-                {dropdownMenu}
+                {/* {dropdownMenu} */}
                 <Input autoFocus value={inputValue} onChange={this.handleChange} style={inputStyle}     
                       onKeyDown={this.handleKey} />
               </div>
