@@ -5,7 +5,8 @@ import React from 'react';
 import { Input } from 'semantic-ui-react';
 import {
   DownOutlined,
-  UpOutlined
+  UpOutlined,
+  EllipsisOutlined
 } from '@ant-design/icons'
 
 
@@ -13,6 +14,7 @@ import cx from './vendor_upstream/stubs/cx';
 import { sumPropWidths } from './helper/widthHelper';
 import Scrollbar from './Scrollbar';
 import FixedDataTableTranslateDOMPosition from './FixedDataTableTranslateDOMPosition';
+import {DropDownMenuHeader} from '../helpers/cells';
 
 import './css/layout/fixedDataTableRowLayout.css';
 import './css/style/fixedDataTableRow.css';
@@ -121,10 +123,22 @@ class MainTableSectionGroupBar extends React.Component {
     this.setState({newItem: event.target.value});
   }
    
+  changeGroupCollapseState = () => {
+    const { data, index } = this.props
+
+    let group = data.getGroupByRowIndex(index)
+    data.changeGroupCollapseState(group.groupKey)
+  }
+
   render() {
     debugger;
     const { offsetTop, zIndex, visible,data,rowIndex, ...rowProps } = this.props;
-
+    let isCollapsed;
+    if (typeof rowIndex === 'string') {
+      isCollapsed = false;
+    } else {
+      isCollapsed = data._indexMap[this.props.index].isCollapsed;
+    }
     const className = cx({
       'fixedDataTableRowLayout/main': true
     });
@@ -162,7 +176,7 @@ class MainTableSectionGroupBar extends React.Component {
       zIndex: (this.props.zIndex ? this.props.zIndex : 0),
       display: (this.props.visible ? 'block' : 'none'),
       borderRadius:'7px 7px 0 0',
-      minWidth:'100px',
+      minWidth:'150px',
       maxWidth:'300px',
       lineHeight:'35px',
       marginTop: '5px',
@@ -191,7 +205,8 @@ class MainTableSectionGroupBar extends React.Component {
     let titleStyle = {
       paddingLeft:'10px',
       fontWeight:'bold',
-      color:groupColor
+      color:groupColor,
+      cursor:'pointer'
     }
      
     return ( 
@@ -199,14 +214,21 @@ class MainTableSectionGroupBar extends React.Component {
           <div> 
             <div style={style} className={className}>
               {
-                group.isCollapsed&&<UpOutlined style={titleStyle}/>
+                isCollapsed&&<UpOutlined style={titleStyle} onClick={this.changeGroupCollapseState}/>
               }
               {
-                !group.isCollapsed&&<DownOutlined style={titleStyle}/>
+                !isCollapsed&&<DownOutlined style={titleStyle} onClick={this.changeGroupCollapseState}/>
               }
               <span style={titleStyle}>{group.name}</span>
+              {/* <EllipsisOutlined style={{paddingLeft:'30px'}}/> */}
+              <DropDownMenuHeader
+                data={data}
+                rowIndex = {this.props.index}
+                {...this.props}
+              />
             </div>
           </div>
+          
           );
   }
 }

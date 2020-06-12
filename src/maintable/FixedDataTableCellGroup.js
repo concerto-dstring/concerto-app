@@ -233,7 +233,8 @@ class FixedDataTableCellGroup extends React.Component {
 
     let group = this.props.data.getGroupByRowIndex(this.props.rowIndex)
     let columns = this.props.columns
-    if (columns && group.isCollapsed && columns.findIndex(column => column.template.name === 'DropDownHeader') < 0) {
+    //&& columns.findIndex(column => column.template.name === 'DropDownHeader') < 0
+    if (columns && group.isCollapsed ) {
       style.width = Math.floor(style.width)
       style.top = 7.2
       return (

@@ -20,7 +20,8 @@ import {
     CaretDownOutlined,
     DownOutlined,
     UpOutlined,
-    SettingFilled
+    SettingFilled,
+    EllipsisOutlined
 } from '@ant-design/icons';
 
 import {
@@ -380,30 +381,29 @@ class DropDownMenuHeader extends React.PureComponent {
 
     return (
       <div 
+        style={{display:'inline'}}
         onMouseEnter={this.changeHeaderMenuBtnColor.bind(this, COLOR.WHITE, COLOR.DEFAULT, ANTD_BTN_TYPE.DEFAULT)}
         onMouseLeave={this.changeHeaderMenuBtnColor.bind(this, groupColor, groupColor, ANTD_BTN_TYPE.PRIMARY)}
         onWheel={this.changeHeaderMenuBtnColor.bind(this, groupColor, groupColor, ANTD_BTN_TYPE.PRIMARY)}
       >
         <Dropdown 
+          
           overlay={this.getHeaderMenu()}
-          overlayClassName='menu_item_bgcolor'
-          visible={isBtnClicked && isShowHeaderMenu}
-          getPopupContainer={() => this.props.container}
+          // overlayClassName='menu_item_bgcolor'
+          // visible={isBtnClicked && isShowHeaderMenu}
+          // getPopupContainer={() => this.props.container}
         >
-          <AntdButton 
-            icon={<CaretDownOutlined />}
-            type={headerBtnType}
-            shape="circle"
+          <EllipsisOutlined 
             size='small'
             style={{
                     margin: '8px 6px', 
                     backgroundColor: headerBtnColor, 
                     borderColor: headerBtnBorderColor,
-                    visibility: isCollapsed ? VISIBILITY.HIDDEN : VISIBILITY.VISIBLE
+                    // visibility: isCollapsed ? VISIBILITY.HIDDEN : VISIBILITY.VISIBLE
                   }}
             onClick={this.handleBtnClick}
-          >
-          </AntdButton>
+          />
+          
         </Dropdown>
       </div>
     )
@@ -556,9 +556,9 @@ class DropDownMenuCell extends React.PureComponent {
       >
         <Dropdown 
           overlay={this.getRowMenu(data, rowIndex)} 
-          overlayClassName='menu_item_bgcolor'
-          visible={isBtnClicked ? (isShowRowActionBtn === VISIBILITY.HIDDEN ? false : true) : false}
-          getPopupContainer={() => this.props.container}
+          // overlayClassName='menu_item_bgcolor'
+          // visible={isBtnClicked ? (isShowRowActionBtn === VISIBILITY.HIDDEN ? false : true) : false}
+          // getPopupContainer={() => this.props.container}
         >
           <AntdButton
             icon={<CaretDownOutlined />} 
