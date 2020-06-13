@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Menu, Button, Upload, Modal, Progress, message } from 'antd';
+import { Menu, Button, Upload, Modal, Progress, message, Spin } from 'antd';
 import {
   ROW_HEADER_UPDATE,
   ROW_HEADER_INFO_BOX,
@@ -57,7 +57,8 @@ class RowHeaderDrawer extends PureComponent {
       isShowPeopleModal: false,
       currentUser: props.tableData ? props.tableData.getCurrentUser() : {},
       updateInfo: [],
-      isBusy: false,
+      isLoading: false,
+      isDataChanged: false,
       notificationUsers: []
     }
 
@@ -65,17 +66,18 @@ class RowHeaderDrawer extends PureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
-    this.getDrawerData(nextProps)
     this.setState({
       currentUser: nextProps.tableData ? nextProps.tableData.getCurrentUser() : {},
       editorState: BraftEditor.createEditorState(null),
+      isLoading: true
     })
+    this.getDrawerData(nextProps)
   }
 
   getDrawerData(props) {
     const { tableData, rowId } = props
     
-    if (tableData) {
+    if (tableData && rowId) {
       tableData.getRowThreadData(rowId, this.setUpdateInfo)
     }
   }
@@ -83,7 +85,14 @@ class RowHeaderDrawer extends PureComponent {
   setUpdateInfo(updateInfo) {
     this.setState({
       updateInfo: updateInfo,
-      isBusy: !this.state.isBusy
+      isDataChanged: !this.state.isDataChanged,
+      isLoading: false
+    })
+  }
+
+  setLoading = () => {
+    this.setState({
+      isLoading: true
     })
   }
 
@@ -216,7 +225,7 @@ class RowHeaderDrawer extends PureComponent {
     users.push(userId)
     const userData = '@' + userName 
     this.setState({
-      editorState: ContentUtils.insertHTML(this.state.editorState, `<a href=${userUrl} target="_blank">${userData}&nbsp</a>`),
+      editorState: ContentUtils.insertHTML(this.state.editorState, `<a href=${userUrl} target="_blank">${userData} </a>`),
       notificationUsers: users
     })
   }
@@ -240,8 +249,9 @@ class RowHeaderDrawer extends PureComponent {
         message.warning('请输入内容!')
       }
       else {
+        this.setLoading()
         infoHtml = infoHtml.replace(new RegExp("<p>", "gm"), "").replace(new RegExp("</p>", "gm"), "<br>")
-        const { tableData, rowId, rowHeaderDrawerTitle } = this.props
+        const { tableData, rowId, rowHeaderDrawerTitle, groupId } = this.props
         let createData = {
           rowID: rowId,
           userID: this.state.currentUser.id,
@@ -249,9 +259,7 @@ class RowHeaderDrawer extends PureComponent {
           createdAt: new Date().toISOString()
         }
 
-        // 设置值
-        tableData.createThreadData(createData, this.setUpdateInfo)
-
+        let notifications = []
         // 通知
         let nfUsers = [] // 通知过的用户
         let currentUserName = this.state.currentUser.lname + this.state.currentUser.fname
@@ -264,13 +272,18 @@ class RowHeaderDrawer extends PureComponent {
               senderID: this.state.currentUser.id,
               receiverID: userId,
               seenflag: false,
-              createdAt: new Date().toISOString()
+              createdAt: new Date().toISOString(),
+              groupID: groupId,
+              rowID: rowId,
             }
             // 创建通知
             nfUsers.push(userId)
-            tableData.createNotification(notificationData)
+            notifications.push(notificationData)
           }
         })
+
+        // 设置值并创建通知
+        tableData.createThreadData(createData, this.setUpdateInfo, notifications)
 
         // 清除值
         this.setState({
@@ -297,10 +310,11 @@ class RowHeaderDrawer extends PureComponent {
           <RowHeaderDrawerUpdate
             key={info.id} 
             rowId={this.props.rowId}
+            groupId={this.props.groupId}
             data={this.props.tableData}
             updateInfo={info}
             currentUser={this.state.currentUser}
-            isBusy={this.state.isBusy}
+            isDataChanged={this.state.isDataChanged}
             setUpdateInfo={this.setUpdateInfo}
           />
         )
@@ -375,11 +389,13 @@ class RowHeaderDrawer extends PureComponent {
                   <Progress style={{left:300, right: 0, width: 180}} percent={this.state.filePercent} />
                 </div>
               </Modal>
-              <div className="row_header_drawer_padding">
-                {
-                  this.getRowHeaderDrawerUpdate()
-                }
-              </div>
+              <Spin style={{maxHeight: '100%'}} spinning={this.state.isLoading}>
+                <div className="row_header_drawer_padding">
+                  {
+                    this.getRowHeaderDrawerUpdate()
+                  }
+                </div>
+              </Spin>
             </div>
           </div>
         )

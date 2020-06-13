@@ -1,5 +1,5 @@
 import React, { PureComponent, createRef } from 'react'
-import { Input, Button, Spin } from 'antd'
+import { Input, Button, Spin, message } from 'antd'
 import { Auth } from 'aws-amplify'
 import ErrorMsg from './ErrorMsg'
 import './Login.less'
@@ -97,6 +97,14 @@ class Login extends PureComponent {
             passwordErrorMsg: ErrorMsg.password_error
           })
         }
+        else if (error.code === 'UserNotConfirmedException') {
+          message.warning('该用户还未验证,请先进行验证')
+          await Auth.resendSignUp(userName)
+          this.props.history.push({
+            pathname: '/register/validate',
+            state: { userName }
+          })
+        }
         else {
           console.log(error)
           this.setState({
@@ -136,51 +144,49 @@ class Login extends PureComponent {
     return (
       <div className="login_layout">
         <Spin spinning={isLoading}>
-          <div className="login_container">
-            <div className="login_header_component">
-              <span className="login_header">欢迎使用 Pynbo 拼板</span>
+          <div className="login_header_component">
+            <span className="login_header">欢迎使用 Pynbo 拼板</span>
+          </div>
+          <div className="login_body_component">
+            <div className="login_item">
+              <span className="login_label">用户名：</span>
+              <Input
+                ref={this.userNameRef}  
+                style={{borderColor: userNameBorderColor}}
+                placeholder='请输入用户名'
+                onChange={this.handleUserNameChange}
+                defaultValue={defaultUserName}
+              />
             </div>
-            <div className="login_body_component">
-              <div className="login_item">
-                <span className="login_label">用户名：</span>
-                <Input
-                  ref={this.userNameRef}  
-                  style={{borderColor: userNameBorderColor}}
-                  placeholder='请输入用户名'
-                  onChange={this.handleUserNameChange}
-                  defaultValue={defaultUserName}
-                />
-              </div>
-              <div className="login_error_item">
-                <span className="login_error_message">{userNameErrorMsg}</span>
-              </div>
-              <div className="login_item">
-                <span className="login_label">密  码：</span>
-                <Input.Password 
-                  ref={this.passwordRef}
-                  style={{borderColor: passwordBorderColor}} 
-                  placeholder='请输入密码'
-                  onChange={this.handlePasswordChange}
-                />
-              </div>
-              <div className="login_error_item">
-                <span className="login_error_message">{passwordErrorMsg}</span>
-              </div>
-              <br />
-              <div className="login_item">
-                <Button 
-                  style={{width: 360, borderRadius: 12}} 
-                  type='primary'
-                  onClick={this.loginApp}
-                >
-                  登录
-                </Button>
-              </div>
-              <br />
-              <div className="login_register_item">
-                <div className="login_link_left"><Link to="/register">注册新用户</Link></div>
-                <div className="login_link_right"><Link to="/forget">忘记密码?</Link></div>
-              </div>
+            <div className="login_error_item">
+              <span className="login_error_message">{userNameErrorMsg}</span>
+            </div>
+            <div className="login_item">
+              <span className="login_label">密  码：</span>
+              <Input.Password 
+                ref={this.passwordRef}
+                style={{borderColor: passwordBorderColor}} 
+                placeholder='请输入密码'
+                onChange={this.handlePasswordChange}
+              />
+            </div>
+            <div className="login_error_item">
+              <span className="login_error_message">{passwordErrorMsg}</span>
+            </div>
+            <br />
+            <div className="login_item">
+              <Button 
+                style={{width: 360, borderRadius: 12}} 
+                type='primary'
+                onClick={this.loginApp}
+              >
+                登录
+              </Button>
+            </div>
+            <br />
+            <div className="login_register_item">
+              <div className="login_link_left"><Link to="/register">注册新用户</Link></div>
+              <div className="login_link_right"><Link to="/forget">忘记密码?</Link></div>
             </div>
           </div>
         </Spin>

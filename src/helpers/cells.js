@@ -306,7 +306,7 @@ class DropDownMenuHeader extends React.PureComponent {
     return (
       <Menu 
         onClick={this.hanldeRowHeaderMenuClick}
-        style={{width: 180, borderRadius: '8px', padding: '5px, 0px, 5px, 5px'}}
+        style={{width: 180, borderRadius: '8px', padding: '5px, 0px, 5px, 5px', pointerEvents: 'visible'}}
       >
         <Menu.Item 
           key={RENAME_SECTION.key}
@@ -368,6 +368,15 @@ class DropDownMenuHeader extends React.PureComponent {
     }
   }
 
+  handleVisibleChange = (visible) => {
+    if (visible) {
+      this.props.onCellEdit(this.props.rowIndex, this.props.columnKey)
+    }
+    else {
+      this.props.onCellEditEnd(this.props.rowIndex, this.props.columnKey)
+    }
+  }
+
   render() {
     
     const { groupColor, headerBtnColor, headerBtnBorderColor, headerBtnType, 
@@ -379,15 +388,17 @@ class DropDownMenuHeader extends React.PureComponent {
 
     return (
       <div 
-        onMouseEnter={this.changeHeaderMenuBtnColor.bind(this, COLOR.WHITE, COLOR.DEFAULT, ANTD_BTN_TYPE.DEFAULT)}
-        onMouseLeave={this.changeHeaderMenuBtnColor.bind(this, groupColor, groupColor, ANTD_BTN_TYPE.PRIMARY)}
-        onWheel={this.changeHeaderMenuBtnColor.bind(this, groupColor, groupColor, ANTD_BTN_TYPE.PRIMARY)}
+        // onMouseEnter={this.changeHeaderMenuBtnColor.bind(this, COLOR.WHITE, COLOR.DEFAULT, ANTD_BTN_TYPE.DEFAULT)}
+        // onMouseLeave={this.changeHeaderMenuBtnColor.bind(this, groupColor, groupColor, ANTD_BTN_TYPE.PRIMARY)}
+        // onWheel={this.changeHeaderMenuBtnColor.bind(this, groupColor, groupColor, ANTD_BTN_TYPE.PRIMARY)}
       >
         <Dropdown 
           overlay={this.getHeaderMenu()}
           overlayClassName='menu_item_bgcolor'
-          visible={isBtnClicked && isShowHeaderMenu}
+          // visible={isBtnClicked && isShowHeaderMenu}
+          trigger='click'
           getPopupContainer={() => this.props.container}
+          onVisibleChange={this.handleVisibleChange}
         >
           <AntdButton 
             icon={<CaretDownOutlined />}
@@ -400,7 +411,7 @@ class DropDownMenuHeader extends React.PureComponent {
                     borderColor: headerBtnBorderColor,
                     visibility: isCollapsed ? VISIBILITY.HIDDEN : VISIBILITY.VISIBLE
                   }}
-            onClick={this.handleBtnClick}
+            // onClick={this.handleBtnClick}
           >
           </AntdButton>
         </Dropdown>
@@ -417,6 +428,7 @@ class DropDownMenuCell extends React.PureComponent {
     this.state = {
       isShowRowActionBtn: VISIBILITY.HIDDEN,
       isBtnClicked: false,
+      isShowDropDown: false,
       isShowSubMenu: DISPLAY.NONE,
     }
   }
@@ -487,7 +499,7 @@ class DropDownMenuCell extends React.PureComponent {
     return (
       <Menu 
         onClick={this.hanldeRowCellMenuClick}
-        style={{width: 180, borderRadius: '8px', padding: '5px, 0px, 5px, 5px'}}
+        style={{width: 180, borderRadius: '8px', padding: '5px, 0px, 5px, 5px', pointerEvents: 'visible'}}
       >
         <Menu.Item 
           key={ADD_SUB_TABLE.key}
@@ -538,10 +550,22 @@ class DropDownMenuCell extends React.PureComponent {
     )
   }
 
+  handleVisibleChange = (visible) => {
+    this.setState({
+      isShowDropDown: visible
+    })
+    if (visible) {
+      this.props.onCellEdit(this.props.rowIndex, this.props.columnKey)
+    }
+    else {
+      this.props.onCellEditEnd(this.props.rowIndex, this.props.columnKey)
+    }
+  }
+
   render() {
     const { data, rowIndex } = this.props
     
-    const { isBtnClicked, isShowRowActionBtn } = this.state
+    const { isBtnClicked, isShowRowActionBtn, isShowDropDown } = this.state
 
     // 子阶菜单暂时不返回
     let rowIndexStr = String(rowIndex)
@@ -551,20 +575,22 @@ class DropDownMenuCell extends React.PureComponent {
       <div 
         onMouseEnter={this.showRowActionBtn}
         onMouseLeave={this.hiddenRowActionBtn}
-        onWheel={this.hiddenRowActionBtn}
+        // onWheel={this.hiddenRowActionBtn}
       >
         <Dropdown 
           overlay={this.getRowMenu(data, rowIndex)} 
           overlayClassName='menu_item_bgcolor'
-          visible={isBtnClicked ? (isShowRowActionBtn === VISIBILITY.HIDDEN ? false : true) : false}
+          trigger='click'
+          // visible={isBtnClicked ? (isShowRowActionBtn === VISIBILITY.HIDDEN ? false : true) : false}
           getPopupContainer={() => this.props.container}
+          onVisibleChange={this.handleVisibleChange}
         >
           <AntdButton
             icon={<CaretDownOutlined />} 
             shape='circle'
             size='small'
-            style={{margin: '8px 6px', visibility: isShowRowActionBtn}}
-            onClick={this.showRowActionMenu}
+            style={{margin: '8px 6px', visibility: isShowDropDown ? VISIBILITY.VISIBLE : isShowRowActionBtn}}
+            // onClick={this.showRowActionMenu}
           />
         </Dropdown>
       </div>
@@ -591,50 +617,60 @@ class TooltipCell extends React.PureComponent {
 }
 
 class CheckBoxCell extends React.PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = {
+      checkbox:{
+        display:'none',
+        paddingBottom: '12px'
+      },
+      index:{
+        display:'block'
+      }
+    }
+  }
+  showCheckbox = (e) => {
+    this.setState({
+      checkbox:{
+        display:'block',
+        paddingBottom: '12px'
+      },
+      index:{
+        display:'none'
+      }
+    })
+  }
+  hideCheckbox = (e) => {
+    this.setState({
+      checkbox:{
+        display:'none',
+        paddingBottom: '12px'
+      },
+      index:{
+        display:'block'
+      }
+    })
+  }
   render() {
     const {data, rowIndex, columnKey, ...props} = this.props;
     const value = data.getObjectAt(rowIndex);
-    return (
-      <Checkbox 
-        checked={false}
-        style={{padding: '9.2px 10px'}}
-      />
-    );
-  }
+    
+    let group = data.getGroupByRowIndex(rowIndex);
+    let groupColor = group ? group.color : "#f1f3f5";
+    let css_style={
+      width:'100%',
+      textAlign:'center',
+      lineHeight:'40px',
+      borderLeft:'3px solid '+groupColor
+    }
+    return <div style={css_style} onMouseEnter={this.showCheckbox} onMouseLeave={this.hideCheckbox}>
+              <Checkbox style={this.state.checkbox} />
+              <span style={this.state.index}>{rowIndex}</span>
+           </div>;
+    }
 }
 
 class CheckBoxHeader extends React.PureComponent {
-  constructor() {
-    super()
-    this.state = {
-      tipText: ''
-    }
-  }
-
-  getBtnIcon = () => {
-    const { data, rowIndex } = this.props;
-    let isCollapsed;
-    if (typeof rowIndex === 'string') {
-      isCollapsed = false;
-    } else {
-      isCollapsed = data._indexMap[rowIndex].isCollapsed;
-    }
-    this.setState({
-      tipText: isCollapsed ? EXPAND_SECTION.desc : COLLAPSE_SECTION.desc
-    })
-    return (
-      <div>
-        {
-          isCollapsed
-          ?
-          <DownOutlined style={{fontSize: '18px'}} />
-          :
-          <UpOutlined style={{fontSize: '18px'}} />
-        }
-      </div>
-    )
-  }
-
   changeGroupCollapseState = () => {
     const { data, rowIndex } = this.props
 
@@ -643,19 +679,32 @@ class CheckBoxHeader extends React.PureComponent {
   }
 
   render() {
+
+    const { data, rowIndex } = this.props;
+    let isCollapsed;
+    if (typeof rowIndex === 'string') {
+      isCollapsed = false;
+    } else {
+      isCollapsed = data._indexMap[rowIndex].isCollapsed;
+    }
     
     // 子阶不显示展开折叠图标
-    let rowIndex = String(this.props.rowIndex)
-    if (rowIndex.indexOf('.') !== -1) return null
+    if (String(rowIndex).indexOf('.') !== -1) return null
 
     return (
       <Tooltip
         arrowPointAtCenter={true}
-        title={this.state.tipText}
+        title={isCollapsed ? EXPAND_SECTION.desc : COLLAPSE_SECTION.desc}
         mouseEnterDelay={0.8}
       >
         <AntdButton 
-          icon={this.getBtnIcon()}
+          icon={
+            isCollapsed
+            ?
+            <DownOutlined style={{fontSize: '18px'}} />
+            :
+            <UpOutlined style={{fontSize: '18px'}} />
+          }
           shape='circle'
           size='small'
           type='primary'

@@ -313,7 +313,7 @@ function reducers(state = getInitialState(), action) {
         data: action.drawerData.data,
         rowId: action.drawerData.rowId,
         rowHeaderDrawerTitle: action.drawerData.rowHeaderDrawerTitle,
-        boardId: action.drawerData.boardId,
+        groupId: action.drawerData.groupId,
       })
 
     default: {

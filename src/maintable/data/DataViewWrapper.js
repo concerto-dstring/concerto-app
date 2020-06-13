@@ -80,6 +80,9 @@ class DataViewWrapper {
         this.getRowThreadCount = this.getRowThreadCount.bind(this)
         this.updateThreadOrReplySeen = this.updateThreadOrReplySeen.bind(this)
         this.createNotification = this.createNotification.bind(this)
+        this.updateRowReadMessageStatus = this.updateRowReadMessageStatus.bind(this)
+        this.getNotificationsByRowId = this.getNotificationsByRowId.bind(this)
+        this.getCurrentBoardId = this.getCurrentBoardId.bind(this)
     }
 
     /**
@@ -260,12 +263,12 @@ class DataViewWrapper {
     addNewRow(rowIndex, newItem) {
         if (newItem !== '') {
           if (getSubLevel(rowIndex) === 0) {
-            let row = this._indexMap[rowIndex];
-            let rowKey = this._dataset.addNewRow(row.groupKey, newItem);
+            let newrow = this._indexMap[rowIndex];
+            let rowKey = this._dataset.addNewRow(newrow.groupKey, newItem);
             for (let row = this._indexMap.length; row > rowIndex; row--) {
                 this._indexMap[row] = this._indexMap[row-1]; 
             }
-            this._indexMap[rowIndex] = {rowType:RowType.ROW, groupKey:row.groupKey, rowKey:rowKey};
+            this._indexMap[rowIndex] = {rowType:RowType.ROW, groupKey:newrow.groupKey, rowKey:rowKey};
           } else {
             let rowKey = this._subRowMap[rowIndex];
             let rowData = this._subRowData[rowIndex]
@@ -678,8 +681,8 @@ class DataViewWrapper {
       return this._dataset.getRowThreadData(rowId, setUpdateInfo)
     }
 
-    createThreadData(createData, setUpdateInfo) {
-      this._dataset.createThreadData(createData, setUpdateInfo)
+    createThreadData(createData, setUpdateInfo, notifications) {
+      this._dataset.createThreadData(createData, setUpdateInfo, notifications)
     }
 
     updateThreadData(updateData, setUpdateInfo) {
@@ -704,6 +707,15 @@ class DataViewWrapper {
 
     getCurrentBoardId() {
       return this._dataset._currentBoardId
+    }
+
+    updateRowReadMessageStatus(row){
+      this._dataset.updateRowReadMessageStatus(row)
+    }
+
+    getNotificationsByRowId(rowIndex){
+      let rowId = this.getRowKey(rowIndex)
+      return this._dataset.getNotificationsByRowId(rowId)
     }
 }
 

@@ -316,7 +316,7 @@ class RowHeaderDrawerUpdate extends PureComponent {
       }
       else {
         replyHtml = replyHtml.replace(new RegExp("<p>", "gm"), "").replace(new RegExp("</p>", "gm"), "<br>")
-        const { updateInfo, data, rowId, setUpdateInfo } = this.props
+        const { updateInfo, data, rowId, groupId, setUpdateInfo } = this.props
         const { replyData, currentUser, notificationUsers } = this.state
         let createData = {
           threadID: updateInfo.id,
@@ -328,6 +328,9 @@ class RowHeaderDrawerUpdate extends PureComponent {
         // 设置值
         data.createReplyData(createData, rowId, setUpdateInfo)
 
+        // boardID
+        let boardId = data.getCurrentBoardId()
+
         // 通知
         let currentUserName = currentUser.lname + currentUser.fname
         // 直接回复
@@ -337,7 +340,11 @@ class RowHeaderDrawerUpdate extends PureComponent {
           senderID: currentUser.id,
           receiverID: updateInfo.user.id,
           seenflag: false,
-          createdAt: new Date().toISOString()
+          createdAt: new Date().toISOString(),
+          boardID: boardId,
+          groupID: groupId,
+          rowID: rowId,
+          threadOnRowID: updateInfo.id
         }
         data.createNotification(createNfData)
 
@@ -352,7 +359,11 @@ class RowHeaderDrawerUpdate extends PureComponent {
               senderID: currentUser.id,
               receiverID: userId,
               seenflag: false,
-              createdAt: new Date().toISOString()
+              createdAt: new Date().toISOString(),
+              boardID: boardId,
+              groupID: groupId,
+              rowID: rowId,
+              threadOnRowID: updateInfo.id
             }
              // 创建通知
              nfUsers.push(userId)
@@ -369,7 +380,11 @@ class RowHeaderDrawerUpdate extends PureComponent {
               senderID: currentUser.id,
               receiverID: key,
               seenflag: false,
-              createdAt: new Date().toISOString()
+              createdAt: new Date().toISOString(),
+              boardID: boardId,
+              groupID: groupId,
+              rowID: rowId,
+              threadOnRowID: updateInfo.id
             }
             // 创建通知
             data.createNotification(notificationData)
@@ -678,7 +693,7 @@ class RowHeaderDrawerUpdate extends PureComponent {
     let users = this.state.notificationUsers.slice()
     users.push(userId)
     this.setState({
-      editorState: ContentUtils.insertHTML(this.state.editorState, `<a href=${userUrl} target="_blank">${userData}&nbsp</a>`),
+      editorState: ContentUtils.insertHTML(this.state.editorState, `<a href=${userUrl} target="_blank">${userData} </a>`),
       notificationUsers: users
     })
   }

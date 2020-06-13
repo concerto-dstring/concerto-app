@@ -103,36 +103,34 @@ class RegisterValidate extends Component {
     return (
       <div className="validate_layout">
         <Spin spinning={isLoading}>
-          <div className="validate_container">
-            <div className="validate_header_component">
-              <span className="validate_header">欢迎注册 Pynbo 拼板</span>
+          <div className="validate_header_component">
+            <span className="validate_header">欢迎注册 Pynbo 拼板</span>
+          </div>
+          <div className="validate_body_component">
+            <div className="validate_item">
+              <span className="validate_label">用户名：</span>
+              <Input
+                value={userName}
+                disabled={true}
+              />
             </div>
-            <div className="validate_body_component">
-              <div className="validate_item">
-                <span className="validate_label">用户名：</span>
-                <Input
-                  value={userName}
-                  disabled={true}
-                />
-              </div>
-              <br />
-              <div className="validate_item">
-                <span className="validate_label">验证码：</span>
-                <Input
-                  ref={this.validateCodeRef}
-                  style={{borderColor: validateCodeBorderColor}} 
-                  placeholder='请输入验证码'
-                  onChange={this.handlevalidateCodeChange}
-                />
-              </div>
-              <div className="validate_error_item">
-                <span className="validate_error_message">{validateCodeErrorMsg}</span>
-              </div>
-              <br />
-              <div className="validate_register_item">
-                <div className="validate_link_left"><Button onClick={this.reSendValidateCode}>重新发送验证码</Button></div>
-                <div className="validate_link_right"><Button type='primary' onClick={this.completeRegister}>完成注册</Button></div>
-              </div>
+            <br />
+            <div className="validate_item">
+              <span className="validate_label">验证码：</span>
+              <Input
+                ref={this.validateCodeRef}
+                style={{borderColor: validateCodeBorderColor}} 
+                placeholder='请输入验证码'
+                onChange={this.handlevalidateCodeChange}
+              />
+            </div>
+            <div className="validate_error_item">
+              <span className="validate_error_message">{validateCodeErrorMsg}</span>
+            </div>
+            <br />
+            <div className="validate_register_item">
+              <div className="validate_link_left"><Button onClick={this.reSendValidateCode}>重新发送验证码</Button></div>
+              <div className="validate_link_right"><Button type='primary' onClick={this.completeRegister}>完成注册</Button></div>
             </div>
           </div>
         </Spin>

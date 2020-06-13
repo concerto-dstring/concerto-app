@@ -1,13 +1,14 @@
 import React from 'react';
 import { Overlay } from 'react-overlays';
-import { Badge } from 'antd';
+import { Badge ,Icon } from 'antd';
 import { Input } from 'semantic-ui-react';
 import Keys from '../maintable/vendor_upstream/core/Keys';
 import styled from 'styled-components';
 import getHighlightText from '../maintable/getHighlightText'
 import {
   EditOutlined,
-  UnorderedListOutlined
+  UnorderedListOutlined,
+  MessageOutlined
 } from '@ant-design/icons'
 import '../maintable/css/style/RowHeaderCell.less'
 import { connect } from 'react-redux'
@@ -36,6 +37,7 @@ class RowHeaderCell extends React.PureComponent {
           handleChange:this.handleChange,
           handleKey:this.handleKey,
           updateInfoCount: this.getRowUpdateInfoCount(props),
+          notReadNotifications: this.getNotifications(props)
         }
     }
     
@@ -46,7 +48,8 @@ class RowHeaderCell extends React.PureComponent {
             displayValue: getHighlightText(value, props.filterInputValue),
             count: props.data ? props.data.getSubRowCount(props.rowIndex) : 0,
             version: props.dataVersion,
-            updateInfoCount: this.getRowUpdateInfoCount(props)
+            updateInfoCount: this.getRowUpdateInfoCount(props),
+            notReadNotifications: this.getNotifications(props)
         });
     }
 
@@ -54,6 +57,10 @@ class RowHeaderCell extends React.PureComponent {
       // 滑窗里菜单Update Info数据
       let count = props.data.getRowThreadCount(props.rowIndex)
       return count
+    }
+
+    getNotifications = (props) => {
+      return props.data.getNotificationsByRowId(props.rowIndex)
     }
 
     setTargetRef = ref => (this.targetRef = ref);
@@ -108,12 +115,16 @@ class RowHeaderCell extends React.PureComponent {
       const { value } = this.state
       const { data, rowIndex } = this.props
       let rowId = data.getRowKey(rowIndex)
-      this.props.dealRowHeaderDrawer({rowHeaderDrawerTitle: value, data, rowId, isOpenRowHeaderDrawer: true})
+      let groupId = data.getGroupByRowIndex(rowIndex).groupKey
+      this.props.dealRowHeaderDrawer({rowHeaderDrawerTitle: value, data, rowId, groupId, isOpenRowHeaderDrawer: true})
     }
 
     getCellComponent = () => {
       const { height } = this.props;
-      const { count, displayValue, updateInfoCount } = this.state;
+      const { count, displayValue, updateInfoCount, notReadNotifications } = this.state;
+      
+      //当前行的回复是否都已读(逻辑：有未读的显示蓝色并且显示未读的个数，没有未读的显示灰色并且显示所有个数)
+      let countColor = notReadNotifications.length > 0 ? '#009AFF' : '#D3D3D3';
       return (
         <>
           <div className="row_header_cell_text_component" style={{lineHeight: `${height - 12}px`}}>
@@ -132,8 +143,23 @@ class RowHeaderCell extends React.PureComponent {
             className="row_header_cell_update"
             style={{lineHeight: `${height - 12}px`}}
           >
-            <span>
+            {/* <span>
               <Badge count={updateInfoCount} style={{backgroundColor: '#BB0000'}} />
+            </span> */}
+            <span>
+              <MessageOutlined style={{fontSize: 24, color: countColor}} />
+            </span>
+            <span>
+              <Badge count={notReadNotifications.length > 0 ? notReadNotifications.length : updateInfoCount} 
+              style={{fontSize: 10,
+                  marginLeft: -15, 
+                  width: 14, 
+                  height: 14, 
+                  padding: '0px 0px 4px',
+                  minWidth: 'unset', 
+                  lineHeight: '14px', 
+                  backgroundColor: countColor
+              }} />
             </span>
           </div>
         </>
@@ -148,9 +174,10 @@ class RowHeaderCell extends React.PureComponent {
             height: height - 5,
             borderRadius: '0px',
         }
-
+        let group = data.getGroupByRowIndex(rowIndex);
+        let groupColor = group ? group.color : "#f1f3f5"
         let cellStyle = {
-          border: '1px solid transparent'
+          // borderLeft: '3px solid '+groupColor,
         }
 
         if (editing) {

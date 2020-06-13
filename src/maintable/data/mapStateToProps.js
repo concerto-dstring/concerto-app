@@ -28,6 +28,6 @@ export const mapRowHeaderDrawerStateToProps = (state) => {
     rowId: state.rowId,
     tableData: state.data,
     rowHeaderDrawerTitle: state.rowHeaderDrawerTitle,
-    boardId: state.boardId
+    groupId: state.groupId
   }
 }

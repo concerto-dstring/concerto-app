@@ -105,7 +105,7 @@ class FixedDataTableCell extends React.Component {
 
   state = {
     isReorderingThisColumn: false,
-    menuBar: DISPLAY.BLOCK,
+    menuBar: DISPLAY.NONE,
   }
 
   shouldComponentUpdate(nextProps) {
@@ -251,7 +251,14 @@ class FixedDataTableCell extends React.Component {
       );
       
       tableColumnMenu = (
-        <TableColumnMenu columnKey={columnKey} menuBarStyle={this.state.menuBar} container={this.props.container}/>
+        <TableColumnMenu 
+          columnKey={columnKey} 
+          menuBarStyle={this.state.menuBar} 
+          container={this.props.container}
+          onCellEdit={onCellEdit}
+          onCellEditEnd={onCellEditEnd}
+          rowIndex={this.props.rowIndex}
+        />
       )
     }
 
@@ -308,7 +315,7 @@ class FixedDataTableCell extends React.Component {
     return (
       <TableContext.Consumer>
         {(table) => (
-          <div>{setTableColumn(table)}</div>
+          <div onMouseEnter={this.showMenuBar} onMouseLeave={this.hideMenuBar}>{setTableColumn(table)}</div>
           //  role === 'columnheader'&&<div onMouseEnter={this.showMenuBar} onMouseLeave={this.hideMenuBar}>{setTableColumn(table)}</div>
           //  ||
           //  role === 'gridcell'&&<div>{setTableColumn(table)}</div>

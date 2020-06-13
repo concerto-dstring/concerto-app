@@ -32,8 +32,10 @@ import {
   createRow, updateRow,
   createThreadOnRow, updateThreadOnRow, 
   createReplyOnThread, updateReplyOnThread,
-  createNotification
+  createNotification,updateNotification
 } from "../graphql/mutations"
+import { notification } from 'antd';
+import { getRandomColor } from '../helpers/section/header/SectionColor';
 
 const rankBlock = 32768
 const PEOPLE = 'PEOPLE'
@@ -45,12 +47,14 @@ class MainTableDataStore {
 
     constructor() {
         this._apolloClient = null
+        this._boardNotifications = {}
         this._sizeRows = 0;
         this._sizeSubrows = 0;
         this._columns= [];
         this._columnsComponentType = {}
         this._sizeColumns = 0;
         this._rowData = {};
+        this._rowNotification = {}
         this._rowThreadData = {}
         this._rowThreadSize = {}
         this._subRowKeys = []
@@ -76,11 +80,14 @@ class MainTableDataStore {
         this.isSubRowExpanded = this.isSubRowExpanded.bind(this);
         this.getSubRows = this.getSubRows.bind(this);
         this.toggleExpandSubRows = this.toggleExpandSubRows.bind(this);
-        this.getRowThreadData = this.getRowThreadData.bind(this)
+        this.getRowThreadData = this.getRowThreadData.bind(this);
+        this.updateRowReadMessageStatus = this.updateRowReadMessageStatus.bind(this);
+        this.getNotificationsByRowId = this.getNotificationsByRowId.bind(this);
         this._callbacks = [];
+        this._mainPageCallBack = null
         this.runCallbacks = this.runCallbacks.bind(this);
     }
-    
+
     /**
      * 创建工作板
      * @param {*} boardName 
@@ -174,8 +181,9 @@ class MainTableDataStore {
         })
     }
 
-    fetchSideMenus(apolloClient, type, currentUserId, setMenus, defaultBoardId, dealErrorBoardId) {
+    fetchSideMenus(apolloClient, type, currentUserId, setMenus, defaultBoardId, dealErrorBoardId, mainPageCallBack) {
       this._apolloClient = apolloClient
+      this._mainPageCallBack = mainPageCallBack
       switch (type) {
         case 'board':
           apolloClient
@@ -208,6 +216,11 @@ class MainTableDataStore {
                     this.fetchBackendBoardData(defaultBoardId, setMenus, null, currentUserId)
                   }
                 }
+
+                this.setBoardNotReadNotifications(this._boardMenus, currentUserId)
+              }
+              else {
+                setMenus([], true, null)
               }
             });
           break;
@@ -242,9 +255,46 @@ class MainTableDataStore {
               defaultBoard = this._boardMenus[0]
             }
             this._currentBoardId =  defaultBoard.id
+            this.setBoardNotReadNotifications(this._boardMenus, this._currentUser.id)
             this.fetchBoardData(defaultBoard.id, setMenus)
           }
         })
+    }
+
+    /**
+     * 查询每个Board未读的通知条目数
+     * @param {*} boardId 
+     */
+    getNotificationsByBoardId(boardId){
+      if (!boardId || Object.keys(this._boardNotifications).indexOf(boardId) === -1) {
+        return 0
+      }
+      let notReadCount = 0
+
+      for (let key in this._boardNotifications[boardId]) {
+        notReadCount = notReadCount + this._boardNotifications[boardId][key]
+      }
+
+      return notReadCount
+    }
+
+    /**
+     * 设置每个Board未读的通知条目数
+     * @param {*} boards 
+     */
+    setBoardNotReadNotifications(boards, currentUserId) {
+      this._boardNotifications = {}
+      boards.map(board => {
+        let groups = board.groups.items.filter(item => !item.deleteFlag)
+        this._boardNotifications[board.id] = {}
+        groups.map(group => {
+          let rows = group.rows.items.filter(item => !item.deleteFlag)
+          rows.map(row => {
+            let notifications = row.notification.items.filter(item => item.receiverID === currentUserId && !item.seenflag)
+            this._boardNotifications[board.id][row.id] = notifications.length
+          })
+        })
+      })
     }
 
     /**
@@ -276,6 +326,7 @@ class MainTableDataStore {
           this._columnsComponentType = []
           this._rowThreadData = {}
           this._rowThreadSize = {}
+          this._rowNotification = {}
 
           let columns = this.sortDataByRank(board.columns.items)
           this.setColumns(columns)
@@ -350,6 +401,10 @@ class MainTableDataStore {
               }
               this._rowData[row.id] = {}
               this._rowColumnData[row.id] = {}
+
+              if (row.notification )
+                this._rowNotification[row.id] = row.notification.items
+
               let dataItems = row.datas.items
               dataItems.map(item => {
                 if (this._columnsComponentType[item.columnID] === PEOPLE) {
@@ -553,7 +608,12 @@ class MainTableDataStore {
         }
       }
       else {
-        newValue = value === "" ? null : value
+        if (value) {
+          newValue = value.trim() === "" ? null : value.trim()
+        }
+        else {
+          newValue = null
+        }
       }
       
       let dataId = this._rowColumnData[rowKey][columnKey]
@@ -712,6 +772,8 @@ class MainTableDataStore {
         .then(result => {
           let column = result.data.createColumn
           this.createColumnBoard(column.id, name, fixed, level, columntype, columnComponentType, isSubColumn, rank, isTitle)
+          //refresh
+          this.runCallbacks();
         })
         .catch(error => {
           console.log(error)
@@ -780,7 +842,7 @@ class MainTableDataStore {
               creatorID: this._currentUser.id,
               isCollapsed: false,
               deleteFlag: false,
-              color: COLOR.DEFAULT
+              color: getRandomColor()
             }
           }
         })
@@ -794,7 +856,6 @@ class MainTableDataStore {
           else {
             this._groups.push(group)
           }
-
           this.runCallbacks();
         })
         .catch(error => {
@@ -900,6 +961,8 @@ class MainTableDataStore {
           }
           let rows = this._groups[index].rows;
           rows.push(row);
+          //refresh
+          this.runCallbacks();
         })
         .catch(error => {
           console.log(error)
@@ -989,6 +1052,8 @@ class MainTableDataStore {
               }
             }
             rows.push(row);
+            //refresh
+            this.runCallbacks();
           })
           .catch(error => {
             console.log(error)
@@ -1013,6 +1078,8 @@ class MainTableDataStore {
         .then(result => {
           let column = result.data.createColumn
           this.createColumnBoard(column.id, newItem, false, level, ColumnType.EDITBOX, columnComponentType, false, null)
+          //refresh
+          this.runCallbacks();
         })
         .catch(error => {
           console.log(error)
@@ -1038,24 +1105,31 @@ class MainTableDataStore {
         })
         .then(result => {
           let column = result.data.createColumnBoard
-          column.width = (fixed && !isTitle) ? 36 : 200
+          column.width = isTitle ? 360 : ((fixed && !isTitle) ? 36 : 200)
           column.type = columnType
           column.columnKey = columnId
           column.name = columnName
           column.columnComponentType = columnComponentType
           this._columns.push(column)
           this._columns = this.sortDataByRank(this._columns)
-          if (isSubColumn) {
-            for(let key in this._rowData) {
-              if (this._subRowKeys.indexOf(key) !== -1) {
-                this.createCellData(key, columnId, null)
-              }
-            }
+
+          // 无行数据时需要刷新
+          if (Object.keys(this._rowThreadData).length === 0) {
+            this.runCallbacks();
           }
           else {
-            for(let key in this._rowData) {
-              if (this._subRowKeys.indexOf(key) === -1) {
-                this.createCellData(key, columnId, null)
+            if (isSubColumn) {
+              for(let key in this._rowData) {
+                if (this._subRowKeys.indexOf(key) !== -1) {
+                  this.createCellData(key, columnId, null)
+                }
+              }
+            }
+            else {
+              for(let key in this._rowData) {
+                if (this._subRowKeys.indexOf(key) === -1) {
+                  this.createCellData(key, columnId, null)
+                }
               }
             }
           }
@@ -1125,6 +1199,8 @@ class MainTableDataStore {
         })
         .then(result => {
           this.removeColumnBoard(column.id, index)
+          //refresh
+          this.runCallbacks();
         })
         .catch(error => {
           console.log(error)
@@ -1425,6 +1501,7 @@ class MainTableDataStore {
     }
 
     getRowThreadData(rowId, setUpdateInfo) {
+      let boardId = this._currentBoardId
       if (Object.keys(this._rowThreadData).indexOf(rowId) !== -1) {
         setUpdateInfo(this._rowThreadData[rowId])
       }
@@ -1443,14 +1520,16 @@ class MainTableDataStore {
             fetchPolicy: "no-cache"
           })
           .then(result => {
-            let threads = this.sortDataByCreatedAt(result.data.listThreadOnRows.items)
+            const items = result.data.listThreadOnRows.items;
+            let threads = this.sortDataByCreatedAt(items)
             this._rowThreadData[rowId] = threads
-            setUpdateInfo(this._rowThreadData[rowId])
+            this.dealNotReadNotifications(rowId, boardId, threads, setUpdateInfo)
           })
       }
     }
 
-    createThreadData(createData, setUpdateInfo) {
+    createThreadData(createData, setUpdateInfo, notifications) {
+      let boardId = this._currentBoardId
       this._apolloClient
         .mutate({
           mutation: gql(createThreadOnRow),
@@ -1474,6 +1553,16 @@ class MainTableDataStore {
           
           this._rowThreadSize[createData.rowID] = size
           setUpdateInfo(threads)
+
+          if (notifications && notifications.length > 0) {
+            notifications.map(notification => {
+              notification.boardID = boardId
+              notification.threadOnRowID = threadData.id
+
+              // 创建通知
+              this.createNotification(notification)
+            })
+          }
         })
         .catch(error => {
           console.log(error)
@@ -1597,12 +1686,75 @@ class MainTableDataStore {
       }
     }
 
+    getNotificationsByRowId(rowId){
+      let notReadNotifications = []
+      let notifications = this._rowNotification[rowId]
+      if (notifications && notifications.length > 0) {
+        notifications.map(notification => {
+          if (notification.receiverID === this._currentUser.id && !notification.seenflag) {
+            notReadNotifications.push(notification)
+          }
+        })
+      }
+
+      return notReadNotifications
+    }
+    
+    dealNotReadNotifications(rowId, boardId, threads, setUpdateInfo) {
+      let notifications = this._rowNotification[rowId]
+      let notificationsSlice = []
+      let boardNotReadCount = this._boardNotifications[boardId][rowId]
+      if (notifications && notifications.length > 0) {
+        
+        for (let i = 0; i < notifications.length; i++) {
+          let notification = notifications[i]
+
+          if (notification.receiverID === this._currentUser.id && !notification.seenflag) {
+            boardNotReadCount--
+            notification.seenflag = true
+            notificationsSlice.push(notification)
+            this.updateRowReadMessageStatus(notification.id)
+          }
+          else {
+            notificationsSlice.push(notification)
+          }
+        }
+      }
+      this._boardNotifications[boardId][rowId] = boardNotReadCount
+      this._rowNotification[rowId] = notificationsSlice
+
+      // 刷新工作板和行通知
+      this._mainPageCallBack()
+      // 刷新动态数据
+      setUpdateInfo(threads)
+    }
+
     createNotification(createData) {
       this._apolloClient
         .mutate({
           mutation: gql(createNotification),
           variables: {
             input: createData
+          }
+        })
+        .then(result => {
+          
+        })
+        .catch(error => {
+          console.log(error)
+        })
+    }
+
+    //修改行对象的评论是否已读
+    updateRowReadMessageStatus(id) {
+      this._apolloClient
+        .mutate({
+          mutation: gql(updateNotification),
+          variables: {
+            input: {
+              id: id,
+              seenflag: true
+            }
           }
         })
         .then(result => {
