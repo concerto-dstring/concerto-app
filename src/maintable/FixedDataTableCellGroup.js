@@ -185,22 +185,22 @@ class FixedDataTableCellGroup extends React.Component {
    * down the FixedDataTable hugely in DEV mode. You can enable them back for
    * development, but please don't commit this component with enabled propTypes.
    */
-  static propTypes_DISABLED_FOR_PERFORMANCE = {
-    isScrolling: PropTypes.bool,
-    /**
-     * Height of the row.
-     */
-    height: PropTypes.number.isRequired,
+  // static propTypes_DISABLED_FOR_PERFORMANCE = {
+  //   isScrolling: PropTypes.bool,
+  //   /**
+  //    * Height of the row.
+  //    */
+  //   height: PropTypes.number.isRequired,
 
-    offsetLeft: PropTypes.number,
+  //   offsetLeft: PropTypes.number,
 
-    left: PropTypes.number,
-    /**
-     * Z-index on which the row will be displayed. Used e.g. for keeping
-     * header and footer in front of other rows.
-     */
-    zIndex: PropTypes.number.isRequired,
-  }
+  //   left: PropTypes.number,
+  //   /**
+  //    * Z-index on which the row will be displayed. Used e.g. for keeping
+  //    * header and footer in front of other rows.
+  //    */
+  //   zIndex: PropTypes.number.isRequired,
+  // }
 
   shouldComponentUpdate(/*object*/ nextProps) /*boolean*/ {
     return (

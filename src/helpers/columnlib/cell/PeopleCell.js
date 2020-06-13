@@ -9,8 +9,6 @@ import {
 import 'moment/locale/zh-cn'
 import {Cell} from '../../../maintable/FixedDataTableRoot'
 import './PeopleCell.less'
-import FixedDataTableTranslateDOMPosition from '../../../maintable/FixedDataTableTranslateDOMPosition';
-import { getNodeText } from '@testing-library/react'
 
 class PeopleCell extends React.PureComponent {
   constructor(props) {
@@ -50,9 +48,11 @@ class PeopleCell extends React.PureComponent {
   render() {
     const someusers = this.state.selectedUsers || []
 
-    if (someusers instanceof Array === false) return null
+    if (someusers instanceof Array === false) {
+      return null;
+    }
 
-    const {Search} = Input
+    const {Search} = Input;
     const {
       data,
       rowIndex,
@@ -63,7 +63,7 @@ class PeopleCell extends React.PureComponent {
       handleChange,
       handleKey,
       ...props
-    } = this.props
+    } = this.props;
 
     const dismiss = (e) => {
       handleChange(this.state.selectedUsers, false);
@@ -79,7 +79,7 @@ class PeopleCell extends React.PureComponent {
             this.setState({
               allPeoples: allPeoples,
             })
-            break
+            break;
           }
         }
       }

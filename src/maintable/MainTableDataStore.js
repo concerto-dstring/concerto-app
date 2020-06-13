@@ -521,6 +521,10 @@ class MainTableDataStore {
         return this._rowData[rowKey];
     }
 
+    getColumn(columnKey) {
+      return this._columns.find(column => column.columnKey === columnKey)
+    }
+
     getRowData() {
       return this._rowData
     }

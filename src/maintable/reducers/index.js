@@ -96,6 +96,7 @@ function getInitialState() {
     scrollY: 0,
     scrolling: false,
     sortColumn: null,  // +/- ascending/descending 
+    heightAdjustment: 0,
     /*
      * Internal state only used by this file
      * NOTE (jordan) internal state is altered in place
@@ -164,6 +165,9 @@ function reducers(state = getInitialState(), action) {
       return newState;
     }
     case ActionTypes.SCROLL_END: {
+      if (state.isCellEditing) {
+        return state;
+      }
       const newState = Object.assign({}, state, {
         scrolling: false,
       });
@@ -173,6 +177,15 @@ function reducers(state = getInitialState(), action) {
         lastIndex: state.lastIndex,
       };
       return computeRenderedRows(newState, previousScrollAnchor);
+    }
+    case ActionTypes.HEIGHT_INCREASE: {
+      let {increase} = action;
+      let {scrollY} = state;
+      const newState = Object.assign({}, state, {
+        heightAdjustment: increase,
+      });
+      const scrollAnchor = scrollTo(newState, scrollY);
+      return computeRenderedRows(newState, scrollAnchor);
     }
     case ActionTypes.SCROLL_TO_Y: {
       let { scrollY } = action;

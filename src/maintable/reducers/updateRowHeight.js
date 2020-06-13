@@ -23,10 +23,15 @@
  * @return {number} The new row height
  */
 export default function updateRowHeight(state, rowIdx) {
-  const { storedHeights, rowOffsetIntervalTree, rowSettings } = state;
-  const { rowHeightGetter, subRowTotalHeightGetter } = rowSettings;
+  const { storedHeights, rowOffsetIntervalTree, rowSettings, heightAdjustment } = state;
+  const { rowHeightGetter, subRowTotalHeightGetter, rowsCount } = rowSettings;
 
-  const newHeight = rowHeightGetter(rowIdx) + subRowTotalHeightGetter(rowIdx);
+  let newHeight = rowHeightGetter(rowIdx) + subRowTotalHeightGetter(rowIdx);
+
+  if (rowIdx === rowsCount - 1) {
+    newHeight += heightAdjustment;
+  }
+
   const oldHeight = storedHeights[rowIdx];
   if (newHeight !== oldHeight) {
     rowOffsetIntervalTree.set(rowIdx, newHeight);
