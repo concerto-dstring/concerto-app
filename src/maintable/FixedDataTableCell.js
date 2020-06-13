@@ -13,7 +13,7 @@
 import FixedDataTableCellDefault from './FixedDataTableCellDefault';
 import FixedDataTableColumnReorderHandle from './FixedDataTableColumnReorderHandle';
 import React from 'react';
-import PropTypes from 'prop-types';
+//import PropTypes from 'prop-types';
 import cx from './vendor_upstream/stubs/cx';
 import joinClasses from './vendor_upstream/core/joinClasses';
 import shallowEqual from './vendor_upstream/core/shallowEqual';
@@ -289,7 +289,6 @@ class FixedDataTableCell extends React.Component {
       );
     } 
 
-    
     const role = isHeaderOrFooter ? 'columnheader' : 'gridcell';
 
     const setTableColumn = (table)=>{
