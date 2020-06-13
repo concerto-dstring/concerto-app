@@ -216,8 +216,6 @@ class MainTableDataStore {
                     this.fetchBackendBoardData(defaultBoardId, setMenus, null, currentUserId)
                   }
                 }
-
-                this.setBoardNotReadNotifications(this._boardMenus, currentUserId)
               }
               else {
                 setMenus([], true, null)
@@ -255,7 +253,6 @@ class MainTableDataStore {
               defaultBoard = this._boardMenus[0]
             }
             this._currentBoardId =  defaultBoard.id
-            this.setBoardNotReadNotifications(this._boardMenus, this._currentUser.id)
             this.fetchBoardData(defaultBoard.id, setMenus)
           }
         })
@@ -279,22 +276,22 @@ class MainTableDataStore {
     }
 
     /**
-     * 设置每个Board未读的通知条目数
+     * 设置the current Board未读的通知条目数
      * @param {*} boards 
      */
-    setBoardNotReadNotifications(boards, currentUserId) {
-      this._boardNotifications = {}
-      boards.map(board => {
+    setBoardNotReadNotifications(board, currentUserId) {
         let groups = board.groups.items.filter(item => !item.deleteFlag)
         this._boardNotifications[board.id] = {}
         groups.map(group => {
-          let rows = group.rows.items.filter(item => !item.deleteFlag)
-          rows.map(row => {
-            let notifications = row.notification.items.filter(item => item.receiverID === currentUserId && !item.seenflag)
-            this._boardNotifications[board.id][row.id] = notifications.length
-          })
+          if (group.rows.items) {
+            let rows = group.rows.items.filter(item => !item.deleteFlag)
+            rows.map(row => {
+              let notifications = row.notification.items.filter(item => item.receiverID === currentUserId && !item.seenflag)
+              this._boardNotifications[board.id][row.id] = notifications.length
+            })
+          }
         })
-      })
+
     }
 
     /**
@@ -303,6 +300,7 @@ class MainTableDataStore {
     fetchBackendBoardData(boardId, setMenus, setLoading, currentUserId){
       this._currentBoardId = boardId
       this.getAllUsers(boardId, setMenus, setLoading, currentUserId)
+      this.fetchBoardData(boardId, setMenus, setLoading)
       // return ret;
     }
 
@@ -344,6 +342,7 @@ class MainTableDataStore {
           else {
             setLoading(false)
           }
+          this.setBoardNotReadNotifications(board, this._currentUser.id)
         })
         .catch(error => {
           console.log(error)
@@ -514,13 +513,16 @@ class MainTableDataStore {
     }
 
     getAllUsers(boardId, setMenus, setLoading, currentUserId) {
+      // TODO: for user signup, we should use the subscribe@graphql
+      if (this._teamUsers.length != 0)
+        return
       this._apolloClient
         .query({
           query: gql(listUsers),
           variables: {
             limit: 10000,
           },
-          fetchPolicy: "no-cache"
+          fetchPolicy: "no-cache"// "cache-and-network"
         })
         .then(result => {
           let teamUsers = result.data.listUsers.items
@@ -541,8 +543,6 @@ class MainTableDataStore {
               this._cacheUsers[user.id] = user
             }
           })
-
-          this.fetchBoardData(boardId, setMenus, setLoading)
         });
     }
 
