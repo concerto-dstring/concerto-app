@@ -421,8 +421,9 @@ class MainTableDataStore {
               this._rowData[boardId][row.id] = {}
               this._rowColumnData[boardId][row.id] = {}
               
-              if (row.notification )
+              if (row.notification && row.notification.items.length) {
                 this._rowNotification[boardId][row.id] = row.notification.items
+              }
 
               let dataItems = row.datas.items
               dataItems.map(item => {
@@ -1612,6 +1613,10 @@ class MainTableDataStore {
         .catch(error => {
           console.log(error)
         })
+    }
+
+    getRowThreadSize(rowId){
+      return this._rowThreadSize[this._currentBoardId][rowId]
     }
 
     createReplyData(createData, rowId, setUpdateInfo) {

@@ -627,7 +627,7 @@ class DataViewWrapper {
       let dateDiff
       let datePercent = '0%'
 
-      if (rows && Object.keys(this._dataset._rowData).length > 0) {
+      if (rows && Object.keys(this._dataset.getRowData()).length > 0) {
         rows.map(rowKey => {
           let dateValue = this.getObjectAt(rowIndex) ? this.getObjectAt(rowIndex)[columnKey] : null
           let minDate
@@ -674,7 +674,7 @@ class DataViewWrapper {
 
     getRowThreadCount(rowIndex) {
       let rowId = this.getRowKey(rowIndex)
-      return this._dataset._rowThreadSize[rowId] ? this._dataset._rowThreadSize[rowId] : 0
+      return this._dataset.getRowThreadSize(rowId) ? this._dataset.getRowThreadSize(rowId) : 0
     }
 
     getRowThreadData(rowId, setUpdateInfo) {
