@@ -11,6 +11,7 @@ export const RowType =
     SUBROW: "SUBROW",
     SUBADDROW: "SUBADDROW",
     SUBFOOTER: "SUBFOOTER",
+    SECTIONGROUP: "SECTIONGROUP",
 }
 
 export const ColumnType = {

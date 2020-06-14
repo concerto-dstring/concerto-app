@@ -1,40 +1,25 @@
 const sectionColors = [
   {
-    color: '#4682B4'
+    color: '#FFEAB6'
   },
   {
-    color: '#CD5C5C'
+    color: '#9BC6FF'
   },
   {
-    color: '#79CDCD'
+    color: '#CEB0FF'
   },
   {
-    color: '#90EE90'
+    color: '#D1F7C4'
   },
   {
-    color: '#EE7AE9'
+    color: '#E8B4FB'
   },
   {
-    color: '#FFD700'
+    color: '#5DA823'
   },
   {
-    color: '#A52A2A'
-  },
-  {
-    color: '#F4A460'
-  },
-  {
-    color: '#FF6A6A'
-  },
-  {
-    color: '#BEBEBE'
-  },
-  {
-    color: '#54FF9F'
-  },
-  {
-    color: '#A020F0'
-  },
+    color: '#009AC5'
+  }
 ]
 
 /**

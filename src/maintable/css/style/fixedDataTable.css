@@ -56,3 +56,8 @@
 .public_fixedDataTable_horizontalScrollbar .public_Scrollbar_mainHorizontal {
   background-color: #fff;
 }
+.ui.input>input{
+  border:none;
+  border-radius:0px;
+  border-bottom:1px solid #eaebec;
+}
