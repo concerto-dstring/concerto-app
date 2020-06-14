@@ -609,7 +609,10 @@ class MainTableDataStore {
       }
       else {
         if (value) {
-          newValue = value.trim() === "" ? null : value.trim()
+          if (value instanceof String)
+             newValue = value.trim() === "" ? null : value.trim()
+          else
+            newValue = value
         }
         else {
           newValue = null
@@ -633,6 +636,8 @@ class MainTableDataStore {
           variables: {
             input: {
               id: dataId,
+              columnID: columnKey,
+              rowID: rowKey,
               value: value
             }
           },
@@ -641,6 +646,8 @@ class MainTableDataStore {
             updateData: {
               id: dataId,
               __typename: "Data",
+              columnID: columnKey,
+              rowID: rowKey,
               value: value
             }
           }
