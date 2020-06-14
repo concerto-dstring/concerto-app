@@ -490,7 +490,7 @@ class DropDownMenuCell extends React.PureComponent {
     return (
       <Menu 
         onClick={this.hanldeRowCellMenuClick}
-        style={{width: 180, borderRadius: '8px', padding: '5px, 0px, 5px, 5px'}}
+        style={{width: 180, borderRadius: '8px', padding: '5px, 0px, 5px, 5px', pointerEvents: 'visible'}}
       >
         <Menu.Item 
           key={ADD_SUB_TABLE.key}
@@ -561,7 +561,7 @@ class DropDownMenuCell extends React.PureComponent {
           overlay={this.getRowMenu(data, rowIndex)} 
           // overlayClassName='menu_item_bgcolor'
           // visible={isBtnClicked ? (isShowRowActionBtn === VISIBILITY.HIDDEN ? false : true) : false}
-          // getPopupContainer={() => this.props.container}
+          getPopupContainer={() => this.props.container}
         >
           <AntdButton
             icon={<CaretDownOutlined />} 
