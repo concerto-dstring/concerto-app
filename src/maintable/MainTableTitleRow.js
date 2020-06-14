@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { Layout, Input, Avatar, Space, Select} from 'antd';
 import { Button } from 'semantic-ui-react';
-import { getPeople } from '../helpers/section/modal/PeopleName';
 import filterIcon from './helper/filterIcon.svg';
 
 import FixedDataTableTranslateDOMPosition from './FixedDataTableTranslateDOMPosition';

@@ -1152,7 +1152,14 @@ class FixedDataTable extends React.Component {
     };
   }
 
-  _onCellEdit = (rowIndex, columnKey) => {
+  _onCellEdit = (rowIndex, columnKey, popupHeight = 0) => {
+    //add additional height
+    if (popupHeight > 0) {
+      const newHeight = this.props.rowOffsets[rowIndex] + 50 + popupHeight;
+      if (newHeight > this._contentHeight) {
+          this.props.displayActions.adjustHeight(newHeight - this._contentHeight);
+      }
+    }
     this.props.cellActions.startCellEdit({rowIndex, columnKey});
   }
 
@@ -1160,6 +1167,7 @@ class FixedDataTable extends React.Component {
     if (this.props.CellEditingData && this.props.CellEditingData.rowIndex === rowIndex 
       && this.props.CellEditingData.columnKey === columnKey) {
       this.props.cellActions.endCellEdit();
+      this.props.displayActions.adjustHeight(0);
     }
   }
 
@@ -1634,6 +1642,7 @@ class HorizontalScrollbar extends React.PureComponent {
       height: Scrollbar.SIZE,
       width: size,
     };
+
     const innerContainerStyle = {
       height: Scrollbar.SIZE,
       overflow: 'hidden',
