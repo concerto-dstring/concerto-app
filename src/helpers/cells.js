@@ -552,6 +552,7 @@ class DropDownMenuCell extends React.PureComponent {
 
     return (
       <div 
+        style={{background:'#f2f3f3'}}
         onMouseEnter={this.showRowActionBtn}
         onMouseLeave={this.hiddenRowActionBtn}
         onWheel={this.hiddenRowActionBtn}

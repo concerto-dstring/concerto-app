@@ -54,7 +54,7 @@ class MainPage extends React.Component {
       isLoading: false,
       isDataChanged: false,
       mainPanelPaddingLeft:{
-        paddingLeft:'18px'
+        // paddingLeft:'18px'
       }
     }
 

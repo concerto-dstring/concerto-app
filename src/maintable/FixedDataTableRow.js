@@ -561,7 +561,6 @@ class FixedDataTableRow extends React.Component {
   }
 
   render() /*object*/ {
-    debugger;
     const { offsetTop, scrollTop, zIndex, visible, type, ...rowProps } = this.props;
     const isMovingRow = this.props.isRowReordering && this.props.rowReorderingData 
                         && this.props.rowReorderingData.oldRowIndex === rowProps.index;

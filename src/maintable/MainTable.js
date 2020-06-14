@@ -391,6 +391,7 @@ class MainTable extends React.Component {
         rowTemplates.width = column.width;
         rowTemplates.columnKey = columnKey;
         // rowTemplates.header = DropDownHeader;
+        rowTemplates.header = <div style={{background:'#f2f3f3',height:'100%',width:'100%'}}></div>;
         rowTemplates.footer = DataSummaryCell;
         rowTemplates.isResizable = false;
         rowTemplates.cell = DropDownCell;
@@ -591,6 +592,6 @@ export default Dimensions({
       return window.innerHeight;
     },
     getWidth: function(element) {
-      return window.innerWidth - 24;
+      return window.innerWidth - 3;
     }
   })(MainTable);

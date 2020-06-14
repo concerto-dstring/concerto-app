@@ -93,7 +93,7 @@ class MainTableSectionGroupBar extends React.Component {
      */
     attributes: PropTypes.object,
   };
-
+  
   componentWillMount() {
     this._initialRender = true;
     this._onKeyPress = this._onKeyPress.bind(this);
@@ -131,7 +131,6 @@ class MainTableSectionGroupBar extends React.Component {
   }
 
   render() {
-    debugger;
     const { offsetTop, zIndex, visible,data,rowIndex, ...rowProps } = this.props;
     let isCollapsed;
     if (typeof rowIndex === 'string') {
@@ -175,14 +174,19 @@ class MainTableSectionGroupBar extends React.Component {
       height: this.props.height,
       zIndex: (this.props.zIndex ? this.props.zIndex : 0),
       display: (this.props.visible ? 'block' : 'none'),
-      borderRadius:'7px 7px 0 0',
-      minWidth:'150px',
-      maxWidth:'300px',
-      lineHeight:'35px',
       marginTop: '5px',
-      background:'#fafafa'
+      background:'#f2f3f3'
+     
     };
-
+    var contextStyle = {
+      minWidth:'150px',
+      maxWidth:'500px',
+      width:'auto',
+      lineHeight:'35px',
+      background:'#fafafa',
+      display:'inline-block',
+      borderRadius:'7px 7px 0 0',
+    }
     let offset = this.props.offsetTop;
     if (this.props.isRowReordering && this.props.rowReorderingData) {
       if (this.props.rowReorderingData.newRowIndex < this.props.rowReorderingData.oldRowIndex) {
@@ -212,7 +216,7 @@ class MainTableSectionGroupBar extends React.Component {
     const showMoreBar = (e)=> {
        this.setState({
          style:{
-           display:'block'
+           display:'inline-block'
          }
        })
     }
@@ -224,28 +228,28 @@ class MainTableSectionGroupBar extends React.Component {
         }
       })
    }
+   if(!group){
+     return '';
+   }
     return ( 
-          
-          <div> 
-            <div style={style} className={className} onMouseEnter={showMoreBar} onMouseLeave={hideMoreBar}>
-              {
-                isCollapsed&&<UpOutlined style={titleStyle} onClick={this.changeGroupCollapseState}/>
-              }
-              {
-                !isCollapsed&&<DownOutlined style={titleStyle} onClick={this.changeGroupCollapseState}/>
-              }
-              <span style={titleStyle}>{group.name}</span>
-              {/* <EllipsisOutlined style={{paddingLeft:'30px'}}/> */}
-                 <DropDownMenuHeader
-                  style={this.state.style}
+            <div style={style} className={className} onMouseEnter={showMoreBar} onMouseLeave={hideMoreBar} >
+              <div style={contextStyle}>
+                {
+                  isCollapsed&&<UpOutlined style={titleStyle} onClick={this.changeGroupCollapseState}/>
+                }
+                {
+                  !isCollapsed&&<DownOutlined style={titleStyle} onClick={this.changeGroupCollapseState}/>
+                }
+                <span style={titleStyle}>{group.name}</span>
+              </div>
+              <div style={this.state.style}>
+                <DropDownMenuHeader
                   data={data}
                   rowIndex = {this.props.index}
                   {...this.props}
                 />
-               
+              </div>
             </div>
-          </div>
-          
           );
   }
 }

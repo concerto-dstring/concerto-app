@@ -102,7 +102,7 @@ class DataViewWrapper {
       })
       indexMap.splice(2, 0, {
         rowType:RowType.SECTIONGROUP,
-        groupKey:indexMap[1].groupKey
+        groupKey:indexMap[1]?indexMap[1].groupKey:''
       });
       // 先过滤折叠的分区
       let groups = dataset._groups.filter(group => group.isCollapsed)

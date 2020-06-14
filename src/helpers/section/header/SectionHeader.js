@@ -205,10 +205,10 @@ class SectionHeader extends PureComponent {
     return (
       <CellContainer 
         ref={this.setTargetRef} 
-        onClick={this.handleClick}
+        // onClick={this.handleClick}
         // style={{color: isSubSection ? '' : groupColor}}
       >
-        {!editing && inputValue}
+        {!editing && "名称"}
         {editing && this.targetRef && (
           <Overlay
             show
