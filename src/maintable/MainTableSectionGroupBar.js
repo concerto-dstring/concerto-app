@@ -152,7 +152,7 @@ class MainTableSectionGroupBar extends React.Component {
         marginBottom: '-3px',
         border: '1px dashed gray',
       }
-      this.FixedDataTableTranslateDOMPosition(placeStyle, 0, offsetTop, this._initialRender, this.props.isRTL);
+      FixedDataTableTranslateDOMPosition(placeStyle, 0, offsetTop, this._initialRender, this.props.isRTL);
 
       dropPlace = <div style={placeStyle}></div>;
     }  
