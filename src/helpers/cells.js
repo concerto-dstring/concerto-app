@@ -308,7 +308,7 @@ class DropDownMenuHeader extends React.PureComponent {
     return (
       <Menu 
         onClick={this.hanldeRowHeaderMenuClick}
-        style={{width: 180, borderRadius: '8px', padding: '5px, 0px, 5px, 5px'}}
+        style={{width: 180, borderRadius: '8px', padding: '5px, 0px, 5px, 5px', pointerEvents: 'visible'}}
       >
         <Menu.Item 
           key={RENAME_SECTION.key}
