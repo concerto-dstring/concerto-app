@@ -20,7 +20,8 @@ import {
   getData, 
   listUsers, getUser, 
   getTeam,
-  listThreadOnRows, getThreadOnRow
+  listThreadOnRows, getThreadOnRow,
+  listNotifications
 } from "../graphql/queries"
 
 import {
@@ -217,6 +218,13 @@ class MainTableDataStore {
                     this.fetchBackendBoardData(defaultBoardId, setMenus, null, currentUserId)
                   }
                 }
+
+                for (let key in this._boardMenus){
+                    let board = this._boardMenus[key];
+                    let notifinum = this.getNotificationsByBoardId(board.id);
+                    console.log("bardid "+board.id + " has notification "+notifinum);
+                }
+
               }
               else {
                 setMenus([], true, null)
@@ -264,15 +272,36 @@ class MainTableDataStore {
      * @param {*} boardId 
      */
     getNotificationsByBoardId(boardId){
-      if (!boardId || Object.keys(this._boardNotifications).indexOf(boardId) === -1) {
-        return 0
+      if (!boardId)
+        return 0;
+      
+      let notifications; 
+      if (boardId in this._boardNotifications) {
+        notifications = this._boardNotifications[boardId];
+      } else {
+        this._apolloClient
+        .query({
+          query: gql(listNotifications),
+          variables: {
+            limit: 1000,
+            filter: {
+              boardID: {
+                eq: boardId
+              }
+            }
+          },
+          fetchPolicy: "no-cache"
+        })
+        .then(result => {
+          this._boardNotifications[boardId] = result.data.listNotifications.items;
+        })
       }
-      let notReadCount = 0
 
-      for (let key in this._boardNotifications[boardId]) {
-        notReadCount = notReadCount + this._boardNotifications[boardId][key]
+      let notReadCount = 0;
+      for (let key in notifications) {
+        if (!notifications[key].seenflag)
+            notReadCount++;
       }
-
       return notReadCount
     }
 
@@ -280,7 +309,7 @@ class MainTableDataStore {
      * 设置the current Board未读的通知条目数
      * @param {*} boards 
      */
-    setBoardNotReadNotifications(board, currentUserId) {
+    setBoardRowNotReadNotifications(board, currentUserId) {
         let groups = board.groups.items.filter(item => !item.deleteFlag)
         this._boardNotifications[board.id] = {}
         groups.map(group => {
@@ -365,7 +394,7 @@ class MainTableDataStore {
         setLoading(false)
       }
 
-      this.setBoardNotReadNotifications(board, this._currentUser.id)
+      this.setBoardRowNotReadNotifications(board, this._currentUser.id)
     }
 
     setColumns(boardId, columns) {
