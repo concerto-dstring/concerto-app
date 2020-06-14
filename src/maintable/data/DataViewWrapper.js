@@ -105,7 +105,8 @@ class DataViewWrapper {
         groupKey:indexMap[1]?indexMap[1].groupKey:''
       });
       // 先过滤折叠的分区
-      let groups = dataset._groups.filter(group => group.isCollapsed)
+      let groups = dataset.getGroups().filter(group => group.isCollapsed)
+
       let indexMapData = [] 
       if (groups.length > 0 && indexMap) {
         for (let j = 0; j < indexMap.length; j++) {
@@ -687,7 +688,7 @@ class DataViewWrapper {
 
     getRowThreadCount(rowIndex) {
       let rowId = this.getRowKey(rowIndex)
-      return this._dataset._rowThreadSize[rowId] ? this._dataset._rowThreadSize[rowId] : 0
+      return this._dataset.getRowThreadSize(rowId) ? this._dataset.getRowThreadSize(rowId) : 0
     }
 
     getRowThreadData(rowId, setUpdateInfo) {
