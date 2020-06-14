@@ -399,7 +399,6 @@ class DropDownMenuHeader extends React.PureComponent {
           // overlayClassName='menu_item_bgcolor'
           // visible={isBtnClicked && isShowHeaderMenu}
           // getPopupContainer={() => this.props.container}
-          onVisibleChange={this.handleVisibleChange}
         >
           <EllipsisOutlined 
             size='small'
