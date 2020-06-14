@@ -90,7 +90,7 @@ class DataViewWrapper {
      */
     getIndexMap = (dataset, indexMap) => {
       // 先过滤折叠的分区
-      let groups = dataset.getGroups().filter(group => group.isCollapsed)
+      let groups = dataset._groups.filter(group => group.isCollapsed)
 
       let indexMapData = [] 
       if (groups.length > 0 && indexMap) {
