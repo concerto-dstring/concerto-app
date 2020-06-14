@@ -576,8 +576,8 @@ class MainTableDataStore {
       if (filterValue) {
         let userNameLow = filterValue.toLowerCase()
         let filterUsers = users.filter(user => {
-          if (user.fname.toLowerCase().indexOf(userNameLow) !== -1 || 
-          user.lname.toLowerCase().indexOf(userNameLow) !== -1) {
+          if ((user.fname && user.fname.toLowerCase().indexOf(userNameLow) !== -1) || 
+             (user.lname && user.lname.toLowerCase().indexOf(userNameLow)) !== -1) {
             return user
           }
         })
