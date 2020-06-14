@@ -386,12 +386,17 @@ class MainTable extends React.Component {
     getFixedColumnTemplate(column) {
       
       let rowTemplates = {};
+      const noBarStyle = {
+        background:'#f2f3f3',
+        height:'100%',
+        width:'100%'
+      }
       const columnKey = column.columnKey;
       if (column.type === ColumnType.ROWACTION) {
         rowTemplates.width = column.width;
         rowTemplates.columnKey = columnKey;
         // rowTemplates.header = DropDownHeader;
-        rowTemplates.header = <div style={{background:'#f2f3f3',height:'100%',width:'100%'}}></div>;
+        rowTemplates.header = <div style={noBarStyle}></div>;
         rowTemplates.footer = DataSummaryCell;
         rowTemplates.isResizable = false;
         rowTemplates.cell = DropDownCell;
