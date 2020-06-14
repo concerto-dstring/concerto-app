@@ -299,7 +299,7 @@ class MainTableDataStore {
 
       let notReadCount = 0;
       for (let key in notifications) {
-        if (!notifications[key].seenflag)
+        if (notifications[key] && !notifications[key].seenflag)
             notReadCount++;
       }
       return notReadCount
