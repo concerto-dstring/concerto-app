@@ -13,10 +13,9 @@ const CellContainer = styled.div`
   display: flex;
   flex: 1 0 100%;
   align-items: center;
-  height: 34px;
+  height: 38px;
   overflow: hidden;
-  margin: 3px 5px;
-  padding: 5px;
+
 `
 
 class EditableCell extends React.PureComponent {

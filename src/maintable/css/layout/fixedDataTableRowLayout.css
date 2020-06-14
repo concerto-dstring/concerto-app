@@ -10,11 +10,12 @@
  */
 
 .fixedDataTableRowLayout_main {
-  background: #ffffff;
+  background: #f2f3f3;
   box-sizing: border-box;
   overflow: hidden;
   position: absolute;
   top: 0;
+  padding-left: 35px;
 }
 
 .fixedDataTableRowLayout_body {

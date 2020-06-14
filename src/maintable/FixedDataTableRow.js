@@ -20,8 +20,7 @@ import Scrollbar from './Scrollbar';
 import cx from './vendor_upstream/stubs/cx';
 import joinClasses from './vendor_upstream/core/joinClasses';
 import { sumPropWidths } from './helper/widthHelper';
-import { compareSubLevel, getLeafRowIndex, getSubLevel } from './data/MainTableType';
-
+import { compareSubLevel, getLeafRowIndex, getSubLevel ,RowType} from './data/MainTableType';
 
 import './css/layout/fixedDataTableRowLayout.css';
 import './css/style/fixedDataTableRow.css';
@@ -522,6 +521,8 @@ class FixedDataTableRowImpl extends React.Component {
 class FixedDataTableRow extends React.Component {
   static propTypes = {
 
+    type:PropTypes.string,
+
     isScrolling: PropTypes.bool,
 
     /**
@@ -560,7 +561,7 @@ class FixedDataTableRow extends React.Component {
   }
 
   render() /*object*/ {
-    const { offsetTop, scrollTop, zIndex, visible, ...rowProps } = this.props;
+    const { offsetTop, scrollTop, zIndex, visible, type, ...rowProps } = this.props;
     const isMovingRow = this.props.isRowReordering && this.props.rowReorderingData 
                         && this.props.rowReorderingData.oldRowIndex === rowProps.index;
     var style = {
@@ -568,6 +569,7 @@ class FixedDataTableRow extends React.Component {
       height: this.props.height,
       zIndex:  isMovingRow ? 3 : (this.props.zIndex ? this.props.zIndex : 0),
       display: (this.props.visible ? 'block' : 'none'),
+      top:type==RowType.HEADER?'-30px':'0'
     };
     let top = offsetTop;
     if (isMovingRow) {
