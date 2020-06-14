@@ -46,6 +46,11 @@ class EditableCell extends React.PureComponent {
       PEOPLE: false,
       STATUS: false,
     }
+
+    this.popupHeights={
+      DATE: 150,
+      PEOPLE: 500
+    }
   }
 
   /**
@@ -143,10 +148,10 @@ class EditableCell extends React.PureComponent {
       if (columnCanEditor) {
         this.setState({editing: true})
       }
-      this.props.onCellEdit(this.props.rowIndex, this.props.columnKey)
+      this.props.onCellEdit(this.props.rowIndex, this.props.columnKey, this.popupHeights[type])
     } else {
       this.setState({editing: true})
-      this.props.onCellEdit(this.props.rowIndex, this.props.columnKey)
+      this.props.onCellEdit(this.props.rowIndex, this.props.columnKey, this.popupHeights[type])
     }
   }
 

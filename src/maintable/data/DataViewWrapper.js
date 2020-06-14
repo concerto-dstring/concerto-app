@@ -3,6 +3,7 @@
 import { RowType, getSubLevel, getRootRowIndex, ColumnType } from './MainTableType';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
+import { DraftEditorProps } from 'braft-editor';
 
 class DataViewWrapper {
     constructor(dataset, indexMap = null, subRowKeys) {
@@ -333,7 +334,7 @@ class DataViewWrapper {
                     return 35;
                 case RowType.HEADER:
                     return 40;
-                case RowType.FOOTER:
+                case RowType.FOOTER:            
                     return 140;
                 case RowType.ROW:
                     return 40;
