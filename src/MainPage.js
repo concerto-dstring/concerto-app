@@ -295,7 +295,7 @@ class MainPage extends React.Component {
 
   getBodyContent = () => {
     const { dataset, siderWidth, contentTitle } = this.state;
-    if (!contentTitle) return null
+    // if (!contentTitle) return null
     return (
         <Content style={{marginLeft: 24}}>
           <Route exact component={()=>
@@ -307,6 +307,11 @@ class MainPage extends React.Component {
               />
         </Content>
     )
+  }
+
+  handleBoardItemClick = (e) => {
+    e.stopPropagation();
+    e.preventDefault();
   }
 
   getPanel = (menus, isBoard, name, key) => {
@@ -340,10 +345,11 @@ class MainPage extends React.Component {
                  
                 </div>
                 
-                <div className="body_left_sider_panel_menu_item" style={style}>
+                <div className="body_left_sider_panel_menu_item" style={style} onClick={this.handleBoardItemClick}>
                   <Dropdown
                     overlay={this.getBoardItemMenus(item.id, item.name)}
                     placement='bottomLeft'
+                    trigger='click'
                   >
                     <EllipsisOutlined style={{fontSize:"14px",paddingRight:"10px"}}/>
                   

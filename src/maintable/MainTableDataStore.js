@@ -1063,7 +1063,7 @@ class MainTableDataStore {
           variables: {
             input: {
               name: newItem,
-              columntype: ColumnType,
+              columntype: ColumnType.EDITBOX,
               columnComponentType: columnComponentType,
               createdAt: new Date().toISOString(),
               creatorID: this._currentUser.id,
@@ -1458,8 +1458,10 @@ class MainTableDataStore {
     setColumnData(columnKey, columnData) {
       let column = this._columns.find(column => column.columnKey === columnKey)
       if (column) {
+        let columnOldValue = {}
         let updateInput = {}
         for (let key in columnData) {
+          columnOldValue[key] = column[key]
           updateInput[key] = columnData[key]
         }
         updateInput.id = columnKey
@@ -1471,14 +1473,20 @@ class MainTableDataStore {
             }
           })
           .then(result => {
+            
+          })
+          .catch(error => {
+            console.log(error, columnOldValue)
             for (let key in columnData) {
-              column[key] = columnData[key]
+              column[key] = columnOldValue[key]
             }
             this.runCallbacks(); 
           })
-          .catch(error => {
-            console.log(error)
-          })
+
+          for (let key in columnData) {
+            column[key] = columnData[key]
+          }
+          this.runCallbacks(); 
       }
     }
 

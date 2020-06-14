@@ -625,12 +625,11 @@ class DataViewWrapper {
       let dateText = '-'
       let dateDiff
       let datePercent = '0%'
-
+      let minDate
+      let maxDate
       if (rows && Object.keys(this._dataset._rowData).length > 0) {
         rows.map(rowKey => {
-          let dateValue = this.getObjectAt(rowIndex) ? this.getObjectAt(rowIndex)[columnKey] : null
-          let minDate
-          let maxDate
+          let dateValue = this._dataset._rowData[rowKey] ? this._dataset._rowData[rowKey][columnKey] : null
           if (dateValue) {
             // 只要日期不要时间
             dateValue = dateValue.substring(0, 10)

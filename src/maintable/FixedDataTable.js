@@ -1403,7 +1403,10 @@ class FixedDataTable extends React.Component {
               showScrollbarY={props.scrollEnabledY}
               container={this._divRef}
               data={props.data}
-              isRTL={props.isRTL}>
+              isRTL={props.isRTL}
+              onCellEdit={this._onCellEdit}
+              onCellEditEnd={this._onCellEditEnd}
+            >
             </FixedDataTableRow>
           break;
         case RowType.SUBADDROW:
