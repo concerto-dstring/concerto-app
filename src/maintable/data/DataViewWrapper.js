@@ -345,7 +345,7 @@ class DataViewWrapper {
                 case RowType.HEADER:
                     return 40;
                 case RowType.FOOTER:            
-                    return 50;
+                    return 60;
                 case RowType.ROW:
                     return 40;
             }

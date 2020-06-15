@@ -207,7 +207,7 @@ class MainTableSectionGroupBar extends React.Component {
     let group = data.getGroupByRowIndex(this.props.index);
     let groupColor = group ? group.color : "rgba(0, 0, 0, 0.65)";
     let titleStyle = {
-      paddingLeft:'10px',
+      paddingLeft:'13px',
       fontWeight:'bold',
       color:groupColor,
       cursor:'pointer'
