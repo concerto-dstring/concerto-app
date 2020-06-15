@@ -131,17 +131,24 @@ class EditableCell extends React.PureComponent {
             if(columnCanEditor){
                 this.setState({ editing: true });
             }
-            this.props.onCellEdit(this.props.rowIndex, this.props.columnKey, this.popupHeights[type]);
+            if (this.props.onCellEdit) {
+              this.props.onCellEdit(this.props.rowIndex, this.props.columnKey, this.popupHeights[type]);
+            }
+
         }else{
             this.setState({ editing: true });
-            this.props.onCellEdit(this.props.rowIndex, this.props.columnKey, this.popupHeights[type]);
+            if (this.props.onCellEdit) {
+              this.props.onCellEdit(this.props.rowIndex, this.props.columnKey, this.popupHeights[type]);
+            }
         }
     }
       
     handleHide = () => { 
         this.updateValue()        
         this.setState({ editing: false });
-        this.props.onCellEditEnd(this.props.rowIndex, this.props.columnKey);
+        if (this.props.onCellEditEnd) {
+          this.props.onCellEditEnd(this.props.rowIndex, this.props.columnKey);
+        }
     }
 
 
@@ -155,7 +162,9 @@ class EditableCell extends React.PureComponent {
           value: value,
         });
       }
-      this.props.onCellEditEnd(this.props.rowIndex, this.props.columnKey);
+      if (this.props.onCellEditEnd) {
+        this.props.onCellEditEnd(this.props.rowIndex, this.props.columnKey);
+      }
     }
 
     handleKey = e =>
@@ -213,10 +222,10 @@ class EditableCell extends React.PureComponent {
         //     borderRadius: '0px',
         // }
 
-        let classNameStr;
-        if (!isHeaderOrFooter) {
-            classNameStr =  'editableCell ' + (this.state.mouseIn ? 'mouseIn':'mouseOut');
-        }
+        // let classNameStr;
+        // if (!isHeaderOrFooter) {
+        //     classNameStr =  'editableCell ' + (this.state.mouseIn ? 'mouseIn':'mouseOut');
+        // }
         return (
 
             <CellContainer ref={this.setTargetRef}

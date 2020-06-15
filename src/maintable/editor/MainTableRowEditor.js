@@ -12,7 +12,7 @@
 
 'use strict';
 
-import FixedDataTableCellDefault from './FixedDataTableCellDefault'
+import FixedDataTableCellDefault from '../FixedDataTableCellDefault';
 import React from 'react';
 
 import './MainTableRowEditor.less';
@@ -28,84 +28,76 @@ class MainTableRowEditor extends React.Component {
   }
 
   render() /*object*/ {
-    var props = this.props;
-    var columns = props.columns;
-    var cells = new Array(columns.length);
+    const props = this.props;
+    const { rowIndex, columns } = props;
 
-    var columnProps = columns[0].props;
-    var cellTemplate = columns[0].template;
-    var key = columnProps.columnKey || 'cell_' + i;
-    cells[0] = <div className="column_header">
-          {this._renderCell(
-            props.rowIndex,
-            columnProps,
-            cellTemplate,
-            key,
-            false
-          )}
-        </div>; 
-
-    for (var i = 1, j = columns.length; i < j; i++) {
-        var columnProps = columns[i].props;
-        var cellTemplate = columns[i].template;
-        var key = columnProps.columnKey || 'cell_' + i;
-        cells[i] = this._renderCell(
-            props.rowIndex,
-            columnProps,
-            cellTemplate,
-            key
-        ); 
+    if (columns.length === 0) {
+      return;
     }
 
+    let cells = new Array(columns.length);
+
+    for(let i = 0; i < columns.length; i++){
+      if (i === 0) {
+        // cells[i] = <div className="column_header">
+        //             {this._renderCell(
+        //               i,
+        //               rowIndex,
+        //               columns[i].template,
+        //               columns[i].key
+        //             )}
+        //             </div>; 
+      } else {
+        cells[i] = this._renderCell(
+          i,
+          rowIndex,
+          columns[i].template,
+          columns[i].key,
+          columns[i].name,
+        ); 
+      }      
+    }
     return (
-      <div>
+      <div className="slide_drawer_container_body">
         {cells}
       </div>
     );
   }
 
   _renderCell = (
+    /*number*/ i, 
     /*number*/ rowIndex,
-    /*number*/ height,
     /*object*/ cellTemplate,
-    /*string*/ columnKey,
-    /*bool*/ showLabel = true,
+    /*key*/ columnKey,
+    /*string*/ name = null,
   ) /*object*/ => {
 
-    let column = this.props.data.getColumn(columnKey);
-
-    var cellProps = {
+    let cellProps = {
         columnKey,
-        height,
-        width,
         onCellEdit: null,
         onCellEditEnd: null,
         container: this.props.container,
+        rowIndex
     };
-
-    if (rowIndex >= 0) {
-        cellProps.rowIndex = rowIndex;
-    }
 
     let content;
     if (React.isValidElement(cellTemplate)) {
       content = React.cloneElement(cellTemplate, cellProps);
     } else if (typeof cellTemplate === 'function') {
-      content = cellTemplate(cellProps);
+      content = new cellTemplate(cellProps);
     } else {
       content = (
-        <FixedDataTableCellDefault>
+        <FixedDataTableCellDefault
           {...cellProps}>
           {cellTemplate}
         </FixedDataTableCellDefault>
       );
     } 
-
     return (
-      <div className="cell_wrapper" >
-          {showLabel && <div className="column_title">{column.name}</div>}
-          <div className="column_cell_component_wrapper">{content}</div>
-      </div>      
+        <div className="column_wrapper" key={i} >
+            {name && (<div className="column_label">{name}</div>)}
+            <div className="column_cell_component_wrapper">{content}</div>
+        </div>
     );
   }
 }

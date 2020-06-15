@@ -87,8 +87,7 @@ const DRAG_SCROLL_BUFFER = 40;
  *
  * - Scrollable Body Columns: The body columns that move while scrolling
  *   vertically or horizontally.
- */
-class FixedDataTable extends React.Component {
+ */class FixedDataTable extends React.Component {
   // static propTypes = {
 
   //   // TODO (jordan) Remove propType of width without losing documentation (moved to tableSize)

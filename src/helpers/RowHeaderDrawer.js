@@ -3,7 +3,8 @@ import { Menu, Button, Upload, Modal, Progress, message, Spin } from 'antd';
 import {
   ROW_HEADER_UPDATE,
   ROW_HEADER_INFO_BOX,
-  ROW_HEADER_ACTIVITY_LOG
+  ROW_HEADER_ACTIVITY_LOG,
+  ROW_HEADER_EDITOR,
 } from '../maintable/MainTableRowKeyAndDesc'
 import 'braft-editor/dist/index.css'
 import BraftEditor from 'braft-editor'
@@ -21,11 +22,13 @@ import RowHeaderDrawerUpdate from './section/modal/RowHeaderDrawerUpdate'
 import { getBase64, isImageFile } from './section/modal/UploadFun'
 import moment from 'moment';
 import 'moment/locale/zh-cn';
-import SlideDrawer from './section/Drawer/SlideDrawer'
-import { connect } from 'react-redux'
-import { mapRowHeaderDrawerStateToProps } from '../maintable/data/mapStateToProps'
-import WebConstants from '../WebConstants'
+import SlideDrawer from './section/Drawer/SlideDrawer';
+import { connect } from 'react-redux';
+import { mapRowHeaderDrawerStateToProps } from '../maintable/data/mapStateToProps';
+import WebConstants from '../WebConstants';
 import { Route } from 'react-router-dom';
+import MainTableDataRowEditor from '../maintable/editor/MainTableDataRowEditor';
+
 
 @connect(mapRowHeaderDrawerStateToProps)
 class RowHeaderDrawer extends PureComponent {
@@ -400,7 +403,11 @@ class RowHeaderDrawer extends PureComponent {
           </div>
         )
         break;
-    
+      case ROW_HEADER_EDITOR.key:
+          menuContent= (
+            <MainTableDataRowEditor data={this.props.tableData} rowIndex={this.props.rowIndex} rowKey={this.props.rowId} />
+          )
+        break;
       default:
         menuContent = (<div>暂无</div>)
         break;
@@ -435,6 +442,9 @@ class RowHeaderDrawer extends PureComponent {
           </Menu.Item>
           <Menu.Item key={ROW_HEADER_ACTIVITY_LOG.key}>
             {ROW_HEADER_ACTIVITY_LOG.desc}
+          </Menu.Item>
+          <Menu.Item key={ROW_HEADER_EDITOR.key}>
+            {ROW_HEADER_EDITOR.desc}
           </Menu.Item>
         </Menu>
         {this.getMenuContent(this.state.current)}

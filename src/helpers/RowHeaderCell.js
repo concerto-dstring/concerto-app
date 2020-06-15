@@ -116,7 +116,7 @@ class RowHeaderCell extends React.PureComponent {
       const { data, rowIndex } = this.props
       let rowId = data.getRowKey(rowIndex)
       let groupId = data.getGroupByRowIndex(rowIndex).groupKey
-      this.props.dealRowHeaderDrawer({rowHeaderDrawerTitle: value, data, rowId, groupId, isOpenRowHeaderDrawer: true})
+      this.props.dealRowHeaderDrawer({rowHeaderDrawerTitle: value, data, rowId, rowIndex, groupId, isOpenRowHeaderDrawer: true})
     }
 
     getCellComponent = () => {
