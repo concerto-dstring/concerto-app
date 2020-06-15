@@ -115,17 +115,17 @@ class DataViewWrapper {
           // 查询是否为折叠分区
           let group = groups.find(group => group.groupKey === row.groupKey)
 
-          if (group && row.rowType === RowType.HEADER) {
-            row.isCollapsed = true
-            indexMapData.push(row)
-          }
-          else if (!group) {
+          if (group && row.rowType != RowType.FOOTER) {
+            // row.isCollapsed = true
+            // indexMapData.push(row)
+          }else if (!group) {
             row.isCollapsed = false
+            indexMapData.push(row)
+          }else{
             indexMapData.push(row)
           }
         }
-      }
-      else if (groups.length === 0) {
+      }else if (groups.length === 0) {
         indexMapData.push(...indexMap)
       }
       // indexMapData.splice(2, 0, indexMap[1]);
