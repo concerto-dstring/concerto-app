@@ -32,7 +32,6 @@ class SummaryCell extends PureComponent {
   }
 
   changeGroupCollapseState = () => {
-    debugger;
     const { data, rowIndex } = this.props
 
     let group = data.getGroupByRowIndex(rowIndex,true);
@@ -61,6 +60,9 @@ class SummaryCell extends PureComponent {
     const count_style = {
       color:'#cccccc',
       fontSize:'13px'
+    }
+    const summary_cell_background = {
+      background:group.isCollapsed?'white':''
     }
     let summaryCell
     switch (this.state.columnComponentType) {
@@ -120,7 +122,7 @@ class SummaryCell extends PureComponent {
     
       default:
         summaryCell = (
-          <div className="default_summary_cell" style={{background:'white'}}/>
+          <div className="default_summary_cell" style={summary_cell_background}/>
         )
         break;
     }
@@ -145,8 +147,6 @@ class SummaryCell extends PureComponent {
       summaryCell = (
         <div className="default_summary_cell"/>
       )
-    }else{
-      
     }
     return summaryCell
   }
