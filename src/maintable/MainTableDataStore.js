@@ -80,6 +80,7 @@ class MainTableDataStore {
     this._subRows = {};
     this._subRowKeys = {};
     this._rowNotification = {};
+    this._searchUsers = {};
 
     this.getSize = this.getSize.bind(this);
     this.addNewRow = this.addNewRow.bind(this);
@@ -112,6 +113,7 @@ class MainTableDataStore {
         variables: {
           input: {
             name: boardName,
+            color: getRandomColor(),
             creatorID: this._currentUser.id,
             createdAt: new Date().toISOString(),
           },
@@ -243,11 +245,14 @@ class MainTableDataStore {
                 }
               }
 
-              for (let key in this._boardMenus) {
-                let board = this._boardMenus[key];
-                let notifinum = this.getNotificationsByBoardId(board.id);
-                console.log('bardid ' + board.id + ' has notification ' + notifinum);
-              }
+              // 设置每个Board的通知
+              this.setBoardRowNotReadNotifications(this._boardMenus, currentUserId)
+
+              // for (let key in this._boardMenus) {
+              //   let board = this._boardMenus[key];
+              //   let notifinum = this.getNotificationsByBoardId(board.id, currentUserId);
+              //   console.log('bardid ' + board.id + ' has notification ' + notifinum);
+              // }
             } else {
               setMenus([], true, null);
             }
@@ -293,54 +298,37 @@ class MainTableDataStore {
    * @param {*} boardId
    */
   getNotificationsByBoardId(boardId) {
-    if (!boardId) return 0;
+    if (!boardId || !this._boardNotifications.hasOwnProperty(boardId)) {
+      return 0
+    }
+    let notReadCount = 0
 
-    let notifications;
-    if (boardId in this._boardNotifications) {
-      notifications = this._boardNotifications[boardId];
-    } else {
-      this._apolloClient
-        .query({
-          query: gql(listNotifications),
-          variables: {
-            limit: 1000,
-            filter: {
-              boardID: {
-                eq: boardId,
-              },
-            },
-          },
-          fetchPolicy: 'no-cache',
-        })
-        .then((result) => {
-          this._boardNotifications[boardId] = result.data.listNotifications.items;
-        });
+    for (let key in this._boardNotifications[boardId]) {
+      notReadCount = notReadCount + this._boardNotifications[boardId][key]
     }
 
-    let notReadCount = 0;
-    for (let key in notifications) {
-      if (notifications[key] && !notifications[key].seenflag) notReadCount++;
-    }
-    return notReadCount;
+    return notReadCount
   }
 
   /**
    * 设置the current Board未读的通知条目数
    * @param {*} boards
    */
-  setBoardRowNotReadNotifications(board, currentUserId) {
-    let groups = board.groups.items.filter((item) => !item.deleteFlag);
-    this._boardNotifications[board.id] = {};
-    groups.map((group) => {
-      if (group.rows.items) {
-        let rows = group.rows.items.filter((item) => !item.deleteFlag);
-        rows.map((row) => {
-          let notifications = row.notification.items.filter(
-            (item) => item.receiverID === currentUserId && !item.seenflag
-          );
-          this._boardNotifications[board.id][row.id] = notifications.length;
-        });
-      }
+  setBoardRowNotReadNotifications(boards, currentUserId) {
+    boards.map((board) => {
+      let groups = board.groups.items.filter((item) => !item.deleteFlag);
+      this._boardNotifications[board.id] = {};
+      groups.map((group) => {
+        if (group.rows.items) {
+          let rows = group.rows.items.filter((item) => !item.deleteFlag);
+          rows.map((row) => {
+            let notifications = row.notification.items.filter(
+              (item) => item.receiverID === currentUserId && !item.seenflag
+            );
+            this._boardNotifications[board.id][row.id] = notifications.length;
+          });
+        }
+      });
     });
   }
 
@@ -350,7 +338,7 @@ class MainTableDataStore {
   fetchBackendBoardData(boardId, setMenus, setLoading, currentUserId) {
     this._currentBoardId = boardId;
     this.getAllUsers(boardId, setMenus, setLoading, currentUserId);
-    this.fetchBoardData(boardId, setMenus, setLoading);
+    // this.fetchBoardData(boardId, setMenus, setLoading);
     // return ret;
   }
 
@@ -358,7 +346,7 @@ class MainTableDataStore {
     var board;
     if (boardId in this._boards) {
       if (setMenus) {
-        setMenus(this._boardMenus, true, board);
+        setMenus(this._boardMenus, true, this._boards[boardId]);
       } else {
         setLoading(false);
       }
@@ -395,6 +383,7 @@ class MainTableDataStore {
     this._subRows[boardId] = {};
     this._subRowKeys[boardId] = [];
     this._rowNotification[boardId] = {};
+    this._searchUsers[boardId] = {};
 
     let columns = this.sortDataByRank(board.columns.items);
     this.setColumns(boardId, columns);
@@ -411,8 +400,6 @@ class MainTableDataStore {
     } else {
       setLoading(false);
     }
-
-    this.setBoardRowNotReadNotifications(board, this._currentUser.id);
   }
 
   setColumns(boardId, columns) {
@@ -476,9 +463,10 @@ class MainTableDataStore {
                   let userIdArr = userIds.split(',');
                   let users = [];
                   userIdArr.map((userId) => {
-                    if (Object.keys(this._cacheUsers).indexOf(userId) !== -1) {
+                    if (userId in this._cacheUsers) {
                       users.push(this._cacheUsers[userId]);
                     }
+                    this._searchUsers[boardId][userId] = this._cacheUsers[userId]
                   });
                   this._rowData[boardId][item.rowID][item.columnID] = users;
                 } else {
@@ -572,7 +560,10 @@ class MainTableDataStore {
 
   getAllUsers(boardId, setMenus, setLoading, currentUserId) {
     // TODO: for user signup, we should use the subscribe@graphql
-    if (this._teamUsers.length != 0) return;
+    if (this._teamUsers.length != 0) {
+      this.fetchBoardData(boardId, setMenus, setLoading);
+      return
+    };
     this._apolloClient
       .query({
         query: gql(listUsers),
@@ -583,6 +574,7 @@ class MainTableDataStore {
       })
       .then((result) => {
         let teamUsers = result.data.listUsers.items;
+        this._teamUsers = []
         teamUsers.map((user) => {
           if (user.avatar.startsWith('#')) {
             user.faceColor = user.avatar;
@@ -593,17 +585,26 @@ class MainTableDataStore {
           if (currentUserId === user.id) {
             this._currentUser = user;
           }
-
-          if (Object.keys(this._cacheUsers).indexOf(user.id) === -1) {
-            this._teamUsers.push(user);
-            this._cacheUsers[user.id] = user;
-          }
+          this._teamUsers.push(user);
+          this._cacheUsers[user.id] = user;
         });
+
+        this.fetchBoardData(boardId, setMenus, setLoading);
       });
   }
 
   getListUsers() {
     return this._teamUsers.slice();
+  }
+
+  getSearchUserList() {
+    let users = this._searchUsers[this._currentBoardId];
+    let searchList = []
+    for (let key in users) {
+      searchList.push(users[key])
+    }
+
+    return searchList
   }
 
   filterTeamUsers(filterValue) {
@@ -753,6 +754,13 @@ class MainTableDataStore {
   }
 
   addNewSubSection(groupKey, parentRowKey, newItem) {
+    // 检查是否已有子项
+    if (this._subRows[this._currentBoardId][parentRowKey]) {
+      this._subRows[this._currentBoardId][parentRowKey].isExpanded = true
+      this.runCallbacks()
+      return
+    }
+
     let rank = this.getCreateRowRank(parentRowKey, groupKey);
     // 添加空白行
     this._apolloClient
@@ -841,7 +849,7 @@ class MainTableDataStore {
           isTitle
         );
         //refresh
-        this.runCallbacks();
+        // this.runCallbacks();
       })
       .catch((error) => {
         console.log(error);
@@ -1290,7 +1298,8 @@ class MainTableDataStore {
 
     this._columns[this._currentBoardId].splice(index, 1);
     //refresh
-    this.runCallbacks();
+    // this.runCallbacks();
+    this._mainPageCallBack()
   }
 
   removeSubColumn(columnKey) {

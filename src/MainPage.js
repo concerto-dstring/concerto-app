@@ -25,7 +25,9 @@ import RowHeaderDrawer from './helpers/RowHeaderDrawer';
 import {USER_MENU_SIGN_OUT, RENAME_BOARD, DELETE_BOARD} from './maintable/MainTableRowKeyAndDesc';
 import {Auth} from 'aws-amplify';
 import {DISPLAY, COLOR} from './helpers/section/header/StyleValues';
-import {getRandomColor} from './helpers/section/header/SectionColor';
+import {connect} from 'react-redux';
+import {dealRowHeaderDrawer} from './maintable/actions/rowActions';
+
 const {Panel} = Collapse;
 const {Header, Content, Sider} = Layout;
 
@@ -36,6 +38,7 @@ let intervalTimer;
 
 @withApollo
 @withRouter
+@connect(null, {dealRowHeaderDrawer,})
 class MainPage extends React.Component {
   constructor(props) {
     super(props);
@@ -51,6 +54,7 @@ class MainPage extends React.Component {
       isShowReNameBoard: false,
       isLoading: false,
       isDataChanged: false,
+      boardColor: '',
       mainPanelPaddingLeft: {
         // paddingLeft:'18px'
       },
@@ -109,16 +113,19 @@ class MainPage extends React.Component {
   setMenus = (menus, isBoard, defaultBoard) => {
     let selectedKey;
     let contentTitle;
+    let boardColor;
     if (isBoard) {
       if (defaultBoard) {
         selectedKey = defaultBoard.id;
         contentTitle = defaultBoard.name;
+        boardColor = defaultBoard.color
         this.props.history.push('/board/' + selectedKey);
       }
       this.setState({
         boardMenus: menus,
         selectedKey,
         contentTitle,
+        boardColor,
         isLoading: false,
       });
     } else {
@@ -161,7 +168,8 @@ class MainPage extends React.Component {
     });
   };
 
-  nativeGetTableStore = (id, name, isBoard, path) => {
+  nativeGetTableStore = (id, name, isBoard, path, boardColor) => {
+    this.props.dealRowHeaderDrawer({isOpenRowHeaderDrawer: false});
     const {dataset} = this.state;
     this.setLoading(true);
     this.props.history.push(path);
@@ -170,7 +178,8 @@ class MainPage extends React.Component {
       this.setState({
         selectedKey: id,
         contentTitle: name,
-        dataset: dataset,
+        boardColor,
+        // dataset: dataset,
       });
     }
   };
@@ -293,11 +302,11 @@ class MainPage extends React.Component {
   };
 
   getBodyContent = () => {
-    const {dataset, siderWidth, contentTitle} = this.state;
+    const {dataset, siderWidth, contentTitle, boardColor} = this.state;
     // if (!contentTitle) return null
     return (
       <Content style={{marginLeft: 24}}>
-        <Route exact component={() => <MainTable title={contentTitle} data={dataset} siderWidth={siderWidth} />} />
+        <Route exact component={() => <MainTable title={contentTitle} data={dataset} siderWidth={siderWidth} boardColor={boardColor} />} />
       </Content>
     );
   };
@@ -330,11 +339,11 @@ class MainPage extends React.Component {
               key={item.id}
               className="body_left_sider_panel_menu"
               style={style}
-              onClick={this.nativeGetTableStore.bind(this, item.id, item.name, isBoard, path)}
+              onClick={this.nativeGetTableStore.bind(this, item.id, item.name, isBoard, path, item.color)}
             >
               <div className="body_left_sider_panel_menu_item_link" style={style}>
                 <Link to={path}>
-                  <div className="item_color" style={{background: getRandomColor()}}></div>
+                  <div className="item_color" style={{background: item.color}}></div>
                   <span className="item_title">{item.name}</span>
                 </Link>
               </div>

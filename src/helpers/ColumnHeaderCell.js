@@ -205,7 +205,7 @@ class ColumnHeaderCell extends React.PureComponent {
         onMouseEnter={() => this.setMouseIn(true)}
         onMouseLeave={() => this.setMouseIn(false)}
         //className={classNameStr}
-        style={this.getPeopleFilterStyle(type, editing, value)}
+        // style={this.getPeopleFilterStyle(type, editing, value)}
       >
         {!editing && this.cellRenderValues[type] && displayValue}
         {!editing && !this.cellRenderValues[type] && (

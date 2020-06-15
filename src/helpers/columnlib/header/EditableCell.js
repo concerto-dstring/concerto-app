@@ -184,24 +184,37 @@ class EditableCell extends React.PureComponent {
     });
   }
 
-  getPeopleFilterStyle = (type, editing, value) => {
+  getFilterStyle = (type, editing, value) => {
     let style = {};
-    if (
-      type === 'PEOPLE' &&
-      !editing &&
-      value &&
-      value instanceof Array &&
-      this.props.filterInputValue &&
-      this.props.data
-    ) {
-      let filterInputValue = this.props.filterInputValue.toLowerCase();
-      value.map((user) => {
-        if (user.username && user.username.toLowerCase().indexOf(filterInputValue) !== -1) {
-          style = {backgroundColor: '#CCE9FF'};
-          return;
+    switch (type) {
+      case 'PEOPLE':
+        if (!editing &&
+          value &&
+          value instanceof Array &&
+          this.props.filterInputValue &&
+          this.props.data
+        ) {
+          let filterInputValue = this.props.filterInputValue.toLowerCase();
+          value.map((user) => {
+            if (user.username && user.username.toLowerCase().indexOf(filterInputValue) !== -1) {
+              style = {backgroundColor: '#CCE9FF'};
+              return;
+            }
+          });
         }
-      });
+        break;
+      
+      case 'DATE':
+        if (!editing && value && this.props.filterInputValue && this.props.data) {
+          let filterInputValue = this.props.filterInputValue.toLowerCase();
+          if (value.toLowerCase().indexOf(filterInputValue) !== -1) {
+            style = {backgroundColor: '#CCE9FF'};
+          }
+        }
+      default:
+        break;
     }
+    
     return style;
   };
 
@@ -216,7 +229,7 @@ class EditableCell extends React.PureComponent {
         onMouseEnter={() => this.setMouseIn(true)}
         onMouseLeave={() => this.setMouseIn(false)}
         //className={classNameStr}  // disable for timebeing
-        style={this.getPeopleFilterStyle(type, editing, value)}
+        style={this.getFilterStyle(type, editing, value)}
       >
         {!editing && this.cellRenderValues[type] && displayValue}
         {!editing && !this.cellRenderValues[type] && (

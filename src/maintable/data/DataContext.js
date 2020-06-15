@@ -228,10 +228,10 @@ function AddFilter(TableComponent) {
         if (this.props.filterType) {
           filterColumns = dataset.getColumns().filter((column) => column.columnComponentType === this.props.filterType);
         } else {
-          // 先过滤非日期的columnKey
+          // 先过滤非日期的columnKey(日期列加入到过滤)
           filterColumns = dataset
             .getColumns()
-            .filter((column) => column.columnComponentType !== '' && column.columnComponentType !== 'DATE');
+            .filter((column) => column.columnComponentType !== '');
         }
 
         let filterColumnKeys = [];

@@ -326,9 +326,11 @@ class DropDownMenuHeader extends React.PureComponent {
       >
         <Dropdown
           overlay={this.getHeaderMenu()}
-          // overlayClassName='menu_item_bgcolor'
+          overlayClassName='menu_item_bgcolor'
           // visible={isBtnClicked && isShowHeaderMenu}
-          // getPopupContainer={() => this.props.container}
+          trigger='click'
+          getPopupContainer={() => this.props.container}
+          onVisibleChange={this.handleVisibleChange}
         >
           <EllipsisOutlined
             size="small"
@@ -357,11 +359,12 @@ class DropDownMenuCell extends React.PureComponent {
       isShowRowActionBtn: VISIBILITY.HIDDEN,
       isBtnClicked: false,
       isShowSubMenu: DISPLAY.NONE,
+      isShowDropDown: false,
     };
   }
 
   // 行菜单
-  hanldeRowCellMenuClick = ({item, key, keyPath, selectedKeys, domEvent}) => {
+  handleRowCellMenuClick = ({item, key, keyPath, selectedKeys, domEvent}) => {
     this.hiddenRowActionBtn();
     this.hiddenSubMenu();
     const {rowIndex, data} = this.props;
@@ -416,10 +419,21 @@ class DropDownMenuCell extends React.PureComponent {
     });
   };
 
+  handleVisibleChange = (visible) => {
+    this.setState({
+      isShowDropDown: visible
+    })
+    if (visible) {
+      this.props.onCellEdit(this.props.rowIndex, this.props.columnKey);
+    } else {
+      this.props.onCellEditEnd(this.props.rowIndex, this.props.columnKey);
+    }
+  };
+
   getRowMenu = (data, rowIndex) => {
     return (
       <Menu
-        onClick={this.hanldeRowCellMenuClick}
+        onClick={this.handleRowCellMenuClick}
         style={{width: 180, borderRadius: '8px', padding: '5px, 0px, 5px, 5px', pointerEvents: 'visible'}}
       >
         <Menu.Item key={ADD_SUB_TABLE.key}>
@@ -454,7 +468,7 @@ class DropDownMenuCell extends React.PureComponent {
   render() {
     const {data, rowIndex} = this.props;
 
-    const {isBtnClicked, isShowRowActionBtn} = this.state;
+    const {isBtnClicked, isShowRowActionBtn, isShowDropDown } = this.state;
 
     // 子阶菜单暂时不返回
     let rowIndexStr = String(rowIndex);
@@ -465,20 +479,22 @@ class DropDownMenuCell extends React.PureComponent {
         style={{background: '#f2f3f3'}}
         onMouseEnter={this.showRowActionBtn}
         onMouseLeave={this.hiddenRowActionBtn}
-        onWheel={this.hiddenRowActionBtn}
+        // onWheel={this.hiddenRowActionBtn}
       >
         <Dropdown
           overlay={this.getRowMenu(data, rowIndex)}
-          // overlayClassName='menu_item_bgcolor'
+          overlayClassName='menu_item_bgcolor'
           // visible={isBtnClicked ? (isShowRowActionBtn === VISIBILITY.HIDDEN ? false : true) : false}
-          // getPopupContainer={() => this.props.container}
+          trigger='click'
+          getPopupContainer={() => this.props.container}
+          onVisibleChange={this.handleVisibleChange}
         >
           <AntdButton
             icon={<CaretDownOutlined />}
             shape="circle"
             size="small"
-            style={{margin: '8px 6px', visibility: isShowRowActionBtn}}
-            onClick={this.showRowActionMenu}
+            style={{margin: '8px 6px', visibility: isShowDropDown ? VISIBILITY.VISIBLE : isShowRowActionBtn}}
+            // onClick={this.showRowActionMenu}
           />
         </Dropdown>
       </div>

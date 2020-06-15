@@ -470,7 +470,7 @@ class MainTable extends React.Component {
   };
 
   _onGetListUsers = () => {
-    return this.state.data.getListUsers();
+    return this.state.data.getSearchUserList();
   };
 
   renderTable() {
@@ -485,6 +485,7 @@ class MainTable extends React.Component {
           <FilterableDataTable
             ref={this.handleRef}
             title={this.props.title}
+            boardColor={this.props.boardColor}
             onAddNewGroupCallback={this._onAddNewGroupCallback}
             onColumnReorderEndCallback={this._onColumnReorderEndCallback}
             onColumnResizeEndCallback={this._onColumnResizeEndCallback}

@@ -78,6 +78,11 @@ class MainTableTitleRow extends React.Component {
      * DOM attributes to be applied to the row.
      */
     attributes: PropTypes.object,
+
+    /**
+     * boardColor
+     */
+    boardColor: PropTypes.string
   };
 
   componentWillMount() {
@@ -100,7 +105,7 @@ class MainTableTitleRow extends React.Component {
           <div className="body_content_title">
             <h1>
               {/* <DoubleRightOutlined style={{fontSize:'16px'}}/>&nbsp;&nbsp; */}
-              <div className="item_color" style={{background: getRandomColor()}}></div>
+              <div className="item_color" style={{background: this.props.boardColor}}></div>
               {this.props.title}
             </h1>
           </div>
