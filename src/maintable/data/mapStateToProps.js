@@ -12,15 +12,15 @@ export const mapRowActionStateToProps = (state) => {
     sourceGroupKey: state.sourceGroupKey,
     targetGroupKey: state.targetGroupKey,
     tableData: state.data,
-    oldSourceRow: state.oldSourceRow
-  }
-}
+    oldSourceRow: state.oldSourceRow,
+  };
+};
 
 export const mapSectionHeaderStateToProps = (state) => {
   return {
-    curGroup: state.curGroup
-  }
-}
+    curGroup: state.curGroup,
+  };
+};
 
 export const mapRowHeaderDrawerStateToProps = (state) => {
   return {
@@ -28,6 +28,6 @@ export const mapRowHeaderDrawerStateToProps = (state) => {
     rowId: state.rowId,
     tableData: state.data,
     rowHeaderDrawerTitle: state.rowHeaderDrawerTitle,
-    groupId: state.groupId
-  }
-}
+    groupId: state.groupId,
+  };
+};

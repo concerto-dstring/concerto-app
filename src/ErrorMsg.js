@@ -13,5 +13,5 @@ export default {
   email_error: '请输入正确的邮箱地址',
   phone_error: '请输入正确的手机号码',
   validate_code_is_empty: '验证码不能为空',
-  validate_code_error: '验证码有误'
-}
+  validate_code_error: '验证码有误',
+};

@@ -1,128 +1,117 @@
-import React, { PureComponent } from 'react';
-import { Button } from 'antd';
-import { CloseOutlined } from '@ant-design/icons'
-import '../../../maintable/css/style/MoveToSectionMenu.less'
-import {
-  VISIBILITY,
-  COLOR,
-  DISPLAY
-} from '../header/StyleValues'
+import React, {PureComponent} from 'react';
+import {Button} from 'antd';
+import {CloseOutlined} from '@ant-design/icons';
+import '../../../maintable/css/style/MoveToSectionMenu.less';
+import {VISIBILITY, COLOR, DISPLAY} from '../header/StyleValues';
 
-import { connect } from 'react-redux'
-import { dealRowMoveModal } from '../../../maintable/actions/rowActions'
-import { dealSectionUndoDeleteMessage } from '../../../maintable/actions/SectionActions'
-import { mapRowActionStateToProps } from '../../../maintable/data/mapStateToProps'
+import {connect} from 'react-redux';
+import {dealRowMoveModal} from '../../../maintable/actions/rowActions';
+import {dealSectionUndoDeleteMessage} from '../../../maintable/actions/SectionActions';
+import {mapRowActionStateToProps} from '../../../maintable/data/mapStateToProps';
 
-let intervalTimer
+let intervalTimer;
 
-@connect(mapRowActionStateToProps, { dealRowMoveModal, dealSectionUndoDeleteMessage })
+@connect(mapRowActionStateToProps, {dealRowMoveModal, dealSectionUndoDeleteMessage})
 class UndoMessage extends PureComponent {
-
   constructor() {
-    super()
+    super();
 
     this.state = {
       countdown: 10,
-      isShowUndoModal: false
-    }
+      isShowUndoModal: false,
+    };
   }
 
   handleCancelClick = () => {
-    clearInterval(intervalTimer)
-    const { isSection } = this.props
+    clearInterval(intervalTimer);
+    const {isSection} = this.props;
 
     if (isSection) {
       this.props.dealSectionUndoDeleteMessage({
-        isShowUndoModal: false
-      })
-    }
-    else {
+        isShowUndoModal: false,
+      });
+    } else {
       this.props.dealRowMoveModal({
-        isShowUndoModal: false
-      })
+        isShowUndoModal: false,
+      });
     }
-  }
+  };
 
   componentWillUnmount() {
-    this.clearComponent()
+    this.clearComponent();
   }
 
   clearComponent = () => {
     // 清除异步操作
     this.setState = (state, callback) => {
-      return
-    }
+      return;
+    };
 
     // 清除定时
-    clearInterval(intervalTimer)
-  }
+    clearInterval(intervalTimer);
+  };
 
   // 撤销相关操作
   cancelAction = () => {
-    const { tableData, sourceGroupKey, targetGroupKey, rowKey, oldSourceRow, isSection, group, groupIndex  } = this.props
+    const {tableData, sourceGroupKey, targetGroupKey, rowKey, oldSourceRow, isSection, group, groupIndex} = this.props;
 
     if (isSection) {
       // 撤销删除分区
-      tableData.undoRemoveGroup(groupIndex, group)
-    }
-    else {
+      tableData.undoRemoveGroup(groupIndex, group);
+    } else {
       // 撤销移动行
-      tableData.moveRow(targetGroupKey, sourceGroupKey, rowKey, oldSourceRow)
+      tableData.moveRow(targetGroupKey, sourceGroupKey, rowKey, oldSourceRow);
     }
 
-    this.handleCancelClick()
-  }
+    this.handleCancelClick();
+  };
 
   componentWillReceiveProps(props) {
-    const { isShowUndoModal } = props
+    const {isShowUndoModal} = props;
     if (isShowUndoModal) {
       this.setState({
-        countdown: 10
-      })
+        countdown: 10,
+      });
     }
     this.setState({
-      isShowUndoModal: isShowUndoModal
-    })
+      isShowUndoModal: isShowUndoModal,
+    });
   }
 
   render() {
-
     // 更新时若isShowUndoModal为true则倒计时
     if (this.state.isShowUndoModal) {
-      let countdown = this.state.countdown
-      clearInterval(intervalTimer)
+      let countdown = this.state.countdown;
+      clearInterval(intervalTimer);
       intervalTimer = setInterval(() => {
         if (countdown > 0) {
-          countdown -= 1
+          countdown -= 1;
           this.setState({
-            countdown: countdown
-          })
-        }
-        else {
+            countdown: countdown,
+          });
+        } else {
           // 自动关闭组件
-          this.handleCancelClick()
+          this.handleCancelClick();
         }
       }, 1000);
     }
 
     return (
-      <div className='undo_message' style={{display: this.state.isShowUndoModal ? DISPLAY.BLOCK : DISPLAY.NONE}}>
-        <div className='undo_message_content'>
-          <span style={{margin: '10px 0px'}}>
-            &emsp;&emsp;{this.props.isSection ? '删除成功' : '移动成功'}
-          </span>
-          <Button 
-            shape='round'
-            type='primary'
+      <div className="undo_message" style={{display: this.state.isShowUndoModal ? DISPLAY.BLOCK : DISPLAY.NONE}}>
+        <div className="undo_message_content">
+          <span style={{margin: '10px 0px'}}>&emsp;&emsp;{this.props.isSection ? '删除成功' : '移动成功'}</span>
+          <Button
+            shape="round"
+            type="primary"
             style={{margin: '10px 10px 10px 110px', width: 92, backgroundColor: COLOR.UNDO, borderColor: COLOR.WHITE}}
             onClick={this.cancelAction}
           >
             <span>撤 销&emsp;</span>
             <span style={{width: 12}}>{this.state.countdown}</span>
           </Button>
-          <Button 
-            icon={<CloseOutlined  />}
-            type='link'
+          <Button
+            icon={<CloseOutlined />}
+            type="link"
             style={{margin: '10px 10px 10px 16px'}}
             onClick={this.handleCancelClick}
           />
