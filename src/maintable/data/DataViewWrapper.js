@@ -106,18 +106,14 @@ class DataViewWrapper {
       });
       // 先过滤折叠的分区
       let groups = dataset.getGroups().filter(group => group.isCollapsed)
-
       let indexMapData = [] 
       if (groups.length > 0 && indexMap) {
         for (let j = 0; j < indexMap.length; j++) {
           let row = indexMap[j]
-
           // 查询是否为折叠分区
           let group = groups.find(group => group.groupKey === row.groupKey)
-
           if (group && row.rowType != RowType.FOOTER) {
-            // row.isCollapsed = true
-            // indexMapData.push(row)
+            continue;
           }else if (!group) {
             row.isCollapsed = false
             indexMapData.push(row)
@@ -128,7 +124,6 @@ class DataViewWrapper {
       }else if (groups.length === 0) {
         indexMapData.push(...indexMap)
       }
-      // indexMapData.splice(2, 0, indexMap[1]);
       return indexMapData
     }
 
