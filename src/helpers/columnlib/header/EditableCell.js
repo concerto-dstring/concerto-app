@@ -48,7 +48,7 @@ class EditableCell extends React.PureComponent {
 
     this.popupHeights={
       DATE: 150,
-      PEOPLE: 700
+      PEOPLE: 450
     }
   }
 

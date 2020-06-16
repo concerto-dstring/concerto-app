@@ -180,11 +180,10 @@ function reducers(state = getInitialState(), action) {
     }
     case ActionTypes.HEIGHT_INCREASE: {
       let {increase} = action;
-      let {scrollY} = state;
       const newState = Object.assign({}, state, {
         heightAdjustment: increase,
       });
-      const scrollAnchor = scrollTo(newState, scrollY);
+      const scrollAnchor = scrollTo(newState, state.scrollContentHeight);
       return computeRenderedRows(newState, scrollAnchor);
     }
     case ActionTypes.SCROLL_TO_Y: {
