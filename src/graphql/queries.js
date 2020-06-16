@@ -227,6 +227,7 @@ export const getUser = /* GraphQL */ `
           creatorID
           createdAt
           deleteFlag
+          color
         }
         nextToken
       }
@@ -463,6 +464,7 @@ export const getBoard = /* GraphQL */ `
       }
       createdAt
       deleteFlag
+      color
     }
   }
 `;
@@ -476,6 +478,35 @@ export const listBoards = /* GraphQL */ `
       items {
         id
         name
+        groups(limit: 1000) {
+          items {
+            deleteFlag
+            rows(limit: 10000) {
+              items {
+                id
+                deleteFlag
+                notification(limit: 1000000) {
+                  items {
+                    id
+                    subject
+                    content
+                    senderID
+                    receiverID
+                    seenflag
+                    createdAt
+                    boardID
+                    groupID
+                    rowID
+                    threadOnRowID
+                  }
+                  nextToken
+                }
+              }
+              nextToken
+            }
+          }
+          nextToken
+        }
         columns {
           nextToken
         }
@@ -497,6 +528,7 @@ export const listBoards = /* GraphQL */ `
         }
         createdAt
         deleteFlag
+        color
       }
       nextToken
     }
@@ -535,6 +567,7 @@ export const getGroup = /* GraphQL */ `
         }
         createdAt
         deleteFlag
+        color
       }
       rows {
         items {
@@ -604,6 +637,7 @@ export const listGroups = /* GraphQL */ `
           creatorID
           createdAt
           deleteFlag
+          color
         }
         rows {
           nextToken
@@ -646,6 +680,7 @@ export const getRow = /* GraphQL */ `
           creatorID
           createdAt
           deleteFlag
+          color
         }
         rows {
           nextToken
@@ -1342,6 +1377,7 @@ export const getNotification = /* GraphQL */ `
         }
         createdAt
         deleteFlag
+        color
       }
       groupID
       group {
@@ -1354,6 +1390,7 @@ export const getNotification = /* GraphQL */ `
           creatorID
           createdAt
           deleteFlag
+          color
         }
         rows {
           nextToken
@@ -1502,6 +1539,7 @@ export const listNotifications = /* GraphQL */ `
           creatorID
           createdAt
           deleteFlag
+          color
         }
         groupID
         group {

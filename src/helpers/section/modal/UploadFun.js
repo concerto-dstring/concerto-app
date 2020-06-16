@@ -4,13 +4,13 @@ export function getBase64(img, callback) {
   reader.readAsDataURL(img);
 }
 
-  /**
-   * 判断是否为图片文件
-   */
-  export function isImageFile(fileName) {
-    if (!/\.(jpg|jpeg|png|gif|bmp)$/.test(fileName.toLowerCase()) ) { 
-      return  false;     
-    }else{
-      return true; 
-    }
+/**
+ * 判断是否为图片文件
+ */
+export function isImageFile(fileName) {
+  if (!/\.(jpg|jpeg|png|gif|bmp)$/.test(fileName.toLowerCase())) {
+    return false;
+  } else {
+    return true;
   }
+}

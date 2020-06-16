@@ -1,9 +1,9 @@
 import React from 'react';
-import 'antd/dist/antd.css'
+import 'antd/dist/antd.css';
 import {InputNumber} from 'antd';
 import 'moment/locale/zh-cn';
-import { Cell } from '../../../maintable/FixedDataTableRoot';
-import './NumberCell.less'
+import {Cell} from '../../../maintable/FixedDataTableRoot';
+import './NumberCell.less';
 
 class NumberCell extends React.Component {
     constructor(props){
@@ -38,4 +38,4 @@ class NumberCell extends React.Component {
     }
   }
 
-  export {NumberCell};
+export {NumberCell};

@@ -608,6 +608,7 @@ export const onCreateUser = /* GraphQL */ `
           creatorID
           createdAt
           deleteFlag
+          color
         }
         nextToken
       }
@@ -689,6 +690,7 @@ export const onUpdateUser = /* GraphQL */ `
           creatorID
           createdAt
           deleteFlag
+          color
         }
         nextToken
       }
@@ -770,6 +772,7 @@ export const onDeleteUser = /* GraphQL */ `
           creatorID
           createdAt
           deleteFlag
+          color
         }
         nextToken
       }
@@ -856,6 +859,7 @@ export const onCreateBoardSubscribedUser = /* GraphQL */ `
         }
         createdAt
         deleteFlag
+        color
       }
       user {
         id
@@ -923,6 +927,7 @@ export const onUpdateBoardSubscribedUser = /* GraphQL */ `
         }
         createdAt
         deleteFlag
+        color
       }
       user {
         id
@@ -990,6 +995,7 @@ export const onDeleteBoardSubscribedUser = /* GraphQL */ `
         }
         createdAt
         deleteFlag
+        color
       }
       user {
         id
@@ -1097,6 +1103,7 @@ export const onCreateBoard = /* GraphQL */ `
       }
       createdAt
       deleteFlag
+      color
     }
   }
 `;
@@ -1173,6 +1180,7 @@ export const onUpdateBoard = /* GraphQL */ `
       }
       createdAt
       deleteFlag
+      color
     }
   }
 `;
@@ -1249,6 +1257,7 @@ export const onDeleteBoard = /* GraphQL */ `
       }
       createdAt
       deleteFlag
+      color
     }
   }
 `;
@@ -1285,6 +1294,7 @@ export const onCreateGroup = /* GraphQL */ `
         }
         createdAt
         deleteFlag
+        color
       }
       rows {
         items {
@@ -1370,6 +1380,7 @@ export const onUpdateGroup = /* GraphQL */ `
         }
         createdAt
         deleteFlag
+        color
       }
       rows {
         items {
@@ -1455,6 +1466,7 @@ export const onDeleteGroup = /* GraphQL */ `
         }
         createdAt
         deleteFlag
+        color
       }
       rows {
         items {
@@ -1522,6 +1534,7 @@ export const onCreateRow = /* GraphQL */ `
           creatorID
           createdAt
           deleteFlag
+          color
         }
         rows {
           nextToken
@@ -1635,6 +1648,7 @@ export const onUpdateRow = /* GraphQL */ `
           creatorID
           createdAt
           deleteFlag
+          color
         }
         rows {
           nextToken
@@ -1748,6 +1762,7 @@ export const onDeleteRow = /* GraphQL */ `
           creatorID
           createdAt
           deleteFlag
+          color
         }
         rows {
           nextToken
@@ -1879,6 +1894,7 @@ export const onCreateColumnBoard = /* GraphQL */ `
         }
         createdAt
         deleteFlag
+        color
       }
       column {
         id
@@ -1949,6 +1965,7 @@ export const onUpdateColumnBoard = /* GraphQL */ `
         }
         createdAt
         deleteFlag
+        color
       }
       column {
         id
@@ -2019,6 +2036,7 @@ export const onDeleteColumnBoard = /* GraphQL */ `
         }
         createdAt
         deleteFlag
+        color
       }
       column {
         id
@@ -2922,6 +2940,7 @@ export const onCreateNotification = /* GraphQL */ `
         }
         createdAt
         deleteFlag
+        color
       }
       groupID
       group {
@@ -2934,6 +2953,7 @@ export const onCreateNotification = /* GraphQL */ `
           creatorID
           createdAt
           deleteFlag
+          color
         }
         rows {
           nextToken
@@ -3134,6 +3154,7 @@ export const onUpdateNotification = /* GraphQL */ `
         }
         createdAt
         deleteFlag
+        color
       }
       groupID
       group {
@@ -3146,6 +3167,7 @@ export const onUpdateNotification = /* GraphQL */ `
           creatorID
           createdAt
           deleteFlag
+          color
         }
         rows {
           nextToken
@@ -3346,6 +3368,7 @@ export const onDeleteNotification = /* GraphQL */ `
         }
         createdAt
         deleteFlag
+        color
       }
       groupID
       group {
@@ -3358,6 +3381,7 @@ export const onDeleteNotification = /* GraphQL */ `
           creatorID
           createdAt
           deleteFlag
+          color
         }
         rows {
           nextToken

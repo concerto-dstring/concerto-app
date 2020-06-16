@@ -109,7 +109,6 @@ class FixedDataTableBufferedRows extends React.Component {
     this._divRef = div;
   }
 
-
   /**
    * type header, footer, row 
    */
@@ -210,7 +209,10 @@ class FixedDataTableBufferedRows extends React.Component {
               isRTL={props.isRTL}
               container={this._divRef}
               data={props.data}
-              visible={visible}>
+              visible={visible}
+              onCellEdit={props.onCellEdit}
+              onCellEditEnd={props.onCellEditEnd}
+            >
             </MainTableSectionGroupBar>
             break;
           case RowType.TITLE:
@@ -232,6 +234,7 @@ class FixedDataTableBufferedRows extends React.Component {
               visible={visible} 
               onFilter={props.onFilterChange}
               onGetListUsers={props.onGetListUsers}
+              boardColor={props.boardColor}
               onAddNewGroup={props.onAddNewGroup}            
             />;
             break;

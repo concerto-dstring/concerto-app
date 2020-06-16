@@ -20,13 +20,11 @@ import Scrollbar from './Scrollbar';
 import cx from './vendor_upstream/stubs/cx';
 import joinClasses from './vendor_upstream/core/joinClasses';
 import { sumPropWidths } from './helper/widthHelper';
-import { compareSubLevel, getLeafRowIndex, getSubLevel ,RowType} from './data/MainTableType';
+import { getLeafRowIndex, getSubLevel, RowType } from './data/MainTableType';
 
 import './css/layout/fixedDataTableRowLayout.css';
 import './css/style/fixedDataTableRow.css';
 import './css/style/fixedDataTable.css';
-
-
 
 // .fixedDataTableLayout/header border-bottom-width
 var HEADER_BORDER_BOTTOM_WIDTH = 1;
