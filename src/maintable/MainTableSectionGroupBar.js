@@ -174,7 +174,7 @@ class MainTableSectionGroupBar extends React.Component {
       height: this.props.height,
       zIndex: (this.props.zIndex ? this.props.zIndex : 0),
       display: (this.props.visible ? 'block' : 'none'),
-      marginTop: '5px',
+      marginTop: '7px',
       background:'#f2f3f3'
      
     };
