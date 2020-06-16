@@ -14,7 +14,7 @@ import {getRandomColor} from '../helpers/section/header/SectionColor';
 import {
   SearchOutlined,
   ShareAltOutlined,
-  DownOutlined,
+  CaretDownOutlined,
   EyeInvisibleOutlined,
   DoubleRightOutlined,
 } from '@ant-design/icons';
@@ -204,10 +204,10 @@ class MainTableTitleRow extends React.Component {
               <div id="addGroupBtn">
                 <Button onClick={this._onAddNewGroup} className="main_table_add_btn">
                   <div className="main_table_btn_layout">
-                    <span style={{}}>+ 工作项</span>
+                    <span style={{}}>+ &nbsp;工作项</span>
                     <div className="main_table_add_btn_separator" />
                     <div>
-                      <DownOutlined />
+                      <CaretDownOutlined />
                     </div>
                   </div>
                 </Button>
@@ -249,7 +249,7 @@ class MainTableTitleRow extends React.Component {
                 prefix={<SearchOutlined />}
                 placeholder="搜索工作板内容"
                 onChange={this._onFilterTableData}
-                style={{borderRadius: '15px', width: 240}}
+                style={{borderRadius: '5px', width: 240,border:'1px solid #f2f3f3'}}
               />
             </div>
           </div>

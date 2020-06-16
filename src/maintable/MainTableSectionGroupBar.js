@@ -179,12 +179,11 @@ class MainTableSectionGroupBar extends React.Component {
      
     };
     var contextStyle = {
-      minWidth:'150px',
       maxWidth:'500px',
       width:'auto',
       lineHeight:'35px',
       background:'#fafafa',
-      display:'inline-block',
+      float:'left',
       borderRadius:'7px 7px 0 0',
     }
     let offset = this.props.offsetTop;
@@ -206,17 +205,24 @@ class MainTableSectionGroupBar extends React.Component {
  
     let group = data.getGroupByRowIndex(this.props.index);
     let groupColor = group ? group.color : "rgba(0, 0, 0, 0.65)";
+
     let titleStyle = {
-      paddingLeft:'13px',
+      padding:'0 15px 0 15px',
       fontWeight:'bold',
       color:groupColor,
       cursor:'pointer'
     }
-     
+    let collpseBarStyle = {
+      paddingLeft:'12px',
+      fontWeight:'bold',
+      color:groupColor,
+      cursor:'pointer'
+    }
     const showMoreBar = (e)=> {
        this.setState({
          style:{
-           display:'inline-block'
+           display:'block',
+           float:'left'
          }
        })
     }
@@ -224,7 +230,8 @@ class MainTableSectionGroupBar extends React.Component {
     const hideMoreBar = (e)=> {
       this.setState({
         style:{
-          display:'none'
+          display:'none',
+          float:'left'
         }
       })
    }
@@ -235,10 +242,10 @@ class MainTableSectionGroupBar extends React.Component {
             <div style={style} className={className} onMouseEnter={showMoreBar} onMouseLeave={hideMoreBar} >
               <div style={contextStyle}>
                 {
-                  isCollapsed&&<UpOutlined style={titleStyle} onClick={this.changeGroupCollapseState}/>
+                  isCollapsed&&<UpOutlined style={collpseBarStyle} onClick={this.changeGroupCollapseState}/>
                 }
                 {
-                  !isCollapsed&&<DownOutlined style={titleStyle} onClick={this.changeGroupCollapseState}/>
+                  !isCollapsed&&<DownOutlined style={collpseBarStyle} onClick={this.changeGroupCollapseState}/>
                 }
                 <span style={titleStyle}>{group.name}</span>
               </div>
