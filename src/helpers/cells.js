@@ -297,7 +297,7 @@ class DropDownMenuHeader extends React.PureComponent {
   };
   handleVisibleChange = (visible) => {
     if (visible) {
-      this.props.onCellEdit(this.props.rowIndex, this.props.columnKey);
+      this.props.onCellEdit(this.props.rowIndex, this.props.columnKey, 260);
     } else {
       this.props.onCellEditEnd(this.props.rowIndex, this.props.columnKey);
     }
@@ -331,6 +331,7 @@ class DropDownMenuHeader extends React.PureComponent {
           trigger='click'
           getPopupContainer={() => this.props.container}
           onVisibleChange={this.handleVisibleChange}
+          placement='bottomLeft'
         >
           <EllipsisOutlined
             size="small"
@@ -424,7 +425,7 @@ class DropDownMenuCell extends React.PureComponent {
       isShowDropDown: visible
     })
     if (visible) {
-      this.props.onCellEdit(this.props.rowIndex, this.props.columnKey);
+      this.props.onCellEdit(this.props.rowIndex, this.props.columnKey, 200);
     } else {
       this.props.onCellEditEnd(this.props.rowIndex, this.props.columnKey);
     }
@@ -488,6 +489,7 @@ class DropDownMenuCell extends React.PureComponent {
           trigger='click'
           getPopupContainer={() => this.props.container}
           onVisibleChange={this.handleVisibleChange}
+          placement='bottomLeft'
         >
           <AntdButton
             icon={<CaretDownOutlined />}
