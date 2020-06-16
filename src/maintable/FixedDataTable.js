@@ -1156,9 +1156,11 @@ const DRAG_SCROLL_BUFFER = 40;
   _onCellEdit = (rowIndex, columnKey, popupHeight = 0) => {
     //add additional height
     if (popupHeight > 0) {
+      const lastRow = this.props.endRowIndex - 1;      ;
+      const oldHeight = this.props.rowOffsets[lastRow] + 150;
       const newHeight = this.props.rowOffsets[rowIndex] + 100 + popupHeight;
-      if (newHeight > this._contentHeight) {
-          this.props.displayActions.adjustHeight(newHeight - this._contentHeight);
+      if (newHeight > oldHeight) {
+          this.props.displayActions.adjustHeight(newHeight - oldHeight);
       }
     }
     this.props.cellActions.startCellEdit({rowIndex, columnKey});
