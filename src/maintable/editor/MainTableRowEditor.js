@@ -58,7 +58,7 @@ class MainTableRowEditor extends React.Component {
       }      
     }
     return (
-      <div className="slide_drawer_container_body">
+      <div>
         {cells}
       </div>
     );

@@ -155,8 +155,8 @@ class EditableCell extends React.PureComponent {
       if (columnCanEditor) {
         this.setState({editing: true})
       }
-      if (this.props.onCellEditEnd) {
-        this.props.onCellEditEnd(this.props.rowIndex, this.props.columnKey);
+      if (this.props.onCellEdit) {
+        this.props.onCellEdit(this.props.rowIndex, this.props.columnKey);
       }
     }
   }
@@ -177,7 +177,10 @@ class EditableCell extends React.PureComponent {
         value: value,
       })
     }
-    this.props.onCellEditEnd(this.props.rowIndex, this.props.columnKey)
+
+    if (this.props.onCellEditEnd) {
+      this.props.onCellEditEnd(this.props.rowIndex, this.props.columnKey);
+    }
   }
 
   handleKey = (e) => {
@@ -202,13 +205,6 @@ class EditableCell extends React.PureComponent {
     })
   }
 
-<<<<<<< HEAD
-        // let classNameStr;
-        // if (!isHeaderOrFooter) {
-        //     classNameStr =  'editableCell ' + (this.state.mouseIn ? 'mouseIn':'mouseOut');
-        // }
-        return (
-=======
   getPeopleFilterStyle = (type, editing, value) => {
     let style = {}
     if (
@@ -232,7 +228,6 @@ class EditableCell extends React.PureComponent {
     }
     return style
   }
->>>>>>> master
 
   render() {
     const {

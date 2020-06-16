@@ -20,11 +20,7 @@ import Scrollbar from './Scrollbar';
 import cx from './vendor_upstream/stubs/cx';
 import joinClasses from './vendor_upstream/core/joinClasses';
 import { sumPropWidths } from './helper/widthHelper';
-<<<<<<< HEAD
-import { getLeafRowIndex, getSubLevel } from './data/MainTableType';
-=======
-import { compareSubLevel, getLeafRowIndex, getSubLevel ,RowType} from './data/MainTableType';
->>>>>>> master
+import { getLeafRowIndex, getSubLevel, RowType } from './data/MainTableType';
 
 import './css/layout/fixedDataTableRowLayout.css';
 import './css/style/fixedDataTableRow.css';

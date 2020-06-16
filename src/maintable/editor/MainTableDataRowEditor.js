@@ -5,6 +5,7 @@ import React from 'react';
 import { DataVersionContext } from '../../maintable/data/DataContext';
 import { TextCell } from '../../helpers/cells';
 import { EditableCell } from '../../helpers/columnlib/header/EditableCell';
+import './MainTableRowEditor.less';
 
 export const DataEditableCell = function(props) {
     this.props = props;
@@ -84,7 +85,7 @@ class MainTableDataRowEditor extends React.Component {
         }
         return (
             <DataVersionContext.Provider value={this.state} >
-                <div ref={this._onRef}>
+                <div ref={this._onRef} className="column_container_body">
                     <MainTableRowEditor columns={columns} data={props.data} rowIndex={props.rowIndex} container={this.state.container} />
                 </div>
             </DataVersionContext.Provider>
