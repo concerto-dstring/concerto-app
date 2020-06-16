@@ -476,9 +476,9 @@ class MainPage extends React.Component {
                         cursor: 'pointer',
                       }}
                     >
-                      {dataset._currentUser.fname ? dataset._currentUser.fname : ''}
+                      {dataset._currentUser.username ? dataset._currentUser.username.split('')[0] : ''}
                     </Avatar>
-                    {dataset._currentUser.lname + dataset._currentUser.fname}
+                    {dataset._currentUser.username}
                   </span>
                 </Dropdown>
               </div>
