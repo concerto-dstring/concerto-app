@@ -3,11 +3,18 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { Input } from 'semantic-ui-react';
+import {
+  DownOutlined,
+  UpOutlined,
+  EllipsisOutlined
+} from '@ant-design/icons'
+
 
 import cx from './vendor_upstream/stubs/cx';
 import { sumPropWidths } from './helper/widthHelper';
 import Scrollbar from './Scrollbar';
 import FixedDataTableTranslateDOMPosition from './FixedDataTableTranslateDOMPosition';
+import {DropDownMenuHeader} from '../helpers/cells';
 
 import './css/layout/fixedDataTableRowLayout.css';
 import './css/style/fixedDataTableRow.css';
@@ -20,7 +27,7 @@ import './css/style/fixedDataTable.css';
  * only <FixedDataTable /> should use the component internally.
  */
 
-class MainTableAddRow extends React.Component {
+class MainTableSectionGroupBar extends React.Component {
 
   static propTypes = {
 
@@ -86,7 +93,7 @@ class MainTableAddRow extends React.Component {
      */
     attributes: PropTypes.object,
   };
-
+  
   componentWillMount() {
     this._initialRender = true;
     this._onKeyPress = this._onKeyPress.bind(this);
@@ -115,10 +122,22 @@ class MainTableAddRow extends React.Component {
   handleChange(event) {
     this.setState({newItem: event.target.value});
   }
+   
+  changeGroupCollapseState = () => {
+    const { data, index } = this.props
 
-  render() /*object*/ {
-    const { offsetTop, zIndex, visible,data, ...rowProps } = this.props;
+    let group = data.getGroupByRowIndex(index)
+    data.changeGroupCollapseState(group.groupKey)
+  }
 
+  render() {
+    const { offsetTop, zIndex, visible,data,rowIndex, ...rowProps } = this.props;
+    let isCollapsed;
+    if (typeof rowIndex === 'string') {
+      isCollapsed = false;
+    } else {
+      isCollapsed = data._indexMap[this.props.index].isCollapsed;
+    }
     const className = cx({
       'fixedDataTableRowLayout/main': true
     });
@@ -150,24 +169,24 @@ class MainTableAddRow extends React.Component {
     }
 
     const width = fixedColumnsWidth + scrollableColumnsWidth + fixedRightColumnsWidth - this.props.scrollLeft;
-    let group = data.getGroupByRowIndex(this.props.index);
-    let groupColor = group ? group.color : "rgba(0, 0, 0, 0.65)";
-    var inputStyle = {
-      marginLeft: '1px',
-      width: width-36,
-      height: this.props.height,
-      zIndex: this.props.zIndex,
-      borderRadius:'0px',
-      borderLeft:'3.5px solid '+groupColor
-    }
-
+     
     var style = {
       height: this.props.height,
       zIndex: (this.props.zIndex ? this.props.zIndex : 0),
       display: (this.props.visible ? 'block' : 'none'),
+      marginTop: '5px',
+      background:'#f2f3f3'
      
     };
-
+    var contextStyle = {
+      minWidth:'150px',
+      maxWidth:'500px',
+      width:'auto',
+      lineHeight:'35px',
+      background:'#fafafa',
+      display:'inline-block',
+      borderRadius:'7px 7px 0 0',
+    }
     let offset = this.props.offsetTop;
     if (this.props.isRowReordering && this.props.rowReorderingData) {
       if (this.props.rowReorderingData.newRowIndex < this.props.rowReorderingData.oldRowIndex) {
@@ -184,42 +203,55 @@ class MainTableAddRow extends React.Component {
     }
 
     FixedDataTableTranslateDOMPosition(style, 0, offset, this._initialRender, this.props.isRTL);
-
-    var scrollbarOffset = this.props.showScrollbarY ? Scrollbar.SIZE : 0;
-    
-    let scrollbarSpacer = null;
-    if (this.props.showScrollbarY) {
-      var spacerStyles = {
-        width: scrollbarOffset,
-        height: this.props.height,
-        // Since the box-sizing = border-box the border on the table is included in the width
-        // so we need to account for the left and right border
-        left: this.props.width - scrollbarOffset - 2,
-      };
-      scrollbarSpacer =
-        <div 
-          style={spacerStyles} 
-          className={cx('public/fixedDataTable/scrollbarSpacer')}
-        />;
+ 
+    let group = data.getGroupByRowIndex(this.props.index);
+    let groupColor = group ? group.color : "rgba(0, 0, 0, 0.65)";
+    let titleStyle = {
+      paddingLeft:'10px',
+      fontWeight:'bold',
+      color:groupColor,
+      cursor:'pointer'
+    }
+     
+    const showMoreBar = (e)=> {
+       this.setState({
+         style:{
+           display:'inline-block'
+         }
+       })
     }
 
+    const hideMoreBar = (e)=> {
+      this.setState({
+        style:{
+          display:'none'
+        }
+      })
+   }
+   if(!group){
+     return '';
+   }
     return ( 
-          <div> 
-            {dropPlace}
-            <div style={style} className={className} >
-              <Input 
-                style={inputStyle} 
-                action= {{content:'添加', onClick:() => this._onNewrowButton(this.props) }} 
-                placeholder='+' 
-                onKeyPress={this._onKeyPress} 
-                value={this.state.newItem} 
-                onChange={this.handleChange} 
-              />
-              {scrollbarSpacer}
+            <div style={style} className={className} onMouseEnter={showMoreBar} onMouseLeave={hideMoreBar} >
+              <div style={contextStyle}>
+                {
+                  isCollapsed&&<UpOutlined style={titleStyle} onClick={this.changeGroupCollapseState}/>
+                }
+                {
+                  !isCollapsed&&<DownOutlined style={titleStyle} onClick={this.changeGroupCollapseState}/>
+                }
+                <span style={titleStyle}>{group.name}</span>
+              </div>
+              <div style={this.state.style}>
+                <DropDownMenuHeader
+                  data={data}
+                  rowIndex = {this.props.index}
+                  {...this.props}
+                />
+              </div>
             </div>
-          </div>
           );
   }
 }
 
-export default MainTableAddRow;
+export default MainTableSectionGroupBar;

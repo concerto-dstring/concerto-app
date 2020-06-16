@@ -20,7 +20,8 @@ import {
   getData, 
   listUsers, getUser, 
   getTeam,
-  listThreadOnRows, getThreadOnRow
+  listThreadOnRows, getThreadOnRow,
+  listNotifications
 } from "../graphql/queries"
 
 import {
@@ -47,27 +48,28 @@ class MainTableDataStore {
 
     constructor() {
         this._apolloClient = null
-        this._boardNotifications = {}
-        this._sizeRows = 0;
-        this._sizeSubrows = 0;
-        this._columns= [];
-        this._columnsComponentType = {}
-        this._sizeColumns = 0;
-        this._rowData = {};
-        this._rowNotification = {}
-        this._rowThreadData = {}
-        this._rowThreadSize = {}
-        this._subRowKeys = []
-        this._rowColumnData = {}
-        this._groups = [];
-        this._sizeGroups = 0;
-        this._subRows = {};
+
+        // global 
         this._boardMenus = []
-        this._dashboardMenus = []
+        this._boards = {}
         this._currentBoardId = ''
         this._currentUser = {}
         this._cacheUsers = {}
         this._teamUsers = []
+        this._columnsComponentType = {}
+        
+        // per boardid
+        this._columns= {};
+        this._groups = {};
+        this._rowData = {};
+        this._rowColumnData = {}
+        this._rowThreadData = {}
+        this._rowThreadSize = {}
+        this._boardNotifications = {}
+        this._subRows = {}
+        this._subRowKeys = {}
+        this._rowNotification = {}
+
         this.getSize = this.getSize.bind(this);
         this.addNewRow = this.addNewRow.bind(this);
         this.addNewColumn = this.addNewColumn.bind(this);
@@ -217,7 +219,12 @@ class MainTableDataStore {
                   }
                 }
 
-                this.setBoardNotReadNotifications(this._boardMenus, currentUserId)
+                for (let key in this._boardMenus){
+                    let board = this._boardMenus[key];
+                    let notifinum = this.getNotificationsByBoardId(board.id);
+                    console.log("bardid "+board.id + " has notification "+notifinum);
+                }
+
               }
               else {
                 setMenus([], true, null)
@@ -255,7 +262,6 @@ class MainTableDataStore {
               defaultBoard = this._boardMenus[0]
             }
             this._currentBoardId =  defaultBoard.id
-            this.setBoardNotReadNotifications(this._boardMenus, this._currentUser.id)
             this.fetchBoardData(defaultBoard.id, setMenus)
           }
         })
@@ -266,35 +272,56 @@ class MainTableDataStore {
      * @param {*} boardId 
      */
     getNotificationsByBoardId(boardId){
-      if (!boardId || Object.keys(this._boardNotifications).indexOf(boardId) === -1) {
-        return 0
+      if (!boardId)
+        return 0;
+      
+      let notifications; 
+      if (boardId in this._boardNotifications) {
+        notifications = this._boardNotifications[boardId];
+      } else {
+        this._apolloClient
+        .query({
+          query: gql(listNotifications),
+          variables: {
+            limit: 1000,
+            filter: {
+              boardID: {
+                eq: boardId
+              }
+            }
+          },
+          fetchPolicy: "no-cache"
+        })
+        .then(result => {
+          this._boardNotifications[boardId] = result.data.listNotifications.items;
+        })
       }
-      let notReadCount = 0
 
-      for (let key in this._boardNotifications[boardId]) {
-        notReadCount = notReadCount + this._boardNotifications[boardId][key]
+      let notReadCount = 0;
+      for (let key in notifications) {
+        if (notifications[key] && !notifications[key].seenflag)
+            notReadCount++;
       }
-
       return notReadCount
     }
 
     /**
-     * 设置每个Board未读的通知条目数
+     * 设置the current Board未读的通知条目数
      * @param {*} boards 
      */
-    setBoardNotReadNotifications(boards, currentUserId) {
-      this._boardNotifications = {}
-      boards.map(board => {
+    setBoardRowNotReadNotifications(board, currentUserId) {
         let groups = board.groups.items.filter(item => !item.deleteFlag)
         this._boardNotifications[board.id] = {}
         groups.map(group => {
-          let rows = group.rows.items.filter(item => !item.deleteFlag)
-          rows.map(row => {
-            let notifications = row.notification.items.filter(item => item.receiverID === currentUserId && !item.seenflag)
-            this._boardNotifications[board.id][row.id] = notifications.length
-          })
+          if (group.rows.items) {
+            let rows = group.rows.items.filter(item => !item.deleteFlag)
+            rows.map(row => {
+              let notifications = row.notification.items.filter(item => item.receiverID === currentUserId && !item.seenflag)
+              this._boardNotifications[board.id][row.id] = notifications.length
+            })
+          }
         })
-      })
+
     }
 
     /**
@@ -303,11 +330,21 @@ class MainTableDataStore {
     fetchBackendBoardData(boardId, setMenus, setLoading, currentUserId){
       this._currentBoardId = boardId
       this.getAllUsers(boardId, setMenus, setLoading, currentUserId)
+      this.fetchBoardData(boardId, setMenus, setLoading)
       // return ret;
     }
 
     fetchBoardData(boardId, setMenus, setLoading) {
-      this._apolloClient
+      var board
+      if (boardId in this._boards) {
+        if (setMenus) {
+          setMenus(this._boardMenus, true, board)
+        }
+        else {
+          setLoading(false)
+        }
+      } else {
+        this._apolloClient
         .query({
           query: gql(getBoard),
           variables: {
@@ -316,41 +353,51 @@ class MainTableDataStore {
           fetchPolicy: "no-cache"
         })
         .then(result => {
-          let board = result.data.getBoard
-          
-          this._columns = []
-          this._rowData = {}
-          this._groups = []
-          this._subRows = {}
-          this._subRowKeys = []
-          this._columnsComponentType = []
-          this._rowThreadData = {}
-          this._rowThreadSize = {}
-          this._rowNotification = {}
-
-          let columns = this.sortDataByRank(board.columns.items)
-          this.setColumns(columns)
-          
-          let groups = this.sortDataByRank(board.groups.items)
-          this.setGroupAndRowData(groups)
-          for (let key in this._subRows) {
-            let subRows = this.sortDataByRank(this._subRows[key].rows)
-            this._subRows[key].rows = subRows
-          }
-
-          if (setMenus) {
-            setMenus(this._boardMenus, true, board)
-          }
-          else {
-            setLoading(false)
-          }
+          board = result.data.getBoard
+          this._boards[boardId] = board
+          this.cacheBoardDataInternal(setMenus, setLoading, board)
         })
         .catch(error => {
-          console.log(error)
+          console.log("fetchBoardData " + boardId + ":" +error)
         })
+      }
     }
 
-    setColumns(columns) {
+    cacheBoardDataInternal(setMenus, setLoading, board) {
+      var boardId = board.id
+
+      this._columnsComponentType = []
+      this._columns[boardId] = []
+      this._groups[boardId] = []
+      this._rowData[boardId] = {}
+      this._rowThreadData[boardId] = {}
+      this._rowThreadSize[boardId] = {}
+      this._rowColumnData[boardId] = {}
+      this._subRows[boardId] = {}
+      this._subRowKeys[boardId] = []
+      this._rowNotification[boardId] = {}
+
+      let columns = this.sortDataByRank(board.columns.items)
+      this.setColumns(boardId, columns)
+      
+      let groups = this.sortDataByRank(board.groups.items)
+      this.setGroupAndRowData(boardId, groups)
+      for (let key in this._subRows[boardId]) {
+        let subRows = this.sortDataByRank(this._subRows[boardId][key].rows)
+        this._subRows[boardId][key].rows = subRows
+      }
+
+      if (setMenus) {
+        setMenus(this._boardMenus, true, board)
+      }
+      else {
+        setLoading(false)
+      }
+
+      this.setBoardRowNotReadNotifications(board, this._currentUser.id)
+    }
+
+    setColumns(boardId, columns) {
       columns.map(column => {
         if(!column.deleteFlag) {
           this._columnsComponentType[column.column.id] = column.column.columnComponentType
@@ -369,12 +416,12 @@ class MainTableDataStore {
           else {
             column.width = 200
           }
-          this._columns.push(column)
+          this._columns[boardId].push(column)
         }
       })
     }
 
-    setGroupAndRowData(groups) {
+    setGroupAndRowData(boardId, groups) {
       groups.map(group => {
         if (!group.deleteFlag) {
           group.groupKey = group.id
@@ -383,27 +430,29 @@ class MainTableDataStore {
           groupRows.map(row => {
             if (!row.deleteFlag) {
               if (row.parentId) {
-                if (Object.keys(this._subRows).indexOf(row.parentId) !== -1) {
-                  let subRows = this._subRows[row.parentId].rows
+                if (Object.keys(this._subRows[boardId]).indexOf(row.parentId) !== -1) {
+                  let subRows = this._subRows[boardId][row.parentId].rows
                   subRows.push(row)
                 }
                 else {
-                  this._subRows[row.parentId] = {}
+                  this._subRows[boardId][row.parentId] = {}
                   let subRows = []
                   subRows.push(row)
-                  this._subRows[row.parentId].rows = subRows
-                  this._subRows[row.parentId].isExpanded = false
+                  this._subRows[boardId][row.parentId].rows = subRows
+                  this._subRows[boardId][row.parentId].isExpanded = false
                 }
-                this._subRowKeys.push(row.id)
+                this._subRowKeys[boardId].push(row.id)
               }
               else {
                 rows.push(row)
               }
-              this._rowData[row.id] = {}
-              this._rowColumnData[row.id] = {}
 
-              if (row.notification )
-                this._rowNotification[row.id] = row.notification.items
+              this._rowData[boardId][row.id] = {}
+              this._rowColumnData[boardId][row.id] = {}
+              
+              if (row.notification && row.notification.items.length) {
+                this._rowNotification[boardId][row.id] = row.notification.items
+              }
 
               let dataItems = row.datas.items
               dataItems.map(item => {
@@ -417,25 +466,25 @@ class MainTableDataStore {
                         users.push(this._cacheUsers[userId])
                       }
                     })
-                    this._rowData[item.rowID][item.columnID] = users
+                    this._rowData[boardId][item.rowID][item.columnID] = users
                   }
                   else {
-                    this._rowData[item.rowID][item.columnID] = []
+                    this._rowData[boardId][item.rowID][item.columnID] = []
                   }
                 }
                 else {
-                  this._rowData[item.rowID][item.columnID] = item.value
+                  this._rowData[boardId][item.rowID][item.columnID] = item.value
                 }
                 
-                this._rowColumnData[item.rowID][item.columnID] = item.id
+                this._rowColumnData[boardId][item.rowID][item.columnID] = item.id
               })
 
-              this._rowThreadSize[row.id] = row.threadOnRow.items.length
+              this._rowThreadSize[boardId][row.id] = row.threadOnRow.items.length
             }
           })
 
           group.rows = rows
-          this._groups.push(group)
+          this._groups[boardId].push(group)
         }
       })
     }
@@ -455,7 +504,7 @@ class MainTableDataStore {
     }
 
     getCreateColumnRank(level) {
-      let columns = this.sortDataByRank(this._columns.filter(column => column.level === level))
+      let columns = this.sortDataByRank(this._columns[this._currentBoardId].filter(column => column.level === level))
       let rank
       if (columns.length > 0) {
         rank = Number(columns[columns.length - 1].rank) + rankBlock
@@ -470,13 +519,13 @@ class MainTableDataStore {
     getCreateRowRank(parentRowKey, groupKey) {
       let rows = []
       if (parentRowKey) {
-        let subRow = this._subRows[parentRowKey]
+        let subRow = this._subRows[this._currentBoardId][parentRowKey]
         if (subRow) {
           rows = subRow.rows
         }
       }
       else {
-        let group = this._groups.find(group => group.groupKey === groupKey)
+        let group = this._groups[this._currentBoardId].find(group => group.groupKey === groupKey)
         if (group) {
           rows = group.rows
         }
@@ -514,13 +563,16 @@ class MainTableDataStore {
     }
 
     getAllUsers(boardId, setMenus, setLoading, currentUserId) {
+      // TODO: for user signup, we should use the subscribe@graphql
+      if (this._teamUsers.length != 0)
+        return
       this._apolloClient
         .query({
           query: gql(listUsers),
           variables: {
             limit: 10000,
           },
-          fetchPolicy: "no-cache"
+          fetchPolicy: "no-cache"// "cache-and-network"
         })
         .then(result => {
           let teamUsers = result.data.listUsers.items
@@ -541,8 +593,6 @@ class MainTableDataStore {
               this._cacheUsers[user.id] = user
             }
           })
-
-          this.fetchBoardData(boardId, setMenus, setLoading)
         });
     }
 
@@ -555,8 +605,8 @@ class MainTableDataStore {
       if (filterValue) {
         let userNameLow = filterValue.toLowerCase()
         let filterUsers = users.filter(user => {
-          if (user.fname.toLowerCase().indexOf(userNameLow) !== -1 || 
-          user.lname.toLowerCase().indexOf(userNameLow) !== -1) {
+          if ((user.fname && user.fname.toLowerCase().indexOf(userNameLow) !== -1) || 
+             (user.lname && user.lname.toLowerCase().indexOf(userNameLow)) !== -1) {
             return user
           }
         })
@@ -569,19 +619,19 @@ class MainTableDataStore {
     }
 
     getSize() {
-        return this._rowData.length;
+        return this._rowData[this._currentBoardId].length;
     }
 
     getObjectAt(rowKey) {
-        return this._rowData[rowKey];
+        return this._rowData[this._currentBoardId][rowKey];
     }
 
     getColumn(columnKey) {
-      return this._columns.find(column => column.columnKey === columnKey)
+      return this._columns[this._currentBoardId].find(column => column.columnKey === columnKey)
     }
 
     getRowData() {
-      return this._rowData
+      return this._rowData[this._currentBoardId]
     }
 
     setObjectAt(rowKey, columnKey, value, type) {
@@ -589,7 +639,7 @@ class MainTableDataStore {
       if (!rowKey || !columnKey) 
           return;
 
-      let column = this._columns.find(column => column.columnKey === columnKey)
+      let column = this._columns[this._currentBoardId].find(column => column.columnKey === columnKey)
 
       let newValue
       if (column.columnComponentType === PEOPLE) {
@@ -609,14 +659,17 @@ class MainTableDataStore {
       }
       else {
         if (value) {
-          newValue = value.trim() === "" ? null : value.trim()
+          if (value instanceof String)
+             newValue = value.trim() === "" ? null : value.trim()
+          else
+            newValue = value
         }
         else {
           newValue = null
         }
       }
       
-      let dataId = this._rowColumnData[rowKey][columnKey]
+      let dataId = this._rowColumnData[this._currentBoardId][rowKey][columnKey]
       if (dataId) {
         this.updateCellData(rowKey, columnKey, dataId, newValue, column.columnComponentType, value)
       }
@@ -626,13 +679,15 @@ class MainTableDataStore {
     }
 
     updateCellData(rowKey, columnKey, dataId, value, columnComponentType, specialValue) {
-      let origValue = this._rowData[rowKey][columnKey]
+      let origValue = this._rowData[this._currentBoardId][rowKey][columnKey]
       this._apolloClient
         .mutate({
           mutation: gql(updateData),
           variables: {
             input: {
               id: dataId,
+              columnID: columnKey,
+              rowID: rowKey,
               value: value
             }
           },
@@ -641,6 +696,8 @@ class MainTableDataStore {
             updateData: {
               id: dataId,
               __typename: "Data",
+              columnID: columnKey,
+              rowID: rowKey,
               value: value
             }
           }
@@ -649,31 +706,31 @@ class MainTableDataStore {
           
         })
         .catch(error => {
-          this._rowData[rowKey][columnKey] = origValue;
+          this._rowData[this._currentBoardId][rowKey][columnKey] = origValue;
           this.runCallbacks();
           console.log(error);
         })
 
         if (columnComponentType === PEOPLE) {
-          this._rowData[rowKey][columnKey] = specialValue
+          this._rowData[this._currentBoardId][rowKey][columnKey] = specialValue
         }
         else {
-          this._rowData[rowKey][columnKey] = value
+          this._rowData[this._currentBoardId][rowKey][columnKey] = value
         }
         
         this.runCallbacks();
     }
 
     getGroups() {
-        return this._groups;
+        return this._groups[this._currentBoardId];
     }
 
     getSubRows(rowKey, subRowKeys) {
-        if (this._subRows[rowKey]) {
+        if (this._subRows[this._currentBoardId][rowKey]) {
           if (subRowKeys && subRowKeys.length > 0) {
-            if (this._subRows[rowKey].rows) {
+            if (this._subRows[this._currentBoardId][rowKey].rows) {
               let rows = []
-              this._subRows[rowKey].rows.map(row => {
+              this._subRows[this._currentBoardId][rowKey].rows.map(row => {
                 if (subRowKeys.indexOf(row.id) !== -1) {
                   rows.push(row)
                 }
@@ -685,7 +742,7 @@ class MainTableDataStore {
             }
           }
           else {
-            return this._subRows[rowKey].rows || [];
+            return this._subRows[this._currentBoardId][rowKey].rows || [];
           }
         }
 
@@ -693,12 +750,12 @@ class MainTableDataStore {
     }
 
     getSubRowData() {
-      return this._subRows
+      return this._subRows[this._currentBoardId]
     }
 
     isSubRowExpanded(rowKey) {
-        if (this._subRows[rowKey])
-            return this._subRows[rowKey].isExpanded;
+        if (this._subRows[this._currentBoardId][rowKey])
+            return this._subRows[this._currentBoardId][rowKey].isExpanded;
         return false;
     }
 
@@ -721,12 +778,12 @@ class MainTableDataStore {
         })
         .then(result => {
           let row = result.data.createRow
-          this._rowData[row.id] = {}
-          this._rowColumnData[row.id] = {}
-          let subColumns = this._columns.filter(column => column.level !== 0)
+          this._rowData[this._currentBoardId][row.id] = {}
+          this._rowColumnData[this._currentBoardId][row.id] = {}
+          let subColumns = this._columns[this._currentBoardId].filter(column => column.level !== 0)
           if (subColumns.length > 0) {
-            for(var i=0; i<this._columns.length; i++){
-              const column = this._columns[i]
+            for(var i=0; i<this._columns[this._currentBoardId].length; i++){
+              const column = this._columns[this._currentBoardId][i]
               if (column.level === 0|| column.name === ColumnType.ROWACTION || column.name === ColumnType.ROWSELECT) continue
               if (column.isTitle) {
                 this.createCellData(row.id, column.columnKey, newItem)
@@ -736,7 +793,7 @@ class MainTableDataStore {
               }
             }
             // 添加子项
-            this._subRows[parentRowKey] = {rows:[row], isExpanded: true}
+            this._subRows[this._currentBoardId][parentRowKey] = {rows:[row], isExpanded: true}
           }
           else {
             let name = "子项描述"
@@ -744,7 +801,7 @@ class MainTableDataStore {
             this.createColumn(false, ColumnType.ROWSELECT, true, 1, ColumnType.ROWACTION, null, true, String(rankBlock * 2))
             this.createColumn(true, name, true, 1, ColumnType.EDITBOX, "TEXT", true, String(rankBlock * 3))
             // 添加子项
-            this._subRows[parentRowKey] = {rows:[row], isExpanded: true}
+            this._subRows[this._currentBoardId][parentRowKey] = {rows:[row], isExpanded: true}
             this.runCallbacks()
           }
         })
@@ -781,14 +838,14 @@ class MainTableDataStore {
     }
 
     toggleExpandSubRows(rowKey) {
-        this._subRows[rowKey].isExpanded = !this.isSubRowExpanded(rowKey);
+        this._subRows[this._currentBoardId][rowKey].isExpanded = !this.isSubRowExpanded(rowKey);
         //refresh
         this.runCallbacks();
     }
 
     getCreateGroupRank(groupKey, currentGroup, currentIndex) {
       let rank;
-      if (this._groups.length > 0) {
+      if (this._groups[this._currentBoardId].length > 0) {
         if (groupKey) {
           // 中间插入
           let currentRank = Number(currentGroup.rank);
@@ -797,14 +854,14 @@ class MainTableDataStore {
             preRank = 0;
           }
           else {
-            preRank = Number(this._groups[currentIndex - 1].rank);
+            preRank = Number(this._groups[this._currentBoardId][currentIndex - 1].rank);
           }
 
           rank = preRank + ((currentRank - preRank) / 2);
         }
         else {
           // 插入最上面
-          rank = Number(this._groups[this._groups.length - 1].rank) + rankBlock;
+          rank = Number(this._groups[this._currentBoardId][this._groups.length - 1].rank) + rankBlock;
         }
       }
       else {
@@ -819,11 +876,11 @@ class MainTableDataStore {
       let rank
       let index
       if (groupKey) {
-        index = this._groups.findIndex(group => group.groupKey === groupKey);
+        index = this._groups[this._currentBoardId].findIndex(group => group.groupKey === groupKey);
         if (index < 0) {
             return null;
         }
-        currentGroup = this._groups[index]
+        currentGroup = this._groups[this._currentBoardId][index]
         // 中间插入分区的rank计算暂时没有完美方案
         rank = this.getCreateGroupRank(groupKey, currentGroup, index)
       }
@@ -850,11 +907,11 @@ class MainTableDataStore {
           let group = result.data.createGroup
           group.rows = []
           if (groupKey) {
-            this._groups.splice(index, 1, group)
-            this._groups.splice(index + 1, 0, currentGroup)
+            this._groups[this._currentBoardId].splice(index, 1, group)
+            this._groups[this._currentBoardId].splice(index + 1, 0, currentGroup)
           }
           else {
-            this._groups.push(group)
+            this._groups[this._currentBoardId].push(group)
           }
           this.runCallbacks();
         })
@@ -875,7 +932,7 @@ class MainTableDataStore {
           }
         })
         .then(result => {
-          this._groups.splice(groupIndex, 0, group);
+          this._groups[this._currentBoardId].splice(groupIndex, 0, group);
 
           //refresh
           this.runCallbacks();
@@ -886,11 +943,11 @@ class MainTableDataStore {
     }
 
     removeGroup(groupKey) {
-        let index = this._groups.findIndex(column => column.groupKey === groupKey);
+        let index = this._groups[this._currentBoardId].findIndex(column => column.groupKey === groupKey);
         if (index < 0) {
             return;
         }
-        let group = this._groups[index]
+        let group = this._groups[this._currentBoardId][index]
         this._apolloClient
           .mutate({
             mutation: gql(updateGroup),
@@ -902,7 +959,7 @@ class MainTableDataStore {
             }
           })
           .then(result => {
-            this._groups.splice(index, 1);
+            this._groups[this._currentBoardId].splice(index, 1);
 
             this.runCallbacks();
           })
@@ -914,23 +971,26 @@ class MainTableDataStore {
     }
 
     getGroupAt(groupKey) {
-        let index = this._groups.findIndex(column => column.groupKey === groupKey);
+        let index = this._groups[this._currentBoardId].findIndex(column => column.groupKey === groupKey);
         if (index < 0) {
             return null;
         }
-        return this._groups[index];
+        return this._groups[this._currentBoardId][index];
     }
 
     getColumns() {
-        return this._columns;
+        if (! this._columns[this._currentBoardId] ) {
+          return null
+        }
+        return this._columns[this._currentBoardId];
     }
 
     addNewRow(groupKey, newItem) {
-      let index = this._groups.findIndex(group => group.groupKey === groupKey);
+      let index = this._groups[this._currentBoardId].findIndex(group => group.groupKey === groupKey);
       if (index < 0) {
           return;
       }
-      let group = this._groups[index]
+      let group = this._groups[this._currentBoardId][index]
       let rank = this.getCreateRowRank(null, groupKey)
       this._apolloClient
         .mutate({
@@ -947,10 +1007,10 @@ class MainTableDataStore {
         })
         .then(result => {
           let row = result.data.createRow
-          this._rowData[row.id] = {}
-          this._rowColumnData[row.id] = {}
-          for(var i=0; i<this._columns.length; i++){
-            const column = this._columns[i]
+          this._rowData[this._currentBoardId][row.id] = {}
+          this._rowColumnData[this._currentBoardId][row.id] = {}
+          for(var i=0; i<this._columns[this._currentBoardId].length; i++){
+            const column = this._columns[this._currentBoardId][i]
             if (column.level !== 0  || column.name === ColumnType.ROWACTION || column.name === ColumnType.ROWSELECT) continue
             if (column.isTitle) {
               this.createCellData(row.id, column.columnKey, newItem)
@@ -959,7 +1019,7 @@ class MainTableDataStore {
               this.createCellData(row.id, column.columnKey, null)
             }
           }
-          let rows = this._groups[index].rows;
+          let rows = this._groups[this._currentBoardId][index].rows;
           rows.push(row);
           //refresh
           this.runCallbacks();
@@ -970,14 +1030,14 @@ class MainTableDataStore {
     }
 
     moveRow(sourceGroupKey, targetGroupKey, rowKey, oldSourceRow) {
-      let sourceGroupIndex = this._groups.findIndex(group => group.groupKey === sourceGroupKey);
-      let targetGroupIndex = this._groups.findIndex(group => group.groupKey === targetGroupKey);
+      let sourceGroupIndex = this._groups[this._currentBoardId].findIndex(group => group.groupKey === sourceGroupKey);
+      let targetGroupIndex = this._groups[this._currentBoardId].findIndex(group => group.groupKey === targetGroupKey);
       if (sourceGroupIndex < 0 || targetGroupIndex < 0) {
           return;
       }
 
-      let sourceGroupRows = this._groups[sourceGroupIndex].rows;
-      let targetGroupRows = this._groups[targetGroupIndex].rows;
+      let sourceGroupRows = this._groups[this._currentBoardId][sourceGroupIndex].rows;
+      let targetGroupRows = this._groups[this._currentBoardId][targetGroupIndex].rows;
       let sourceRowIndex = sourceGroupRows.findIndex(row => row.id === rowKey);
       let sourceRow = sourceGroupRows[sourceRowIndex]
       let data = {}
@@ -1017,10 +1077,10 @@ class MainTableDataStore {
     }
 
     addNewSubRow(groupID, rowKey, newItem) {
-        let rows = this._subRows[rowKey].rows;
+        let rows = this._subRows[this._currentBoardId][rowKey].rows;
         if (!rows) {
             rows = [];
-            this._subRows[rowKey].rows = rows;
+            this._subRows[this._currentBoardId][rowKey].rows = rows;
         }
         let rank = this.getCreateRowRank(rowKey, groupID)
         this._apolloClient
@@ -1039,10 +1099,10 @@ class MainTableDataStore {
           })
           .then(result => {
             let row = result.data.createRow
-            this._rowData[row.id] = {}
-            this._rowColumnData[row.id] = {}
-            for(var i=0; i<this._columns.length; i++){
-              const column = this._columns[i]
+            this._rowData[this._currentBoardId][row.id] = {}
+            this._rowColumnData[this._currentBoardId][row.id] = {}
+            for(var i=0; i<this._columns[this._currentBoardId].length; i++){
+              const column = this._columns[this._currentBoardId][i]
               if (column.level === 0 || column.name === ColumnType.ROWACTION || column.name === ColumnType.ROWSELECT) continue
               if (column.isTitle) {
                 this.createCellData(row.id, column.columnKey, newItem)
@@ -1067,7 +1127,7 @@ class MainTableDataStore {
           variables: {
             input: {
               name: newItem,
-              columntype: ColumnType,
+              columntype: ColumnType.EDITBOX,
               columnComponentType: columnComponentType,
               createdAt: new Date().toISOString(),
               creatorID: this._currentUser.id,
@@ -1110,24 +1170,24 @@ class MainTableDataStore {
           column.columnKey = columnId
           column.name = columnName
           column.columnComponentType = columnComponentType
-          this._columns.push(column)
-          this._columns = this.sortDataByRank(this._columns)
+          this._columns[this._currentBoardId].push(column)
+          this._columns[this._currentBoardId] = this.sortDataByRank(this._columns[this._currentBoardId])
 
           // 无行数据时需要刷新
-          if (Object.keys(this._rowThreadData).length === 0) {
+          if (Object.keys(this._rowThreadData[this._currentBoardId]).length === 0) {
             this.runCallbacks();
           }
           else {
             if (isSubColumn) {
-              for(let key in this._rowData) {
-                if (this._subRowKeys.indexOf(key) !== -1) {
+              for(let key in this._rowData[this._currentBoardId]) {
+                if (this._subRowKeys[this._currentBoardId].indexOf(key) !== -1) {
                   this.createCellData(key, columnId, null)
                 }
               }
             }
             else {
-              for(let key in this._rowData) {
-                if (this._subRowKeys.indexOf(key) === -1) {
+              for(let key in this._rowData[this._currentBoardId]) {
+                if (this._subRowKeys[this._currentBoardId].indexOf(key) === -1) {
                   this.createCellData(key, columnId, null)
                 }
               }
@@ -1161,17 +1221,17 @@ class MainTableDataStore {
           }
         })
         .then(result => {
-          let rowColumn = this._rowColumnData[rowId]
+          let rowColumn = this._rowColumnData[this._currentBoardId][rowId]
           rowColumn[columnId] = result.data.createData.id
         })
         .catch(error => {
-          let row = this._rowData[rowId];
+          let row = this._rowData[this._currentBoardId][rowId];
           row[columnId] = '';
           this.runCallbacks();
           console.log(error)
         })
 
-        let row = this._rowData[rowId]
+        let row = this._rowData[this._currentBoardId][rowId]
         if (columnComponentType === PEOPLE) {
           row[columnId] = specialValue
         }
@@ -1182,11 +1242,11 @@ class MainTableDataStore {
     }
 
     removeColumn(columnKey) {
-      let index = this._columns.findIndex(column => column.columnKey === columnKey);
+      let index = this._columns[this._currentBoardId].findIndex(column => column.columnKey === columnKey);
       if (index < 0) {
           return;
       }
-      let column = this._columns[index]
+      let column = this._columns[this._currentBoardId][index]
       this._apolloClient
         .mutate({
           mutation: gql(updateColumn),
@@ -1219,7 +1279,7 @@ class MainTableDataStore {
           }
         })
         .then(result => {
-          this._columns.splice(index, 1);
+          this._columns[this._currentBoardId].splice(index, 1);
           // push undo stack
           //refresh
           this.runCallbacks(); 
@@ -1241,7 +1301,7 @@ class MainTableDataStore {
     }
 
     removeRow(groupKey, rowKey) {
-      let groupIndex = this._groups.findIndex(group => group.groupKey === groupKey);
+      let groupIndex = this._groups[this._currentBoardId].findIndex(group => group.groupKey === groupKey);
       if (groupIndex < 0) {
           return;
       }
@@ -1257,7 +1317,7 @@ class MainTableDataStore {
           }
         })
         .then(result => {
-          let groupRows = this._groups[groupIndex].rows;
+          let groupRows = this._groups[this._currentBoardId][groupIndex].rows;
           let rowIndex = groupRows.findIndex(row => row.id === rowKey);
           groupRows.splice(rowIndex, 1)
           this.runCallbacks(); 
@@ -1269,7 +1329,7 @@ class MainTableDataStore {
 
     removeRows(rowKeys) {
         rowKeys.forEach(rowKey => {
-            delete this._rowData[rowKey];
+            delete this._rowData[this._currentBoardId][rowKey];
         });
     }
 
@@ -1277,28 +1337,28 @@ class MainTableDataStore {
       if (columnAfter === columnKey) {
           return;
       }
-      let index = this._columns.findIndex(column => column.columnKey === columnKey);
+      let index = this._columns[this._currentBoardId].findIndex(column => column.columnKey === columnKey);
       if (index < 0) {
           return;
       }
-      let columnToReorder = this._columns[index];
+      let columnToReorder = this._columns[this._currentBoardId][index];
       let rank
       let insertIndex
       if (columnAfter) {
-        let insertIndex = this._columns.findIndex(column => column.columnKey === columnAfter);
+        let insertIndex = this._columns[this._currentBoardId].findIndex(column => column.columnKey === columnAfter);
         if (insertIndex <= 0) { 
             return;
         }
         
-        let preColumn = this._columns[insertIndex]
-        let nextColumn = this._columns[insertIndex + 1]
+        let preColumn = this._columns[this._currentBoardId][insertIndex]
+        let nextColumn = this._columns[this._currentBoardId][insertIndex + 1]
         if (nextColumn) {
           rank = Number(preColumn.rank) + ((Number(nextColumn.rank) - Number(preColumn.rank)) / 2)
         }
         else {
           rank = Number(preColumn.rank) + rankBlock
         }
-      } else if (index !== this._columns.length - 1) {
+      } else if (index !== this._columns[this._currentBoardId].length - 1) {
         rank = Number(columnToReorder.rank) + rankBlock
       }
 
@@ -1316,12 +1376,12 @@ class MainTableDataStore {
           let column = result.data.updateColumnBoard
           columnToReorder.rank = column.rank
           if (columnAfter) {
-            this._columns.splice(index, 1);
-            this._columns.splice(insertIndex, 0, columnToReorder);
+            this._columns[this._currentBoardId].splice(index, 1);
+            this._columns[this._currentBoardId].splice(insertIndex, 0, columnToReorder);
           }
-          else if (index !== this._columns.length - 1) {
-            this._columns.splice(index, 1);
-            this._columns.push(columnToReorder);
+          else if (index !== this._columns[this._currentBoardId].length - 1) {
+            this._columns[this._currentBoardId].splice(index, 1);
+            this._columns[this._currentBoardId].push(columnToReorder);
           }
         
           //refresh
@@ -1333,12 +1393,12 @@ class MainTableDataStore {
     }
 
     reorderRow(oldGroupKey, rowKey, newGroupKey, rowAfter) {
-      let oldGroup = this._groups.find(group => group.groupKey === oldGroupKey);
+      let oldGroup = this._groups[this._currentBoardId].find(group => group.groupKey === oldGroupKey);
       if (!oldGroup) {
           return;
       }
 
-      let newGroup = this._groups.find(group => group.groupKey === newGroupKey);
+      let newGroup = this._groups[this._currentBoardId].find(group => group.groupKey === newGroupKey);
       if (!newGroup) {
           return;
       }
@@ -1390,7 +1450,7 @@ class MainTableDataStore {
     }
 
     setGroupData(groupData) {
-      let group = this._groups.find(group => group.groupKey === groupData.groupKey)
+      let group = this._groups[this._currentBoardId].find(group => group.groupKey === groupData.groupKey)
 
       if (group) {
         let name = groupData.name ? groupData.name : group.name
@@ -1420,18 +1480,18 @@ class MainTableDataStore {
     changeGroupCollapseState(groupKey, isGroupCollapsed) {
       // 都有值
       if (groupKey && (null !== isGroupCollapsed && undefined !== isGroupCollapsed)) {
-        let group = this._groups.find(group => group.groupKey == groupKey);
+        let group = this._groups[this._currentBoardId].find(group => group.groupKey == groupKey);
         this.updateGroupCollapsed(groupKey, isGroupCollapsed, group)
       }
       // key无值，折叠状态有值
       else if (!groupKey && (null !== isGroupCollapsed && undefined !== isGroupCollapsed)) {
-        for (let i = 0; i < this._groups.length; i++) {
-          this.updateGroupCollapsed(this._groups[i].groupKey, isGroupCollapsed, this._groups[i])
+        for (let i = 0; i < this._groups[this._currentBoardId].length; i++) {
+          this.updateGroupCollapsed(this._groups[this._currentBoardId][i].groupKey, isGroupCollapsed, this._groups[this._currentBoardId][i])
         }
       }
       // key有值，折叠状态无值
       else if (groupKey && (null === isGroupCollapsed || undefined === isGroupCollapsed)) {
-        let group = this._groups.find(group => group.groupKey == groupKey);
+        let group = this._groups[this._currentBoardId].find(group => group.groupKey == groupKey);
         this.updateGroupCollapsed(groupKey, !group.isCollapsed, group)
       }
 
@@ -1460,10 +1520,12 @@ class MainTableDataStore {
     }
     
     setColumnData(columnKey, columnData) {
-      let column = this._columns.find(column => column.columnKey === columnKey)
+      let column = this._columns[this._currentBoardId].find(column => column.columnKey === columnKey)
       if (column) {
+        let columnOldValue = {}
         let updateInput = {}
         for (let key in columnData) {
+          columnOldValue[key] = column[key]
           updateInput[key] = columnData[key]
         }
         updateInput.id = columnKey
@@ -1475,14 +1537,20 @@ class MainTableDataStore {
             }
           })
           .then(result => {
+            
+          })
+          .catch(error => {
+            console.log(error, columnOldValue)
             for (let key in columnData) {
-              column[key] = columnData[key]
+              column[key] = columnOldValue[key]
             }
             this.runCallbacks(); 
           })
-          .catch(error => {
-            console.log(error)
-          })
+
+          for (let key in columnData) {
+            column[key] = columnData[key]
+          }
+          this.runCallbacks(); 
       }
     }
 
@@ -1502,8 +1570,8 @@ class MainTableDataStore {
 
     getRowThreadData(rowId, setUpdateInfo) {
       let boardId = this._currentBoardId
-      if (Object.keys(this._rowThreadData).indexOf(rowId) !== -1) {
-        setUpdateInfo(this._rowThreadData[rowId])
+      if (Object.keys(this._rowThreadData[this._currentBoardId]).indexOf(rowId) !== -1) {
+        setUpdateInfo(this._rowThreadData[this._currentBoardId][rowId])
       }
       else {
         this._apolloClient
@@ -1522,7 +1590,7 @@ class MainTableDataStore {
           .then(result => {
             const items = result.data.listThreadOnRows.items;
             let threads = this.sortDataByCreatedAt(items)
-            this._rowThreadData[rowId] = threads
+            this._rowThreadData[this._currentBoardId][rowId] = threads
             this.dealNotReadNotifications(rowId, boardId, threads, setUpdateInfo)
           })
       }
@@ -1539,10 +1607,10 @@ class MainTableDataStore {
         })
         .then(result => {
           let threadData = result.data.createThreadOnRow
-          let threads = this._rowThreadData[createData.rowID]
+          let threads = this._rowThreadData[this._currentBoardId][createData.rowID]
           let size
           if (threads && threads.length > 0) {
-            size = this._rowThreadSize[createData.rowID] + 1
+            size = this._rowThreadSize[boardId][createData.rowID] + 1
             threads.unshift(threadData)
           }
           else {
@@ -1551,7 +1619,7 @@ class MainTableDataStore {
             threads.push(threadData)
           }
           
-          this._rowThreadSize[createData.rowID] = size
+          this._rowThreadSize[boardId][createData.rowID] = size
           setUpdateInfo(threads)
 
           if (notifications && notifications.length > 0) {
@@ -1579,7 +1647,7 @@ class MainTableDataStore {
         })
         .then(result => {
           let threadData = result.data.updateThreadOnRow
-          let threads = this._rowThreadData[threadData.rowID]
+          let threads = this._rowThreadData[this._currentBoardId][threadData.rowID]
 
           let threadIndex = threads.findIndex(thread => thread.id === threadData.id)
           threads[threadIndex] = threadData
@@ -1589,6 +1657,10 @@ class MainTableDataStore {
         .catch(error => {
           console.log(error)
         })
+    }
+
+    getRowThreadSize(rowId){
+      return this._rowThreadSize[this._currentBoardId][rowId]
     }
 
     createReplyData(createData, rowId, setUpdateInfo) {
@@ -1601,7 +1673,7 @@ class MainTableDataStore {
         })
         .then(result => {
           let replyData = result.data.createReplyOnThread
-          let threads = this._rowThreadData[rowId]
+          let threads = this._rowThreadData[this._currentBoardId][rowId]
           let thread = threads.find(thread => thread.id === replyData.threadID)
           let replyList = thread.repliesByDate.items
           replyList.push(replyData)
@@ -1623,7 +1695,7 @@ class MainTableDataStore {
         })
         .then(result => {
           let replyData = result.data.updateReplyOnThread
-          let threads = this._rowThreadData[rowId]
+          let threads = this._rowThreadData[this._currentBoardId][rowId]
 
           let thread = threads.find(thread => thread.id === replyData.threadID)
           let replyList = thread.repliesByDate.items
@@ -1651,7 +1723,7 @@ class MainTableDataStore {
         })
         .then(result => {
           let threadData = result.data.updateThreadOnRow
-          let threads = this._rowThreadData[rowId]
+          let threads = this._rowThreadData[this._currentBoardId][rowId]
 
           let threadIndex = threads.findIndex(thread => thread.id === threadData.id)
           threads[threadIndex] = threadData
@@ -1673,7 +1745,7 @@ class MainTableDataStore {
           })
           .then(result => {
             let replyData = result.data.updateReplyOnThread
-            let threads = this._rowThreadData[rowId]
+            let threads = this._rowThreadData[this._currentBoardId][rowId]
 
             let thread = threads.find(thread => thread.id === replyData.threadID)
             let replyList = thread.repliesByDate.items
@@ -1688,7 +1760,7 @@ class MainTableDataStore {
 
     getNotificationsByRowId(rowId){
       let notReadNotifications = []
-      let notifications = this._rowNotification[rowId]
+      let notifications = this._rowNotification[this._currentBoardId][rowId]
       if (notifications && notifications.length > 0) {
         notifications.map(notification => {
           if (notification.receiverID === this._currentUser.id && !notification.seenflag) {
@@ -1701,7 +1773,7 @@ class MainTableDataStore {
     }
     
     dealNotReadNotifications(rowId, boardId, threads, setUpdateInfo) {
-      let notifications = this._rowNotification[rowId]
+      let notifications = this._rowNotification[this._currentBoardId][rowId]
       let notificationsSlice = []
       let boardNotReadCount = this._boardNotifications[boardId][rowId]
       if (notifications && notifications.length > 0) {
@@ -1721,7 +1793,7 @@ class MainTableDataStore {
         }
       }
       this._boardNotifications[boardId][rowId] = boardNotReadCount
-      this._rowNotification[rowId] = notificationsSlice
+      this._rowNotification[this._currentBoardId][rowId] = notificationsSlice
 
       // 刷新工作板和行通知
       this._mainPageCallBack()

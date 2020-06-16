@@ -241,7 +241,7 @@ render() /*object*/ {
                             </Avatar>
                             &emsp;
                             {
-                              user.lname + user.fname
+                              !user.lname && !user.fname ? user.username : user.lname + user.fname
                             }
                           </Select.Option>
                         )

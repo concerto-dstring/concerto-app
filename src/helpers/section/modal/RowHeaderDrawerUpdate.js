@@ -94,7 +94,7 @@ class RowHeaderDrawerUpdate extends PureComponent {
             {user.fname}
           </Avatar>
           &nbsp;
-          <a href={user.userUrl} target="_blank">{user.lname + user.fname}</a>
+          <a href={user.userUrl} target="_blank">{!user.lname && !user.fname ? user.username : user.lname + user.fname}</a>
         </div>
         <div className="row_drawer_card_header_end">
           <span className="row_drawer_card_header_span secondary_color">
@@ -473,7 +473,7 @@ class RowHeaderDrawerUpdate extends PureComponent {
               </Avatar>
               <div className="reply_body_data">
                 <div className="reply_body_data_wrapper">
-                  <a href={user.userUrl} target="_blank">{user.lname + user.fname}:</a>
+                  <a href={user.userUrl} target="_blank">{!user.lname && !user.fname ? user.username : user.lname + user.fname}:</a>
                   &nbsp;
                   <span dangerouslySetInnerHTML={{__html: reply.content}} />
                 </div>
@@ -508,7 +508,7 @@ class RowHeaderDrawerUpdate extends PureComponent {
                     }
                     <span 
                       className="reply_body_data_tool_reply_btn"
-                      onClick={this.replyMsg.bind(this, user.lname + user.fname, user.userUrl, user.id, reply)}
+                      onClick={this.replyMsg.bind(this, !user.lname && !user.fname ? user.username : user.lname + user.fname, user.userUrl, user.id, reply)}
                     >
                       <SendOutlined />
                     </span>

@@ -16,6 +16,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import FixedDataTableRow from './FixedDataTableRow';
 import MainTableAddRow from './MainTableAddRow';
+import MainTableSectionGroupBar from './MainTableSectionGroupBar';
 import { events, getPosition } from './helper/utils'
 import FixedDataTableBufferedRows from './FixedDataTableBufferedRows';
 import FixedDataTableEventHelper from './FixedDataTableEventHelper';
@@ -1379,6 +1380,29 @@ const DRAG_SCROLL_BUFFER = 40;
       rowProps.attributes = props.rowSettings.rowAttributesGetter && props.rowSettings.rowAttributesGetter(rowIndex);
       let row;
       switch (type) {
+        case RowType.SECTIONGROUP:
+          row =
+            <MainTableSectionGroupBar
+              key={i}
+              index={indexString}
+              isScrolling={props.isScrolling}
+              isRowReordering={props.isRowReordering}
+              rowReorderingData={props.rowReorderingData}
+              height={rowHeight}
+              width={subwidth}
+              rowReorderingData={props.rowReorderingData}
+              offsetTop={offset}
+              scrollLeft={Math.round(props.scrollX)}
+              fixedColumns={fixedColumns.cell}
+              fixedRightColumns={fixedRightColumns.cell}
+              scrollableColumns={scrollableColumns.cell}
+              showScrollbarY={props.scrollEnabledY}
+              isRTL={props.isRTL}
+              container={this._divRef}
+              data={props.data}
+              visible={true}>
+            </MainTableSectionGroupBar>
+            break;
         case RowType.SUBHEADER:
           row =
             <FixedDataTableRow
@@ -1410,7 +1434,10 @@ const DRAG_SCROLL_BUFFER = 40;
               showScrollbarY={props.scrollEnabledY}
               container={this._divRef}
               data={props.data}
-              isRTL={props.isRTL}>
+              isRTL={props.isRTL}
+              onCellEdit={this._onCellEdit}
+              onCellEditEnd={this._onCellEditEnd}
+            >
             </FixedDataTableRow>
           break;
         case RowType.SUBADDROW:
