@@ -109,7 +109,6 @@ class FixedDataTableBufferedRows extends React.Component {
     this._divRef = div;
   }
 
-
   /**
    * type header, footer, row 
    */

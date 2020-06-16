@@ -126,7 +126,15 @@ class EditableCell extends React.PureComponent {
         }
       }
     }
-  };
+  }
+      
+  handleHide = () => { 
+      this.updateValue()        
+      this.setState({ editing: false });
+      if (this.props.onCellEditEnd) {
+        this.props.onCellEditEnd(this.props.rowIndex, this.props.columnKey);
+      }
+  }
 
   saveData(value) {
     this.props.data.setObjectAt(this.props.rowIndex, this.props.columnKey, value);
@@ -138,18 +146,19 @@ class EditableCell extends React.PureComponent {
       if (columnCanEditor) {
         this.setState({editing: true});
       }
-      this.props.onCellEdit(this.props.rowIndex, this.props.columnKey, this.popupHeights[type]);
-    } else {
-      this.setState({editing: true});
-      this.props.onCellEdit(this.props.rowIndex, this.props.columnKey, this.popupHeights[type]);
+      if (this.props.onCellEdit) {
+        this.props.onCellEdit(this.props.rowIndex, this.props.columnKey);
+      }
     }
   };
 
   handleHide = () => {
-    this.updateValue();
-    this.setState({editing: false});
-    this.props.onCellEditEnd(this.props.rowIndex, this.props.columnKey);
-  };
+    this.updateValue()
+    this.setState({editing: false})
+    if (this.props.onCellEditEnd) {
+      this.props.onCellEditEnd(this.props.rowIndex, this.props.columnKey)
+    }
+  }
 
   handleChange = (value, isSave) => {
     if (isSave) {
@@ -159,8 +168,11 @@ class EditableCell extends React.PureComponent {
         value: value,
       });
     }
-    this.props.onCellEditEnd(this.props.rowIndex, this.props.columnKey);
-  };
+
+    if (this.props.onCellEditEnd) {
+      this.props.onCellEditEnd(this.props.rowIndex, this.props.columnKey);
+    }
+  }
 
   handleKey = (e) => {
     if (e.keyCode === Keys.RETURN) {

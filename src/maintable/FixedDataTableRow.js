@@ -20,13 +20,11 @@ import Scrollbar from './Scrollbar';
 import cx from './vendor_upstream/stubs/cx';
 import joinClasses from './vendor_upstream/core/joinClasses';
 import { sumPropWidths } from './helper/widthHelper';
-import { compareSubLevel, getLeafRowIndex, getSubLevel ,RowType} from './data/MainTableType';
+import { getLeafRowIndex, getSubLevel, RowType } from './data/MainTableType';
 
 import './css/layout/fixedDataTableRowLayout.css';
 import './css/style/fixedDataTableRow.css';
 import './css/style/fixedDataTable.css';
-
-
 
 // .fixedDataTableLayout/header border-bottom-width
 var HEADER_BORDER_BOTTOM_WIDTH = 1;
@@ -225,13 +223,7 @@ class FixedDataTableRowImpl extends React.Component {
     var fixedColumnsWidth = sumPropWidths(this.props.fixedColumns);
     var fixedRightColumnsWidth = sumPropWidths(this.props.fixedRightColumns);
     const groupCollapsed = this.props.data.getGroupByRowIndex(this.props.index).isCollapsed
-    let extraWidth
-    if (groupCollapsed) {
-      // 如果分区折叠，设置滚动长度
-      fixedColumnsWidth = (window.innerWidth - this.props.siderWidth - 16) * 0.88
-      extraWidth = (window.innerWidth - this.props.siderWidth - 16) * 0.12
-    }
-    
+    let extraWidth = 60;
     var fixedColumns =
       <FixedDataTableCellGroup
         key="fixed_cells"

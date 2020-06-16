@@ -105,37 +105,89 @@ class RowHeaderCell extends React.PureComponent {
       this.props.data.toggleSubRows(this.props.rowIndex);
     }
   };
+  
+    getNotifications = (props) => {
+      return props.data.getNotificationsByRowId(props.rowIndex)
+    }
 
-  // 显示右侧滑窗
-  showRowDrawer = (event) => {
-    event.stopPropagation();
-    const {value} = this.state;
-    const {data, rowIndex} = this.props;
-    let rowId = data.getRowKey(rowIndex);
-    let groupId = data.getGroupByRowIndex(rowIndex).groupKey;
-    this.props.dealRowHeaderDrawer({rowHeaderDrawerTitle: value, data, rowId, groupId, isOpenRowHeaderDrawer: true});
-  };
+    setTargetRef = ref => (this.targetRef = ref);
 
-  getCellComponent = () => {
-    const {height} = this.props;
-    const {count, displayValue, updateInfoCount, notReadNotifications} = this.state;
+    getTargetRef = () => this.targetRef;
 
-    //当前行的回复是否都已读(逻辑：有未读的显示蓝色并且显示未读的个数，没有未读的显示灰色并且显示所有个数)
-    let countColor = notReadNotifications.length > 0 ? '#009AFF' : '#D3D3D3';
-    return (
-      <>
-        <div className="row_header_cell_text_component" style={{lineHeight: `${height - 12}px`}}>
-          <i onClick={this.handleClick.bind(this)} className="row_header_cell_edit_icon">
-            <EditOutlined />
-          </i>
-          <div className="row_header_cell_text">{displayValue}</div>
-        </div>
-        {count > 0 && (
+    handleClick = (e) => {
+      // 防止document事件的冒泡
+      e.stopPropagation();
+      e.preventDefault();
+      this.props.onCellEdit(this.props.rowIndex, this.props.columnKey)
+      this.setState({ editing: true });
+      
+    }
+
+    handleInputClick = (e) => {
+      e.stopPropagation();
+      e.preventDefault();
+    }
+
+    handleHide = () => {
+        if (this.props.data) {
+            this.props.data.setObjectAt(this.props.rowIndex, this.props.columnKey, this.state.value);
+        }
+        this.setState({ editing: false });
+        this.props.onCellEditEnd(this.props.rowIndex, this.props.columnKey);
+    }
+
+    handleChange = (e)=> {
+        this.setState({
+            value: e.target.value,
+        });
+    }
+
+    handleKey = e => {
+        if (e.keyCode == Keys.RETURN) {
+            this.handleHide();
+            return;
+        }
+    }
+
+    toggleSubRows = (count, event) => {
+      event.stopPropagation();
+      if (count > 0) {
+        this.props.data.toggleSubRows(this.props.rowIndex);
+      }
+    }
+
+    // 显示右侧滑窗
+    showRowDrawer = (event) => {
+      event.stopPropagation();
+      const { value } = this.state
+      const { data, rowIndex } = this.props
+      let rowId = data.getRowKey(rowIndex)
+      let groupId = data.getGroupByRowIndex(rowIndex).groupKey
+      this.props.dealRowHeaderDrawer({rowHeaderDrawerTitle: value, data, rowId, rowIndex, groupId, isOpenRowHeaderDrawer: true})
+    }
+
+    getCellComponent = () => {
+      const { height } = this.props;
+      const { count, displayValue, updateInfoCount, notReadNotifications } = this.state;
+      
+      //当前行的回复是否都已读(逻辑：有未读的显示蓝色并且显示未读的个数，没有未读的显示灰色并且显示所有个数)
+      let countColor = notReadNotifications.length > 0 ? '#009AFF' : '#D3D3D3';
+      return (
+        <>
+          <div className="row_header_cell_text_component" style={{lineHeight: `${height - 12}px`}}>
+            <i onClick={this.handleClick.bind(this)} className="row_header_cell_edit_icon">
+              <EditOutlined />
+            </i>
+            <div className="row_header_cell_text">
+              {displayValue}
+            </div>
+          </div>
+          {count>0 && 
           <div style={{marginLeft: 4, lineHeight: `${height - 12}px`}} onClick={this.toggleSubRows.bind(this, count)}>
             <UnorderedListOutlined />
             &nbsp;{count}
           </div>
-        )}
+        }
         <div className="row_header_cell_update" style={{lineHeight: `${height - 12}px`}}>
           {/* <span>
               <Badge count={updateInfoCount} style={{backgroundColor: '#BB0000'}} />

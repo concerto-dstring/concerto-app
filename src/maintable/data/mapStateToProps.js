@@ -26,6 +26,7 @@ export const mapRowHeaderDrawerStateToProps = (state) => {
   return {
     isOpenRowHeaderDrawer: state.isOpenRowHeaderDrawer,
     rowId: state.rowId,
+    rowIndex: state.rowIndex,
     tableData: state.data,
     rowHeaderDrawerTitle: state.rowHeaderDrawerTitle,
     groupId: state.groupId,

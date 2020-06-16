@@ -126,8 +126,8 @@ class MainTableSectionGroupBar extends React.Component {
   changeGroupCollapseState = () => {
     const { data, index } = this.props
 
-    let group = data.getGroupByRowIndex(index)
-    data.changeGroupCollapseState(group.groupKey)
+    let group = data.getGroupByRowIndex(index);
+    data.changeGroupCollapseState(group.groupKey);
   }
 
   render() {
@@ -207,7 +207,7 @@ class MainTableSectionGroupBar extends React.Component {
     let group = data.getGroupByRowIndex(this.props.index);
     let groupColor = group ? group.color : "rgba(0, 0, 0, 0.65)";
     let titleStyle = {
-      paddingLeft:'10px',
+      paddingLeft:'13px',
       fontWeight:'bold',
       color:groupColor,
       cursor:'pointer'
@@ -228,7 +228,7 @@ class MainTableSectionGroupBar extends React.Component {
         }
       })
    }
-   if(!group){
+   if(!group||group.isCollapsed){
      return '';
    }
     return ( 

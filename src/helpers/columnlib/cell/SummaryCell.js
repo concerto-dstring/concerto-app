@@ -1,5 +1,8 @@
-import React, {PureComponent} from 'react';
-import './SummaryCell.less';
+import React, { PureComponent } from 'react';
+import './SummaryCell.less'
+import {
+  RightOutlined 
+} from '@ant-design/icons'
 
 class SummaryCell extends PureComponent {
   constructor(props) {
@@ -27,9 +30,40 @@ class SummaryCell extends PureComponent {
     return null;
   };
 
+  changeGroupCollapseState = () => {
+    const { data, rowIndex } = this.props
+
+    let group = data.getGroupByRowIndex(rowIndex,true);
+    data.changeGroupCollapseState(group.groupKey);
+  }
+
   getSummaryCell = () => {
-    const {data, rowIndex, columnKey} = this.props;
-    let summaryCell;
+    const { data, rowIndex, columnKey } = this.props
+    let column =data.getColumn(columnKey);
+    const group = data.getGroupByRowIndex(rowIndex);
+    const border_style={
+      width:'100%',
+      borderLeft:'3px solid '+ group.color
+    }
+    const expand_style = {
+      cursor:'pointer',
+      color: group.color
+    }
+    const toatal_style = {
+      color:'black',
+      paddingLeft:'150px'
+    }
+    const title_style = {
+      fontWeight: 'bold'
+    }
+    const count_style = {
+      color:'#cccccc',
+      fontSize:'13px'
+    }
+    const summary_cell_background = {
+      background:group.isCollapsed?'white':''
+    }
+    let summaryCell
     switch (this.state.columnComponentType) {
       case 'STATUS':
         // 状态列
@@ -78,12 +112,36 @@ class SummaryCell extends PureComponent {
         break;
 
       default:
-        summaryCell = <div className="default_summary_cell" />;
+        summaryCell = (
+          <div className="default_summary_cell" style={summary_cell_background}/>
+        )
         break;
     }
+    if(column.name === "GROUPTITLE" && group.isCollapsed){
+      summaryCell = (
+        <div className="summary_cell" style={expand_style}>
+          <div className="sunmmary_cell_status_container">
+              <span style={{fontWeight:'bold',marginLeft:'-7px'}}>{group.name}</span>
+            <div style={toatal_style}><span style={title_style}>小计：</span><span style={count_style}>共{group.rows.length}条</span></div>
+          </div>
+        </div>
+      )
+    }else if(column.name === "ROWSELECT" && group.isCollapsed){
+      summaryCell = (
+        <div className="summary_cell" style = {border_style}>
+          <div className="sunmmary_cell_status_container">
+            <RightOutlined style={expand_style} onClick={this.changeGroupCollapseState}/>
+          </div>
+        </div>
+      )
+    }else if(column.name === "ROWACTION"){
+      summaryCell = (
+        <div className="default_summary_cell"/>
+      )
+    }
+    return summaryCell
+  }
 
-    return summaryCell;
-  };
 
   render() {
     return this.getSummaryCell();
