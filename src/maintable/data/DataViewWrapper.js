@@ -106,29 +106,24 @@ class DataViewWrapper {
       });
       // 先过滤折叠的分区
       let groups = dataset.getGroups().filter(group => group.isCollapsed)
-
       let indexMapData = [] 
       if (groups.length > 0 && indexMap) {
         for (let j = 0; j < indexMap.length; j++) {
           let row = indexMap[j]
-
           // 查询是否为折叠分区
           let group = groups.find(group => group.groupKey === row.groupKey)
-
-          if (group && row.rowType === RowType.HEADER) {
-            row.isCollapsed = true
-            indexMapData.push(row)
-          }
-          else if (!group) {
+          if (group && row.rowType != RowType.FOOTER && row.rowType != RowType.HEADER) {
+            continue;
+          }else if (!group) {
             row.isCollapsed = false
+            indexMapData.push(row)
+          }else{
             indexMapData.push(row)
           }
         }
-      }
-      else if (groups.length === 0) {
+      }else if (groups.length === 0) {
         indexMapData.push(...indexMap)
       }
-      // indexMapData.splice(2, 0, indexMap[1]);
       return indexMapData
     }
 
@@ -350,7 +345,7 @@ class DataViewWrapper {
                 case RowType.HEADER:
                     return 40;
                 case RowType.FOOTER:            
-                    return 50;
+                    return 60;
                 case RowType.ROW:
                     return 40;
             }
@@ -483,7 +478,7 @@ class DataViewWrapper {
     }
 
     getColumnRows(rowIndex) {
-      let rows
+      let rows = [];
       if (getSubLevel(rowIndex) === 0) {
 
         let group = this.getGroupByRowIndex(rowIndex)
@@ -494,6 +489,11 @@ class DataViewWrapper {
             filterIndexMap.map(index => {
               rows.push(index.rowKey)
             })
+            return rows
+          }else{
+            group.rows.forEach(row=>{
+              rows.push(row.id);
+            });
             return rows
           }
         }
@@ -516,7 +516,7 @@ class DataViewWrapper {
         }
       }
 
-      return null
+      // return null
     }
 
     /**
@@ -544,7 +544,8 @@ class DataViewWrapper {
 
         rows.map(rowKey => {
           if (!this._dataset.getObjectAt(rowKey) || !columnKey in this._dataset.getObjectAt(rowKey)) return
-          let statusValue = this._dataset.getObjectAt(rowKey)[columnKey]
+          // let statusValue = this._dataset.getObjectAt(rowKey)[columnKey]
+          let statusValue = this._dataset.getObjectAt(rowKey) ? this._dataset.getObjectAt(rowKey)[columnKey] : null
           switch (statusValue) {
             case status.finished:
               finishedCount += 1
@@ -645,7 +646,8 @@ class DataViewWrapper {
       let maxDate
       if (rows && Object.keys(this._dataset._rowData).length > 0) {
         rows.map(rowKey => {
-          let dateValue = this._dataset._rowData[rowKey] ? this._dataset._rowData[rowKey][columnKey] : null
+          let dateValue = this._dataset.getObjectAt(rowKey) ? this._dataset.getObjectAt(rowKey)[columnKey] : null
+          // let dateValue = this._dataset._rowData[rowKey] ? this._dataset._rowData[rowKey][columnKey] : null
           if (dateValue) {
             // 只要日期不要时间
             dateValue = dateValue.substring(0, 10)

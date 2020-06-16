@@ -230,33 +230,19 @@ class FixedDataTableCellGroup extends React.Component {
     }
 
     var onColumnResize = props.onColumnResize ? this._onColumnResize : null;
-
+ 
     let group = this.props.data.getGroupByRowIndex(this.props.rowIndex)
     let columns = this.props.columns
-    //&& columns.findIndex(column => column.template.name === 'DropDownHeader') < 0
-    if (columns && group.isCollapsed ) {
-      style.width = Math.floor(style.width)
-      style.top = 7.2
-      return (
-        <div
-          style={style}
-          className={cx('fixedDataTableCellGroupLayout/cellGroupWrapper')}>
-            <a style={{marginLeft: 10, whiteSpace: 'nowrap'}}>{group.rows.length + ' Items'}</a>
-        </div>
-      );
-    }
-    else {
-      return (
-        <div
-          style={style}
-          className={cx('fixedDataTableCellGroupLayout/cellGroupWrapper')}>
-          <FixedDataTableCellGroupImpl
-            {...props}
-            onColumnResize={onColumnResize}
-          />
-        </div>
-      );
-    }
+    return (
+      <div
+        style={style}
+        className={cx('fixedDataTableCellGroupLayout/cellGroupWrapper')}>
+        <FixedDataTableCellGroupImpl
+          {...props}
+          onColumnResize={onColumnResize}
+        />
+      </div>
+    );
   }
 
   _onColumnResize = (
