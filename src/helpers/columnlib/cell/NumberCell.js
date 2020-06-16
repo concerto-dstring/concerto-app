@@ -28,6 +28,7 @@ class NumberCell extends React.Component {
         <Cell {...props} className="NumberCell">
             <InputNumber 
             className="NumberCell" 
+            size="small"
             value={this.state.value} 
             onChange={returnValue} 
             onPressEnter={handleKey}

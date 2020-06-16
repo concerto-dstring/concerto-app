@@ -28,6 +28,7 @@ class TextCell extends React.Component {
         <Cell {...props} className='textCell'>
             <Input 
             value={this.state.value} 
+            size="small"
             onChange={returnValue} 
             onKeyDown={handleKey}/>
         </Cell>

@@ -553,11 +553,11 @@ class MainTable extends React.Component {
                     data={data}
                     titleHeight={0} 
                     // set to zero
-                    headerHeight={40}                    
-                    rowHeight={40}
+                    headerHeight={32}                    
+                    rowHeight={32}
                     isColumnResizing={false}
-                    addRowHeight={35}
-                    footerHeight={40}
+                    addRowHeight={32}
+                    footerHeight={32}
                     filters={filters}
                     filterInputValue={filterInputValue}
                     filterType={filterType}             
@@ -574,8 +574,8 @@ class MainTable extends React.Component {
                         <Column key={column.columnKey} {...this.getColumnTemplate(column.columnKey)} fixed={false} />
                     ))
                     }
-                    <Column {...this.getColumnAddOptionTemplate("", 0, 40)}/>
-                    <Column {...this.getColumnAddOptionTemplate("", 1, 40)}/>
+                    <Column {...this.getColumnAddOptionTemplate("", 0, 32)}/>
+                    <Column {...this.getColumnAddOptionTemplate("", 1, 32)}/>
                 </FilterableDataTable>
                 <ReNameModal 
                   isShowReNameModal={this.props.isShowReNameModal}

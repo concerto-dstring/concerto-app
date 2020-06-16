@@ -216,6 +216,7 @@ class PeopleCell extends React.PureComponent {
               <div className="userAvatar">
                 {someusers.length === 1 && (
                   <Avatar
+                    size={25}
                     className="Avatar"
                     style={{background: someusers[0].faceColor}}
                   >
@@ -225,12 +226,14 @@ class PeopleCell extends React.PureComponent {
                 {someusers.length === 2 && (
                   <div>
                     <Avatar
+                      size={25}
                       className="Avatar"
                       style={{background: someusers[0].faceColor}}
                     >
                       {someusers[0].fname}
                     </Avatar>
                     <Avatar
+                      size={25}
                       className="Avatar"
                       style={{
                         right: '10px',
@@ -244,12 +247,13 @@ class PeopleCell extends React.PureComponent {
                 {someusers.length > 2 && (
                   <div>
                     <Avatar
+                      size={25}
                       className="Avatar"
                       style={{background: someusers[0].faceColor}}
                     >
                       {someusers[0].fname}
                     </Avatar>
-                    <Avatar className="Avatar moreUserAvatar">
+                    <Avatar className="Avatar moreUserAvatar" size={25}>
                       +{someusers.length - 1}
                     </Avatar>
                   </div>
@@ -263,7 +267,8 @@ class PeopleCell extends React.PureComponent {
               <Button
                 className="userIcon"
                 shape="circle"
-                icon={<UserOutlined />}
+                size="small"
+                icon={<UserOutlined/>}
               />
               <PlusCircleFilled className="PlusCircleFilled" />
             </div>

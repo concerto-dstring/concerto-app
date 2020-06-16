@@ -36,7 +36,7 @@ class TableColumnMenu extends React.Component {
     const { isShowDropDown } = this.state
     const columnMenubarStyle = {
       position: 'absolute',
-      top: '8px',
+      top: '4px',
       right: '5px',
       display: isShowDropDown ? DISPLAY.BLOCK : this.props.menuBarStyle,
     }

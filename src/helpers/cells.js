@@ -708,7 +708,7 @@ class SettingBarHeader extends React.PureComponent {
     const { data, rowIndex } = this.props;
     const style={
       width: '36px',
-      lineHeight: '45px',
+      lineHeight: '35px',
       textalign: 'center'
     }
 
