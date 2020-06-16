@@ -1,22 +1,21 @@
-import React, { createRef } from 'react'
-import 'antd/dist/antd.css'
-import {Button, DatePicker, Select, Switch, Row, Col, message} from 'antd'
-import {ClockCircleOutlined} from '@ant-design/icons'
-import moment from 'moment'
-import 'moment/locale/zh-cn'
-import {Cell} from '../../../maintable/FixedDataTableRoot'
-import './DateCell.less'
-import { DISPLAY } from '../../section/header/StyleValues'
+import React, {createRef} from 'react';
+import 'antd/dist/antd.css';
+import {Button, DatePicker, Select, Switch, Row, Col, message} from 'antd';
+import {ClockCircleOutlined} from '@ant-design/icons';
+import moment from 'moment';
+import 'moment/locale/zh-cn';
+import {Cell} from '../../../maintable/FixedDataTableRoot';
+import './DateCell.less';
+import {DISPLAY} from '../../section/header/StyleValues';
 class DateCell extends React.Component {
-
-  #date_time_delimit = '  '
+  #date_time_delimit = '  ';
 
   constructor(props) {
-    super(props)
-    let dateTimeValue = this.formatRenderDateValue(props.value)
+    super(props);
+    let dateTimeValue = this.formatRenderDateValue(props.value);
 
-    let dateValue = dateTimeValue['dateValue'] ? dateTimeValue['dateValue'] : ''
-    let timeValue = dateTimeValue['timeValue'] ? dateTimeValue['timeValue'] : ''
+    let dateValue = dateTimeValue['dateValue'] ? dateTimeValue['dateValue'] : '';
+    let timeValue = dateTimeValue['timeValue'] ? dateTimeValue['timeValue'] : '';
     this.state = {
       open: false,
       addTimeStyle: {
@@ -25,31 +24,31 @@ class DateCell extends React.Component {
       mouseIn: true,
       dateTimeStr: props.value,
       dateValue,
-      timeValue, 
+      timeValue,
       selectDateValue: '',
       selectTimeValue: '',
-      switchChecked: timeValue ? true : false
-    }
+      switchChecked: timeValue ? true : false,
+    };
 
-    this.datePickerRef = createRef()
-    this.selectRef = createRef()
+    this.datePickerRef = createRef();
+    this.selectRef = createRef();
   }
 
   componentWillReceiveProps(nextProps) {
-    let dateTimeValue = this.formatRenderDateValue(nextProps.value)
+    let dateTimeValue = this.formatRenderDateValue(nextProps.value);
 
-    let dateValue = dateTimeValue['dateValue'] ? dateTimeValue['dateValue'] : ''
-    let timeValue = dateTimeValue['timeValue'] ? dateTimeValue['timeValue'] : ''
+    let dateValue = dateTimeValue['dateValue'] ? dateTimeValue['dateValue'] : '';
+    let timeValue = dateTimeValue['timeValue'] ? dateTimeValue['timeValue'] : '';
 
     // 判断新Props里面的值是否和原来的一致，不一致则更新并重置选择的时间，一致则不更新
     if (nextProps.value !== this.state.dateTimeStr) {
       this.setState({
         dateTimeStr: nextProps.value,
         dateValue,
-        timeValue, 
+        timeValue,
         selectDateValue: '',
-        selectTimeValue: ''
-      })
+        selectTimeValue: '',
+      });
     }
   }
 
@@ -60,104 +59,98 @@ class DateCell extends React.Component {
 
   componentWillUnmount() {
     // 移除点击的监听事件
-    window.removeEventListener('click', this.handleClick)
+    window.removeEventListener('click', this.handleClick);
   }
 
   handleClick = (e) => {
     // 判断鼠标是否在日期选择框内
     if (!this.state.mouseIn) {
-      this.closeDatePicker()
+      this.closeDatePicker();
     }
-  }
+  };
 
   formatRenderDateValue = (value) => {
-    let dateValue = undefined
-    let timeValue = ''
-    const dateTimeValue = value ? value.split(this.#date_time_delimit) : ''
+    let dateValue = undefined;
+    let timeValue = '';
+    const dateTimeValue = value ? value.split(this.#date_time_delimit) : '';
     if (value && value != '') {
-      dateValue = moment(dateTimeValue[0], 'YYYY-MM-DD')
-      timeValue = dateTimeValue[1]
+      dateValue = moment(dateTimeValue[0], 'YYYY-MM-DD');
+      timeValue = dateTimeValue[1];
     }
     return {
       dateValue: dateValue,
       timeValue: timeValue,
-    }
-  }
+    };
+  };
 
   closeDatePicker = () => {
     this.setState({
       open: false,
-    })
-  }
+    });
+  };
 
   showDatePicker = () => {
     this.setState({
       open: true,
-    })
-  }
+    });
+  };
 
   switchAddTime = (checked) => {
     this.setState({
       switchChecked: checked,
-      selectTimeValue: ''
-    })
-  }
+      selectTimeValue: '',
+    });
+  };
 
   checkedAddTime = (v, o) => {
     this.setState({
       selectTimeValue: v,
-      open: true
-    })
-  }
+      open: true,
+    });
+  };
 
   getOptions(Option) {
-    const options = []
+    const options = [];
     for (let i = 1; i <= 24; i++) {
       if (i > 12) {
-        let time =  i - 12
-        let timeStr = String(time) + ':00 PM'
+        let time = i - 12;
+        let timeStr = String(time) + ':00 PM';
         if (time < 10) {
-          timeStr = '0' + String(time) + ':00 PM'
+          timeStr = '0' + String(time) + ':00 PM';
         }
         options.push(
           <Option key={i} value={timeStr}>
             {timeStr}
           </Option>
-        )
-      }
-      else {
-        let timeStr = String(i) + ':00 AM'
+        );
+      } else {
+        let timeStr = String(i) + ':00 AM';
         if (i < 10) {
-          timeStr = '0' + String(i) + ':00 AM'
+          timeStr = '0' + String(i) + ':00 AM';
         }
         options.push(
           <Option key={i} value={timeStr}>
             {timeStr}
           </Option>
-        )
+        );
       }
     }
-    return options
+    return options;
   }
 
   saveDateTime = (dateValue, timeValue) => {
     if (!dateValue) {
-      message.warning('日期不能为空')
-      return
+      message.warning('日期不能为空');
+      return;
     }
     this.setState({
       open: false,
       mouseIn: false,
       selectDateValue: '',
       selectTimeValue: '',
-    })
-    this.props.handleChange(
-      moment(dateValue).format('YYYY-MM-DD') +
-        this.#date_time_delimit +
-        timeValue,
-      true
-    )
-  }
+    });
+    this.props.handleChange(moment(dateValue).format('YYYY-MM-DD') + this.#date_time_delimit + timeValue, true);
+  };
 
   clearDateTime = () => {
     this.setState({
@@ -165,15 +158,15 @@ class DateCell extends React.Component {
       mouseIn: false,
       selectDateValue: '',
       selectTimeValue: '',
-      switchChecked: false
-    })
-    this.props.handleChange('', true)
-  }
+      switchChecked: false,
+    });
+    this.props.handleChange('', true);
+  };
 
   renderDatePicker = (dateValue, timeValue) => {
-    const {Option} = Select
-    const { switchChecked } = this.state
-    let selectStyle = switchChecked ? DISPLAY.BLOCK : DISPLAY.NONE
+    const {Option} = Select;
+    const {switchChecked} = this.state;
+    let selectStyle = switchChecked ? DISPLAY.BLOCK : DISPLAY.NONE;
     return (
       <div>
         <Row>
@@ -189,7 +182,7 @@ class DateCell extends React.Component {
                 ref={this.selectRef}
                 placeholder="选择时间"
                 suffixIcon={<ClockCircleOutlined />}
-                size='small'
+                size="small"
                 style={{display: selectStyle, width: 106}}
                 onSelect={this.checkedAddTime}
                 defaultValue={timeValue === '' ? undefined : timeValue}
@@ -212,37 +205,32 @@ class DateCell extends React.Component {
             </Button>
           </Col>
           <Col span={12}>
-            <Button
-              size="small"
-              shape="round"
-              style={{float: 'right'}}
-              onClick={this.clearDateTime}
-            >
+            <Button size="small" shape="round" style={{float: 'right'}} onClick={this.clearDateTime}>
               清除
             </Button>
           </Col>
         </Row>
       </div>
-    )
-  }
+    );
+  };
 
   handleDateChange = (m, v) => {
     this.setState({
-      selectDateValue: moment(v, 'YYYY-MM-DD')
-    })
-  }
+      selectDateValue: moment(v, 'YYYY-MM-DD'),
+    });
+  };
 
   setMouseIn = (mouseIn) => {
     this.setState({
       mouseIn: mouseIn,
-    })
-  }
+    });
+  };
 
   render() {
-    const { dateValue, timeValue, selectDateValue, selectTimeValue, open } = this.state
-    
-    let dateDisplayValue = selectDateValue ? selectDateValue : dateValue
-    let timeDisplayValue = selectTimeValue ? selectTimeValue : timeValue
+    const {dateValue, timeValue, selectDateValue, selectTimeValue, open} = this.state;
+
+    let dateDisplayValue = selectDateValue ? selectDateValue : dateValue;
+    let timeDisplayValue = selectTimeValue ? selectTimeValue : timeValue;
 
     // const OpenOrDismiss = (open) => {
     //   if (!open) {
@@ -250,11 +238,12 @@ class DateCell extends React.Component {
     //   }
     // }
     return (
-      <Cell className="DateCell" 
+      <Cell
+        className="DateCell"
         onMouseEnter={this.setMouseIn.bind(this, true)}
         onMouseLeave={this.setMouseIn.bind(this, false)}
         onClick={this.showDatePicker}
-     >
+      >
         <DatePicker
           ref={this.datePickerRef}
           className="DateCell"
@@ -265,20 +254,16 @@ class DateCell extends React.Component {
           // onOpenChange={OpenOrDismiss}
           open={open}
           getPopupContainer={() => this.props.container}
-          suffixIcon={
-            <div style={{lineHeight: '33px', color: '#8b8c8d'}}>
-              {timeDisplayValue}
-            </div>
-          }
-          size='small'
+          suffixIcon={<div style={{lineHeight: '33px', color: '#8b8c8d'}}>{timeDisplayValue}</div>}
+          size="small"
           renderExtraFooter={this.renderDatePicker.bind(this, dateDisplayValue, timeDisplayValue)} //antd官网提供的加入额外页脚的方法
           value={dateDisplayValue}
           onChange={this.handleDateChange}
           inputReadOnly={true}
         />
       </Cell>
-    )
+    );
   }
 }
 
-export {DateCell}
+export {DateCell};

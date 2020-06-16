@@ -1,41 +1,39 @@
-import React, { Component, createRef } from 'react'
-import './RegisterValidate.less'
-import { Input, Button, Spin } from 'antd'
-import { Auth } from 'aws-amplify'
-import ErrorMsg from './ErrorMsg'
+import React, {Component, createRef} from 'react';
+import './RegisterValidate.less';
+import {Input, Button, Spin} from 'antd';
+import {Auth} from 'aws-amplify';
+import ErrorMsg from './ErrorMsg';
 
-import { withRouter } from 'react-router-dom'
+import {withRouter} from 'react-router-dom';
 
-const defaultColor = '#1890ff'
-const errorColor = '#f5222d'
+const defaultColor = '#1890ff';
+const errorColor = '#f5222d';
 
 @withRouter
 class RegisterValidate extends Component {
-
   constructor(props) {
-    super(props)
+    super(props);
 
     this.state = {
       isLoading: false,
       validateCodeBorderColor: defaultColor,
       validateCodeErrorMsg: '',
-      userName: this.getUserName(props)
-    }
+      userName: this.getUserName(props),
+    };
 
-    this.validateCodeRef = createRef()
+    this.validateCodeRef = createRef();
   }
 
   componentWillReceiveProps(nextProps) {
     this.setState({
-      userName: this.getUserName(nextProps)
-    })
+      userName: this.getUserName(nextProps),
+    });
   }
 
   componentDidMount() {
     if (!this.getUserName(this.props)) {
-      this.props.history.push('/login')
-    }
-    else {
+      this.props.history.push('/login');
+    } else {
       window.addEventListener('keyup', this.completeRegisterByKey);
     }
   }
@@ -46,59 +44,58 @@ class RegisterValidate extends Component {
 
   completeRegisterByKey = (e) => {
     if (e.key === 'Enter') {
-      this.completeRegister()
+      this.completeRegister();
     }
-  }
+  };
 
   getUserName = (props) => {
     if (props.location && props.location.state && Object.keys(props.location.state).indexOf('userName') !== -1) {
-      return props.location.state.userName
+      return props.location.state.userName;
     }
-    return ''
-  }
+    return '';
+  };
 
-  reSendValidateCode = async() => {
+  reSendValidateCode = async () => {
     try {
       await Auth.resendSignUp(this.state.userName);
     } catch (err) {
       console.log('error resending code: ', err);
     }
-  }
+  };
 
-  completeRegister = async() => {
+  completeRegister = async () => {
     this.setState({
-      isLoading: true
-    })
+      isLoading: true,
+    });
 
-    let code = this.validateCodeRef.current.input.value
+    let code = this.validateCodeRef.current.input.value;
     if (code) {
       try {
-        await Auth.confirmSignUp(this.state.userName, code)
+        await Auth.confirmSignUp(this.state.userName, code);
         this.props.history.push({
           pathname: '/login',
           state: {
-            userName: this.state.userName
-          }
-        })
+            userName: this.state.userName,
+          },
+        });
       } catch (error) {
         this.setState({
           isLoading: false,
           validateCodeBorderColor: errorColor,
-          validateCodeErrorMsg: ErrorMsg.validate_code_error
-        })
+          validateCodeErrorMsg: ErrorMsg.validate_code_error,
+        });
       }
-    }
-    else {
+    } else {
       this.setState({
         isLoading: false,
         validateCodeBorderColor: errorColor,
-        validateCodeErrorMsg: ErrorMsg.validate_code_is_empty
-      })
+        validateCodeErrorMsg: ErrorMsg.validate_code_is_empty,
+      });
     }
-  }
+  };
 
   render() {
-    const { isLoading, validateCodeBorderColor, validateCodeErrorMsg, userName } = this.state
+    const {isLoading, validateCodeBorderColor, validateCodeErrorMsg, userName} = this.state;
 
     return (
       <div className="validate_layout">
@@ -109,18 +106,15 @@ class RegisterValidate extends Component {
           <div className="validate_body_component">
             <div className="validate_item">
               <span className="validate_label">用户名：</span>
-              <Input
-                value={userName}
-                disabled={true}
-              />
+              <Input value={userName} disabled={true} />
             </div>
             <br />
             <div className="validate_item">
               <span className="validate_label">验证码：</span>
               <Input
                 ref={this.validateCodeRef}
-                style={{borderColor: validateCodeBorderColor}} 
-                placeholder='请输入验证码'
+                style={{borderColor: validateCodeBorderColor}}
+                placeholder="请输入验证码"
                 onChange={this.handlevalidateCodeChange}
               />
             </div>
@@ -129,8 +123,14 @@ class RegisterValidate extends Component {
             </div>
             <br />
             <div className="validate_register_item">
-              <div className="validate_link_left"><Button onClick={this.reSendValidateCode}>重新发送验证码</Button></div>
-              <div className="validate_link_right"><Button type='primary' onClick={this.completeRegister}>完成注册</Button></div>
+              <div className="validate_link_left">
+                <Button onClick={this.reSendValidateCode}>重新发送验证码</Button>
+              </div>
+              <div className="validate_link_right">
+                <Button type="primary" onClick={this.completeRegister}>
+                  完成注册
+                </Button>
+              </div>
             </div>
           </div>
         </Spin>

@@ -935,6 +935,7 @@ const DRAG_SCROLL_BUFFER = 40;
     return (
       <FixedDataTableBufferedRows
         title={props.title}
+        boardColor={props.boardColor}
         ariaRowIndexOffset={ariaRowIndexOffset}
         ariaGroupHeaderIndex={ariaGroupHeaderIndex}
         ariaHeaderIndex={ariaHeaderIndex}
@@ -1413,7 +1414,10 @@ const DRAG_SCROLL_BUFFER = 40;
               isRTL={props.isRTL}
               container={this._divRef}
               data={props.data}
-              visible={true}>
+              visible={true}
+              onCellEdit={this._onCellEdit}
+              onCellEditEnd={this._onCellEditEnd}
+            >
             </MainTableSectionGroupBar>
             break;
         case RowType.SUBHEADER:

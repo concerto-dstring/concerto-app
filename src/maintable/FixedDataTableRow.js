@@ -223,13 +223,7 @@ class FixedDataTableRowImpl extends React.Component {
     var fixedColumnsWidth = sumPropWidths(this.props.fixedColumns);
     var fixedRightColumnsWidth = sumPropWidths(this.props.fixedRightColumns);
     const groupCollapsed = this.props.data.getGroupByRowIndex(this.props.index).isCollapsed
-    let extraWidth
-    if (groupCollapsed) {
-      // 如果分区折叠，设置滚动长度
-      fixedColumnsWidth = (window.innerWidth - this.props.siderWidth - 16) * 0.88
-      extraWidth = (window.innerWidth - this.props.siderWidth - 16) * 0.12
-    }
-    
+    let extraWidth = 60;
     var fixedColumns =
       <FixedDataTableCellGroup
         key="fixed_cells"

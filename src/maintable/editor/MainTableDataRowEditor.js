@@ -72,7 +72,7 @@ class MainTableDataRowEditor extends React.Component {
 
         for (let i = 0; i < datacolumns.length; i++) {
             let column = datacolumns[i];
-            if (column.level === level 
+            if (column.level === level
                 && column.name !== ColumnType.ROWACTION 
                 && column.name !== ColumnType.ROWSELECT) {
                 if (column.type === ColumnType.LABEL) {
