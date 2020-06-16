@@ -535,6 +535,7 @@ const DRAG_SCROLL_BUFFER = 40;
     this._onKeyDown = this._onKeyDown.bind(this);
     this._onMouseMove = this._onMouseMove.bind(this);
     this._onMouseUp = this._onMouseUp.bind(this);
+    this._captureClick = this._captureClick.bind(this);
     this._wheelHandler = new ReactWheelHandler(
       this._onScroll,
       this._shouldHandleWheelX,
@@ -1248,10 +1249,21 @@ const DRAG_SCROLL_BUFFER = 40;
  
   }
 
+  _captureClick(event) {
+    event.stopPropagation(); // Stop the click from being propagated.
+    window.removeEventListener('click', this._captureClick, true); // cleanup
+  }
+
   _onMouseUp(event) {
     this._draggingRowIndex = undefined;
     this._dragging = false;
     if (this.props.isRowReordering) {
+      window.addEventListener(
+        'click',
+        this._captureClick,
+        true // <-- This registeres this listener for the capture
+             //     phase instead of the bubbling phase!
+      ); 
       this.props.rowActions.stopRowReorder();
       if (this.props.rowReorderingData.oldRowIndex !== this.props.rowReorderingData.newRowIndex
          && this.props.onRowReorderEndCallback) {
@@ -1259,9 +1271,10 @@ const DRAG_SCROLL_BUFFER = 40;
           this.props.rowReorderingData.oldRowIndex, 
           this.props.rowReorderingData.newRowIndex);
       };
-      event.preventDefault();
-      event.stopPropagation();
+      // event.preventDefault();
+      // event.stopPropagation();
     }
+
   }
 
   _onScroll = (/*number*/ deltaX, /*number*/ deltaY) => {
