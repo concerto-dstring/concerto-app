@@ -78,6 +78,11 @@ export const ROW_HEADER_ACTIVITY_LOG = {
   desc: 'Activity Log'
 }
 
+export const ROW_HEADER_EDITOR = {
+  key: 'ROW_HEADER_EDITOR',
+  desc: 'Row Editor'
+}
+
 export const USER_MENU_SIGN_OUT = {
   key: 'USER_SIGN_OUT',
   desc: '注销'

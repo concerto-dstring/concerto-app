@@ -312,6 +312,7 @@ function reducers(state = getInitialState(), action) {
         isOpenRowHeaderDrawer: action.drawerData.isOpenRowHeaderDrawer,
         data: action.drawerData.data,
         rowId: action.drawerData.rowId,
+        rowIndex: action.drawerData.rowIndex,
         rowHeaderDrawerTitle: action.drawerData.rowHeaderDrawerTitle,
         groupId: action.drawerData.groupId,
       })

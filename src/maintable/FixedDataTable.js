@@ -88,8 +88,7 @@ const DRAG_SCROLL_BUFFER = 40;
  *
  * - Scrollable Body Columns: The body columns that move while scrolling
  *   vertically or horizontally.
- */
-class FixedDataTable extends React.Component {
+ */class FixedDataTable extends React.Component {
   // static propTypes = {
 
   //   // TODO (jordan) Remove propType of width without losing documentation (moved to tableSize)
@@ -536,6 +535,7 @@ class FixedDataTable extends React.Component {
     this._onKeyDown = this._onKeyDown.bind(this);
     this._onMouseMove = this._onMouseMove.bind(this);
     this._onMouseUp = this._onMouseUp.bind(this);
+    this._captureClick = this._captureClick.bind(this);
     this._wheelHandler = new ReactWheelHandler(
       this._onScroll,
       this._shouldHandleWheelX,
@@ -1250,10 +1250,21 @@ class FixedDataTable extends React.Component {
  
   }
 
+  _captureClick(event) {
+    event.stopPropagation(); // Stop the click from being propagated.
+    window.removeEventListener('click', this._captureClick, true); // cleanup
+  }
+
   _onMouseUp(event) {
     this._draggingRowIndex = undefined;
     this._dragging = false;
     if (this.props.isRowReordering) {
+      window.addEventListener(
+        'click',
+        this._captureClick,
+        true // <-- This registeres this listener for the capture
+             //     phase instead of the bubbling phase!
+      ); 
       this.props.rowActions.stopRowReorder();
       if (this.props.rowReorderingData.oldRowIndex !== this.props.rowReorderingData.newRowIndex
          && this.props.onRowReorderEndCallback) {
@@ -1261,9 +1272,10 @@ class FixedDataTable extends React.Component {
           this.props.rowReorderingData.oldRowIndex, 
           this.props.rowReorderingData.newRowIndex);
       };
-      event.preventDefault();
-      event.stopPropagation();
+      // event.preventDefault();
+      // event.stopPropagation();
     }
+
   }
 
   _onScroll = (/*number*/ deltaX, /*number*/ deltaY) => {
