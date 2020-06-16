@@ -1483,6 +1483,7 @@ const DRAG_SCROLL_BUFFER = 40;
           break;
 
         case RowType.SUBFOOTER:
+          break;
           row =
             <FixedDataTableRow
               key={i}
@@ -1509,7 +1510,7 @@ const DRAG_SCROLL_BUFFER = 40;
               data={props.data}
               isRTL={props.isRTL}
             />;
-          break;
+          
 
         default:
           row =

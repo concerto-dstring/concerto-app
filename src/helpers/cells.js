@@ -528,7 +528,7 @@ class CheckBoxCell extends React.PureComponent {
     this.state = {
       checkbox: {
         display: 'none',
-        paddingBottom: '12px',
+        paddingBottom: '20px',
       },
       index: {
         display: 'block',
@@ -539,7 +539,7 @@ class CheckBoxCell extends React.PureComponent {
     this.setState({
       checkbox: {
         display: 'block',
-        paddingBottom: '12px',
+        paddingBottom: '20px',
       },
       index: {
         display: 'none',
@@ -550,7 +550,7 @@ class CheckBoxCell extends React.PureComponent {
     this.setState({
       checkbox: {
         display: 'none',
-        paddingBottom: '12px',
+        paddingBottom: '20px',
       },
       index: {
         display: 'block',
@@ -566,7 +566,7 @@ class CheckBoxCell extends React.PureComponent {
     let css_style = {
       width: '100%',
       textAlign: 'center',
-      lineHeight: '40px',
+      lineHeight: '32px',
       borderLeft: '3px solid ' + groupColor,
     };
     return (

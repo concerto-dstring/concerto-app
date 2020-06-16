@@ -37,7 +37,7 @@ class TextCell extends React.Component {
     };
     return (
       <Cell {...props} className="textCell">
-        <Input value={this.state.value} onChange={returnValue} onKeyDown={handleKey} />
+        <Input value={this.state.value} size="small" onChange={returnValue} onKeyDown={handleKey} />
       </Cell>
     );
   }
