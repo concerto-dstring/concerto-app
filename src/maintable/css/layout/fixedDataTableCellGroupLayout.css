@@ -32,3 +32,28 @@
   position: absolute;
   top: 0;
 }
+
+.fixedDataTableCellGroupLayout_cellGroup:hover .table_row_menu_cell{
+  visibility: visible;
+}
+
+.fixedDataTableCellGroupLayout_cellGroup:hover .table_row_checkbox_cell{
+  display:block !important;
+  
+}
+
+.fixedDataTableCellGroupLayout_cellGroup:hover .table_row_rowindex_cell{
+  display: none !important;
+   
+}
+
+.table_row_menu_cell{
+  margin-top: 5px;
+  visibility: hidden;
+}
+.table_row_checkbox_cell{
+  display: none !important;
+}
+.table_row_rowindex_cell{
+  display:block !important;
+}

@@ -350,7 +350,7 @@ class MainPage extends React.Component {
 
               <div className="body_left_sider_panel_menu_item" style={style} onClick={this.handleBoardItemClick}>
                 <Dropdown overlay={this.getBoardItemMenus(item.id, item.name)} placement="bottomLeft" trigger="click">
-                  <EllipsisOutlined style={{fontSize: '14px', paddingRight: '10px'}} />
+                  <EllipsisOutlined className="more_menu"/>
                 </Dropdown>
               </div>
               <div style={{width: 24, paddingLeft: '8px'}}>
@@ -455,7 +455,7 @@ class MainPage extends React.Component {
               <Input
                 prefix={<SearchOutlined />}
                 placeholder="搜索工作板..."
-                style={{margin: '10px 26px 0px 16px', borderRadius: '15px', width: '255px'}}
+                className="search_input"
                 onChange={this.filterMenu.bind(this, true)}
               />
               <Collapse accordion defaultActiveKey={['1']} bordered={false}>
