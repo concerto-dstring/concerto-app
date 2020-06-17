@@ -445,6 +445,13 @@ class MainTable extends React.Component {
   _onGetListUsers = () => {
     return this.state.data.getListUsers()
   }
+  
+  _onFilterChangeCallback = (value, type) => {
+    this.setState({
+      filterInputValue: value,
+      filterType: type,
+    });
+  };
 
   renderTable() {
     var { data, filters, filterInputValue, filterType } = this.state;

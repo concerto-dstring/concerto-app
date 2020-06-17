@@ -15,6 +15,7 @@ class PeopleCell extends React.PureComponent {
       userList: userData.userList,
       filterUserList: null,
       selectedUsers: userData.selectedUsers,
+      // container: props.container,
       removeBar: {
         display: 'none',
       },
@@ -61,10 +62,12 @@ class PeopleCell extends React.PureComponent {
         );
       this.setState({
         filterUserList,
+        filterValue: valueLow,
       });
     } else {
       this.setState({
         filterUserList: null,
+        filterValue: null,
       });
     }
   };
@@ -90,12 +93,36 @@ class PeopleCell extends React.PureComponent {
         userList,
         filterUserList,
       });
+      this.renderPopupHeight(selectedUsers, filterUserList);
     } else {
       this.setState({
         selectedUsers,
         userList,
       });
+
+      this.renderPopupHeight(selectedUsers, userList);
     }
+  };
+
+  /**
+   * 重新计算高度
+   */
+  renderPopupHeight = (selectedUsers, userList) => {
+    // 每两个一层，一层32px
+    let selectLength = 0;
+    let userLength = 0;
+    let tagHeight = 32
+    if (selectedUsers.length > 0) {
+      selectLength = Math.ceil(selectedUsers.length / 2);
+    }
+
+    if (userList.length < 5) {
+      userLength = 5 - userList.length
+    }
+
+    let height = (selectLength - userLength) > 0 ? (selectLength - userLength) * tagHeight : 0
+
+    this.props.handleCellEdit('PEOPLE', height);
   };
 
   /**
@@ -109,10 +136,29 @@ class PeopleCell extends React.PureComponent {
     selectedUsers.splice(userIndex, 1);
     let userList = this.state.userList.slice();
     userList.push(removeUser);
-    this.setState({
-      selectedUsers,
-      userList,
-    });
+
+    if (this.state.filterUserList) {
+      let filterUserList = this.state.filterUserList.slice();
+      let name = (!removeUser.lname && !removeUser.fname ? removeUser.username : removeUser.lname + removeUser.fname).toLowerCase();
+      if (name.indexOf(this.state.filterValue) !== -1) {
+        filterUserList.push(removeUser);
+
+        this.setState({
+          selectedUsers,
+          userList,
+          filterUserList,
+        });
+
+        this.renderPopupHeight(selectedUsers, filterUserList);
+      }
+    } else {
+      this.setState({
+        selectedUsers,
+        userList,
+      });
+
+      this.renderPopupHeight(selectedUsers, userList);
+    }
   };
 
   /**
@@ -139,19 +185,17 @@ class PeopleCell extends React.PureComponent {
     // 消失时保存数据
     if (!visible) {
       this.props.handleChange(this.state.selectedUsers, true);
-    }
-    else {
-      this.props.handleCellEdit('PEOPLE')
+    } else {
+      this.renderPopupHeight(this.state.selectedUsers, this.state.userList);
     }
   };
 
   render() {
     const {selectedUsers, userList, filterUserList} = this.state;
     const {Search} = Input;
-    const {data, rowIndex, columnKey, collapsedRows, callback, value, handleChange, handleKey, ...props} = this.props;
 
     let users = filterUserList ? filterUserList : userList;
- 
+
     const showRemoveUserBar = () => {
       const display = this.state.selectedUsers.length < 1 ? 'none' : 'block';
       this.setState({
@@ -169,7 +213,7 @@ class PeopleCell extends React.PureComponent {
     };
 
     return (
-      <Cell {...props} className="PeopleCell">
+      <Cell className="people_cell">
         <Popover
           placement="bottom"
           trigger="click"
@@ -179,7 +223,7 @@ class PeopleCell extends React.PureComponent {
           content={
             <div style={{pointerEvents: 'visible'}}>
               <Divider className="dividerStyle">People</Divider>
-              <div style={{height: 200, overflowY: 'auto'}} onWheel={this.handleWheel}>
+              <div className='user_scroll' style={users.length === 5 ? {overflowY: 'hidden'} : {}} onWheel={this.handleWheel}>
                 {users.map((v, i) => (
                   <div key={i} className="user" onClick={this.handleUserClick.bind(this, v)}>
                     <div className="faceAvatar">
@@ -197,7 +241,7 @@ class PeopleCell extends React.PureComponent {
           }
           title={
             <div style={{pointerEvents: 'visible'}}>
-              <div style={{paddingBottom: '10px'}}>
+              <div style={{paddingBottom: '10px', display: 'flex', flexWrap: 'wrap'}}>
                 {selectedUsers.map((v, i) => (
                   <Tag key={i} closable className="userTag" onClose={this.handleUserRemove.bind(this, v)}>
                     <Avatar size={22} style={{background: v.faceColor}}>
@@ -221,13 +265,13 @@ class PeopleCell extends React.PureComponent {
             <div onMouseEnter={showRemoveUserBar} onMouseLeave={hideRemoveUserBar}>
               <div className="userAvatar">
                 {selectedUsers.length === 1 && (
-                  <Avatar className="Avatar" style={{background: selectedUsers[0].faceColor}}>
+                  <Avatar className="Avatar" size={25} style={{background: selectedUsers[0].faceColor}}>
                     {selectedUsers[0].fname}
                   </Avatar>
                 )}
                 {selectedUsers.length === 2 && (
                   <div>
-                    <Avatar className="Avatar" style={{background: selectedUsers[0].faceColor}}>
+                    <Avatar className="Avatar" size={25} style={{background: selectedUsers[0].faceColor}}>
                       {selectedUsers[0].fname}
                     </Avatar>
                     <Avatar
@@ -244,10 +288,10 @@ class PeopleCell extends React.PureComponent {
                 )}
                 {selectedUsers.length > 2 && (
                   <div>
-                    <Avatar className="Avatar" style={{background: selectedUsers[0].faceColor}}>
+                    <Avatar className="Avatar" style={{background: selectedUsers[0].faceColor}} size={25}>
                       {selectedUsers[0].fname}
                     </Avatar>
-                    <Avatar className="Avatar moreUserAvatar">+{selectedUsers.length - 1}</Avatar>
+                    <Avatar size={25} className="Avatar moreUserAvatar">+{selectedUsers.length - 1}</Avatar>
                   </div>
                 )}
               </div>
@@ -256,12 +300,7 @@ class PeopleCell extends React.PureComponent {
           )}
           {selectedUsers.length < 1 && (
             <div className="userAvatar">
-              <Button
-                className="userIcon"
-                shape="circle"
-                size="small"
-                icon={<UserOutlined/>}
-              />
+              <Button className="userIcon" shape="circle" size="small" icon={<UserOutlined />} />
               <PlusCircleFilled className="PlusCircleFilled" />
             </div>
           )}
