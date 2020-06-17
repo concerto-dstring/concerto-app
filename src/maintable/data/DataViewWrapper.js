@@ -339,7 +339,7 @@ class DataViewWrapper {
         if (rowtype) {
             switch (rowtype) {
                 case RowType.TITLE:
-                    return 150;
+                    return 115;
                 case RowType.ADDROW: 
                     return 32;
                 case RowType.HEADER:
