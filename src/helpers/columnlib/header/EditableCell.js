@@ -143,11 +143,12 @@ class EditableCell extends React.PureComponent {
   handleClick = (type) => {
     if (type) {
       const columnCanEditor = this.cellRenderValues[type];
+      const height = this.popupHeights[type];
       if (columnCanEditor) {
         this.setState({editing: true});
       }
       if (this.props.onCellEdit) {
-        this.props.onCellEdit(this.props.rowIndex, this.props.columnKey);
+        this.props.onCellEdit(this.props.rowIndex, this.props.columnKey, height);
       }
     }
   };
