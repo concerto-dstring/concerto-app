@@ -532,10 +532,8 @@ class CheckBoxCell extends React.PureComponent {
 
   render() {
     const {data, rowIndex, columnKey, ...props} = this.props;
-    const rowObject = data.getObjectAt(rowIndex);    
     let group   = data.getGroupByRowIndex(rowIndex);
-    // let a =  rowObject[columnKey];
-    let index   = group.rows.findIndex(row => row.id === rowObject.id);
+    let index = data.getGroupTableRowIndexAt(group.groupKey,rowIndex);
     let groupColor = group ? group.color : '#f1f3f5';
     let css_style = {
       width: '100%',
@@ -546,7 +544,7 @@ class CheckBoxCell extends React.PureComponent {
     return (
       <div style={css_style}>
         <Checkbox className="table_row_checkbox_cell" />
-        <span className="table_row_rowindex_cell">{rowIndex}</span>
+        <span className="table_row_rowindex_cell">{index}</span>
       </div>
     );
   }
