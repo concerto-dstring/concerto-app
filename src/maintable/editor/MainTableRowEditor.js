@@ -38,24 +38,13 @@ class MainTableRowEditor extends React.Component {
     let cells = new Array(columns.length);
 
     for(let i = 0; i < columns.length; i++){
-      if (i === 0) {
-        // cells[i] = <div className="column_header">
-        //             {this._renderCell(
-        //               i,
-        //               rowIndex,
-        //               columns[i].template,
-        //               columns[i].key
-        //             )}
-        //             </div>; 
-      } else {
-        cells[i] = this._renderCell(
-          i,
-          rowIndex,
-          columns[i].template,
-          columns[i].key,
-          columns[i].name,
-        ); 
-      }      
+      cells[i] = this._renderCell(
+        i,
+        rowIndex,
+        columns[i].template,
+        columns[i].key,
+        i === 0 ? "名称" : columns[i].name,
+      );
     }
     return (
       <div>

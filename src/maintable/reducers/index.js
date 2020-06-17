@@ -165,9 +165,6 @@ function reducers(state = getInitialState(), action) {
       return newState;
     }
     case ActionTypes.SCROLL_END: {
-      if (state.isCellEditing) {
-        return state;
-      }
       const newState = Object.assign({}, state, {
         scrolling: false,
       });
@@ -180,11 +177,13 @@ function reducers(state = getInitialState(), action) {
     }
     case ActionTypes.HEIGHT_INCREASE: {
       let {increase} = action;
-      let {scrollY} = state;
       const newState = Object.assign({}, state, {
         heightAdjustment: increase,
       });
-      const scrollAnchor = scrollTo(newState, scrollY);
+      if (state.heightAdjustment === increase) {
+        return newState;
+      }
+      const scrollAnchor = scrollTo(newState, state.scrollContentHeight);
       return computeRenderedRows(newState, scrollAnchor);
     }
     case ActionTypes.SCROLL_TO_Y: {

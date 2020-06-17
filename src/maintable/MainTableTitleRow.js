@@ -82,8 +82,15 @@ class MainTableTitleRow extends React.Component {
     /**
      * boardColor
      */
-    boardColor: PropTypes.string
+    boardColor: PropTypes.string,
   };
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      users: this.props.onGetListUsers(),
+    };
+  }
 
   componentWillMount() {
     this._initialRender = true;
@@ -184,6 +191,10 @@ class MainTableTitleRow extends React.Component {
     }
   }
 
+  handleSearchUser = (input, option) => {
+    return option.children[2].toLowerCase().indexOf(input.toLowerCase()) >= 0
+  };
+
   render() /*object*/ {
     const {offsetTop, zIndex, visible, height} = this.props;
 
@@ -218,9 +229,10 @@ class MainTableTitleRow extends React.Component {
                   placeholder="按人名筛选"
                   showSearch
                   allowClear
+                  filterOption={this.handleSearchUser}
                   onChange={this._onFilterByPeople}
                 >
-                  {this.props.onGetListUsers().map((user) => {
+                  {this.state.users.map((user) => {
                     return (
                       <Select.Option key={user.id} value={user.username}>
                         <Avatar size={20} style={{background: user.faceColor}}>

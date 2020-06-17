@@ -28,7 +28,7 @@ export default function updateRowHeight(state, rowIdx) {
 
   let newHeight = rowHeightGetter(rowIdx) + subRowTotalHeightGetter(rowIdx);
 
-  if (rowIdx === rowsCount - 1) {
+  if (rowIdx === rowsCount - 1 && heightAdjustment > 0) {
     newHeight += heightAdjustment;
   }
 
