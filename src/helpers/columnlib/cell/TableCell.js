@@ -22,6 +22,7 @@ class TableCell extends React.Component {
           handleKey={table.handleKey}
           data={table.data}
           container={table.container}
+          handleCellEdit={table.handleCellEdit}
         />
       ),
       TEXT: (
@@ -47,6 +48,7 @@ class TableCell extends React.Component {
           handleChange={table.handleChange}
           handleKey={table.handleKey}
           container={table.container}
+          handleCellEdit={table.handleCellEdit}
         />
       ),
       STATUS: (

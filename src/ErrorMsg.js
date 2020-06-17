@@ -8,7 +8,7 @@ export default {
   user_exist: '用户名已存在',
   password_error: '密码错误',
   userName_rule: '用户名以字母开头, 包含字母、数字、_, 长度为5~30',
-  password_rule: '密码长度最小为6',
+  password_rule: '密码长度最小为8',
   confirm_password_error: '两次输入的密码不一致',
   email_error: '请输入正确的邮箱地址',
   phone_error: '请输入正确的手机号码',

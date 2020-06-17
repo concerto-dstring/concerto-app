@@ -16,7 +16,7 @@ export function checkStrWithUserName(str) {
  * @param {*} str
  */
 export function checkStrWithPassword(str) {
-  if (str && str.length >= 6) {
+  if (str && str.length >= 8) {
     return true;
   } else {
     return false;
