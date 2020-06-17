@@ -1,6 +1,6 @@
 import React, {Component, createRef} from 'react';
 import './RegisterValidate.less';
-import {Input, Button, Spin} from 'antd';
+import {Input, Button, Spin, message} from 'antd';
 import {Auth} from 'aws-amplify';
 import ErrorMsg from './ErrorMsg';
 
@@ -58,6 +58,7 @@ class RegisterValidate extends Component {
   reSendValidateCode = async () => {
     try {
       await Auth.resendSignUp(this.state.userName);
+      message.info(ErrorMsg.validate_code_resend)
     } catch (err) {
       console.log('error resending code: ', err);
     }
@@ -114,7 +115,7 @@ class RegisterValidate extends Component {
               <Input
                 ref={this.validateCodeRef}
                 style={{borderColor: validateCodeBorderColor}}
-                placeholder="请输入验证码"
+                placeholder="请输入邮件中的验证码"
                 onChange={this.handlevalidateCodeChange}
               />
             </div>
