@@ -288,7 +288,7 @@ class PeopleCell extends React.PureComponent {
                 )}
                 {selectedUsers.length > 2 && (
                   <div>
-                    <Avatar className="Avatar" style={{background: selectedUsers[0].faceColor}} size={25}>
+                    <Avatar className="Avatar" size={25} style={{background: selectedUsers[0].faceColor}}>
                       {selectedUsers[0].fname}
                     </Avatar>
                     <Avatar size={25} className="Avatar moreUserAvatar">+{selectedUsers.length - 1}</Avatar>
