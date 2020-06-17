@@ -880,7 +880,7 @@ class MainTableDataStore {
         rank = preRank + (currentRank - preRank) / 2;
       } else {
         // 插入最上面
-        rank = Number(this._groups[this._currentBoardId][this._groups.length - 1].rank) + rankBlock;
+        rank = Number(this._groups[this._currentBoardId][this._groups[this._currentBoardId].length - 1].rank) + rankBlock;
       }
     } else {
       rank = rankBlock;

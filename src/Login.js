@@ -93,7 +93,7 @@ class Login extends PureComponent {
             passwordErrorMsg: ErrorMsg.password_error,
           });
         } else if (error.code === 'UserNotConfirmedException') {
-          message.warning('该用户还未验证,请先进行验证');
+          message.warning(ErrorMsg.user_not_validate);
           await Auth.resendSignUp(userName);
           this.props.history.push({
             pathname: '/register/validate',

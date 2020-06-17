@@ -14,4 +14,8 @@ export default {
   phone_error: '请输入正确的手机号码',
   validate_code_is_empty: '验证码不能为空',
   validate_code_error: '验证码有误',
+  number_error: '只能输入数字',
+  user_not_validate: '该用户还未验证,请在下面输入邮箱中的验证码',
+  validate_code_send: '验证码已发送至您的邮箱',
+  validate_code_resend: '验证码已重新发送至您的邮箱',
 };
