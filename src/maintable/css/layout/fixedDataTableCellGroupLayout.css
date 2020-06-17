@@ -48,7 +48,8 @@
 }
 
 .table_row_menu_cell{
-  margin-top: 5px;
+  margin-top: 8px;
+  margin-left: 3px;
   visibility: hidden;
 }
 .table_row_checkbox_cell{

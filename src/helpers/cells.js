@@ -10,7 +10,7 @@ import React from 'react';
 import ReactTooltip from 'react-tooltip';
 import {Menu, Dropdown, Checkbox, Button as AntdButton, Tooltip} from 'antd';
 
-import {CaretDownOutlined, DownOutlined, UpOutlined, SettingFilled, EllipsisOutlined} from '@ant-design/icons';
+import {MenuOutlined, DownOutlined, UpOutlined, SettingFilled, EllipsisOutlined} from '@ant-design/icons';
 
 import {
   ADD_SUB_TABLE,
@@ -490,14 +490,15 @@ class DropDownMenuCell extends React.PureComponent {
           getPopupContainer={() => this.props.container}
           onVisibleChange={this.handleVisibleChange}
         >
-          <AntdButton
-            icon={<CaretDownOutlined />}
+          <MenuOutlined className="table_row_menu_cell" />
+          {/* <AntdButton
+            icon={<MenuOutlined />}
             shape="circle"
             size="small"
             className="table_row_menu_cell"
             // style={{margin: '8px 0px', width:'15px',visibility: isShowDropDown ? VISIBILITY.VISIBLE : isShowRowActionBtn}}
             // onClick={this.showRowActionMenu}
-          />
+          /> */}
         </Dropdown>
       </div>
     );
