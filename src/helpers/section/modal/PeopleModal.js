@@ -35,39 +35,42 @@ class PeopleModal extends PureComponent {
 
   render() {
     return (
-      <Popover
-        placement={this.props.placement ? this.props.placement : 'bottom'}
-        trigger="click"
-        autoAdjustOverflow={false}
-        visible={this.props.visible}
-        onVisibleChange={this.handleVisibleChange}
-        content={
-          <div>
-            <Divider className="dividerStyle">People</Divider>
-            <div style={{height: 180, overflowY: 'auto'}}>
-              {this.state.people.map((v, i) => (
-                <div key={i} className="user" onClick={this.handleClickPeople.bind(this, v)}>
-                  <div className="faceAvatar">
-                    &nbsp;
-                    <Avatar size={25} style={{background: v.faceColor}}>
-                      {v.fname}
-                    </Avatar>
-                    &nbsp;
-                    {v.lname + v.fname}
+      <div className="people_modal">
+        <Popover
+          placement={this.props.placement ? this.props.placement : 'bottom'}
+          trigger="click"
+          autoAdjustOverflow={false}
+          visible={this.props.visible}
+          onVisibleChange={this.handleVisibleChange}
+          overlayStyle={{width: 240, height: 300}}
+          content={
+            <div>
+              <Divider className="dividerStyle">People</Divider>
+              <div className='user_scroll' style={this.state.people.length === 5 ? {overflowY: 'hidden'} : {}} >
+                {this.state.people.map((v, i) => (
+                  <div key={i} className="user" onClick={this.handleClickPeople.bind(this, v)}>
+                    <div className="faceAvatar">
+                      &nbsp;
+                      <Avatar size={25} style={{background: v.faceColor}}>
+                        {v.fname}
+                      </Avatar>
+                      &nbsp;
+                      {v.lname + v.fname}
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          </div>
-        }
-        title={
-          <div>
-            <Input.Search placeholder="输入名称" onChange={this.filterPeople} />
-          </div>
-        }
-      >
-        {this.props.children}
-      </Popover>
+          }
+          title={
+            <div>
+              <Input.Search placeholder="输入名称" onChange={this.filterPeople} />
+            </div>
+          }
+        >
+          {this.props.children}
+        </Popover>
+      </div>
     );
   }
 }

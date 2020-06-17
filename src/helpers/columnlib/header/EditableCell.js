@@ -48,7 +48,7 @@ class EditableCell extends React.PureComponent {
 
     this.popupHeights = {
       DATE: 400,
-      PEOPLE: 360,
+      PEOPLE: 364,
     };
   }
 
@@ -142,7 +142,7 @@ class EditableCell extends React.PureComponent {
   }
 
   handleClick = (type) => {
-    if (type) {
+    if (type && type !== 'PEOPLE') {
       const columnCanEditor = this.cellRenderValues[type];
       const height = this.popupHeights[type];
       if (columnCanEditor) {
@@ -176,9 +176,15 @@ class EditableCell extends React.PureComponent {
     }
   }
 
-  handleCellEdit = (type) => {
+  /**
+   * 弹出层高度
+   * @param {*} type 
+   * @param {*} height 
+   */
+  handleCellEdit = (type, height) => {
     if (this.props.onCellEdit) {
-      this.props.onCellEdit(this.props.rowIndex, this.props.columnKey, this.popupHeights[type] ? this.popupHeights[type] : 0);
+      let popupHeight = (this.popupHeights[type] ? this.popupHeights[type] : 0) + (height ? height : 0)
+      this.props.onCellEdit(this.props.rowIndex, this.props.columnKey, popupHeight);
     }
   }
 
