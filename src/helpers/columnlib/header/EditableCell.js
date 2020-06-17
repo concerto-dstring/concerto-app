@@ -20,7 +20,7 @@ const CellContainer = styled.div`
 class EditableCell extends React.PureComponent {
   constructor(props) {
     super(props);
-    let cellData = this.getCellData(props);
+    let cellData = this.getCellData(props, null);
     this.state = {
       value: cellData.value,
       displayValue: cellData.displayValue,
@@ -35,7 +35,7 @@ class EditableCell extends React.PureComponent {
       handleChange: this.handleChange,
       handleKey: this.handleKey,
       handleHide: this.handleHide,
-      handleCellEdit: this.handleCellEdit
+      handleCellEdit: this.handleCellEdit,
     };
     this.cellRenderValues = {
       TEXT: true,
@@ -55,7 +55,7 @@ class EditableCell extends React.PureComponent {
   /**
    * 读取单元格数据，若row为空则取列标题名称(若分区折叠时则只显示分区名称)
    */
-  getCellData = (props) => {
+  getCellData = (props, oldValue) => {
     let isCollapsed;
     if (typeof props.rowIndex === 'string') {
       isCollapsed = false;
@@ -65,11 +65,14 @@ class EditableCell extends React.PureComponent {
     let type = 'TEXT';
     let value = '';
     let displayValue = '';
+    let isDataChanged = false;
     if (props.data.getObjectAt(props.rowIndex)) {
       value = props.data.getObjectAt(props.rowIndex)[props.columnKey];
       type = props.data.getColumn(props.columnKey).columnComponentType;
       if (type !== 'PEOPLE' && type !== 'DATE') {
         displayValue = getHighlightText(value, props.filterInputValue);
+        // 检查单元格的值是否发生变化
+        isDataChanged = oldValue === null ? true : ((value ? value : '') !== oldValue)
       }
     } else {
       if (isCollapsed) {
@@ -80,27 +83,42 @@ class EditableCell extends React.PureComponent {
         displayValue = value;
       }
     }
+
     let cellData = {
       isCollapsed,
       value,
       displayValue,
       type,
+      isDataChanged,
     };
 
     return cellData;
   };
 
   componentWillReceiveProps(props) {
-    let cellData = this.getCellData(props);
-    this.setState({
-      value: cellData.value,
-      displayValue: cellData.displayValue,
-      isCollapsed: cellData.isCollapsed,
-      data: props.data,
-      container: props.container,
-      type: cellData.type,
-      filterInputValue: props.filterInputValue,
-    });
+    let cellData = this.getCellData(props, this.state.oldValue ? this.state.oldValue : '');
+
+    if (cellData.isDataChanged) {
+      this.setState({
+        oldValue: cellData.value,
+        value: cellData.value,
+        displayValue: cellData.displayValue,
+        isCollapsed: cellData.isCollapsed,
+        data: props.data,
+        container: props.container,
+        type: cellData.type,
+        filterInputValue: props.filterInputValue,
+      });
+    } else {
+      this.setState({
+        displayValue: cellData.displayValue,
+        isCollapsed: cellData.isCollapsed,
+        data: props.data,
+        container: props.container,
+        type: cellData.type,
+        filterInputValue: props.filterInputValue,
+      });
+    }
     this.setState({version: props.dataVersion});
   }
 
@@ -127,15 +145,15 @@ class EditableCell extends React.PureComponent {
         }
       }
     }
-  }
-      
-  handleHide = () => { 
-      this.updateValue()        
-      this.setState({ editing: false });
-      if (this.props.onCellEditEnd) {
-        this.props.onCellEditEnd(this.props.rowIndex, this.props.columnKey);
-      }
-  }
+  };
+
+  handleHide = () => {
+    this.updateValue();
+    this.setState({editing: false});
+    if (this.props.onCellEditEnd) {
+      this.props.onCellEditEnd(this.props.rowIndex, this.props.columnKey);
+    }
+  };
 
   saveData(value) {
     this.props.data.setObjectAt(this.props.rowIndex, this.props.columnKey, value);
@@ -155,38 +173,37 @@ class EditableCell extends React.PureComponent {
   };
 
   handleHide = () => {
-    this.updateValue()
-    this.setState({editing: false})
+    this.setState({editing: false});
+    this.updateValue();
     if (this.props.onCellEditEnd) {
-      this.props.onCellEditEnd(this.props.rowIndex, this.props.columnKey)
+      this.props.onCellEditEnd(this.props.rowIndex, this.props.columnKey);
     }
-  }
+  };
 
   handleChange = (value, isSave) => {
     if (isSave) {
       this.saveData(value);
+      if (this.props.onCellEditEnd) {
+        this.props.onCellEditEnd(this.props.rowIndex, this.props.columnKey);
+      }
     } else {
       this.setState({
         value: value,
       });
     }
-
-    if (this.props.onCellEditEnd) {
-      this.props.onCellEditEnd(this.props.rowIndex, this.props.columnKey);
-    }
-  }
+  };
 
   /**
    * 弹出层高度
-   * @param {*} type 
-   * @param {*} height 
+   * @param {*} type
+   * @param {*} height
    */
   handleCellEdit = (type, height) => {
     if (this.props.onCellEdit) {
-      let popupHeight = (this.popupHeights[type] ? this.popupHeights[type] : 0) + (height ? height : 0)
+      let popupHeight = (this.popupHeights[type] ? this.popupHeights[type] : 0) + (height ? height : 0);
       this.props.onCellEdit(this.props.rowIndex, this.props.columnKey, popupHeight);
     }
-  }
+  };
 
   handleKey = (e) => {
     if (e.keyCode === Keys.RETURN) {
@@ -214,12 +231,7 @@ class EditableCell extends React.PureComponent {
     let style = {};
     switch (type) {
       case 'PEOPLE':
-        if (!editing &&
-          value &&
-          value instanceof Array &&
-          this.props.filterInputValue &&
-          this.props.data
-        ) {
+        if (!editing && value && value instanceof Array && this.props.filterInputValue && this.props.data) {
           let filterInputValue = this.props.filterInputValue.toLowerCase();
           value.map((user) => {
             if (user.username && user.username.toLowerCase().indexOf(filterInputValue) !== -1) {
@@ -229,7 +241,7 @@ class EditableCell extends React.PureComponent {
           });
         }
         break;
-      
+
       case 'DATE':
         if (!editing && value && this.props.filterInputValue && this.props.data) {
           let filterInputValue = this.props.filterInputValue.toLowerCase();
@@ -240,7 +252,7 @@ class EditableCell extends React.PureComponent {
       default:
         break;
     }
-    
+
     return style;
   };
 

@@ -14,4 +14,5 @@ export default {
   phone_error: '请输入正确的手机号码',
   validate_code_is_empty: '验证码不能为空',
   validate_code_error: '验证码有误',
+  number_error: '只能输入数字'
 };
