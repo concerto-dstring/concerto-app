@@ -493,7 +493,7 @@ class DropDownMenuCell extends React.PureComponent {
             icon={<CaretDownOutlined />}
             shape="circle"
             size="small"
-            style={{margin: '8px 6px', visibility: isShowDropDown ? VISIBILITY.VISIBLE : isShowRowActionBtn}}
+            style={{margin: '8px 0px', width:'15px',visibility: isShowDropDown ? VISIBILITY.VISIBLE : isShowRowActionBtn}}
             // onClick={this.showRowActionMenu}
           />
         </Dropdown>
@@ -528,7 +528,7 @@ class CheckBoxCell extends React.PureComponent {
     this.state = {
       checkbox: {
         display: 'none',
-        paddingBottom: '12px',
+        paddingBottom: '20px',
       },
       index: {
         display: 'block',
@@ -539,7 +539,7 @@ class CheckBoxCell extends React.PureComponent {
     this.setState({
       checkbox: {
         display: 'block',
-        paddingBottom: '12px',
+        paddingBottom: '20px',
       },
       index: {
         display: 'none',
@@ -550,7 +550,7 @@ class CheckBoxCell extends React.PureComponent {
     this.setState({
       checkbox: {
         display: 'none',
-        paddingBottom: '12px',
+        paddingBottom: '20px',
       },
       index: {
         display: 'block',
@@ -559,14 +559,15 @@ class CheckBoxCell extends React.PureComponent {
   };
   render() {
     const {data, rowIndex, columnKey, ...props} = this.props;
-    const value = data.getObjectAt(rowIndex);
-
-    let group = data.getGroupByRowIndex(rowIndex);
+    const rowObject = data.getObjectAt(rowIndex);    
+    let group   = data.getGroupByRowIndex(rowIndex);
+    let a =  rowObject[columnKey];
+    let index   = group.rows.findIndex(row => row.id === rowObject.id);
     let groupColor = group ? group.color : '#f1f3f5';
     let css_style = {
       width: '100%',
       textAlign: 'center',
-      lineHeight: '40px',
+      lineHeight: '32px',
       borderLeft: '3px solid ' + groupColor,
     };
     return (
@@ -621,11 +622,10 @@ class SettingBarHeader extends React.PureComponent {
   render() {
     const {data, rowIndex} = this.props;
     const style = {
-      width: '36px',
-      lineHeight: '45px',
-      textalign: 'center',
-    };
-
+      width: '35px',
+      lineHeight: '35px',
+      textalign: 'center'
+    }
     return <SettingFilled style={style} />;
   }
 }

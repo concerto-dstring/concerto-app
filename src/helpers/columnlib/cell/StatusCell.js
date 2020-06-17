@@ -62,7 +62,9 @@ class StatusCell extends React.Component {
     const dismiss = (e) => {
       handleChange(this.state.value, false);
     };
-
+    const item_lineheight_style = {
+      lineHeight:'32px'
+    }
     const menu = (
       <Menu onClick={returnValue} className="statusCellMenu" style={{pointerEvents: 'visible'}}>
         <Menu.Item key="working" className="workingItem">
@@ -90,7 +92,7 @@ class StatusCell extends React.Component {
           onVisibleChange={dismiss}
           getPopupContainer={() => this.props.container}
         >
-          <div className={cellStatusTextStyle}>{displayValue}</div>
+          <div className={cellStatusTextStyle} style={item_lineheight_style}>{displayValue}</div>
         </Dropdown>
       </Cell>
     );

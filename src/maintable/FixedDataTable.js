@@ -518,10 +518,10 @@ const DRAG_SCROLL_BUFFER = 40;
   static defaultProps = /*object*/ {
     elementHeights: {
       cellGroupWrapperHeight: undefined,
-      footerHeight: 40,
+      footerHeight: 32,
       groupHeaderHeight: 0,
-      headerHeight: 40,
-      addRowHeight: 35,
+      headerHeight: 32,
+      addRowHeight: 32,
       titleHeight: 0,
     },
     keyboardScrollEnabled: false,
@@ -1485,6 +1485,7 @@ const DRAG_SCROLL_BUFFER = 40;
           break;
 
         case RowType.SUBFOOTER:
+          break;
           row =
             <FixedDataTableRow
               key={i}
@@ -1511,7 +1512,7 @@ const DRAG_SCROLL_BUFFER = 40;
               data={props.data}
               isRTL={props.isRTL}
             />;
-          break;
+          
 
         default:
           row =

@@ -442,91 +442,71 @@ class MainTable extends React.Component {
     return <div className="autoScrollContainer">{this.renderTable()}</div>;
   }
 
-  // /**
-  //  * 查询/过滤数据
-  //  */
-  // filterTableData = (e) => {
-  //   this.setState({
-  //     filterInputValue: e.target.value.trim(),
-  //     filterType: null
-  //   })
-  // }
-
-  //  /**
-  //  * 根据人员过滤数据
-  //  */
-  // doFilterByPeople = (value) => {
-  //   this.setState({
-  //     filterInputValue: value,
-  //     filterType: 'PEOPLE'
-  //   })
-  // }
-
-  _onFilterChangeCallback = (value, type) => {
-    this.setState({
-      filterInputValue: value,
-      filterType: type,
-    });
-  };
-
   _onGetListUsers = () => {
-    return this.state.data.getSearchUserList();
-  };
+    return this.state.data.getListUsers()
+  }
 
   renderTable() {
-    var {data, filters, filterInputValue, filterType} = this.state;
-    if (!this.state.columns) return;
-    const fixedColumns = this.state.columns.filter((c) => c.fixed);
-    const scrollColumns = this.state.columns.filter((c) => !c.fixed);
-
+    var { data, filters, filterInputValue, filterType } = this.state;
+    if (!this.state.columns)
+        return
+    const fixedColumns = this.state.columns.filter(c => c.fixed); 
+    const scrollColumns = this.state.columns.filter(c => !c.fixed);
+    
     return (
-      <TableContext.Provider value={this.state}>
+        <TableContext.Provider value={this.state}>
         <div style={{width: '100%', height: '100%'}}>
-          <FilterableDataTable
-            ref={this.handleRef}
-            title={this.props.title}
-            boardColor={this.props.boardColor}
-            onAddNewGroupCallback={this._onAddNewGroupCallback}
-            onColumnReorderEndCallback={this._onColumnReorderEndCallback}
-            onColumnResizeEndCallback={this._onColumnResizeEndCallback}
-            onFilterChangeCallback={this._onFilterChangeCallback}
-            onGetListUsers={this._onGetListUsers}
-            columnNameGetter={this._getColumnName}
-            data={data}
-            titleHeight={0}
-            // set to zero
-            headerHeight={40}
-            rowHeight={40}
-            isColumnResizing={false}
-            addRowHeight={35}
-            footerHeight={40}
-            filters={filters}
-            filterInputValue={filterInputValue}
-            filterType={filterType}
-            height={this.props.containerHeight}
-            // 减去左侧Sider宽度
-            width={this.props.containerWidth - this.props.siderWidth}
-            siderWidth={this.props.siderWidth}
-            {...this.props}
-          >
-            {/* {fixedColumn && <Column {...this.getColumnTemplate(fixedColumn.columnKey)} fixed={true} />} */}
-            {fixedColumns.map((column) => (
-              <Column key={column.columnKey} {...this.getFixedColumnTemplate(column)} fixed={true} />
-            ))}
-            {scrollColumns.map((column) => (
-              <Column key={column.columnKey} {...this.getColumnTemplate(column.columnKey)} fixed={false} />
-            ))}
-            <Column {...this.getColumnAddOptionTemplate('', 0, 40)} />
-            <Column {...this.getColumnAddOptionTemplate('', 1, 40)} />
-          </FilterableDataTable>
-          <ReNameModal isShowReNameModal={this.props.isShowReNameModal} />
-          <DeleteModal isShowDeleteModal={this.props.isShowDeleteModal} />
-          <UndoMessage isShowUndoModal={this.state.isShowUndoModal} />
-          <RowHeaderDrawer />
-        </div>
-      </TableContext.Provider>
-    );
-  }
+            <FilterableDataTable
+                ref={this.handleRef}
+                title={this.props.title}
+                onAddNewGroupCallback={this._onAddNewGroupCallback}
+                onColumnReorderEndCallback={this._onColumnReorderEndCallback}
+                onColumnResizeEndCallback={this._onColumnResizeEndCallback}
+                onFilterChangeCallback={this._onFilterChangeCallback}
+                onGetListUsers = {this._onGetListUsers}
+                columnNameGetter={this._getColumnName}
+                data={data}
+                titleHeight={0} 
+                // set to zero
+                headerHeight={32}                    
+                rowHeight={32}
+                isColumnResizing={false}
+                addRowHeight={32}
+                footerHeight={32}
+                filters={filters}
+                filterInputValue={filterInputValue}
+                filterType={filterType}             
+                height={this.props.containerHeight}
+                // 减去左侧Sider宽度 
+                width={this.props.containerWidth - this.props.siderWidth}
+                siderWidth={this.props.siderWidth}
+                {...this.props}>
+                {/* {fixedColumn && <Column {...this.getColumnTemplate(fixedColumn.columnKey)} fixed={true} />} */}
+                {fixedColumns.map(column => (
+                    <Column key={column.columnKey} {...this.getFixedColumnTemplate(column)} fixed={true} />
+                ))}
+                {scrollColumns.map(column => (
+                    <Column key={column.columnKey} {...this.getColumnTemplate(column.columnKey)} fixed={false} />
+                ))
+                }
+                <Column {...this.getColumnAddOptionTemplate("", 0, 32)}/>
+                <Column {...this.getColumnAddOptionTemplate("", 1, 32)}/>
+            </FilterableDataTable>
+            <ReNameModal 
+                isShowReNameModal={this.props.isShowReNameModal}
+            />
+            <DeleteModal 
+                isShowDeleteModal={this.props.isShowDeleteModal}
+            />
+            <UndoMessage 
+                isShowUndoModal={this.state.isShowUndoModal}
+            />
+            <RowHeaderDrawer />
+            </div>   
+        </TableContext.Provider>   
+        );
+    }
+
 }
 
 export default Dimensions({

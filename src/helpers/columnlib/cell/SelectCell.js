@@ -23,6 +23,7 @@ class SelectCell extends React.Component {
     return (
       <Cell {...props} className="SelectCell">
         <Select
+          size="small"
           showSearch
           value={this.state.value}
           className="SelectCell"

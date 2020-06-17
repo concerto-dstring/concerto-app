@@ -412,8 +412,10 @@ class MainTableDataStore {
         column.isTitle = column.column.isTitle;
         let name = column.column.name;
         column.name = name;
-        if (name === ColumnType.ROWACTION || name === ColumnType.ROWSELECT) {
+        if (name === ColumnType.ROWSELECT) {
           column.width = 36;
+        } else if(name === ColumnType.ROWACTION){
+          column.width = 22;
         } else if (column.isTitle) {
           column.width = 360;
         } else {

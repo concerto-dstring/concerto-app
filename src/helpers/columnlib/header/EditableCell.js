@@ -13,7 +13,7 @@ const CellContainer = styled.div`
   display: flex;
   flex: 1 0 100%;
   align-items: center;
-  height: 38px;
+  height: 31px;
   overflow: hidden;
 `;
 

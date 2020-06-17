@@ -339,30 +339,32 @@ class DataViewWrapper {
         if (rowtype) {
             switch (rowtype) {
                 case RowType.TITLE:
-                    return 150;
+                    return 115;
                 case RowType.ADDROW: 
-                    return 35;
+                    return 32;
                 case RowType.HEADER:
-                    return 40;
+                    return 32;
                 case RowType.FOOTER:            
                     return 60;
                 case RowType.ROW:
-                    return 40;
+                    return 32;
+                case RowType.SECTIONGROUP:
+                return 40;
             }
         }
-        return 40;
+        return 32;
     }
 
     getSubRowHeight(rowtype) {
       switch (rowtype) {
           case RowType.SUBHEADER:
-              return 35;
+              return 32;
           case RowType.SUBROW:
-              return 40;
+              return 32;
           case RowType.SUBFOOTER:
-              return 40;
+              return 32;
       }
-      return 40;
+      return 32;
     }
 
     getRowMap() {

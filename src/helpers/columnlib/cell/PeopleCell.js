@@ -187,16 +187,25 @@ class PeopleCell extends React.PureComponent {
             <div onMouseEnter={showRemoveUserBar} onMouseLeave={hideRemoveUserBar}>
               <div className="userAvatar">
                 {someusers.length === 1 && (
-                  <Avatar className="Avatar" style={{background: someusers[0].faceColor}}>
+                  <Avatar
+                    size={25}
+                    className="Avatar"
+                    style={{background: someusers[0].faceColor}}
+                  >
                     {someusers[0].fname}
                   </Avatar>
                 )}
                 {someusers.length === 2 && (
                   <div>
-                    <Avatar className="Avatar" style={{background: someusers[0].faceColor}}>
+                    <Avatar
+                      size={25}
+                      className="Avatar"
+                      style={{background: someusers[0].faceColor}}
+                    >
                       {someusers[0].fname}
                     </Avatar>
                     <Avatar
+                      size={25}
                       className="Avatar"
                       style={{
                         right: '10px',
@@ -209,10 +218,16 @@ class PeopleCell extends React.PureComponent {
                 )}
                 {someusers.length > 2 && (
                   <div>
-                    <Avatar className="Avatar" style={{background: someusers[0].faceColor}}>
+                    <Avatar
+                      size={25}
+                      className="Avatar"
+                      style={{background: someusers[0].faceColor}}
+                    >
                       {someusers[0].fname}
                     </Avatar>
-                    <Avatar className="Avatar moreUserAvatar">+{someusers.length - 1}</Avatar>
+                    <Avatar className="Avatar moreUserAvatar" size={25}>
+                      +{someusers.length - 1}
+                    </Avatar>
                   </div>
                 )}
               </div>
@@ -221,12 +236,16 @@ class PeopleCell extends React.PureComponent {
           )}
           {someusers.length < 1 && (
             <div className="userAvatar">
-              <Button className="userIcon" shape="circle" icon={<UserOutlined />} />
+              <Button
+                className="userIcon"
+                shape="circle"
+                size="small"
+                icon={<UserOutlined/>}
+              />
               <PlusCircleFilled className="PlusCircleFilled" />
             </div>
           )}
         </Popover>
-        ;
         <CloseCircleFilled
           className="CloseCircleFilled"
           onClick={memoveAllUsers}

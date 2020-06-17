@@ -6,11 +6,11 @@ import {Cell} from '../../../maintable/FixedDataTableRoot';
 import './TextCell.less';
 
 class TextCell extends React.Component {
-  constructor(props) {
+  constructor(props){
     super(props);
     this.state = {
-      value: props.value,
-    };
+      value:props.value
+    }
   }
   render() {
     const {
@@ -37,7 +37,7 @@ class TextCell extends React.Component {
     };
     return (
       <Cell {...props} className="textCell">
-        <Input value={this.state.value} onChange={returnValue} onKeyDown={handleKey} />
+        <Input value={this.state.value} size="small" onChange={returnValue} onKeyDown={handleKey} />
       </Cell>
     );
   }
