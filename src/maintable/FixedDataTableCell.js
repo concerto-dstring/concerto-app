@@ -169,8 +169,7 @@ class FixedDataTableCell extends React.Component {
 
     var style = {
       height,
-      width,
-      border:'1px solid red'
+      width
     };
     
     if (this.props.isRTL) {

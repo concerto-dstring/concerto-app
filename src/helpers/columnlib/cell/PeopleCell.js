@@ -221,13 +221,13 @@ class PeopleCell extends React.PureComponent {
             <div onMouseEnter={showRemoveUserBar} onMouseLeave={hideRemoveUserBar}>
               <div className="userAvatar">
                 {selectedUsers.length === 1 && (
-                  <Avatar className="Avatar" style={{background: selectedUsers[0].faceColor}}>
+                  <Avatar className="Avatar" size={25} style={{background: selectedUsers[0].faceColor}}>
                     {selectedUsers[0].fname}
                   </Avatar>
                 )}
                 {selectedUsers.length === 2 && (
                   <div>
-                    <Avatar className="Avatar" style={{background: selectedUsers[0].faceColor}}>
+                    <Avatar className="Avatar" size={25} style={{background: selectedUsers[0].faceColor}}>
                       {selectedUsers[0].fname}
                     </Avatar>
                     <Avatar
@@ -244,7 +244,7 @@ class PeopleCell extends React.PureComponent {
                 )}
                 {selectedUsers.length > 2 && (
                   <div>
-                    <Avatar className="Avatar" style={{background: selectedUsers[0].faceColor}}>
+                    <Avatar className="Avatar" size={25} style={{background: selectedUsers[0].faceColor}}>
                       {selectedUsers[0].fname}
                     </Avatar>
                     <Avatar className="Avatar moreUserAvatar">+{selectedUsers.length - 1}</Avatar>
