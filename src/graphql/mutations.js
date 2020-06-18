@@ -1107,6 +1107,7 @@ export const createBoard = /* GraphQL */ `
           collpse
           deleteFlag
           rank
+          summaryRule
         }
         nextToken
       }
@@ -1187,6 +1188,7 @@ export const updateBoard = /* GraphQL */ `
           collpse
           deleteFlag
           rank
+          summaryRule
         }
         nextToken
       }
@@ -1267,6 +1269,7 @@ export const deleteBoard = /* GraphQL */ `
           collpse
           deleteFlag
           rank
+          summaryRule
         }
         nextToken
       }
@@ -2004,6 +2007,7 @@ export const createColumnBoard = /* GraphQL */ `
       collpse
       deleteFlag
       rank
+      summaryRule
     }
   }
 `;
@@ -2078,6 +2082,7 @@ export const updateColumnBoard = /* GraphQL */ `
       collpse
       deleteFlag
       rank
+      summaryRule
     }
   }
 `;
@@ -2152,6 +2157,7 @@ export const deleteColumnBoard = /* GraphQL */ `
       collpse
       deleteFlag
       rank
+      summaryRule
     }
   }
 `;
@@ -2172,6 +2178,7 @@ export const createColumn = /* GraphQL */ `
           collpse
           deleteFlag
           rank
+          summaryRule
         }
         nextToken
       }
@@ -2241,6 +2248,7 @@ export const updateColumn = /* GraphQL */ `
           collpse
           deleteFlag
           rank
+          summaryRule
         }
         nextToken
       }
@@ -2310,6 +2318,7 @@ export const deleteColumn = /* GraphQL */ `
           collpse
           deleteFlag
           rank
+          summaryRule
         }
         nextToken
       }

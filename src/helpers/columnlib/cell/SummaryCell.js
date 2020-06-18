@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { PureComponent, Fragment } from 'react';
 import './SummaryCell.less'
 import {
   RightOutlined 
@@ -73,7 +73,7 @@ class SummaryCell extends PureComponent {
 
         summaryCell = (
           <div className="summary_cell">
-            <div className="sunmmary_cell_status_container">
+            <div className="summary_cell_status_container">
               {statusPercent.map((status) => {
                 return <div key={status.style.background} className="status_summary" style={status.style} />;
               })}
@@ -87,11 +87,10 @@ class SummaryCell extends PureComponent {
 
         // 获取最小和最大日期及相差天数
         let dateSummary = data.getDateSummary(rowIndex, columnKey);
-        let color = data.getGroupByRowIndex(rowIndex).color;
         summaryCell = (
           <div className="summary_cell">
             <div className="summary_cell_date_container">
-              {dateSummary.dateDiff ? (
+              {/* {dateSummary.dateDiff ? (
                 <div
                   style={{
                     background: `linear-gradient(to right, ${color} ${dateSummary.datePercent}, rgb(28, 31, 59) ${dateSummary.datePercent})`,
@@ -105,7 +104,21 @@ class SummaryCell extends PureComponent {
                 </div>
               ) : (
                 <span className="summary_cell_date_container_span">{dateSummary.dateText}</span>
-              )}
+              )} */}
+              {
+                dateSummary.dateText2
+                ?
+                <Fragment>
+                  <div className="summary_cell_date_container_rule">
+                    {dateSummary.dateText1}
+                  </div>
+                  <div className="summary_cell_date_container_text">
+                    {dateSummary.dateText2}
+                  </div>
+                </Fragment>
+                :
+                null
+              }
             </div>
           </div>
         );
@@ -120,7 +133,7 @@ class SummaryCell extends PureComponent {
     if(column.name === "GROUPTITLE" && group.isCollapsed){
       summaryCell = (
         <div className="summary_cell" style={expand_style}>
-          <div className="sunmmary_cell_status_container">
+          <div className="summary_cell_status_container">
               <span style={{fontWeight:'bold',marginLeft:'-7px',width:'200px'}}>{group.name}</span>
             <div style={toatal_style}><span style={title_style}>小计：</span><span style={count_style}>共{group.rows.length}条</span></div>
           </div>
@@ -129,7 +142,7 @@ class SummaryCell extends PureComponent {
     }else if(column.name === "ROWSELECT" && group.isCollapsed){
       summaryCell = (
         <div className="summary_cell" style = {border_style}>
-          <div className="sunmmary_cell_status_container">
+          <div className="summary_cell_status_container">
             <RightOutlined style={expand_style} onClick={this.changeGroupCollapseState}/>
           </div>
         </div>

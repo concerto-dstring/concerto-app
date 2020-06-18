@@ -806,7 +806,7 @@ class MainTableDataStore {
             ColumnType.ROWSELECT,
             true,
             1,
-            ColumnType.ROWACTION,
+            ColumnType.ROWSELECT,
             null,
             true,
             String(rankBlock * 2)

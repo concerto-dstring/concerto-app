@@ -479,7 +479,7 @@ class MainTable extends React.Component {
                 rowHeight={32}
                 isColumnResizing={false}
                 addRowHeight={32}
-                footerHeight={32}
+                footerHeight={45}
                 filters={filters}
                 filterInputValue={filterInputValue}
                 filterType={filterType}             

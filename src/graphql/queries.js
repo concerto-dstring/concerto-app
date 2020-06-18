@@ -420,6 +420,7 @@ export const getBoard = /* GraphQL */ `
           collpse
           deleteFlag
           rank
+          summaryRule
         }
         nextToken
       }
@@ -845,6 +846,7 @@ export const getColumn = /* GraphQL */ `
           collpse
           deleteFlag
           rank
+          summaryRule
         }
         nextToken
       }

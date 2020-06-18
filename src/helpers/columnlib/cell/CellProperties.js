@@ -34,3 +34,15 @@ const cellDisplayWidth = {
 export const getCellWidth = (type) => {
   return cellDisplayWidth[type]
 }
+
+export const DateCellSummaryRule = {
+  EARLIEST: {
+    key: 'EARLIEST',
+    desc: '最早时间'
+  },
+
+  LATEST: {
+    key: 'LATEST',
+    desc: '最晚时间'
+  }
+}
