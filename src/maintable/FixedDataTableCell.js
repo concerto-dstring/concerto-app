@@ -165,7 +165,7 @@ class FixedDataTableCell extends React.Component {
   }
 
   render() /*object*/ {
-    var { height, width, columnKey, isHeaderOrFooter, onCellEdit, onCellEditEnd, ...props } = this.props;
+    var { height, width, columnKey, isHeaderOrFooter, onCellEdit, onCellEditEnd, onCellFocus, ...props } = this.props;
 
     var style = {
       height,
@@ -268,6 +268,7 @@ class FixedDataTableCell extends React.Component {
       width,
       onCellEdit,
       onCellEditEnd,
+      onCellFocus,
       container: this.props.container,
     };
 
