@@ -582,10 +582,10 @@ const DRAG_SCROLL_BUFFER = 40;
     this.props.touchScrollEnabled && this._shouldHandleWheelY(delta)
 
   _shouldHandleWheelX = (/*number*/ delta) /*boolean*/ => {
-    const { maxScrollX, scrollFlags, scrollX } = this.props;
+    const { maxScrollX, scrollFlags, scrollX, isCellEditing} = this.props;
     const { overflowX } = scrollFlags;
 
-    if (this._focusCell) {
+    if (isCellEditing && this._focusCell) {
       return false;
     }
 
@@ -605,10 +605,10 @@ const DRAG_SCROLL_BUFFER = 40;
   }
 
   _shouldHandleWheelY = (/*number*/ delta) /*boolean*/ => {
-    const { maxScrollY, scrollFlags, scrollY } = this.props;
+    const { maxScrollY, scrollFlags, scrollY, isCellEditing } = this.props;
     const { overflowY } = scrollFlags;
 
-    if (this._focusCell) {
+    if (isCellEditing && this._focusCell) {
       return false;
     }
 
