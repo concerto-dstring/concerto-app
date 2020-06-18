@@ -72,9 +72,13 @@ class EditableCell extends React.PureComponent {
       type = props.data.getColumn(props.columnKey).columnComponentType;
       if (type !== 'PEOPLE' && type !== 'DATE') {
         displayValue = getHighlightText(value, props.filterInputValue);
-        // 检查单元格的值是否发生变化
+      }
+
+      // 除了人员与初始比较单元格的值是否发生变化
+      if (type != 'PEOPLE') {
         isDataChanged = oldValue === null ? true : ((value ? value : '') !== oldValue)
       }
+
     } else {
       if (isCollapsed) {
         value = '';
