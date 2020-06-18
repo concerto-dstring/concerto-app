@@ -344,7 +344,7 @@ class MainTable extends React.Component {
       rowTemplates.width = column.width;
       rowTemplates.columnKey = columnKey;
       // rowTemplates.header = DropDownHeader;
-      if (column.level == 0) rowTemplates.header = <div style={noBarStyle}></div>;
+      rowTemplates.header = <div style={noBarStyle}></div>;
       rowTemplates.footer = DataSummaryCell;
       rowTemplates.isResizable = false;
       rowTemplates.cell = DropDownCell;
