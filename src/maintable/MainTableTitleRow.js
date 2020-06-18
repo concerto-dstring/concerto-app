@@ -14,7 +14,7 @@ import {getRandomColor} from '../helpers/section/header/SectionColor';
 import {
   SearchOutlined,
   ShareAltOutlined,
-  DownOutlined,
+  CaretDownOutlined,
   EyeInvisibleOutlined,
   DoubleRightOutlined,
 } from '@ant-design/icons';
@@ -82,8 +82,15 @@ class MainTableTitleRow extends React.Component {
     /**
      * boardColor
      */
-    boardColor: PropTypes.string
+    boardColor: PropTypes.string,
   };
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      users: this.props.onGetListUsers(),
+    };
+  }
 
   componentWillMount() {
     this._initialRender = true;
@@ -184,6 +191,10 @@ class MainTableTitleRow extends React.Component {
     }
   }
 
+  handleSearchUser = (input, option) => {
+    return option.children[2].toLowerCase().indexOf(input.toLowerCase()) >= 0
+  };
+
   render() /*object*/ {
     const {offsetTop, zIndex, visible, height} = this.props;
 
@@ -204,10 +215,10 @@ class MainTableTitleRow extends React.Component {
               <div id="addGroupBtn">
                 <Button onClick={this._onAddNewGroup} className="main_table_add_btn">
                   <div className="main_table_btn_layout">
-                    <span style={{}}>+ 工作项</span>
+                    <span style={{}}>+ &nbsp;工作项</span>
                     <div className="main_table_add_btn_separator" />
                     <div>
-                      <DownOutlined />
+                      <CaretDownOutlined />
                     </div>
                   </div>
                 </Button>
@@ -215,12 +226,13 @@ class MainTableTitleRow extends React.Component {
               <div>
                 <Select
                   className="main_table_select_user"
-                  placeholder="按人员分组显示"
+                  placeholder="按人名筛选"
                   showSearch
                   allowClear
+                  filterOption={this.handleSearchUser}
                   onChange={this._onFilterByPeople}
                 >
-                  {this.props.onGetListUsers().map((user) => {
+                  {this.state.users.map((user) => {
                     return (
                       <Select.Option key={user.id} value={user.username}>
                         <Avatar size={20} style={{background: user.faceColor}}>
@@ -247,9 +259,9 @@ class MainTableTitleRow extends React.Component {
             <div className="main_table_search_input">
               <Input
                 prefix={<SearchOutlined />}
-                placeholder="搜索工作板内容"
+                placeholder="搜索/过滤"
                 onChange={this._onFilterTableData}
-                style={{borderRadius: '15px', width: 240}}
+                style={{borderRadius: '5px', width: 240,border:'1px solid #f2f3f3'}}
               />
             </div>
           </div>

@@ -561,7 +561,7 @@ class FixedDataTableRow extends React.Component {
       height: this.props.height,
       zIndex:  isMovingRow ? 3 : (this.props.zIndex ? this.props.zIndex : 0),
       display: (this.props.visible ? 'block' : 'none'),
-      top:type==RowType.HEADER?'-30px':'0'
+      top:type==RowType.HEADER?'-5px':'0'
     };
     let top = offsetTop;
     if (isMovingRow) {

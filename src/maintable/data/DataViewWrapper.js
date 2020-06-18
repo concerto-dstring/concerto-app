@@ -65,6 +65,7 @@ class DataViewWrapper {
         this.getSubRowTotalHeight = this.getSubRowTotalHeight.bind(this);
         this.getSubRows = this.getSubRows.bind(this);
         this.getSubRowCount = this.getSubRowCount.bind(this);
+        this.getGroupTableRowIndexAt = this.getGroupTableRowIndexAt.bind(this);
         this.addNewSubSection = this.addNewSubSection.bind(this)
         this.getCurrentUser = this.getCurrentUser.bind(this)
         this.getStatusSummary = this.getStatusSummary.bind(this)
@@ -152,6 +153,20 @@ class DataViewWrapper {
             return this._dataset.getSize();
         }
         return this._indexMap.length;
+    }
+    
+    //根据groupKey和rowIndex获得索引
+    getGroupTableRowIndexAt(groupKey,rowIndex){
+       let number = 0;
+       for(var i=0;i<this._indexMap.length;i++){
+          const row = this._indexMap[i];
+          if(groupKey === row.groupKey && row.rowType === 'ROW'){
+            number ++;
+            if(rowIndex === i){
+              return number;
+            }
+          }           
+       }
     }
 
     getObjectAt(index) {
@@ -339,30 +354,32 @@ class DataViewWrapper {
         if (rowtype) {
             switch (rowtype) {
                 case RowType.TITLE:
-                    return 150;
+                    return 115;
                 case RowType.ADDROW: 
-                    return 35;
+                    return 32;
                 case RowType.HEADER:
-                    return 40;
+                    return 32;
                 case RowType.FOOTER:            
                     return 60;
                 case RowType.ROW:
-                    return 40;
+                    return 32;
+                case RowType.SECTIONGROUP:
+                return 40;
             }
         }
-        return 40;
+        return 32;
     }
 
     getSubRowHeight(rowtype) {
       switch (rowtype) {
           case RowType.SUBHEADER:
-              return 35;
+              return 32;
           case RowType.SUBROW:
-              return 40;
+              return 32;
           case RowType.SUBFOOTER:
-              return 40;
+              return 32;
       }
-      return 40;
+      return 32;
     }
 
     getRowMap() {

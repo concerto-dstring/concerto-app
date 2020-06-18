@@ -102,7 +102,7 @@ class FixedDataTableBufferedRows extends React.Component {
       pointerEvents: 'none',
     };
     
-    return <div><div>{this._staticRowArray}</div><div style={layerStyle} ref={this._onRef}/></div>;
+    return <div><div>{this._staticRowArray}</div><div className='popup_container' style={layerStyle} ref={this._onRef}/></div>;
   }
 
   _onRef = (div) => {

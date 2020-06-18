@@ -412,8 +412,10 @@ class MainTableDataStore {
         column.isTitle = column.column.isTitle;
         let name = column.column.name;
         column.name = name;
-        if (name === ColumnType.ROWACTION || name === ColumnType.ROWSELECT) {
+        if (name === ColumnType.ROWSELECT) {
           column.width = 36;
+        } else if(name === ColumnType.ROWACTION){
+          column.width = 22;
         } else if (column.isTitle) {
           column.width = 360;
         } else {
@@ -878,7 +880,7 @@ class MainTableDataStore {
         rank = preRank + (currentRank - preRank) / 2;
       } else {
         // 插入最上面
-        rank = Number(this._groups[this._currentBoardId][this._groups.length - 1].rank) + rankBlock;
+        rank = Number(this._groups[this._currentBoardId][this._groups[this._currentBoardId].length - 1].rank) + rankBlock;
       }
     } else {
       rank = rankBlock;

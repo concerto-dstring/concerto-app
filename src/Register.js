@@ -1,5 +1,5 @@
 import React, {PureComponent, createRef} from 'react';
-import {Input, Button, Spin} from 'antd';
+import {Input, Button, Spin, message} from 'antd';
 import {Auth} from 'aws-amplify';
 import ErrorMsg from './ErrorMsg';
 import './Register.less';
@@ -103,6 +103,7 @@ class Register extends PureComponent {
             // other custom attributes
           },
         });
+        message.info(ErrorMsg.validate_code_send);
         this.props.history.push({
           pathname: '/register/validate',
           state: {userName},

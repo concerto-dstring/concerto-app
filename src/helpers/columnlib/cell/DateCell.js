@@ -226,6 +226,12 @@ class DateCell extends React.Component {
     });
   };
 
+  handelOpenChange = (open) => {
+    if (open) {
+      this.props.handleCellEdit('DATE')
+    }
+  }
+
   render() {
     const {dateValue, timeValue, selectDateValue, selectTimeValue, open} = this.state;
 
@@ -251,7 +257,7 @@ class DateCell extends React.Component {
           allowClear={false}
           bordered={false}
           placeholder=""
-          // onOpenChange={OpenOrDismiss}
+          onOpenChange={this.handelOpenChange}
           open={open}
           getPopupContainer={() => this.props.container}
           suffixIcon={<div style={{lineHeight: '33px', color: '#8b8c8d'}}>{timeDisplayValue}</div>}

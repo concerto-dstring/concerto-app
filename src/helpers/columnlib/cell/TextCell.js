@@ -1,5 +1,4 @@
 import React from 'react';
-import 'antd/dist/antd.css';
 import {Input} from 'antd';
 import 'moment/locale/zh-cn';
 import {Cell} from '../../../maintable/FixedDataTableRoot';
@@ -10,34 +9,29 @@ class TextCell extends React.Component {
     super(props);
     this.state = {
       value: props.value,
+      inputValue: null,
     };
   }
+
+  handleInputChange = (e) => {
+    let inputValue = e.target.value;
+    this.setState({
+      inputValue: inputValue ? inputValue : '',
+    });
+    this.props.handleChange(inputValue, false);
+  };
+
   render() {
-    const {
-      data,
-      rowIndex,
-      columnKey,
-      collapsedRows,
-      isHeaderOrFooter,
-      callback,
-      value,
-      handleChange,
-      handleKey,
-      ...props
-    } = this.props;
-    const returnValue = (e) => {
-      const inputValue = e.target.value;
-      this.setState({
-        value: inputValue,
-      });
-      handleChange(inputValue);
-      if (isHeaderOrFooter && inputValue == '') {
-        handleChange(this.state.value);
-      }
-    };
+    const {handleKey} = this.props;
+    const {inputValue, value} = this.state;
     return (
-      <Cell {...props} className="textCell">
-        <Input value={this.state.value} onChange={returnValue} onKeyDown={handleKey} />
+      <Cell className="textCell">
+        <Input
+          value={inputValue === null ? value : inputValue}
+          size="small"
+          onChange={this.handleInputChange}
+          onKeyDown={handleKey}
+        />
       </Cell>
     );
   }
