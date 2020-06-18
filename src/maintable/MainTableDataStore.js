@@ -49,6 +49,7 @@ import {
 } from '../graphql/mutations';
 import {notification} from 'antd';
 import {getRandomColor} from '../helpers/section/header/SectionColor';
+import { getCellWidth } from '../helpers/columnlib/cell/CellProperties';
 
 const rankBlock = 32768;
 const PEOPLE = 'PEOPLE';
@@ -419,7 +420,7 @@ class MainTableDataStore {
         } else if (column.isTitle) {
           column.width = 360;
         } else {
-          column.width = 200;
+          column.width = getCellWidth(column.column.columnComponentType);
         }
         this._columns[boardId].push(column);
       }

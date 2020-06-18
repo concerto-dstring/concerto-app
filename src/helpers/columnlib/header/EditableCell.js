@@ -8,6 +8,7 @@ import {TableCell} from '../cell/TableCell';
 import {TableContext} from '../../../maintable/data/DataContext';
 import './EditableCell.less';
 import getHighlightText from '../../../maintable/getHighlightText';
+import { getCellRenderValues, getCellPopupHeight } from '../cell/CellProperties';
 
 const CellContainer = styled.div`
   display: flex;
@@ -38,19 +39,9 @@ class EditableCell extends React.PureComponent {
       handleCellEdit: this.handleCellEdit,
       handleCellFocus: this.handleCellFocus,
     };
-    this.cellRenderValues = {
-      TEXT: true,
-      NUMBER: true,
-      SELECT: true,
-      DATE: false,
-      PEOPLE: false,
-      STATUS: false,
-    };
+    this.cellRenderValues = getCellRenderValues();
 
-    this.popupHeights = {
-      DATE: 400,
-      PEOPLE: 364,
-    };
+    this.popupHeights = getCellPopupHeight();
   }
 
   /**
