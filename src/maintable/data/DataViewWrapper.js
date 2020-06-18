@@ -4,7 +4,7 @@ import {RowType, getSubLevel, getRootRowIndex, ColumnType} from './MainTableType
 import moment from 'moment';
 import 'moment/locale/zh-cn';
 import {DraftEditorProps} from 'braft-editor';
-import {DateCellSummaryRule} from '../../helpers/columnlib/cell/CellProperties';
+import {DateCellSummaryRule, StatusCellProperties} from '../../helpers/columnlib/cell/CellProperties';
 
 class DataViewWrapper {
   constructor(dataset, indexMap = null, subRowKeys) {
@@ -124,7 +124,7 @@ class DataViewWrapper {
     } else if (groups.length === 0) {
       indexMapData.push(...indexMap);
     }
-    console.log(indexMapData)
+
     return indexMapData;
   };
 
@@ -495,7 +495,9 @@ class DataViewWrapper {
     if (getSubLevel(rowIndex) === 0) {
       let group = this.getGroupByRowIndex(rowIndex);
       if (group) {
-        let filterIndexMap = this._indexMap.filter((index) => index.groupKey === group.groupKey && index.rowKey !== '');
+        let filterIndexMap = this._indexMap.filter(
+          (index) => index.groupKey === group.groupKey && index.rowType === RowType.ROW
+        );
         if (filterIndexMap && filterIndexMap.length > 0) {
           rows = [];
           filterIndexMap.map((index) => {
@@ -533,14 +535,6 @@ class DataViewWrapper {
    * 获取状态列每个状态占用的比列
    */
   getStatusSummary(rowIndex, columnKey) {
-    const status = {
-      block: '阻塞',
-      working: '进行中',
-      finished: '已完成',
-      todo: 'To Do',
-      default: '',
-    };
-
     let statusPercent = [];
     let rows = this.getColumnRows(rowIndex);
 
@@ -556,19 +550,19 @@ class DataViewWrapper {
         // let statusValue = this._dataset.getObjectAt(rowKey)[columnKey]
         let statusValue = this._dataset.getObjectAt(rowKey) ? this._dataset.getObjectAt(rowKey)[columnKey] : null;
         switch (statusValue) {
-          case status.finished:
+          case StatusCellProperties.FINISHED.desc:
             finishedCount += 1;
             break;
 
-          case status.working:
+          case StatusCellProperties.WORKING.desc:
             workingCount += 1;
             break;
 
-          case status.block:
+          case StatusCellProperties.BLOCK.desc:
             blockCount += 1;
             break;
 
-          case status.todo:
+          case StatusCellProperties.TODO.desc:
             todoCount += 1;
             break;
 
@@ -579,16 +573,44 @@ class DataViewWrapper {
       });
 
       let finishedPercent = Number((finishedCount / rows.length).toFixed(2));
-      let workingPercent = Number((workingCount / rows.length).toFixed(2));
-      let blockPercent = Number((blockCount / rows.length).toFixed(2));
-      let todoPercent = Number((todoCount / rows.length).toFixed(2));
-      let defaultPercent = defaultCount === 0 ? 0 : 1 - finishedPercent - workingPercent - blockPercent - todoPercent;
+
+      let workingPercent = 0;
+      if (workingCount > 0) {
+        if (blockCount !== 0 || todoCount !== 0 || defaultCount !== 0) {
+          workingPercent = Number((workingCount / rows.length).toFixed(2));
+        } else {
+          workingPercent = Number((1 - finishedPercent).toFixed(10));
+        }
+      }
+
+      let blockPercent = 0;
+      if (blockCount > 0) {
+        if (todoCount !== 0 || defaultCount !== 0) {
+          blockPercent = Number((blockCount / rows.length).toFixed(2));
+        } else {
+          blockPercent = Number((1 - finishedPercent - workingPercent).toFixed(10));
+        }
+      }
+
+      let todoPercent = 0;
+      if (todoCount > 0) {
+        if (defaultCount !== 0) {
+          todoPercent = Number((todoCount / rows.length).toFixed(2));
+        } else {
+          todoPercent = Number((1 - finishedPercent - workingPercent - blockPercent).toFixed(10));
+        }
+      }
+
+      let defaultPercent =
+        defaultCount === 0
+          ? 0
+          : Number((1 - finishedPercent - workingPercent - blockPercent - todoPercent).toFixed(10));
 
       if (finishedPercent !== 0) {
         statusPercent.push({
           style: {
             width: String(finishedPercent * 100) + '%',
-            background: '#5ac47d',
+            background: StatusCellProperties.FINISHED.color,
           },
         });
       }
@@ -597,7 +619,7 @@ class DataViewWrapper {
         statusPercent.push({
           style: {
             width: String(workingPercent * 100) + '%',
-            background: '#fec06e',
+            background: StatusCellProperties.WORKING.color,
           },
         });
       }
@@ -606,7 +628,7 @@ class DataViewWrapper {
         statusPercent.push({
           style: {
             width: String(blockPercent * 100) + '%',
-            background: '#d2515e',
+            background: StatusCellProperties.BLOCK.color,
           },
         });
       }
@@ -615,7 +637,7 @@ class DataViewWrapper {
         statusPercent.push({
           style: {
             width: String(todoPercent * 100) + '%',
-            background: '#808080',
+            background: StatusCellProperties.TODO.color,
           },
         });
       }
@@ -624,7 +646,7 @@ class DataViewWrapper {
         statusPercent.push({
           style: {
             width: String(defaultPercent * 100) + '%',
-            background: '#c4c4c4',
+            background: StatusCellProperties.DEFAULT.color,
           },
         });
       }
