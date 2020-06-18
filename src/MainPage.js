@@ -470,15 +470,16 @@ class MainPage extends React.Component {
                     <Avatar
                       size={35}
                       className="loginuser"
-                      src="../defluatusericon.jpg"
+                      // src="../defluatusericon.jpg"
                       style={{
-                        background: dataset._currentUser.faceColor ? dataset._currentUser.faceColor : '#0073bb',
+                        background: dataset._currentUser.avatar ? dataset._currentUser.avatar : '#0073bb',
                         cursor: 'pointer',
+                        fontSize:'15px'
                       }}
                     >
-                      {dataset._currentUser.lname ? dataset._currentUser.lname: dataset._currentUser.username}
+                      {dataset._currentUser.fname ? dataset._currentUser.fname: dataset._currentUser.username}
                     </Avatar>
-                    {dataset._currentUser.lname ? (dataset._currentUser.lname+dataset._currentUser.fname): dataset._currentUser.username}
+                    {dataset._currentUser.fname ? (dataset._currentUser.lname+dataset._currentUser.fname): dataset._currentUser.username}
                   </span>
                 </Dropdown>
               </div>
