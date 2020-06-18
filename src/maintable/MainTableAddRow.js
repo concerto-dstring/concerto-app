@@ -153,7 +153,7 @@ class MainTableAddRow extends React.Component {
     let group = data.getGroupByRowIndex(this.props.index);
     let groupColor = group ? group.color : "rgba(0, 0, 0, 0.65)";
     var inputStyle = {
-      width: width+30,
+      width: width+10,
       height: this.props.height,
       zIndex: this.props.zIndex,
       borderRadius:'0px',

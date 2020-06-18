@@ -317,7 +317,8 @@ class FixedDataTableRowImpl extends React.Component {
     var rowExpanded = this._getRowExpanded(subRowHeight);
     var rowExpandedStyle = {
       height: subRowHeight,
-      top: this.props.height,
+      top: this.props.height+30,
+      left:30,
       width: this.props.width,
     };
 
