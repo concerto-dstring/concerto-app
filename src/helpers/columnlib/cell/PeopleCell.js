@@ -213,6 +213,18 @@ class PeopleCell extends React.PureComponent {
       });
     };
 
+    const handleCellEnter = () => {
+      if (this.props.handleCellFocus) {
+        this.props.handleCellFocus(true);
+      }
+    };
+  
+    const handleCellLeave = () => {
+      if (this.props.handleCellFocus) {
+        this.props.handleCellFocus(false);
+      }
+    };
+
     return (
       <Cell className="people_cell">
         <Popover
@@ -222,7 +234,9 @@ class PeopleCell extends React.PureComponent {
           onVisibleChange={this.handleChangeVisible}
           getPopupContainer={() => this.props.container}
           content={
-            <div style={{pointerEvents: 'visible'}}>
+            <div style={{pointerEvents: 'visible'}}
+            onMouseEnter={handleCellEnter}
+            onMouseLeave={handleCellLeave}>
               <Divider className="dividerStyle">People</Divider>
               <div className='user_scroll' style={users.length === 5 ? {overflowY: 'hidden'} : {}} onWheel={this.handleWheel}>
                 {users.map((v, i) => (

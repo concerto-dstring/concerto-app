@@ -36,6 +36,7 @@ class EditableCell extends React.PureComponent {
       handleKey: this.handleKey,
       handleHide: this.handleHide,
       handleCellEdit: this.handleCellEdit,
+      handleCellFocus: this.handleCellFocus,
     };
     this.cellRenderValues = {
       TEXT: true,
@@ -190,6 +191,12 @@ class EditableCell extends React.PureComponent {
       this.setState({
         value: value,
       });
+    }
+  };
+
+  handleCellFocus = (focused) => {
+    if (this.props.onCellFocus) {
+      this.props.onCellFocus(this.props.rowIndex, this.props.columnKey, focused);
     }
   };
 

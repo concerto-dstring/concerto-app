@@ -138,6 +138,7 @@ class FixedDataTableBufferedRows extends React.Component {
       onColumnResize,
       onCellEdit,
       onCellEditEnd,
+      onCellFocus,
       touchScrollEnabled,
       fixedColumns,
       fixedRightColumns,
@@ -360,6 +361,7 @@ class FixedDataTableBufferedRows extends React.Component {
                 rowReorderingData={props.rowReorderingData}
                 onCellEdit={onCellEdit}
                 onCellEditEnd={onCellEditEnd}
+                onCellFocus={onCellFocus}
                 onContextMenu={props.onRowContextMenu}
                 onDoubleClick={props.onRowDoubleClick}
                 onMouseDown={props.onRowMouseDown}

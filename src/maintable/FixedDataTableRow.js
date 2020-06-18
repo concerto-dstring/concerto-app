@@ -304,6 +304,7 @@ class FixedDataTableRowImpl extends React.Component {
         columnReorderingData={this.props.columnReorderingData}
         onCellEdit={this.props.onCellEdit}
         onCellEditEnd={this.props.onCellEditEnd}
+        onCellFocus={this.props.onCellFocus}
         rowHeight={this.props.height}
         rowIndex={this.props.index}
         isHeaderOrFooter={this.props.isHeaderOrFooter}
