@@ -195,6 +195,15 @@ class MainTableTitleRow extends React.Component {
     return option.children[2].toLowerCase().indexOf(input.toLowerCase()) >= 0
   };
 
+  handleVisibleChange = (visible) => {
+    if (visible) {
+      this.props.onCellEdit(-1, "");
+    } else {
+      this.props.onCellEditEnd(-1, "");
+    }
+  };
+  
+
   render() /*object*/ {
     const {offsetTop, zIndex, visible, height} = this.props;
 
@@ -202,6 +211,18 @@ class MainTableTitleRow extends React.Component {
       height: height,
       zIndex: zIndex ? zIndex : 0,
       display: visible ? 'block' : 'none',
+    };
+
+    const handleCellEnter = () => {
+      if (this.props.onCellFocus) {
+        this.props.onCellFocus(-1, "", true);
+      }
+    };
+  
+    const handleCellLeave = () => {
+      if (this.props.onCellFocus) {
+        this.props.onCellFocus(-1, "", false);
+      }
     };
 
     FixedDataTableTranslateDOMPosition(style, 0, offsetTop, this._initialRender, this.props.isRTL);
@@ -228,9 +249,14 @@ class MainTableTitleRow extends React.Component {
                   className="main_table_select_user"
                   placeholder="按人名筛选"
                   showSearch
+                  dropdownStyle={{pointerEvents: 'visible'}}
+                  onDropdownVisibleChange={this.handleVisibleChange}
                   allowClear
                   filterOption={this.handleSearchUser}
+                  getPopupContainer={() => this.props.container}
                   onChange={this._onFilterByPeople}
+                  onMouseEnter={handleCellEnter}
+                  onMouseLeave={handleCellLeave}
                 >
                   {this.state.users.map((user) => {
                     return (

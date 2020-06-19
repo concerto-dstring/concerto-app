@@ -186,6 +186,9 @@ class EditableCell extends React.PureComponent {
       this.setState({
         value: value,
       });
+      if (this.props.onCellEditEnd) {
+        this.props.onCellEditEnd(this.props.rowIndex, this.props.columnKey);
+      }
     }
   };
 
