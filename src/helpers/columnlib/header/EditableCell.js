@@ -48,8 +48,9 @@ class EditableCell extends React.PureComponent {
     };
 
     this.popupHeights = {
-      DATE: 400,
+      DATE: 450,
       PEOPLE: 364,
+      STATUS: 250,
     };
   }
 
@@ -191,6 +192,9 @@ class EditableCell extends React.PureComponent {
       this.setState({
         value: value,
       });
+      if (this.props.onCellEditEnd) {
+        this.props.onCellEditEnd(this.props.rowIndex, this.props.columnKey);
+      }
     }
   };
 
