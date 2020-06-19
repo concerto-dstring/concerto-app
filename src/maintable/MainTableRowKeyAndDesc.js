@@ -65,7 +65,7 @@ export const EXPAND_ALL_SECTION = {
 
 export const ROW_HEADER_UPDATE = {
   key: 'ROW_HEADER_UPDATE',
-  desc: 'Updates'
+  desc: '动态'
 }
 
 export const ROW_HEADER_INFO_BOX = {

@@ -45,8 +45,6 @@ import {connect} from 'react-redux';
 import {mapRowActionStateToProps} from './data/mapStateToProps';
 import SummaryCell from '../helpers/columnlib/cell/SummaryCell';
 
-import RowHeaderDrawer from '../helpers/RowHeaderDrawer';
-
 /**
  * A cell that is aware of its context
  *
@@ -508,7 +506,6 @@ class MainTable extends React.Component {
             <UndoMessage 
                 isShowUndoModal={this.state.isShowUndoModal}
             />
-            <RowHeaderDrawer />
             </div>   
         </TableContext.Provider>   
         );

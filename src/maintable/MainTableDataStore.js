@@ -1628,7 +1628,7 @@ class MainTableDataStore {
           threads = [];
           threads.push(threadData);
         }
-
+        this._rowThreadData[this._currentBoardId][createData.rowID] = threads
         this._rowThreadSize[boardId][createData.rowID] = size;
         setUpdateInfo(threads);
 
@@ -1784,7 +1784,7 @@ class MainTableDataStore {
   dealNotReadNotifications(rowId, boardId, threads, setUpdateInfo) {
     let notifications = this._rowNotification[this._currentBoardId][rowId];
     let notificationsSlice = [];
-    let boardNotReadCount = this._boardNotifications[boardId][rowId];
+    let boardNotReadCount = this._boardNotifications[boardId][rowId] ? this._boardNotifications[boardId][rowId] : 0;
     if (notifications && notifications.length > 0) {
       for (let i = 0; i < notifications.length; i++) {
         let notification = notifications[i];

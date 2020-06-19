@@ -52,7 +52,7 @@ class PeopleCell extends React.PureComponent {
     let value = this.searchInputRef.current.input.input.value;
     if (value) {
       const {userList} = this.state;
-      let valueLow = value.toLowerCase();
+      let valueLow = value.trim().toLowerCase();
       let filterUserList = userList
         .slice()
         .filter(
