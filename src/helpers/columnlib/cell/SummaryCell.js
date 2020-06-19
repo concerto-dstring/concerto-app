@@ -4,6 +4,7 @@ import {
   RightOutlined 
 } from '@ant-design/icons'
 import { Popover, Radio } from 'antd';
+import { DateCellSummaryRule } from './CellProperties';
 
 class SummaryCell extends PureComponent {
   constructor(props) {
@@ -45,6 +46,10 @@ class SummaryCell extends PureComponent {
     else {
       this.props.onCellEditEnd(this.props.rowIndex, this.props.columnKey)
     }
+  }
+
+  handleRadioChange = (e) => {
+    console.log(e)
   }
 
   getSummaryCell = () => {
@@ -101,9 +106,8 @@ class SummaryCell extends PureComponent {
           display: 'block',
           height: '30px',
           lineHeight: '30px',
-          width: '56px'
         };
-        console.log(this.props)
+
         summaryCell = (
           <Fragment>
             <Popover
@@ -112,14 +116,13 @@ class SummaryCell extends PureComponent {
               autoAdjustOverflow={false}
               getPopupContainer={() => container}
               onVisibleChange={this.handleVisibleChange}
-              overlayStyle={{width: 100}}
               content={
-                  <Radio.Group onChange={this.onChange} value={1}>
-                  <Radio style={radioStyle} value={1}>
-                    Option A
+                <Radio.Group style={{marginLeft: 4, pointerEvents: 'visible'}} onChange={this.handleRadioChange} value={dateSummary.summaryRule}>
+                  <Radio style={radioStyle} value={DateCellSummaryRule.EARLIEST.key}>
+                    {DateCellSummaryRule.EARLIEST.desc}
                   </Radio>
-                  <Radio style={radioStyle} value={2}>
-                    Option B
+                  <Radio style={radioStyle} value={DateCellSummaryRule.LATEST.key}>
+                    {DateCellSummaryRule.LATEST.desc}
                   </Radio>
                 </Radio.Group>
               }

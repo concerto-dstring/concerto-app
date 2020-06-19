@@ -976,9 +976,7 @@ class MainTableDataStore {
         },
       })
       .then((result) => {
-        this._groups[this._currentBoardId].splice(index, 1);
-
-        this.runCallbacks();
+        
       })
       .catch((error) => {
         console.log(error);
@@ -1840,6 +1838,31 @@ class MainTableDataStore {
       .catch((error) => {
         console.log(error);
       });
+  }
+
+  updateColumnBoardData(columnKey, updateData) {
+    let column = this._columns.find(column => column.columnKey === columnKey)
+    updateData.id = column.id
+    let oldColumn = Object.assign({}, column)
+    this._apolloClient
+      .mutate({
+        mutation: gql(updateColumnBoard),
+        variables: {
+          input: updateData,
+        },
+      })
+      .then((result) => {})
+      .catch((error) => {
+        console.log(error);
+        for (let key in updateData) {
+          column[key] = oldColumn[key]
+        }
+      });
+    
+    for (let key in updateData) {
+      column[key] = updateData[key]
+    }
+    this.runCallbacks()
   }
 
   /**

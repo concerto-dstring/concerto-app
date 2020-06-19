@@ -696,6 +696,7 @@ class DataViewWrapper {
       dateText2 = minDate;
     } else {
       // 显示最晚时间
+      summaryRule = DateCellSummaryRule.LATEST.key
       dateText1 = DateCellSummaryRule.LATEST.desc;
       dateText2 = maxDate;
     }
@@ -703,6 +704,7 @@ class DataViewWrapper {
     let dateSummary = {
       dateText1,
       dateText2,
+      summaryRule
     };
 
     return dateSummary;
