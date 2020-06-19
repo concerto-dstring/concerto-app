@@ -609,7 +609,8 @@ class SettingBarHeader extends React.PureComponent {
     const style = {
       width: '35px',
       lineHeight: '35px',
-      textalign: 'center'
+      textalign: 'center',
+      color:'#545B64'
     }
     return <SettingFilled style={style} />;
   }

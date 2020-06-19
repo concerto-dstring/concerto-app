@@ -2,13 +2,15 @@
   font-family: 'Roboto';
   src: url('roboto/Roboto-Regular.ttf') format('truetype');
        /* font-weight: bold; */
-       font-size: 30px;
+       font-size: 13px !important;
   }
 body {
   margin: 0;
   font-family: "Roboto" !important;
   /* font-weight:  300; */
   /* letter-spacing: 1.2px; */
+  color:#16191F;
+  font-size: 13px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow: hidden;

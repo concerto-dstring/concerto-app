@@ -474,7 +474,8 @@ class MainPage extends React.Component {
                       style={{
                         background: dataset._currentUser.avatar ? dataset._currentUser.avatar : '#0073bb',
                         cursor: 'pointer',
-                        fontSize:'15px'
+                        fontSize:'14px',
+                        fontWeight:'bold'
                       }}
                     >
                       {dataset._currentUser.fname ? dataset._currentUser.fname: dataset._currentUser.username}
