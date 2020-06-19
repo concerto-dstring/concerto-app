@@ -8,6 +8,7 @@ import {TableCell} from '../cell/TableCell';
 import {TableContext} from '../../../maintable/data/DataContext';
 import './EditableCell.less';
 import getHighlightText from '../../../maintable/getHighlightText';
+import { getCellRenderValues, getCellPopupHeight } from '../cell/CellProperties';
 
 const CellContainer = styled.div`
   display: flex;
@@ -38,20 +39,9 @@ class EditableCell extends React.PureComponent {
       handleCellEdit: this.handleCellEdit,
       handleCellFocus: this.handleCellFocus,
     };
-    this.cellRenderValues = {
-      TEXT: true,
-      NUMBER: true,
-      SELECT: true,
-      DATE: false,
-      PEOPLE: false,
-      STATUS: false,
-    };
+    this.cellRenderValues = getCellRenderValues();
 
-    this.popupHeights = {
-      DATE: 450,
-      PEOPLE: 364,
-      STATUS: 250,
-    };
+    this.popupHeights = getCellPopupHeight();
   }
 
   /**
@@ -73,9 +63,13 @@ class EditableCell extends React.PureComponent {
       type = props.data.getColumn(props.columnKey).columnComponentType;
       if (type !== 'PEOPLE' && type !== 'DATE') {
         displayValue = getHighlightText(value, props.filterInputValue);
-        // 检查单元格的值是否发生变化
+      }
+
+      // 除了人员与初始比较单元格的值是否发生变化
+      if (type != 'PEOPLE') {
         isDataChanged = oldValue === null ? true : ((value ? value : '') !== oldValue)
       }
+
     } else {
       if (isCollapsed) {
         value = '';

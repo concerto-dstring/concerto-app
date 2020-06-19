@@ -147,6 +147,7 @@ type ColumnBoard
   collpse: Boolean!
   deleteFlag: Boolean
   rank: String!
+  summaryRule: String
 }
 
 ## column library 

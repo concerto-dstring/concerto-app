@@ -518,7 +518,7 @@ const DRAG_SCROLL_BUFFER = 40;
   static defaultProps = /*object*/ {
     elementHeights: {
       cellGroupWrapperHeight: undefined,
-      footerHeight: 32,
+      footerHeight: 45,
       groupHeaderHeight: 0,
       headerHeight: 32,
       addRowHeight: 32,

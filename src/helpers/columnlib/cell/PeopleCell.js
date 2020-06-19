@@ -173,14 +173,6 @@ class PeopleCell extends React.PureComponent {
     });
   };
 
-  /**
-   * 滚动和最外层的滚动有冲突
-   * @param {*} e
-   */
-  handleWheel = (e) => {
-    console.log('wheel');
-  };
-
   handleChangeVisible = (visible) => {
     // 消失时保存数据
     if (!visible) {
@@ -237,7 +229,7 @@ class PeopleCell extends React.PureComponent {
             onMouseEnter={handleCellEnter}
             onMouseLeave={handleCellLeave}>
               <Divider className="dividerStyle">People</Divider>
-              <div className='user_scroll' style={users.length === 5 ? {overflowY: 'hidden'} : {}} onWheel={this.handleWheel}>
+              <div className='user_scroll' style={users.length === 5 ? {overflowY: 'hidden'} : {}}>
                 {users.map((v, i) => (
                   <div key={i} className="user" onClick={this.handleUserClick.bind(this, v)}>
                     <div className="faceAvatar">
