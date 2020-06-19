@@ -1841,7 +1841,7 @@ class MainTableDataStore {
   }
 
   updateColumnBoardData(columnKey, updateData) {
-    let column = this._columns.find(column => column.columnKey === columnKey)
+    let column = this.getColumn(columnKey)
     updateData.id = column.id
     let oldColumn = Object.assign({}, column)
     this._apolloClient

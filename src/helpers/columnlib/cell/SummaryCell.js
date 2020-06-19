@@ -1,4 +1,4 @@
-import React, { PureComponent, Fragment } from 'react';
+import React, { PureComponent, Fragment, createRef } from 'react';
 import './SummaryCell.less'
 import {
   RightOutlined 
@@ -11,7 +11,10 @@ class SummaryCell extends PureComponent {
     super(props);
     this.state = {
       columnComponentType: this.getColumnComponentType(props),
+      isChanged: false
     };
+
+    this.popoverRef = createRef()
   }
 
   componentWillReceiveProps(nextProps) {
@@ -49,7 +52,15 @@ class SummaryCell extends PureComponent {
   }
 
   handleRadioChange = (e) => {
-    console.log(e)
+    this.popoverRef.current.tooltip.state.visible = false
+    this.setState({
+      isChanged: !this.state.isChanged
+    })
+
+    let value = e.target.value
+    this.props.data.updateColumnBoardData(this.props.columnKey, {
+      summaryRule: value
+    })
   }
 
   getSummaryCell = () => {
@@ -111,6 +122,7 @@ class SummaryCell extends PureComponent {
         summaryCell = (
           <Fragment>
             <Popover
+              ref={this.popoverRef}
               placement='leftTop'
               trigger="click"
               autoAdjustOverflow={false}

@@ -84,6 +84,7 @@ class DataViewWrapper {
     this.updateRowReadMessageStatus = this.updateRowReadMessageStatus.bind(this);
     this.getNotificationsByRowId = this.getNotificationsByRowId.bind(this);
     this.getCurrentBoardId = this.getCurrentBoardId.bind(this);
+    this.updateColumnBoardData = this.updateColumnBoardData.bind(this);
   }
 
   /**
@@ -754,6 +755,10 @@ class DataViewWrapper {
   getNotificationsByRowId(rowIndex) {
     let rowId = this.getRowKey(rowIndex);
     return this._dataset.getNotificationsByRowId(rowId);
+  }
+
+  updateColumnBoardData(columnKey, updateData) {
+    this._dataset.updateColumnBoardData(columnKey, updateData);
   }
 }
 
