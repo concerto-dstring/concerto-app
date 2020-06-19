@@ -462,7 +462,7 @@ class MainTable extends React.Component {
     
     return (
         <TableContext.Provider value={this.state}>
-        <div style={{width: '100%', height: '100%'}}>
+        <div style={{width: '100%', height: '100%',marginLeft:'-3px'}}>
             <FilterableDataTable
                 ref={this.handleRef}
                 title={this.props.title}
