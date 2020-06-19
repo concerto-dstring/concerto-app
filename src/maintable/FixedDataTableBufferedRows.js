@@ -337,6 +337,8 @@ class FixedDataTableBufferedRows extends React.Component {
                 container={this._divRef}
                 data={props.data}
                 isRTL={props.isRTL}
+                onCellEdit={props.onCellEdit}
+                onCellEditEnd={props.onCellEditEnd}
               />;
           break;
 

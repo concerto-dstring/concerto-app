@@ -3,6 +3,7 @@ import './SummaryCell.less'
 import {
   RightOutlined 
 } from '@ant-design/icons'
+import { Popover, Radio } from 'antd';
 
 class SummaryCell extends PureComponent {
   constructor(props) {
@@ -37,8 +38,17 @@ class SummaryCell extends PureComponent {
     data.changeGroupCollapseState(group.groupKey);
   }
 
+  handleVisibleChange = (visible) => {
+    if (visible) {
+      this.props.onCellEdit(this.props.rowIndex, this.props.columnKey)
+    }
+    else {
+      this.props.onCellEditEnd(this.props.rowIndex, this.props.columnKey)
+    }
+  }
+
   getSummaryCell = () => {
-    const { data, rowIndex, columnKey } = this.props
+    const { data, rowIndex, columnKey, container  } = this.props
     let column =data.getColumn(columnKey);
     const group = data.getGroupByRowIndex(rowIndex);
     const border_style={
@@ -87,40 +97,68 @@ class SummaryCell extends PureComponent {
 
         // 获取最小和最大日期及相差天数
         let dateSummary = data.getDateSummary(rowIndex, columnKey);
+        const radioStyle = {
+          display: 'block',
+          height: '30px',
+          lineHeight: '30px',
+          width: '56px'
+        };
+        console.log(this.props)
         summaryCell = (
-          <div className="summary_cell">
-            <div className="summary_cell_date_container">
-              {/* {dateSummary.dateDiff ? (
-                <div
-                  style={{
-                    background: `linear-gradient(to right, ${color} ${dateSummary.datePercent}, rgb(28, 31, 59) ${dateSummary.datePercent})`,
-                  }}
-                >
-                  <span
-                    className="summary_cell_date_container_span"
-                    contents={dateSummary.dateText}
-                    hovercontents={dateSummary.dateDiff}
-                  />
-                </div>
-              ) : (
-                <span className="summary_cell_date_container_span">{dateSummary.dateText}</span>
-              )} */}
-              {
-                dateSummary.dateText2
-                ?
-                <Fragment>
-                  <div className="summary_cell_date_container_rule">
-                    {dateSummary.dateText1}
-                  </div>
-                  <div className="summary_cell_date_container_text">
-                    {dateSummary.dateText2}
-                  </div>
-                </Fragment>
-                :
-                null
+          <Fragment>
+            <Popover
+              placement='leftTop'
+              trigger="click"
+              autoAdjustOverflow={false}
+              getPopupContainer={() => container}
+              onVisibleChange={this.handleVisibleChange}
+              overlayStyle={{width: 100}}
+              content={
+                  <Radio.Group onChange={this.onChange} value={1}>
+                  <Radio style={radioStyle} value={1}>
+                    Option A
+                  </Radio>
+                  <Radio style={radioStyle} value={2}>
+                    Option B
+                  </Radio>
+                </Radio.Group>
               }
+            >
+            <div className="summary_cell">
+              <div className="summary_cell_date_container">
+                {/* {dateSummary.dateDiff ? (
+                  <div
+                    style={{
+                      background: `linear-gradient(to right, ${color} ${dateSummary.datePercent}, rgb(28, 31, 59) ${dateSummary.datePercent})`,
+                    }}
+                  >
+                    <span
+                      className="summary_cell_date_container_span"
+                      contents={dateSummary.dateText}
+                      hovercontents={dateSummary.dateDiff}
+                    />
+                  </div>
+                ) : (
+                  <span className="summary_cell_date_container_span">{dateSummary.dateText}</span>
+                )} */}
+                {
+                  dateSummary.dateText2
+                  ?
+                  <Fragment>
+                    <div className="summary_cell_date_container_rule">
+                      {dateSummary.dateText1}
+                    </div>
+                    <div className="summary_cell_date_container_text">
+                      {dateSummary.dateText2}
+                    </div>
+                  </Fragment>
+                  :
+                  null
+                }
+              </div>
             </div>
-          </div>
+            </Popover>
+          </Fragment>
         );
         break;
 
