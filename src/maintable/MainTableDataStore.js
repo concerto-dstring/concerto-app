@@ -1360,7 +1360,7 @@ class MainTableDataStore {
     let rank;
     let insertIndex;
     if (columnAfter) {
-      let insertIndex = this._columns[this._currentBoardId].findIndex((column) => column.columnKey === columnAfter);
+      insertIndex = this._columns[this._currentBoardId].findIndex((column) => column.columnKey === columnAfter);
       if (insertIndex <= 0) {
         return;
       }
