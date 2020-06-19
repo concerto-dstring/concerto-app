@@ -161,6 +161,7 @@ class FixedDataTableCellGroupImpl extends React.Component {
         onColumnReorder={this.props.onColumnReorder}
         onColumnReorderMove={this.props.onColumnReorderMove}
         onColumnReorderEnd={this.props.onColumnReorderEnd}
+        onCellFocus={this.props.onCellFocus}
         onCellEdit={this.props.onCellEdit}
         onCellEditEnd={this.props.onCellEditEnd}
         isColumnReordering={isColumnReordering}

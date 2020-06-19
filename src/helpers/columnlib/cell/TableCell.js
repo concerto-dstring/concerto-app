@@ -23,6 +23,7 @@ class TableCell extends React.Component {
           data={table.data}
           container={table.container}
           handleCellEdit={table.handleCellEdit}
+          handleCellFocus={table.handleCellFocus}
         />
       ),
       TEXT: (
