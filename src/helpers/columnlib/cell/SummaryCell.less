@@ -13,7 +13,7 @@
   background-color: #ffffff;
 }
 
-.sunmmary_cell_status_container {
+.summary_cell_status_container {
   border: 0;
   height: 30px;
   margin: 0px 10px;
@@ -37,25 +37,38 @@
 }
 
 .summary_cell_date_container {
-  flex: 1;
-  position: relative;
-  background: #C4C4C4;
-  height: 26px;
-  line-height: 26px;
-  border-radius: 13px;
-  margin: 8px 16px;
-  color: white;
-  text-overflow: ellipsis;
+  // flex: 1;
+  // position: relative;
+  // background: #C4C4C4;
+  // height: 26px;
+  // line-height: 26px;
+  // border-radius: 13px;
+  // margin: 8px 16px;
+  // color: white;
+  // text-overflow: ellipsis;
   overflow: hidden;
   text-align: center;
-  white-space: nowrap;
+  flex-direction:column;
+  width: 100%;
   cursor: pointer;
 }
 
-.summary_cell_date_container_span {
-  line-height: 22px;
-  font-size: 13px;
-  height: 22px;
+.summary_cell_date_container_rule {
+  color: #707070;
+  font-weight: 300;
+  font-size: 11px;
+  align-items: center;
+  text-align: center;
+  height: 20px;
+  line-height: 20px;
+  padding-top: 2px;
+}
+
+.summary_cell_date_container_text {
+  line-height: 24px;
+  height: 24px;
+  color: #111111;
+  font-size: 14px;
 }
 
 .summary_cell_date_container:hover .summary_cell_date_container_span:after {
