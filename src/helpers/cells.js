@@ -10,7 +10,7 @@ import React from 'react';
 import ReactTooltip from 'react-tooltip';
 import {Menu, Dropdown, Checkbox, Button as AntdButton, Tooltip} from 'antd';
 
-import {CaretDownOutlined, DownOutlined, UpOutlined, SettingFilled, EllipsisOutlined} from '@ant-design/icons';
+import {MenuOutlined, DownOutlined, UpOutlined, SettingFilled, EllipsisOutlined} from '@ant-design/icons';
 
 import {
   ADD_SUB_TABLE,
@@ -34,6 +34,7 @@ import MoveToSectionMenu from './section/header/MoveToSectionMenu';
 
 import '../maintable/css/style/RowActionMenu.less';
 import '../maintable/css/style/SectionMenu.less';
+import '../maintable/css/layout/fixedDataTableCellGroupLayout.css';
 
 import {connect} from 'react-redux';
 import {dealRowRenameModal, dealRowDeleteModal} from '../maintable/actions/rowActions';
@@ -331,7 +332,6 @@ class DropDownMenuHeader extends React.PureComponent {
           trigger='click'
           getPopupContainer={() => this.props.container}
           onVisibleChange={this.handleVisibleChange}
-          placement='bottomLeft'
         >
           <EllipsisOutlined
             size="small"
@@ -472,15 +472,18 @@ class DropDownMenuCell extends React.PureComponent {
     const {isBtnClicked, isShowRowActionBtn, isShowDropDown } = this.state;
 
     // 子阶菜单暂时不返回
-    let rowIndexStr = String(rowIndex);
-    if (rowIndexStr.indexOf('.') !== -1) return null;
+    // let rowIndexStr = String(rowIndex);
+    // if (rowIndexStr.indexOf('.') !== -1){
+    //   return <div style={{background:'#f2f3f3',height:'32px',textAlign:'center'}}>{rowIndex.split('.')[1]}</div>;
+    // }
+    
 
     return (
       <div
-        style={{background: '#f2f3f3'}}
-        onMouseEnter={this.showRowActionBtn}
-        onMouseLeave={this.hiddenRowActionBtn}
+        // onMouseEnter={this.showRowActionBtn}
+        // onMouseLeave={this.hiddenRowActionBtn}
         // onWheel={this.hiddenRowActionBtn}
+        style={{background:'#f2f3f3',height:'32px'}}
       >
         <Dropdown
           overlay={this.getRowMenu(data, rowIndex)}
@@ -489,15 +492,20 @@ class DropDownMenuCell extends React.PureComponent {
           trigger='click'
           getPopupContainer={() => this.props.container}
           onVisibleChange={this.handleVisibleChange}
-          placement='bottomLeft'
         >
-          <AntdButton
-            icon={<CaretDownOutlined />}
+          <img src="../svg/drag.svg" 
+            className="table_row_menu_cell" 
+            style={{height:'20px',width:'20px',margin:'5px 0 0 0'}}>
+          </img>
+          {/* <MenuOutlined className="table_row_menu_cell" /> */}
+          {/* <AntdButton
+            icon={<MenuOutlined />}
             shape="circle"
             size="small"
-            style={{margin: '8px 0px', width:'15px',visibility: isShowDropDown ? VISIBILITY.VISIBLE : isShowRowActionBtn}}
+            className="table_row_menu_cell"
+            // style={{margin: '8px 0px', width:'15px',visibility: isShowDropDown ? VISIBILITY.VISIBLE : isShowRowActionBtn}}
             // onClick={this.showRowActionMenu}
-          />
+          /> */}
         </Dropdown>
       </div>
     );
@@ -527,44 +535,19 @@ class TooltipCell extends React.PureComponent {
 class CheckBoxCell extends React.PureComponent {
   constructor(props) {
     super(props);
-    this.state = {
-      checkbox: {
-        display: 'none',
-        paddingBottom: '20px',
-      },
-      index: {
-        display: 'block',
-      },
-    };
   }
-  showCheckbox = (e) => {
-    this.setState({
-      checkbox: {
-        display: 'block',
-        paddingBottom: '20px',
-      },
-      index: {
-        display: 'none',
-      },
-    });
-  };
-  hideCheckbox = (e) => {
-    this.setState({
-      checkbox: {
-        display: 'none',
-        paddingBottom: '20px',
-      },
-      index: {
-        display: 'block',
-      },
-    });
-  };
+
   render() {
     const {data, rowIndex, columnKey, ...props} = this.props;
-    const rowObject = data.getObjectAt(rowIndex);    
     let group   = data.getGroupByRowIndex(rowIndex);
-    let a =  rowObject[columnKey];
-    let index   = group.rows.findIndex(row => row.id === rowObject.id);
+    let index = 0;
+    //子项
+    if(rowIndex.toString().indexOf('.')>-1){
+      index = rowIndex.split('.')[1];
+    }else{
+      index = data.getGroupTableRowIndexAt(group.groupKey,rowIndex);
+    }
+    
     let groupColor = group ? group.color : '#f1f3f5';
     let css_style = {
       width: '100%',
@@ -573,9 +556,9 @@ class CheckBoxCell extends React.PureComponent {
       borderLeft: '3px solid ' + groupColor,
     };
     return (
-      <div style={css_style} onMouseEnter={this.showCheckbox} onMouseLeave={this.hideCheckbox}>
-        <Checkbox style={this.state.checkbox} />
-        <span style={this.state.index}>{rowIndex}</span>
+      <div style={css_style}>
+        <Checkbox className="table_row_checkbox_cell" />
+        <span className="table_row_rowindex_cell">{index}</span>
       </div>
     );
   }

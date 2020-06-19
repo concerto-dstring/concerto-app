@@ -218,6 +218,7 @@ class DateCell extends React.Component {
     this.setState({
       selectDateValue: moment(v, 'YYYY-MM-DD'),
     });
+    this.props.handleChange(moment(this.state.dateValue).format('YYYY-MM-DD') + this.#date_time_delimit + this.state.timeValue, false);
   };
 
   setMouseIn = (mouseIn) => {
@@ -229,6 +230,8 @@ class DateCell extends React.Component {
   handelOpenChange = (open) => {
     if (open) {
       this.props.handleCellEdit('DATE')
+    } else {
+      this.props.handleChange(moment(this.state.dateValue).format('YYYY-MM-DD') + this.#date_time_delimit + this.state.timeValue, false);
     }
   }
 
@@ -244,21 +247,17 @@ class DateCell extends React.Component {
     //   }
     // }
     return (
-      <Cell
-        className="DateCell"
-        onMouseEnter={this.setMouseIn.bind(this, true)}
-        onMouseLeave={this.setMouseIn.bind(this, false)}
-        onClick={this.showDatePicker}
-      >
         <DatePicker
-          ref={this.datePickerRef}
+          //ref={this.datePickerRef}
+          onMouseEnter={this.setMouseIn.bind(this, true)}
+          onMouseLeave={this.setMouseIn.bind(this, false)}
           className="DateCell"
           popupStyle={{pointerEvents: 'visible'}}
           allowClear={false}
           bordered={false}
           placeholder=""
           onOpenChange={this.handelOpenChange}
-          open={open}
+          //open={open}
           getPopupContainer={() => this.props.container}
           suffixIcon={<div style={{lineHeight: '33px', color: '#8b8c8d'}}>{timeDisplayValue}</div>}
           size="small"
@@ -267,7 +266,6 @@ class DateCell extends React.Component {
           onChange={this.handleDateChange}
           inputReadOnly={true}
         />
-      </Cell>
     );
   }
 }

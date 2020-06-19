@@ -49,6 +49,7 @@ import {
 } from '../graphql/mutations';
 import {notification} from 'antd';
 import {getRandomColor} from '../helpers/section/header/SectionColor';
+import { getCellWidth } from '../helpers/columnlib/cell/CellProperties';
 
 const rankBlock = 32768;
 const PEOPLE = 'PEOPLE';
@@ -419,7 +420,7 @@ class MainTableDataStore {
         } else if (column.isTitle) {
           column.width = 360;
         } else {
-          column.width = 200;
+          column.width = getCellWidth(column.column.columnComponentType);
         }
         this._columns[boardId].push(column);
       }
@@ -805,7 +806,7 @@ class MainTableDataStore {
             ColumnType.ROWSELECT,
             true,
             1,
-            ColumnType.ROWACTION,
+            ColumnType.ROWSELECT,
             null,
             true,
             String(rankBlock * 2)
@@ -880,7 +881,7 @@ class MainTableDataStore {
         rank = preRank + (currentRank - preRank) / 2;
       } else {
         // 插入最上面
-        rank = Number(this._groups[this._currentBoardId][this._groups.length - 1].rank) + rankBlock;
+        rank = Number(this._groups[this._currentBoardId][this._groups[this._currentBoardId].length - 1].rank) + rankBlock;
       }
     } else {
       rank = rankBlock;

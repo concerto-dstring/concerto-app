@@ -1,121 +1,152 @@
-.PeopleCell{
-  width:100%;
+.people_cell {
+  width: 100%;
 }
-.faceAvatar{
-  padding:5px;
-  font-size:13px;
+
+.popup_container {
+  
+  .ant-popover-content {
+    width: 240px;
+    height: 300px;
+  }
+
+  .ant-popover-inner-content {
+    padding: 2px;
+  }
+  .ant-avatar-string {
+    position: absolute;
+    left: 50%;
+    font-size: 13px !important;
+    -webkit-transform-origin: 0 center;
+    transform-origin: 0 center;
+  }
+  .ant-popover-title {
+    border-bottom: none !important;
+    padding: 2px;
+  }
+
+  .ant-tag-hidden {
+    display: block;
+  }
 }
-.searchInput{
-  margin:0 0 5px 0;
-  border:none;
+.Avatar{
+  font-size: 13px !important;
 }
-.user{
-  margin:5px 0px;
-  width:'100%';
+.faceAvatar {
+  padding: 5px;
+  font-size: 13px !important;
+}
+.searchInput {
+  margin: 0 0 5px 0;
+  border: none;
+}
+.user {
+  margin: 5px 0px;
+  width: '100%';
   cursor: pointer;
 }
-.user:hover{
-  background: #009AFF;
-  color:white;
+.user:hover {
+  background: #009aff;
+  color: white;
   border-radius: 3px;
 }
-.user Avatar{
+.user Avatar {
   vertical-align: middle;
   cursor: pointer;
   font-size: 13px !important;
+  height:25px;
+  width:25px;
 } 
 
-.userOptions{
+.userOptions {
   display: none;
 }
-.userAvatar{
-  margin:0 0 0 10px;
+.userAvatar {
+  margin: 0 0 0 10px;
   cursor: pointer;
 }
-.PlusCircleFilled
-{
-  color: #009AFF;
-  position:absolute;
-  top:8px;
-  left:5px;
+.PlusCircleFilled {
+  color: #009aff;
+  position: absolute;
+  top: 8px;
+  left: 5px;
   display: none;
 }
-.PlusCircleFilled2{
-  color: #009AFF;
-  position:absolute;
-  top:8px;
-  left:4px;
+.PlusCircleFilled2 {
+  color: #009aff;
+  position: absolute;
+  top: 8px;
+  left: 4px;
   display: none;
 }
-.CloseCircleFilled{
+.CloseCircleFilled {
   color: #cccccc;
-  position:absolute;
-  top:10px;
-  left:85px;
+  position: absolute;
+  top: 10px;
+  left: 85px;
   display: none;
 }
 
-.userBars{
-  display:none
+.userBars {
+  display: none;
 }
 
-.userAvatar:hover + .PlusCircleFilled{
-  display:block;
+.userAvatar:hover + .PlusCircleFilled {
+  display: block;
 }
 
-.userAvatar:hover + .CloseCircleFilled{
-  display:none;
+.userAvatar:hover + .CloseCircleFilled {
+  display: none;
 }
 
-.userIcon{
-  width:25px !important;
-  height:25px !important;
+.userIcon {
+  width: 25px !important;
+  height: 25px !important;
 }
 
-.userIcon:hover + .PlusCircleFilled{
-  display:block;
+.userIcon:hover + .PlusCircleFilled {
+  display: block;
 }
 
-.moreUserAvatar{
+.moreUserAvatar {
   cursor: pointer;
   right:10px;
   background:#333333 !important;
   color:white;
+  font-size: 10px;
+  width:25px !important;
+  height:25px !important;
+  line-height: 25px !important;
 }
 
-.userTag{
+.userTag {
   background: #e5f4ff !important;
-  border:none !important;
-  border-radius:30px !important;
+  border: none !important;
+  border-radius: 30px !important;
   margin: 5px !important;
   font-weight: normal !important;
-  padding:0 7px 0 0px !important;
+  padding: 0 7px 0 0px !important;
+}
 
-}
-.ant-tag-hidden{
-  display: block; 
-}
-.ant-popover-content{
-   width: 248px;
-   height: 300px;
-}
-.ant-avatar-string {
-  position: absolute;
-  left: 50%;
-  font-size: 13px;
-  -webkit-transform-origin: 0 center;
-  transform-origin: 0 center;
-}
-.ant-popover-title {
-  border-bottom: none !important;
-}
-.dividerStyle{
+.dividerStyle {
   display: table;
-  margin:0 !important;
+  margin: 0 !important;
   color: #bfbfbf !important;
   font-weight: normal !important;
   font-size: 13px !important;
   white-space: nowrap;
   text-align: center;
   background: transparent;
+}
+
+.user_scroll {
+  max-height: 200px;
+  overflow: hidden;
+}
+
+.user_scroll:hover {
+  overflow-y: auto;
+}
+
+.user_scroll::-webkit-scrollbar-track{
+  background-color: #FFF;
 }

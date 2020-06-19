@@ -105,7 +105,7 @@ class FixedDataTableCell extends React.Component {
 
   state = {
     isReorderingThisColumn: false,
-    menuBar: DISPLAY.NONE,
+    menuBar: DISPLAY.BLOCK,
   }
 
   shouldComponentUpdate(nextProps) {
@@ -165,11 +165,11 @@ class FixedDataTableCell extends React.Component {
   }
 
   render() /*object*/ {
-    var { height, width, columnKey, isHeaderOrFooter, onCellEdit, onCellEditEnd, ...props } = this.props;
+    var { height, width, columnKey, isHeaderOrFooter, onCellEdit, onCellEditEnd, onCellFocus, ...props } = this.props;
 
     var style = {
       height,
-      width,
+      width
     };
     
     if (this.props.isRTL) {
@@ -268,6 +268,7 @@ class FixedDataTableCell extends React.Component {
       width,
       onCellEdit,
       onCellEditEnd,
+      onCellFocus,
       container: this.props.container,
     };
 
@@ -290,7 +291,7 @@ class FixedDataTableCell extends React.Component {
     } 
 
     const role = isHeaderOrFooter ? 'columnheader' : 'gridcell';
-
+    style['borderRight'] = role!='gridcell'?'1px solid #DDE1E3 important':'1px solid #FAFAFA';
     const setTableColumn = (table)=>{
       const column = this.getColumnCollpseByColumnInfo(table.columns,columnKey);
       if(column&&column.collpse){
@@ -315,7 +316,7 @@ class FixedDataTableCell extends React.Component {
     return (
       <TableContext.Consumer>
         {(table) => (
-          <div onMouseEnter={this.showMenuBar} onMouseLeave={this.hideMenuBar}>{setTableColumn(table)}</div>
+          <div>{setTableColumn(table)}</div>
           //  role === 'columnheader'&&<div onMouseEnter={this.showMenuBar} onMouseLeave={this.hideMenuBar}>{setTableColumn(table)}</div>
           //  ||
           //  role === 'gridcell'&&<div>{setTableColumn(table)}</div>

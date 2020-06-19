@@ -304,6 +304,7 @@ class FixedDataTableRowImpl extends React.Component {
         columnReorderingData={this.props.columnReorderingData}
         onCellEdit={this.props.onCellEdit}
         onCellEditEnd={this.props.onCellEditEnd}
+        onCellFocus={this.props.onCellFocus}
         rowHeight={this.props.height}
         rowIndex={this.props.index}
         isHeaderOrFooter={this.props.isHeaderOrFooter}
@@ -317,7 +318,8 @@ class FixedDataTableRowImpl extends React.Component {
     var rowExpanded = this._getRowExpanded(subRowHeight);
     var rowExpandedStyle = {
       height: subRowHeight,
-      top: this.props.height,
+      top: this.props.height+25,
+      left:30,
       width: this.props.width,
     };
 

@@ -445,6 +445,13 @@ class MainTable extends React.Component {
   _onGetListUsers = () => {
     return this.state.data.getListUsers()
   }
+  
+  _onFilterChangeCallback = (value, type) => {
+    this.setState({
+      filterInputValue: value,
+      filterType: type,
+    });
+  };
 
   renderTable() {
     var { data, filters, filterInputValue, filterType } = this.state;
@@ -455,7 +462,7 @@ class MainTable extends React.Component {
     
     return (
         <TableContext.Provider value={this.state}>
-        <div style={{width: '100%', height: '100%'}}>
+        <div style={{width: '100%', height: '100%',marginLeft:'-3px'}}>
             <FilterableDataTable
                 ref={this.handleRef}
                 title={this.props.title}
@@ -472,7 +479,7 @@ class MainTable extends React.Component {
                 rowHeight={32}
                 isColumnResizing={false}
                 addRowHeight={32}
-                footerHeight={32}
+                footerHeight={45}
                 filters={filters}
                 filterInputValue={filterInputValue}
                 filterType={filterType}             

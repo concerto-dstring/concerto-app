@@ -102,7 +102,7 @@ class FixedDataTableBufferedRows extends React.Component {
       pointerEvents: 'none',
     };
     
-    return <div><div>{this._staticRowArray}</div><div style={layerStyle} ref={this._onRef}/></div>;
+    return <div><div>{this._staticRowArray}</div><div className='popup_container' style={layerStyle} ref={this._onRef}/></div>;
   }
 
   _onRef = (div) => {
@@ -138,6 +138,7 @@ class FixedDataTableBufferedRows extends React.Component {
       onColumnResize,
       onCellEdit,
       onCellEditEnd,
+      onCellFocus,
       touchScrollEnabled,
       fixedColumns,
       fixedRightColumns,
@@ -235,7 +236,10 @@ class FixedDataTableBufferedRows extends React.Component {
               onFilter={props.onFilterChange}
               onGetListUsers={props.onGetListUsers}
               boardColor={props.boardColor}
-              onAddNewGroup={props.onAddNewGroup}            
+              onAddNewGroup={props.onAddNewGroup}
+              onCellEdit={props.onCellEdit}
+              onCellEditEnd={props.onCellEditEnd} 
+              onCellFocus={onCellFocus}           
             />;
             break;
           case RowType.HEADER:
@@ -360,6 +364,7 @@ class FixedDataTableBufferedRows extends React.Component {
                 rowReorderingData={props.rowReorderingData}
                 onCellEdit={onCellEdit}
                 onCellEditEnd={onCellEditEnd}
+                onCellFocus={onCellFocus}
                 onContextMenu={props.onRowContextMenu}
                 onDoubleClick={props.onRowDoubleClick}
                 onMouseDown={props.onRowMouseDown}

@@ -332,7 +332,7 @@ class MainPage extends React.Component {
         key={key}
       >
         {menus.map((item) => {
-          let style = item.id === selectedKey ? {background: '#f2f3f3', fontWeight: 500} : {};
+          let style = item.id === selectedKey ? {background: '#f2f3f3', fontWeight: 560} : {};
           let path = isBoard ? `/board/${item.id}` : '/dashboard';
           return (
             <div
@@ -350,7 +350,7 @@ class MainPage extends React.Component {
 
               <div className="body_left_sider_panel_menu_item" style={style} onClick={this.handleBoardItemClick}>
                 <Dropdown overlay={this.getBoardItemMenus(item.id, item.name)} placement="bottomLeft" trigger="click">
-                  <EllipsisOutlined style={{fontSize: '14px', paddingRight: '10px'}} />
+                  <EllipsisOutlined className="more_menu"/>
                 </Dropdown>
               </div>
               <div style={{width: 24, paddingLeft: '8px'}}>
@@ -455,7 +455,7 @@ class MainPage extends React.Component {
               <Input
                 prefix={<SearchOutlined />}
                 placeholder="搜索工作板..."
-                style={{margin: '10px 26px 0px 16px', borderRadius: '15px', width: '255px'}}
+                className="search_input"
                 onChange={this.filterMenu.bind(this, true)}
               />
               <Collapse accordion defaultActiveKey={['1']} bordered={false}>
@@ -470,15 +470,16 @@ class MainPage extends React.Component {
                     <Avatar
                       size={35}
                       className="loginuser"
-                      src=""
+                      // src="../defluatusericon.jpg"
                       style={{
-                        background: dataset._currentUser.faceColor ? dataset._currentUser.faceColor : '#000',
+                        background: dataset._currentUser.avatar ? dataset._currentUser.avatar : '#0073bb',
                         cursor: 'pointer',
+                        fontSize:'15px'
                       }}
                     >
-                      {dataset._currentUser.username ? dataset._currentUser.username.split('')[0] : ''}
+                      {dataset._currentUser.fname ? dataset._currentUser.fname: dataset._currentUser.username}
                     </Avatar>
-                    {dataset._currentUser.username}
+                    {dataset._currentUser.fname ? (dataset._currentUser.lname+dataset._currentUser.fname): dataset._currentUser.username}
                   </span>
                 </Dropdown>
               </div>

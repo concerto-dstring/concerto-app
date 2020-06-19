@@ -518,7 +518,7 @@ const DRAG_SCROLL_BUFFER = 40;
   static defaultProps = /*object*/ {
     elementHeights: {
       cellGroupWrapperHeight: undefined,
-      footerHeight: 32,
+      footerHeight: 45,
       groupHeaderHeight: 0,
       headerHeight: 32,
       addRowHeight: 32,
@@ -582,8 +582,12 @@ const DRAG_SCROLL_BUFFER = 40;
     this.props.touchScrollEnabled && this._shouldHandleWheelY(delta)
 
   _shouldHandleWheelX = (/*number*/ delta) /*boolean*/ => {
-    const { maxScrollX, scrollFlags, scrollX } = this.props;
+    const { maxScrollX, scrollFlags, scrollX, isCellEditing} = this.props;
     const { overflowX } = scrollFlags;
+
+    if (isCellEditing && this._focusCell) {
+      return false;
+    }
 
     if (overflowX === 'hidden') {
       return false;
@@ -601,8 +605,12 @@ const DRAG_SCROLL_BUFFER = 40;
   }
 
   _shouldHandleWheelY = (/*number*/ delta) /*boolean*/ => {
-    const { maxScrollY, scrollFlags, scrollY } = this.props;
+    const { maxScrollY, scrollFlags, scrollY, isCellEditing } = this.props;
     const { overflowY } = scrollFlags;
+
+    if (isCellEditing && this._focusCell) {
+      return false;
+    }
 
     if (overflowY === 'hidden' || delta === 0) {
       return false;
@@ -969,6 +977,7 @@ const DRAG_SCROLL_BUFFER = 40;
         onColumnResize={this._onColumnResize}
         onCellEdit={this._onCellEdit}
         onCellEditEnd={this._onCellEditEnd}
+        onCellFocus={this._onCellFocus}
         onRowClick={props.onRowClick}
         onRowContextMenu={props.onRowContextMenu}
         onRowDoubleClick={props.onRowDoubleClick}
@@ -1161,6 +1170,8 @@ const DRAG_SCROLL_BUFFER = 40;
       const newHeight = this.props.rowOffsets[rowIndex] + 100 + popupHeight;
       if (newHeight > oldHeight) {
           this.props.displayActions.adjustHeight(newHeight - oldHeight);
+      } else {
+        this.props.scrollActions.scrollToY(newHeight);
       }
     }
     this.props.cellActions.startCellEdit({rowIndex, columnKey});
@@ -1171,6 +1182,14 @@ const DRAG_SCROLL_BUFFER = 40;
       && this.props.CellEditingData.columnKey === columnKey) {
       this.props.cellActions.endCellEdit();
       this.props.displayActions.adjustHeight(0);
+    }
+  }
+
+  _onCellFocus = (rowIndex, columnKey, focused) => {
+    if (this.props.CellEditingData && focused) {
+      this._focusCell = {rowIndex, columnKey};
+    } else {
+      this._focusCell = undefined;
     }
   }
 
@@ -1534,6 +1553,7 @@ const DRAG_SCROLL_BUFFER = 40;
               rowReorderingData={props.rowReorderingData}
               onCellEdit={this._onCellEdit}
               onCellEditEnd={this._onCellEditEnd}
+              onCellFocus={this._onCellFocus}
               onContextMenu={props.onRowContextMenu}
               onDoubleClick={props.onRowDoubleClick}
               onMouseDown={this._onRowReorderStart}
