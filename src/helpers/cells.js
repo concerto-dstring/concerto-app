@@ -493,7 +493,11 @@ class DropDownMenuCell extends React.PureComponent {
           getPopupContainer={() => this.props.container}
           onVisibleChange={this.handleVisibleChange}
         >
-          <MenuOutlined className="table_row_menu_cell" />
+          <img src="../svg/drag.svg" 
+            className="table_row_menu_cell" 
+            style={{height:'20px',width:'20px',margin:'5px 0 0 0'}}>
+          </img>
+          {/* <MenuOutlined className="table_row_menu_cell" /> */}
           {/* <AntdButton
             icon={<MenuOutlined />}
             shape="circle"
