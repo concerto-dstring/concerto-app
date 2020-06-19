@@ -291,7 +291,7 @@ class FixedDataTableCell extends React.Component {
     } 
 
     const role = isHeaderOrFooter ? 'columnheader' : 'gridcell';
-
+    style['borderRight'] = role!='gridcell'?'1px solid #DDE1E3 important':'1px solid #FAFAFA';
     const setTableColumn = (table)=>{
       const column = this.getColumnCollpseByColumnInfo(table.columns,columnKey);
       if(column&&column.collpse){

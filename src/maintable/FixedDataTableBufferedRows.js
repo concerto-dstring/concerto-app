@@ -236,7 +236,10 @@ class FixedDataTableBufferedRows extends React.Component {
               onFilter={props.onFilterChange}
               onGetListUsers={props.onGetListUsers}
               boardColor={props.boardColor}
-              onAddNewGroup={props.onAddNewGroup}            
+              onAddNewGroup={props.onAddNewGroup}
+              onCellEdit={props.onCellEdit}
+              onCellEditEnd={props.onCellEditEnd} 
+              onCellFocus={onCellFocus}           
             />;
             break;
           case RowType.HEADER:

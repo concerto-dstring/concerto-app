@@ -1170,6 +1170,8 @@ const DRAG_SCROLL_BUFFER = 40;
       const newHeight = this.props.rowOffsets[rowIndex] + 100 + popupHeight;
       if (newHeight > oldHeight) {
           this.props.displayActions.adjustHeight(newHeight - oldHeight);
+      } else {
+        this.props.scrollActions.scrollToY(newHeight);
       }
     }
     this.props.cellActions.startCellEdit({rowIndex, columnKey});

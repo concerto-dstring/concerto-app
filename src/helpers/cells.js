@@ -472,8 +472,11 @@ class DropDownMenuCell extends React.PureComponent {
     const {isBtnClicked, isShowRowActionBtn, isShowDropDown } = this.state;
 
     // 子阶菜单暂时不返回
-    let rowIndexStr = String(rowIndex);
-    if (rowIndexStr.indexOf('.') !== -1) return null;
+    // let rowIndexStr = String(rowIndex);
+    // if (rowIndexStr.indexOf('.') !== -1){
+    //   return <div style={{background:'#f2f3f3',height:'32px',textAlign:'center'}}>{rowIndex.split('.')[1]}</div>;
+    // }
+    
 
     return (
       <div
@@ -490,7 +493,11 @@ class DropDownMenuCell extends React.PureComponent {
           getPopupContainer={() => this.props.container}
           onVisibleChange={this.handleVisibleChange}
         >
-          <MenuOutlined className="table_row_menu_cell" />
+          <img src="../svg/drag.svg" 
+            className="table_row_menu_cell" 
+            style={{height:'20px',width:'20px',margin:'5px 0 0 0'}}>
+          </img>
+          {/* <MenuOutlined className="table_row_menu_cell" /> */}
           {/* <AntdButton
             icon={<MenuOutlined />}
             shape="circle"
@@ -533,7 +540,14 @@ class CheckBoxCell extends React.PureComponent {
   render() {
     const {data, rowIndex, columnKey, ...props} = this.props;
     let group   = data.getGroupByRowIndex(rowIndex);
-    let index = data.getGroupTableRowIndexAt(group.groupKey,rowIndex);
+    let index = 0;
+    //子项
+    if(rowIndex.toString().indexOf('.')>-1){
+      index = rowIndex.split('.')[1];
+    }else{
+      index = data.getGroupTableRowIndexAt(group.groupKey,rowIndex);
+    }
+    
     let groupColor = group ? group.color : '#f1f3f5';
     let css_style = {
       width: '100%',
