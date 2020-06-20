@@ -921,46 +921,70 @@ class MainTableDataStore {
     let currentGroup;
     let rank;
     let index;
+    let groups;
+    let createdat;
+
+    groups = this._groups[this._currentBoardId]
     if (groupKey) {
-      index = this._groups[this._currentBoardId].findIndex((group) => group.groupKey === groupKey);
+      index = groups.findIndex((group) => group.groupKey === groupKey);
       if (index < 0) {
         return null;
       }
-      currentGroup = this._groups[this._currentBoardId][index];
+      currentGroup = groups[index];
       // 中间插入分区的rank计算暂时没有完美方案
       rank = this.getCreateGroupRank(groupKey, currentGroup, index);
     } else {
       rank = this.getCreateGroupRank(groupKey);
     }
+
+    createdat = new Date().toISOString();
+    let groupinput = {
+      name: groupName,
+      rank: rank,
+      createdAt: createdat, 
+      boardID: this._currentBoardId,
+      creatorID: this._currentUser.id,
+      isCollapsed: false,
+      deleteFlag: false,
+      color: getRandomColor(),
+    };
+    let cacheGroupinput = { ...groupinput };
+    let cacheid = createdat+rank;
+    cacheGroupinput['id'] = cacheid;
+    cacheGroupinput.rows = [];
+    if (groupKey) {
+      groups.splice(index, 1, cacheGroupinput);
+      groups.splice(index + 1, 0, currentGroup);
+    } else {
+      groups.push(cacheGroupinput);
+    }
+    this.runCallbacks();
+
     this._apolloClient
       .mutate({
         mutation: gql(createGroup),
         variables: {
-          input: {
-            name: groupName,
-            rank: rank,
-            createdAt: new Date().toISOString(),
-            boardID: this._currentBoardId,
-            creatorID: this._currentUser.id,
-            isCollapsed: false,
-            deleteFlag: false,
-            color: getRandomColor(),
-          },
+          input: groupinput
         },
       })
       .then((result) => {
         let group = result.data.createGroup;
         group.rows = [];
+        /* replace the cache group with the database record */
         if (groupKey) {
-          this._groups[this._currentBoardId].splice(index, 1, group);
-          this._groups[this._currentBoardId].splice(index + 1, 0, currentGroup);
-        } else {
-          this._groups[this._currentBoardId].push(group);
+          groups.splice(index, 1, group);
+         } else {
+          groups.pop()
+          groups.push(group);
         }
-        this.runCallbacks();
       })
       .catch((error) => {
         console.log(error);
+        if (groupKey) {
+          groups.splice(index, 1);
+         } else {
+          groups.pop()
+        }
       });
   }
 
@@ -987,17 +1011,22 @@ class MainTableDataStore {
   }
 
   removeGroup(groupKey) {
-    let index = this._groups[this._currentBoardId].findIndex((column) => column.groupKey === groupKey);
+    let groups = this._groups[this._currentBoardId];
+    let index = groups.findIndex((column) => column.groupKey === groupKey);
     if (index < 0) {
       return;
     }
-    let group = this._groups[this._currentBoardId][index];
+    let cacheGroup = { ...groups[index] };
+    groups.splice(index, 1);
+    //refresh
+    this.runCallbacks();
+
     this._apolloClient
       .mutate({
         mutation: gql(updateGroup),
         variables: {
           input: {
-            id: group.id,
+            id: cacheGroup.id,
             deleteFlag: true,
           },
         },
@@ -1007,6 +1036,7 @@ class MainTableDataStore {
       })
       .catch((error) => {
         console.log(error);
+        groups.slice(index, 0, cacheGroup);
       });
 
     return index;
