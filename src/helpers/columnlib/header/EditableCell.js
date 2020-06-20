@@ -1,4 +1,5 @@
 import React from 'react';
+import {Tooltip} from 'antd';
 import {Overlay} from 'react-overlays';
 import styled from 'styled-components';
 import Keys from '../../../maintable/vendor_upstream/core/Keys';
@@ -264,7 +265,7 @@ class EditableCell extends React.PureComponent {
   render() {
     const {container, data, rowIndex, columnKey, dataVersion, width, height, ...props} = this.props;
     const {value, editing, displayValue, type} = this.state;
-
+    let textclassName = type!='NUMBER'?'longtext_over':'text_number';
     return (
       <CellContainer
         ref={this.setTargetRef}
@@ -274,7 +275,11 @@ class EditableCell extends React.PureComponent {
         //className={classNameStr}  // disable for timebeing
         style={this.getFilterStyle(type, editing, value)}
       >
-        {!editing && this.cellRenderValues[type] && displayValue}
+        {!editing && this.cellRenderValues[type] && 
+         
+         <Tooltip placement="top" title={displayValue} arrowPointAtCenter>
+           <span className={textclassName}>{displayValue}</span>
+         </Tooltip>}
         {!editing && !this.cellRenderValues[type] && (
           <TableContext.Provider value={this.state}>
             <TableCell></TableCell>

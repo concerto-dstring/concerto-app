@@ -208,13 +208,11 @@ class MainTableSectionGroupBar extends React.Component {
 
     let titleStyle = {
       padding:'0 15px 0 15px',
-      fontWeight:'bold',
       color:groupColor,
       cursor:'pointer'
     }
     let collpseBarStyle = {
       paddingLeft:'12px',
-      fontWeight:'bold',
       color:groupColor,
       cursor:'pointer'
     }

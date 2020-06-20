@@ -1,6 +1,6 @@
 import React from 'react';
 import {Overlay} from 'react-overlays';
-import {Badge, Icon} from 'antd';
+import {Badge, Icon, Tooltip} from 'antd';
 import {Input} from 'semantic-ui-react';
 import Keys from '../maintable/vendor_upstream/core/Keys';
 import styled from 'styled-components';
@@ -178,9 +178,11 @@ class RowHeaderCell extends React.PureComponent {
             <i onClick={this.handleClick.bind(this)} className="row_header_cell_edit_icon">
               <EditOutlined />
             </i>
-            <div className="row_header_cell_text">
-              {displayValue}
-            </div>
+            <Tooltip placement="top" title={displayValue} arrowPointAtCenter>
+              <div className="row_header_cell_text">
+                {displayValue}
+              </div>
+            </Tooltip>
           </div>
           {count>0 && 
           <div style={{marginLeft: 4, lineHeight: `${height - 12}px`}} onClick={this.toggleSubRows.bind(this, count)}>
