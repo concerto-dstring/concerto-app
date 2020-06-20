@@ -7,7 +7,7 @@ import {dealRowHeaderDrawer} from '../../../maintable/actions/rowActions';
 @connect(null, {dealRowHeaderDrawer})
 class SlideDrawer extends PureComponent {
   constructor(props) {
-    const drawerDefaultWidth = 600;
+    const drawerDefaultWidth = 540;
     super(props);
     this.state = {
       isShowMask: false,

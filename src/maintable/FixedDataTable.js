@@ -1478,6 +1478,7 @@ const DRAG_SCROLL_BUFFER = 40;
             >
             </FixedDataTableRow>
           break;
+
         case RowType.SUBADDROW:
           row =
             <MainTableAddRow
@@ -1530,6 +1531,8 @@ const DRAG_SCROLL_BUFFER = 40;
               container={this._divRef}
               data={props.data}
               isRTL={props.isRTL}
+              onCellEdit={this._onCellEdit}
+              onCellEditEnd={this._onCellEditEnd}
             />;
           
 

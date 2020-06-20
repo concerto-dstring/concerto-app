@@ -1,34 +1,29 @@
-import React, { PureComponent } from 'react';
-import { Menu, Button, Upload, Modal, Progress, message, Spin } from 'antd';
+import React, {PureComponent, createRef, Fragment} from 'react';
+import {Menu, Button, Upload, Modal, Progress, message, Spin, Input} from 'antd';
 import {
   ROW_HEADER_UPDATE,
   ROW_HEADER_INFO_BOX,
   ROW_HEADER_ACTIVITY_LOG,
   ROW_HEADER_EDITOR,
-} from '../maintable/MainTableRowKeyAndDesc'
-import 'braft-editor/dist/index.css'
-import BraftEditor from 'braft-editor'
-import { ContentUtils } from 'braft-utils'
-import {
-  TableOutlined,
-  CheckCircleFilled,
-  PaperClipOutlined,
-  SmileOutlined,
-  LoadingOutlined,
-} from '@ant-design/icons'
-import '../maintable/css/style/RowHeaderCell.less'
-import PeopleModal from './section/modal/PeopleModal'
-import RowHeaderDrawerUpdate from './section/modal/RowHeaderDrawerUpdate'
-import { getBase64, isImageFile } from './section/modal/UploadFun'
+} from '../maintable/MainTableRowKeyAndDesc';
+import 'braft-editor/dist/index.css';
+import BraftEditor from 'braft-editor';
+import {ContentUtils} from 'braft-utils';
+import {TableOutlined, CheckCircleFilled, PaperClipOutlined, SmileOutlined, LoadingOutlined} from '@ant-design/icons';
+import '../maintable/css/style/RowHeaderCell.less';
+import PeopleModal from './section/modal/PeopleModal';
+import RowHeaderDrawerUpdate from './section/modal/RowHeaderDrawerUpdate';
+import {getBase64, isImageFile} from './section/modal/UploadFun';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
 import SlideDrawer from './section/Drawer/SlideDrawer';
-import { connect } from 'react-redux';
-import { mapRowHeaderDrawerStateToProps } from '../maintable/data/mapStateToProps';
+import {connect} from 'react-redux';
+import {mapRowHeaderDrawerStateToProps} from '../maintable/data/mapStateToProps';
 import WebConstants from '../WebConstants';
-import { Route } from 'react-router-dom';
+import {Route} from 'react-router-dom';
 import MainTableDataRowEditor from '../maintable/editor/MainTableDataRowEditor';
-
+import TooltipMsg from '../TooltipMsg';
+import {DISPLAY} from './section/header/StyleValues';
 
 @connect(mapRowHeaderDrawerStateToProps)
 class RowHeaderDrawer extends PureComponent {
@@ -39,33 +34,33 @@ class RowHeaderDrawer extends PureComponent {
       editorState: BraftEditor.createEditorState(null),
       editorControls: [
         'remove-styles',
-        'text-color',
+        // 'text-color',
         'bold',
         'italic',
         'underline',
         'strike-through',
         'list-ol',
         'list-ul',
-        {
-          key: 'inserTable',
-          title: '表格',
-          text: <TableOutlined />,
-        },
-        'link',
+        // {
+        //   key: 'inserTable',
+        //   title: '表格',
+        //   text: <TableOutlined />,
+        // },
+        // 'link',
         'hr',
         'text-align',
-        'clear',
-        {
-          key: 'checklist',
-          title: 'Add Checklist',
-          text: (
-            <div>
-              <CheckCircleFilled /> Checklist
-            </div>
-          ),
-        },
-        'separator',
-        'fullscreen',
+        // 'clear',
+        // {
+        //   key: 'checklist',
+        //   title: 'Add Checklist',
+        //   text: (
+        //     <div>
+        //       <CheckCircleFilled /> Checklist
+        //     </div>
+        //   ),
+        // },
+        // 'separator',
+        // 'fullscreen',
       ],
       isUploading: false,
       fileName: '',
@@ -77,10 +72,33 @@ class RowHeaderDrawer extends PureComponent {
       isLoading: false,
       isDataChanged: false,
       notificationUsers: [],
+      isInputFocus: false,
     };
 
     this.setUpdateInfo = this.setUpdateInfo.bind(this);
+    this.peoplePopoverRef = createRef();
   }
+
+  componentDidMount() {
+    // 添加点击的监听事件
+    window.addEventListener('mousedown', this.handleClick);
+  }
+
+  componentWillUnmount() {
+    // 移除点击的监听事件
+    window.removeEventListener('mousedown', this.handleClick);
+  }
+
+  handleClick = (e) => {
+    // 为了处理人员弹窗问题(点击时人员窗口应该时弹出并且鼠标不在窗口内)
+    if (this.state.isShowPeopleModal && !this.state.mouseIn) {
+      this.setState({
+        isShowPeopleModal: false,
+      });
+
+      this.editorRef.requestFocus();
+    }
+  };
 
   componentWillReceiveProps(nextProps) {
     this.setState({
@@ -255,15 +273,26 @@ class RowHeaderDrawer extends PureComponent {
   };
 
   /**
+   * 检查文本编辑框是否为空
+   * @param {*} infoHtml
+   */
+  checkEditorIsEmpty = (infoHtml) => {
+    const emptyHtml = BraftEditor.createEditorState(null).toHTML();
+    return infoHtml.replace(new RegExp(`(${emptyHtml})`, 'gm'), '').length === 0;
+  };
+
+  /**
    * 保存消息
    */
-  saveUpdateInfo = () => {
+  saveUpdateInfo = (e) => {
     if (this.state.editorState) {
-      const emptyHtml = BraftEditor.createEditorState(null).toHTML();
       let infoHtml = this.state.editorState.toHTML();
 
       // 无有效字符
-      if (infoHtml.replace(new RegExp(`(${emptyHtml})`, 'gm'), '').length === 0) {
+      if (this.checkEditorIsEmpty(infoHtml)) {
+        // 阻止编辑器失焦
+        e.stopPropagation();
+        e.preventDefault();
         message.warning('请输入内容!');
       } else {
         this.setLoading();
@@ -343,6 +372,95 @@ class RowHeaderDrawer extends PureComponent {
     }
   }
 
+  getEditingInput = (isShowInput, isShowEditor) => {
+    return (
+      <Fragment>
+        <div className="row_header_drawer_input">
+          <Input
+            style={{
+              height: 34,
+              background: '#F2F3F3',
+              border: '1px solid #0073BB',
+              boxSizing: 'border-box',
+              borderRadius: '5px',
+              display: isShowInput ? DISPLAY.BLOCK : DISPLAY.NONE,
+            }}
+            placeholder={TooltipMsg.update_info_input_placeholder}
+            onFocus={this.handleInputFocus}
+            // onBlur={this.handleInputBlur}
+          />
+        </div>
+        <div style={{display: isShowEditor ? DISPLAY.BLOCK : DISPLAY.NONE}}>
+          <div className="row_header_drawer_editor">
+            <BraftEditor
+              ref={(instance) => (this.editorRef = instance)}
+              value={this.state.editorState}
+              onChange={this.handleEditorChange}
+              controls={this.state.editorControls}
+              contentClassName="row_header_drawer_editor_content"
+              onBlur={this.handleInputBlur}
+            />
+          </div>
+          <div className="row_header_drawer_editor_bottom" ref={this.peoplePopoverRef}>
+            <span className="row_header_drawer_editor_bottom_content">
+              {this.getUploadContent()}
+              <span className="row_header_drawer_editor_bottom_content_span row_header_drawer_editor_bottom_content_span_margin">
+                <SmileOutlined />
+                表情
+              </span>
+              <span
+                className="row_header_drawer_editor_bottom_content_span row_header_drawer_editor_bottom_content_span_margin"
+                onMouseEnter={this.setMouseIn.bind(this, true)}
+                onMouseLeave={this.setMouseIn.bind(this, false)}
+              >
+                <PeopleModal
+                  visible={this.state.isShowPeopleModal}
+                  handlePeopleModalVisible={this.handlePeopleModalVisible}
+                  insertPeople={this.insertPeople}
+                  data={this.props.tableData}
+                  container={this.peoplePopoverRef.current}
+                >
+                  <span onMouseDown={this.handlePeopleModal}>@</span>
+                </PeopleModal>
+              </span>
+            </span>
+            <Button style={{width: 80}} shape="round" type="primary" onMouseDown={this.saveUpdateInfo}>
+              保存
+            </Button>
+          </div>
+        </div>
+      </Fragment>
+    );
+  };
+
+  setMouseIn = (mouseIn) => {
+    console.log(mouseIn);
+    this.setState({
+      mouseIn: mouseIn,
+    });
+  };
+
+  handlePeopleModal = (e) => {
+    this.setState({
+      isShowPeopleModal: true,
+    });
+  };
+
+  handleInputFocus = () => {
+    this.setState({
+      isInputFocus: true,
+    });
+    this.editorRef.requestFocus();
+  };
+
+  handleInputBlur = (e) => {
+    if (!this.state.isShowPeopleModal) {
+      this.setState({
+        isInputFocus: false,
+      });
+    }
+  };
+
   getMenuContent = (key) => {
     let menuContent;
     switch (key) {
@@ -351,36 +469,12 @@ class RowHeaderDrawer extends PureComponent {
           <div className="row_header_drawer">
             <div className="row_header_drawer_container">
               <div className="row_header_drawer_padding">
-                <div className="row_header_drawer_editor">
-                  <BraftEditor
-                    value={this.state.editorState}
-                    onChange={this.handleEditorChange}
-                    controls={this.state.editorControls}
-                    contentClassName="row_header_drawer_editor_content"
-                  />
-                </div>
-                <div className="row_header_drawer_editor_bottom">
-                  <span className="row_header_drawer_editor_bottom_content">
-                    {this.getUploadContent()}
-                    <span className="row_header_drawer_editor_bottom_content_span row_header_drawer_editor_bottom_content_span_margin">
-                      <SmileOutlined />
-                      表情
-                    </span>
-                    <span className="row_header_drawer_editor_bottom_content_span row_header_drawer_editor_bottom_content_span_margin">
-                      <PeopleModal
-                        visible={this.state.isShowPeopleModal}
-                        handlePeopleModalVisible={this.handlePeopleModalVisible}
-                        insertPeople={this.insertPeople}
-                        data={this.props.tableData}
-                      >
-                        @
-                      </PeopleModal>
-                    </span>
-                  </span>
-                  <Button style={{width: 80}} shape="round" type="primary" onClick={this.saveUpdateInfo}>
-                    保存
-                  </Button>
-                </div>
+                {this.state.isInputFocus
+                  ? this.getEditingInput(false, true)
+                  : this.checkEditorIsEmpty(this.state.editorState.toHTML()) &&
+                    (this.editorRef ? !this.editorRef.isFocused : true)
+                  ? this.getEditingInput(true, false)
+                  : this.getEditingInput(false, true)}
               </div>
               <Modal
                 visible={this.state.isUploading}
@@ -404,9 +498,13 @@ class RowHeaderDrawer extends PureComponent {
         );
         break;
       case ROW_HEADER_EDITOR.key:
-          menuContent= (
-            <MainTableDataRowEditor data={this.props.tableData} rowIndex={this.props.rowIndex} rowKey={this.props.rowId} />
-          )
+        menuContent = (
+          <MainTableDataRowEditor
+            data={this.props.tableData}
+            rowIndex={this.props.rowIndex}
+            rowKey={this.props.rowId}
+          />
+        );
         break;
       default:
         menuContent = <div>暂无</div>;
@@ -422,6 +520,7 @@ class RowHeaderDrawer extends PureComponent {
 
   render() {
     const {isOpenRowHeaderDrawer, rowHeaderDrawerTitle} = this.props;
+
     return (
       <SlideDrawer
         isVisible={isOpenRowHeaderDrawer}
@@ -434,18 +533,10 @@ class RowHeaderDrawer extends PureComponent {
           selectedKeys={[this.state.current]}
           mode="horizontal"
         >
-          <Menu.Item key={ROW_HEADER_UPDATE.key}>
-            {ROW_HEADER_UPDATE.desc}
-          </Menu.Item>
-          <Menu.Item key={ROW_HEADER_INFO_BOX.key}>
-            {ROW_HEADER_INFO_BOX.desc}
-          </Menu.Item>
-          <Menu.Item key={ROW_HEADER_ACTIVITY_LOG.key}>
-            {ROW_HEADER_ACTIVITY_LOG.desc}
-          </Menu.Item>
-          <Menu.Item key={ROW_HEADER_EDITOR.key}>
-            {ROW_HEADER_EDITOR.desc}
-          </Menu.Item>
+          <Menu.Item key={ROW_HEADER_UPDATE.key}>{ROW_HEADER_UPDATE.desc}</Menu.Item>
+          {/* <Menu.Item key={ROW_HEADER_INFO_BOX.key}>{ROW_HEADER_INFO_BOX.desc}</Menu.Item>
+          <Menu.Item key={ROW_HEADER_ACTIVITY_LOG.key}>{ROW_HEADER_ACTIVITY_LOG.desc}</Menu.Item>
+          <Menu.Item key={ROW_HEADER_EDITOR.key}>{ROW_HEADER_EDITOR.desc}</Menu.Item> */}
         </Menu>
         {this.getMenuContent(this.state.current)}
       </SlideDrawer>
