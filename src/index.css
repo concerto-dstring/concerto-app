@@ -1,8 +1,16 @@
+@font-face {
+  font-family: 'Roboto';
+  src: url('roboto/Roboto-Regular.ttf') format('truetype');
+       /* font-weight: bold; */
+       font-size: 13px !important;
+  }
 body {
   margin: 0;
-  font-family: "Microsoft YaHei" !important;
+  font-family: "Roboto" !important;
   /* font-weight:  300; */
   /* letter-spacing: 1.2px; */
+  color:#16191F;
+  font-size: 13px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow: hidden;
@@ -15,7 +23,7 @@ body {
   -ms-user-select: none; /* Internet Explorer/Edge */
 }
 
-code {
+/* code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
-}
+} */

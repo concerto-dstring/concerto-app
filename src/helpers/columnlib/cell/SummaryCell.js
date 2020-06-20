@@ -54,7 +54,7 @@ class SummaryCell extends PureComponent {
       paddingLeft:'15px'
     }
     const title_style = {
-      fontWeight: 'bold'
+      fontWeight: 'nomal'
     }
     const count_style = {
       color:'#cccccc',
@@ -134,7 +134,7 @@ class SummaryCell extends PureComponent {
       summaryCell = (
         <div className="summary_cell" style={expand_style}>
           <div className="summary_cell_status_container">
-              <span style={{fontWeight:'bold',marginLeft:'-7px',width:'200px'}}>{group.name}</span>
+              <span style={{marginLeft:'-7px',width:'200px'}}>{group.name}</span>
             <div style={toatal_style}><span style={title_style}>小计：</span><span style={count_style}>共{group.rows.length}条</span></div>
           </div>
         </div>
