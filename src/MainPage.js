@@ -504,7 +504,14 @@ class MainPage extends React.Component {
           onOk={this.handleReNameBoard}
           destroyOnClose={true}
         >
-          <Input size="middle" allowClear={true} onPressEnter={this.handleReNameBoard} ref={this.reNameBoardRef} />
+          <Input 
+            size="middle"
+            ref={this.reNameBoardRef}  
+            allowClear={true} 
+            onPressEnter={this.handleReNameBoard}
+            defaultValue={boardName}
+            autoFocus={true}
+          />
         </Modal>
         <Modal
           title={
