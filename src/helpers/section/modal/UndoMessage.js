@@ -8,6 +8,7 @@ import {connect} from 'react-redux';
 import {dealRowMoveModal} from '../../../maintable/actions/rowActions';
 import {dealSectionUndoDeleteMessage} from '../../../maintable/actions/SectionActions';
 import {mapRowActionStateToProps} from '../../../maintable/data/mapStateToProps';
+import TooltipMsg from '../../../TooltipMsg';
 
 let intervalTimer;
 
@@ -99,14 +100,14 @@ class UndoMessage extends PureComponent {
     return (
       <div className="undo_message" style={{display: this.state.isShowUndoModal ? DISPLAY.BLOCK : DISPLAY.NONE}}>
         <div className="undo_message_content">
-          <span style={{margin: '10px 0px'}}>&emsp;&emsp;{this.props.isSection ? '删除成功' : '移动成功'}</span>
+          <span style={{margin: '10px 0px'}}>&emsp;&emsp;{this.props.isSection ? TooltipMsg.delete_success : TooltipMsg.move_success}</span>
           <Button
             shape="round"
             type="primary"
             style={{margin: '10px 10px 10px 110px', width: 92, backgroundColor: COLOR.UNDO, borderColor: COLOR.WHITE}}
             onClick={this.cancelAction}
           >
-            <span>撤 销&emsp;</span>
+            <span>{TooltipMsg.undo_text}&emsp;</span>
             <span style={{width: 12}}>{this.state.countdown}</span>
           </Button>
           <Button

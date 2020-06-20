@@ -7,6 +7,7 @@ import {dealSectionDeleteModal, dealSectionUndoDeleteMessage} from '../../../mai
 import {mapRowActionStateToProps} from '../../../maintable/data/mapStateToProps';
 
 import '../../../maintable/css/style/SectionMenu.less';
+import TooltipMsg from '../../../TooltipMsg';
 
 @connect(mapRowActionStateToProps, {dealRowDeleteModal, dealSectionDeleteModal, dealSectionUndoDeleteMessage})
 class DeleteModal extends PureComponent {
@@ -49,9 +50,10 @@ class DeleteModal extends PureComponent {
 
   getModalTitle = (isSection, group) => {
     if (isSection) {
-      return '是否删除 ' + group.name + ' 分区?';
+      let msg = TooltipMsg.is_delete_group.replace('@param', group.name);
+      return  msg;
     } else {
-      return '是否删除行?';
+      return TooltipMsg.is_delete_row;
     }
   };
 
@@ -65,7 +67,7 @@ class DeleteModal extends PureComponent {
         onCancel={this.handleCancelClick.bind(this, isSection)}
         onOk={this.handleOKClick}
       >
-        <span>删除后可以从回收站恢复</span>
+        <span>{TooltipMsg.delete_tip}</span>
       </Modal>
     );
   }

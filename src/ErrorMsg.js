@@ -18,4 +18,5 @@ export default {
   user_not_validate: '该用户还未验证,请在下面输入邮箱中的验证码',
   validate_code_send: '验证码已发送至您的邮箱',
   validate_code_resend: '验证码已重新发送至您的邮箱',
+  board_name_is_empty: '工作板名称不能为空',
 };
