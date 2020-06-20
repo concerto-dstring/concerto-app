@@ -7,7 +7,6 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  *
  * @providesModule FixedDataTableBufferedRows
- * @typechecks
  */
 import FixedDataTableRow from './FixedDataTableRow';
 import PropTypes from 'prop-types';
@@ -16,6 +15,7 @@ import cx from './vendor_upstream/stubs/cx';
 import emptyFunction from './vendor_upstream/core/emptyFunction';
 import joinClasses from './vendor_upstream/core/joinClasses';
 import inRange from 'lodash/inRange';
+import MainTableSectionGroupBar from './MainTableSectionGroupBar';
 import MainTableAddRow from './MainTableAddRow';
 import MainTableTitleRow from './MainTableTitleRow';
 import { RowType, getSubLevel } from './data/MainTableType';
@@ -102,13 +102,12 @@ class FixedDataTableBufferedRows extends React.Component {
       pointerEvents: 'none',
     };
     
-    return <div><div>{this._staticRowArray}</div><div style={layerStyle} ref={this._onRef}/></div>;
+    return <div><div>{this._staticRowArray}</div><div className='popup_container' style={layerStyle} ref={this._onRef}/></div>;
   }
 
   _onRef = (div) => {
     this._divRef = div;
   }
-
 
   /**
    * type header, footer, row 
@@ -139,6 +138,7 @@ class FixedDataTableBufferedRows extends React.Component {
       onColumnResize,
       onCellEdit,
       onCellEditEnd,
+      onCellFocus,
       touchScrollEnabled,
       fixedColumns,
       fixedRightColumns,
@@ -186,12 +186,43 @@ class FixedDataTableBufferedRows extends React.Component {
 
     if (rowProps.height > 0) {
       switch(type) {
+        case RowType.SECTIONGROUP:
+          row =
+            <MainTableSectionGroupBar
+              key={key}
+              index={rowIndex}
+              zIndex={1}
+              type={RowType.SECTIONGROUP}
+              ariaRowIndex={ariaAddRowIndex}
+              isScrolling={props.isScrolling}
+              isRowReordering={props.isRowReordering}
+              rowReorderingData={props.rowReorderingData}
+              height={addRowHeight}
+              width={props.width}
+              isRowReordering={props.isRowReordering}
+              rowReorderingData={props.rowReorderingData}
+              offsetTop={rowProps.offsetTop}
+              scrollLeft={Math.round(props.scrollLeft)}
+              fixedColumns={fixedColumns.cell}
+              fixedRightColumns={fixedRightColumns.cell}
+              scrollableColumns={scrollableColumns.cell}
+              showScrollbarY={scrollEnabledY}
+              isRTL={props.isRTL}
+              container={this._divRef}
+              data={props.data}
+              visible={visible}
+              onCellEdit={props.onCellEdit}
+              onCellEditEnd={props.onCellEditEnd}
+            >
+            </MainTableSectionGroupBar>
+            break;
           case RowType.TITLE:
             row = 
             <MainTableTitleRow
               key={key}
               title={props.title}
               index={rowIndex}
+              type={RowType.TITLE}
               zIndex={1}
               isHeaderOrFooter={true}
               ariaRowIndex={ariaAddRowIndex}
@@ -204,7 +235,11 @@ class FixedDataTableBufferedRows extends React.Component {
               visible={visible} 
               onFilter={props.onFilterChange}
               onGetListUsers={props.onGetListUsers}
-              onAddNewGroup={props.onAddNewGroup}            
+              boardColor={props.boardColor}
+              onAddNewGroup={props.onAddNewGroup}
+              onCellEdit={props.onCellEdit}
+              onCellEditEnd={props.onCellEditEnd} 
+              onCellFocus={onCellFocus}           
             />;
             break;
           case RowType.HEADER:
@@ -212,6 +247,7 @@ class FixedDataTableBufferedRows extends React.Component {
               <FixedDataTableRow
                 key={key}
                 index={rowIndex}
+                type={RowType.HEADER}
                 ariaRowIndex={ariaHeaderIndex}
                 isHeaderOrFooter={true}
                 isScrolling={props.isScrolling}
@@ -252,6 +288,7 @@ class FixedDataTableBufferedRows extends React.Component {
               key={key}
               index={rowIndex}
               zIndex={1}
+              type={RowType.ADDROW}
               ariaRowIndex={ariaAddRowIndex}
               isScrolling={props.isScrolling}
               isRowReordering={props.isRowReordering}
@@ -280,6 +317,7 @@ class FixedDataTableBufferedRows extends React.Component {
                 key={key}
                 index={rowIndex}
                 zIndex={0}
+                type={RowType.FOOTER}
                 ariaRowIndex={ariaFooterIndex}
                 isHeaderOrFooter={false}
                 isTableFooter={true}
@@ -326,6 +364,7 @@ class FixedDataTableBufferedRows extends React.Component {
                 rowReorderingData={props.rowReorderingData}
                 onCellEdit={onCellEdit}
                 onCellEditEnd={onCellEditEnd}
+                onCellFocus={onCellFocus}
                 onContextMenu={props.onRowContextMenu}
                 onDoubleClick={props.onRowDoubleClick}
                 onMouseDown={props.onRowMouseDown}

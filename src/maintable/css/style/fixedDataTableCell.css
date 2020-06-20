@@ -14,7 +14,8 @@
  */
 .public_fixedDataTableCell_main {
   background-color: #fff;
-  border-color: #d3d3d3;
+  border-bottom-color: #f2f3f3 !important;
+  border-right-color: #fafafa !important;
 }
 .public_fixedDataTableCell_main:hover  .sc-AxiKw{
   border:dashed rgb(168, 164, 164) 1px;

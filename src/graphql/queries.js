@@ -227,6 +227,7 @@ export const getUser = /* GraphQL */ `
           creatorID
           createdAt
           deleteFlag
+          color
         }
         nextToken
       }
@@ -419,6 +420,7 @@ export const getBoard = /* GraphQL */ `
           collpse
           deleteFlag
           rank
+          summaryRule
         }
         nextToken
       }
@@ -463,6 +465,7 @@ export const getBoard = /* GraphQL */ `
       }
       createdAt
       deleteFlag
+      color
     }
   }
 `;
@@ -526,6 +529,7 @@ export const listBoards = /* GraphQL */ `
         }
         createdAt
         deleteFlag
+        color
       }
       nextToken
     }
@@ -564,6 +568,7 @@ export const getGroup = /* GraphQL */ `
         }
         createdAt
         deleteFlag
+        color
       }
       rows {
         items {
@@ -633,6 +638,7 @@ export const listGroups = /* GraphQL */ `
           creatorID
           createdAt
           deleteFlag
+          color
         }
         rows {
           nextToken
@@ -675,6 +681,7 @@ export const getRow = /* GraphQL */ `
           creatorID
           createdAt
           deleteFlag
+          color
         }
         rows {
           nextToken
@@ -839,6 +846,7 @@ export const getColumn = /* GraphQL */ `
           collpse
           deleteFlag
           rank
+          summaryRule
         }
         nextToken
       }
@@ -1371,6 +1379,7 @@ export const getNotification = /* GraphQL */ `
         }
         createdAt
         deleteFlag
+        color
       }
       groupID
       group {
@@ -1383,6 +1392,7 @@ export const getNotification = /* GraphQL */ `
           creatorID
           createdAt
           deleteFlag
+          color
         }
         rows {
           nextToken
@@ -1531,6 +1541,7 @@ export const listNotifications = /* GraphQL */ `
           creatorID
           createdAt
           deleteFlag
+          color
         }
         groupID
         group {

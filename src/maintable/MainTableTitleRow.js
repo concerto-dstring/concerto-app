@@ -2,22 +2,21 @@
 
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Layout, Input, Avatar, Space, Select} from 'antd';
-import { Button } from 'semantic-ui-react';
-import { getPeople } from '../helpers/section/modal/PeopleName';
+import {Layout, Input, Avatar, Space, Select} from 'antd';
+import {Button} from 'semantic-ui-react';
 import filterIcon from './helper/filterIcon.svg';
 
 import FixedDataTableTranslateDOMPosition from './FixedDataTableTranslateDOMPosition';
 
 import './MainTableTitleRow.less';
 import './css/style/Board.less';
-import { getRandomColor } from '../helpers/section/header/SectionColor';
-import { 
-    SearchOutlined,
-    ShareAltOutlined,
-    DownOutlined,
-    EyeInvisibleOutlined,
-    DoubleRightOutlined
+import {getRandomColor} from '../helpers/section/header/SectionColor';
+import {
+  SearchOutlined,
+  ShareAltOutlined,
+  CaretDownOutlined,
+  EyeInvisibleOutlined,
+  DoubleRightOutlined,
 } from '@ant-design/icons';
 
 /**
@@ -26,11 +25,8 @@ import {
  * only <FixedDataTable /> should use the component internally.
  */
 
-
 class MainTableTitleRow extends React.Component {
-
   static propTypes = {
-
     className: PropTypes.string,
 
     /**
@@ -71,7 +67,7 @@ class MainTableTitleRow extends React.Component {
     /**
      * user list
      */
-    onGetListUsers: PropTypes.func, 
+    onGetListUsers: PropTypes.func,
 
     /**
      * Whether the grid should be in RTL mode
@@ -82,7 +78,19 @@ class MainTableTitleRow extends React.Component {
      * DOM attributes to be applied to the row.
      */
     attributes: PropTypes.object,
+
+    /**
+     * boardColor
+     */
+    boardColor: PropTypes.string,
   };
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      users: this.props.onGetListUsers(),
+    };
+  }
 
   componentWillMount() {
     this._initialRender = true;
@@ -90,7 +98,7 @@ class MainTableTitleRow extends React.Component {
     this._onFilterTableData = this._onFilterTableData.bind(this);
     this._onFilterByPeople = this._onFilterByPeople.bind(this);
 
-    this.setState({newItem:''});
+    this.setState({newItem: ''});
   }
 
   componentDidMount() {
@@ -100,15 +108,15 @@ class MainTableTitleRow extends React.Component {
   getBodyContent = () => {
     return (
       <>
-          <div className="body_content_title_row">
-            <div className="body_content_title">
-              <h1>
-                {/* <DoubleRightOutlined style={{fontSize:'16px'}}/>&nbsp;&nbsp; */}
-                <div className="item_color" style={{background:getRandomColor()}}></div>
-                {this.props.title}
-              </h1>
-            </div>
-            {/* <div className="body_content_title_right">
+        <div className="body_content_title_row">
+          <div className="body_content_title">
+            <h1>
+              {/* <DoubleRightOutlined style={{fontSize:'16px'}}/>&nbsp;&nbsp; */}
+              <div className="item_color" style={{background: this.props.boardColor}}></div>
+              {this.props.title}
+            </h1>
+          </div>
+          {/* <div className="body_content_title_right">
               <div className="body_content_title_right_item">
                 <span className="body_content_title_right_label">
                   最后更新时间:&nbsp;
@@ -151,106 +159,119 @@ class MainTableTitleRow extends React.Component {
                 </span>
               </div> 
             </div> */}
-          </div>
-          {/* <div className="body_content_title_desc">
+        </div>
+        {/* <div className="body_content_title_desc">
             相关具体的描述
           </div> */}
       </>
-    )
+    );
+  };
+
+  /**
+   * 查询/过滤数据
+   */
+  _onFilterTableData(event) {
+    if (this.props.onFilter) {
+      this.props.onFilter(event.target.value.trim(), null);
+    }
   }
 
-/**
- * 查询/过滤数据
- */
-_onFilterTableData (event) {
+  /**
+   * 根据人员过滤数据
+   */
+  _onFilterByPeople(value) {
     if (this.props.onFilter) {
-        this.props.onFilter(event.target.value.trim(), null);
+      this.props.onFilter(value, 'PEOPLE');
     }
-}
+  }
 
-/**
- * 根据人员过滤数据 
- */
-_onFilterByPeople (value) {
-    if (this.props.onFilter) {
-        this.props.onFilter(value, 'PEOPLE');
-    }
-}
-
-_onAddNewGroup() {
+  _onAddNewGroup() {
     if (this.props.onAddNewGroup) {
-        this.props.onAddNewGroup();
+      this.props.onAddNewGroup();
     }
-}
+  }
 
-render() /*object*/ {
+  handleSearchUser = (input, option) => {
+    return option.children[2].toLowerCase().indexOf(input.toLowerCase()) >= 0
+  };
 
-    const { offsetTop, zIndex, visible, height} = this.props;
+  handleVisibleChange = (visible) => {
+    if (visible) {
+      this.props.onCellEdit(-1, "");
+    } else {
+      this.props.onCellEditEnd(-1, "");
+    }
+  };
+  
+
+  render() /*object*/ {
+    const {offsetTop, zIndex, visible, height} = this.props;
 
     var style = {
       height: height,
-      zIndex: (zIndex ? zIndex : 0),
-      display: (visible ? 'block' : 'none'),
+      zIndex: zIndex ? zIndex : 0,
+      display: visible ? 'block' : 'none',
+    };
+
+    const handleCellEnter = () => {
+      if (this.props.onCellFocus) {
+        this.props.onCellFocus(-1, "", true);
+      }
+    };
+  
+    const handleCellLeave = () => {
+      if (this.props.onCellFocus) {
+        this.props.onCellFocus(-1, "", false);
+      }
     };
 
     FixedDataTableTranslateDOMPosition(style, 0, offsetTop, this._initialRender, this.props.isRTL);
 
     return (
-        <div style={style}>
-            <Layout style={{backgroundColor: '#FFFFFF'}}>
-            {
-                this.getBodyContent()
-            }
-             <div className="main_table_add_btn_row">
-              <Space size="middle">
-                <div id="addGroupBtn">
-                  <Button
-                    onClick={this._onAddNewGroup}
-                    className="main_table_add_btn"
-                  >
-                    <div className="main_table_btn_layout">
-                      <span style={{}}>
-                        + 工作项
-                      </span>
-                      <div className="main_table_add_btn_separator" />
-                      <div>
-                        <DownOutlined />
-                      </div>
+      <div style={style}>
+        <Layout style={{backgroundColor: '#FFFFFF'}}>
+          {this.getBodyContent()}
+          <div className="main_table_add_btn_row">
+            <Space size="middle">
+              <div id="addGroupBtn">
+                <Button onClick={this._onAddNewGroup} className="main_table_add_btn">
+                  <div className="main_table_btn_layout">
+                    <span style={{}}>+ &nbsp;工作项</span>
+                    <div className="main_table_add_btn_separator" />
+                    <div>
+                      <CaretDownOutlined />
                     </div>
-                  </Button>
-                </div>
-                <div>
-                  <Select 
-                    className="main_table_select_user"
-                    placeholder="按人员分组显示"
-                    showSearch
-                    allowClear
-                    onChange={this._onFilterByPeople}
-                  >
-                    {
-                      this.props.onGetListUsers().map(user => {
-                        return (
-                          <Select.Option
-                            key={user.id} 
-                            value={user.username}
-                          >
-                            <Avatar
-                              size={20} 
-                              style={{background: user.faceColor}}
-                            >
-                              {user.fname}
-                            </Avatar>
-                            &emsp;
-                            {
-                              user.lname + user.fname
-                            }
-                          </Select.Option>
-                        )
-                      })
-                    }
-                  </Select>
-                </div>
-                {/* <div>
+                  </div>
+                </Button>
+              </div>
+              <div>
+                <Select
+                  className="main_table_select_user"
+                  placeholder="按人名筛选"
+                  showSearch
+                  dropdownStyle={{pointerEvents: 'visible'}}
+                  onDropdownVisibleChange={this.handleVisibleChange}
+                  allowClear
+                  filterOption={this.handleSearchUser}
+                  getPopupContainer={() => this.props.container}
+                  onChange={this._onFilterByPeople}
+                  onMouseEnter={handleCellEnter}
+                  onMouseLeave={handleCellLeave}
+                >
+                  {this.state.users.map((user) => {
+                    return (
+                      <Select.Option key={user.id} value={user.username}>
+                        <Avatar size={20} style={{background: user.faceColor}}>
+                          {user.fname}
+                        </Avatar>
+                        &emsp;
+                        {!user.lname && !user.fname ? user.username : user.lname + user.fname}
+                      </Select.Option>
+                    );
+                  })}
+                </Select>
+              </div>
+              {/* <div>
                   <Button className="main_table_filter_btn">
                     <div className="main_table_btn_layout">
                       <img src={filterIcon} />&nbsp;
@@ -260,19 +281,19 @@ render() /*object*/ {
                 <div>
                   <EyeInvisibleOutlined className="main_table_eye" />
                 </div> */}
-              </Space>
-              <div className="main_table_search_input">
-                <Input
-                  prefix={<SearchOutlined />}
-                  placeholder="搜索工作板内容"
-                  onChange={this._onFilterTableData}
-                  style={{borderRadius:'15px', width: 240}}
-                />
-              </div>
+            </Space>
+            <div className="main_table_search_input">
+              <Input
+                prefix={<SearchOutlined />}
+                placeholder="搜索/过滤"
+                onChange={this._onFilterTableData}
+                style={{borderRadius: '5px', width: 240,border:'1px solid #f2f3f3'}}
+              />
             </div>
-            </Layout>           
-        </div>
-    )
+          </div>
+        </Layout>
+      </div>
+    );
   }
 }
 

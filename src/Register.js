@@ -1,19 +1,19 @@
-import React, { PureComponent, createRef } from 'react'
-import { Input, Button, Spin } from 'antd'
-import { Auth } from 'aws-amplify'
-import ErrorMsg from './ErrorMsg'
-import './Register.less'
+import React, {PureComponent, createRef} from 'react';
+import {Input, Button, Spin, message} from 'antd';
+import {Auth} from 'aws-amplify';
+import ErrorMsg from './ErrorMsg';
+import './Register.less';
 
-import { withRouter, Link } from 'react-router-dom'
-import { checkStrWithUserName, checkStrWithPassword, checkStrWithEmail, checkStrWithPhone } from './CheckFunction'
+import {withRouter, Link} from 'react-router-dom';
+import {checkStrWithUserName, checkStrWithPassword, checkStrWithEmail, checkStrWithPhone} from './CheckFunction';
 
-const defaultColor = '#1890ff'
-const errorColor = '#f5222d'
+const defaultColor = '#1890ff';
+const errorColor = '#f5222d';
 
 @withRouter
 class Register extends PureComponent {
   constructor() {
-    super()
+    super();
 
     this.state = {
       isLoading: false,
@@ -32,7 +32,7 @@ class Register extends PureComponent {
       // phoneBorderColor: defaultColor,
       // phoneErrorMsg: '',
       // phone: null
-    }
+    };
   }
 
   componentDidMount() {
@@ -45,42 +45,42 @@ class Register extends PureComponent {
 
   registerUserByKey = (e) => {
     if (e.key === 'Enter') {
-      this.registerUser()
+      this.registerUser();
     }
-  }
+  };
 
-  registerUser = async() => {
+  registerUser = async () => {
     // const { userName, password, confirmPassword, email, phone } = this.state
-    const { userName, password, confirmPassword, email } = this.state
-    
+    const {userName, password, confirmPassword, email} = this.state;
+
     // if (!userName || !password || !confirmPassword || !email || !phone) {
     if (!userName || !password || !confirmPassword || !email) {
       if (!userName) {
         this.setState({
           userNameBorderColor: errorColor,
-          userNameErrorMsg: ErrorMsg.userName_is_empty
-        })
+          userNameErrorMsg: ErrorMsg.userName_is_empty,
+        });
       }
 
       if (!password) {
         this.setState({
           passwordBorderColor: errorColor,
-          passwordErrorMsg: ErrorMsg.password_is_empty
-        })
+          passwordErrorMsg: ErrorMsg.password_is_empty,
+        });
       }
 
       if (!confirmPassword) {
         this.setState({
           confirmPasswordBorderColor: errorColor,
-          confirmPasswordErrorMsg: ErrorMsg.confirm_password_is_empty
-        })
+          confirmPasswordErrorMsg: ErrorMsg.confirm_password_is_empty,
+        });
       }
 
       if (!email) {
         this.setState({
           emailBorderColor: errorColor,
-          emailErrorMsg: ErrorMsg.email_is_empty
-        })
+          emailErrorMsg: ErrorMsg.email_is_empty,
+        });
       }
 
       // if (!phone) {
@@ -89,148 +89,146 @@ class Register extends PureComponent {
       //     phoneErrorMsg: ErrorMsg.phone_is_empty
       //   })
       // }
-    }
-    else {
+    } else {
       this.setState({
-        isLoading: true
-      })
+        isLoading: true,
+      });
       try {
         const user = await Auth.signUp({
           username: userName,
           password,
           attributes: {
-              email,          // optional
-              // phone_number: '+86-1234567',   // optional - E.164 number convention
-              // other custom attributes 
-          }
-        })
+            email, // optional
+            // phone_number: '+86-1234567',   // optional - E.164 number convention
+            // other custom attributes
+          },
+        });
+        message.info(ErrorMsg.validate_code_send);
         this.props.history.push({
           pathname: '/register/validate',
-          state: { userName }
-        })
+          state: {userName},
+        });
       } catch (error) {
         if (error.code === 'UsernameExistsException') {
           this.setState({
             isLoading: false,
             userNameBorderColor: errorColor,
             userNameErrorMsg: ErrorMsg.user_exist,
-          })
-        }
-        else if (error.code === 'NotAuthorizedException') {
+          });
+        } else if (error.code === 'NotAuthorizedException') {
           this.setState({
             isLoading: false,
             passwordBorderColor: errorColor,
-            passwordErrorMsg: ErrorMsg.password_error
-          })
-        }
-        else {
-          console.log(error)
+            passwordErrorMsg: ErrorMsg.password_error,
+          });
+        } else {
+          console.log(error);
           this.setState({
             isLoading: false,
-          })
+          });
         }
       }
     }
-  }
+  };
 
   handleUserNameChange = (e) => {
-    let userName = e.target.value
+    let userName = e.target.value;
     if (checkStrWithUserName(userName)) {
       this.setState({
         userNameBorderColor: defaultColor,
         userNameErrorMsg: '',
-        userName
-      })
-    }
-    else {
+        userName,
+      });
+    } else {
       this.setState({
         userNameBorderColor: errorColor,
         userNameErrorMsg: ErrorMsg.userName_rule,
-        userName
-      })
+        userName,
+      });
     }
-  }
+  };
 
   handlePasswordChange = (e) => {
-    let password = e.target.value
+    let password = e.target.value;
     if (checkStrWithPassword(password)) {
       this.setState({
         passwordBorderColor: defaultColor,
         passwordErrorMsg: '',
-        password
-      })
-    }
-    else {
+        password,
+      });
+    } else {
       this.setState({
         passwordBorderColor: errorColor,
         passwordErrorMsg: ErrorMsg.password_rule,
-        password
-      })
+        password,
+      });
     }
-  }
+  };
 
   handleConfirmPasswordChange = (e) => {
-    let confirmPassword = e.target.value
+    let confirmPassword = e.target.value;
     if (confirmPassword === this.state.password) {
       this.setState({
         confirmPasswordBorderColor: defaultColor,
         confirmPasswordErrorMsg: '',
-        confirmPassword
-      })
-    }
-    else {
+        confirmPassword,
+      });
+    } else {
       this.setState({
         confirmPasswordBorderColor: errorColor,
         confirmPasswordErrorMsg: ErrorMsg.confirm_password_error,
-        confirmPassword
-      })
+        confirmPassword,
+      });
     }
-  }
+  };
 
   handleEmailChange = (e) => {
-    let email = e.target.value
+    let email = e.target.value;
     if (checkStrWithEmail(email)) {
       this.setState({
         emailBorderColor: defaultColor,
         emailErrorMsg: '',
-        email
-      })
-    }
-    else {
+        email,
+      });
+    } else {
       this.setState({
         emailBorderColor: errorColor,
         emailErrorMsg: ErrorMsg.email_error,
-        email
-      })
+        email,
+      });
     }
-  }
+  };
 
   handlePhoneChange = (e) => {
-    let phone = e.target.value
+    let phone = e.target.value;
     if (checkStrWithPhone(phone)) {
       this.setState({
         phoneBorderColor: defaultColor,
         phoneErrorMsg: '',
-        phone
-      })
-    }
-    else {
+        phone,
+      });
+    } else {
       this.setState({
         phoneBorderColor: errorColor,
         phoneErrorMsg: ErrorMsg.phone_error,
-        phone
-      })
+        phone,
+      });
     }
-  }
+  };
 
   render() {
-    const { isLoading, 
-      userNameBorderColor, userNameErrorMsg, 
-      passwordBorderColor, passwordErrorMsg,
-      confirmPasswordBorderColor, confirmPasswordErrorMsg,
-      emailBorderColor, emailErrorMsg,
+    const {
+      isLoading,
+      userNameBorderColor,
+      userNameErrorMsg,
+      passwordBorderColor,
+      passwordErrorMsg,
+      confirmPasswordBorderColor,
+      confirmPasswordErrorMsg,
+      emailBorderColor,
+      emailErrorMsg,
       // phoneBorderColor, phoneErrorMsg
-     } = this.state
+    } = this.state;
 
     return (
       <div className="register_layout">
@@ -240,10 +238,12 @@ class Register extends PureComponent {
           </div>
           <div className="register_body_component">
             <div className="register_item">
-              <span className="register_label"><span className="register_required">*</span> 用户名：</span>
+              <span className="register_label">
+                <span className="register_required">*</span> 用户名：
+              </span>
               <Input
                 style={{borderColor: userNameBorderColor}}
-                placeholder='请输入用户名'
+                placeholder="请输入用户名"
                 onChange={this.handleUserNameChange}
               />
             </div>
@@ -251,10 +251,12 @@ class Register extends PureComponent {
               <span className="register_error_message">{userNameErrorMsg}</span>
             </div>
             <div className="register_item">
-              <span className="register_label"><span className="register_required">*</span> 密码：</span>
-              <Input.Password 
-                style={{borderColor: passwordBorderColor}} 
-                placeholder='请输入密码'
+              <span className="register_label">
+                <span className="register_required">*</span> 密码：
+              </span>
+              <Input.Password
+                style={{borderColor: passwordBorderColor}}
+                placeholder="请输入密码"
                 onChange={this.handlePasswordChange}
               />
             </div>
@@ -262,10 +264,12 @@ class Register extends PureComponent {
               <span className="register_error_message">{passwordErrorMsg}</span>
             </div>
             <div className="register_item">
-              <span className="register_label"><span className="register_required">*</span> 确认密码：</span>
-              <Input.Password 
-                style={{borderColor: confirmPasswordBorderColor}} 
-                placeholder='请确认密码'
+              <span className="register_label">
+                <span className="register_required">*</span> 确认密码：
+              </span>
+              <Input.Password
+                style={{borderColor: confirmPasswordBorderColor}}
+                placeholder="请确认密码"
                 onChange={this.handleConfirmPasswordChange}
               />
             </div>
@@ -273,10 +277,12 @@ class Register extends PureComponent {
               <span className="register_error_message">{confirmPasswordErrorMsg}</span>
             </div>
             <div className="register_item">
-              <span className="register_label"><span className="register_required">*</span> 邮箱地址：</span>
+              <span className="register_label">
+                <span className="register_required">*</span> 邮箱地址：
+              </span>
               <Input
-                style={{borderColor: emailBorderColor}} 
-                placeholder='请输入邮箱地址'
+                style={{borderColor: emailBorderColor}}
+                placeholder="请输入邮箱地址"
                 onChange={this.handleEmailChange}
               />
             </div>
@@ -296,13 +302,11 @@ class Register extends PureComponent {
             </div> */}
             <br />
             <div className="register_register_item">
-              <div className="register_link_left"><Link to="/login">登&emsp;录</Link></div>
+              <div className="register_link_left">
+                <Link to="/login">登&emsp;录</Link>
+              </div>
               <div className="register_link_right">
-                <Button
-                  type='primary'
-                  style={{width: 120}}
-                  onClick={this.registerUser}
-                >
+                <Button type="primary" style={{width: 120}} onClick={this.registerUser}>
                   注&emsp;&emsp;册
                 </Button>
               </div>

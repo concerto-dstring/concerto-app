@@ -161,6 +161,7 @@ class FixedDataTableCellGroupImpl extends React.Component {
         onColumnReorder={this.props.onColumnReorder}
         onColumnReorderMove={this.props.onColumnReorderMove}
         onColumnReorderEnd={this.props.onColumnReorderEnd}
+        onCellFocus={this.props.onCellFocus}
         onCellEdit={this.props.onCellEdit}
         onCellEditEnd={this.props.onCellEditEnd}
         isColumnReordering={isColumnReordering}
@@ -185,22 +186,22 @@ class FixedDataTableCellGroup extends React.Component {
    * down the FixedDataTable hugely in DEV mode. You can enable them back for
    * development, but please don't commit this component with enabled propTypes.
    */
-  static propTypes_DISABLED_FOR_PERFORMANCE = {
-    isScrolling: PropTypes.bool,
-    /**
-     * Height of the row.
-     */
-    height: PropTypes.number.isRequired,
+  // static propTypes_DISABLED_FOR_PERFORMANCE = {
+  //   isScrolling: PropTypes.bool,
+  //   /**
+  //    * Height of the row.
+  //    */
+  //   height: PropTypes.number.isRequired,
 
-    offsetLeft: PropTypes.number,
+  //   offsetLeft: PropTypes.number,
 
-    left: PropTypes.number,
-    /**
-     * Z-index on which the row will be displayed. Used e.g. for keeping
-     * header and footer in front of other rows.
-     */
-    zIndex: PropTypes.number.isRequired,
-  }
+  //   left: PropTypes.number,
+  //   /**
+  //    * Z-index on which the row will be displayed. Used e.g. for keeping
+  //    * header and footer in front of other rows.
+  //    */
+  //   zIndex: PropTypes.number.isRequired,
+  // }
 
   shouldComponentUpdate(/*object*/ nextProps) /*boolean*/ {
     return (
@@ -230,32 +231,19 @@ class FixedDataTableCellGroup extends React.Component {
     }
 
     var onColumnResize = props.onColumnResize ? this._onColumnResize : null;
-
+ 
     let group = this.props.data.getGroupByRowIndex(this.props.rowIndex)
     let columns = this.props.columns
-    if (columns && group.isCollapsed && columns.findIndex(column => column.template.name === 'DropDownHeader') < 0) {
-      style.width = Math.floor(style.width)
-      style.top = 7.2
-      return (
-        <div
-          style={style}
-          className={cx('fixedDataTableCellGroupLayout/cellGroupWrapper')}>
-            <a style={{marginLeft: 10, whiteSpace: 'nowrap'}}>{group.rows.length + ' Items'}</a>
-        </div>
-      );
-    }
-    else {
-      return (
-        <div
-          style={style}
-          className={cx('fixedDataTableCellGroupLayout/cellGroupWrapper')}>
-          <FixedDataTableCellGroupImpl
-            {...props}
-            onColumnResize={onColumnResize}
-          />
-        </div>
-      );
-    }
+    return (
+      <div
+        style={style}
+        className={cx('fixedDataTableCellGroupLayout/cellGroupWrapper')}>
+        <FixedDataTableCellGroupImpl
+          {...props}
+          onColumnResize={onColumnResize}
+        />
+      </div>
+    );
   }
 
   _onColumnResize = (

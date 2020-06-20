@@ -20,14 +20,11 @@ import Scrollbar from './Scrollbar';
 import cx from './vendor_upstream/stubs/cx';
 import joinClasses from './vendor_upstream/core/joinClasses';
 import { sumPropWidths } from './helper/widthHelper';
-import { compareSubLevel, getLeafRowIndex, getSubLevel } from './data/MainTableType';
-
+import { getLeafRowIndex, getSubLevel, RowType } from './data/MainTableType';
 
 import './css/layout/fixedDataTableRowLayout.css';
 import './css/style/fixedDataTableRow.css';
 import './css/style/fixedDataTable.css';
-
-
 
 // .fixedDataTableLayout/header border-bottom-width
 var HEADER_BORDER_BOTTOM_WIDTH = 1;
@@ -226,13 +223,7 @@ class FixedDataTableRowImpl extends React.Component {
     var fixedColumnsWidth = sumPropWidths(this.props.fixedColumns);
     var fixedRightColumnsWidth = sumPropWidths(this.props.fixedRightColumns);
     const groupCollapsed = this.props.data.getGroupByRowIndex(this.props.index).isCollapsed
-    let extraWidth
-    if (groupCollapsed) {
-      // 如果分区折叠，设置滚动长度
-      fixedColumnsWidth = (window.innerWidth - this.props.siderWidth - 16) * 0.88
-      extraWidth = (window.innerWidth - this.props.siderWidth - 16) * 0.12
-    }
-    
+    let extraWidth = 60;
     var fixedColumns =
       <FixedDataTableCellGroup
         key="fixed_cells"
@@ -313,6 +304,7 @@ class FixedDataTableRowImpl extends React.Component {
         columnReorderingData={this.props.columnReorderingData}
         onCellEdit={this.props.onCellEdit}
         onCellEditEnd={this.props.onCellEditEnd}
+        onCellFocus={this.props.onCellFocus}
         rowHeight={this.props.height}
         rowIndex={this.props.index}
         isHeaderOrFooter={this.props.isHeaderOrFooter}
@@ -326,7 +318,8 @@ class FixedDataTableRowImpl extends React.Component {
     var rowExpanded = this._getRowExpanded(subRowHeight);
     var rowExpandedStyle = {
       height: subRowHeight,
-      top: this.props.height,
+      top: this.props.height+25,
+      left:30,
       width: this.props.width,
     };
 
@@ -522,6 +515,8 @@ class FixedDataTableRowImpl extends React.Component {
 class FixedDataTableRow extends React.Component {
   static propTypes = {
 
+    type:PropTypes.string,
+
     isScrolling: PropTypes.bool,
 
     /**
@@ -560,7 +555,7 @@ class FixedDataTableRow extends React.Component {
   }
 
   render() /*object*/ {
-    const { offsetTop, scrollTop, zIndex, visible, ...rowProps } = this.props;
+    const { offsetTop, scrollTop, zIndex, visible, type, ...rowProps } = this.props;
     const isMovingRow = this.props.isRowReordering && this.props.rowReorderingData 
                         && this.props.rowReorderingData.oldRowIndex === rowProps.index;
     var style = {
@@ -568,6 +563,7 @@ class FixedDataTableRow extends React.Component {
       height: this.props.height,
       zIndex:  isMovingRow ? 3 : (this.props.zIndex ? this.props.zIndex : 0),
       display: (this.props.visible ? 'block' : 'none'),
+      top:type==RowType.HEADER?'-5px':'0'
     };
     let top = offsetTop;
     if (isMovingRow) {

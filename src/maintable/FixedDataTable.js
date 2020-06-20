@@ -16,6 +16,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import FixedDataTableRow from './FixedDataTableRow';
 import MainTableAddRow from './MainTableAddRow';
+import MainTableSectionGroupBar from './MainTableSectionGroupBar';
 import { events, getPosition } from './helper/utils'
 import FixedDataTableBufferedRows from './FixedDataTableBufferedRows';
 import FixedDataTableEventHelper from './FixedDataTableEventHelper';
@@ -87,8 +88,7 @@ const DRAG_SCROLL_BUFFER = 40;
  *
  * - Scrollable Body Columns: The body columns that move while scrolling
  *   vertically or horizontally.
- */
-class FixedDataTable extends React.Component {
+ */class FixedDataTable extends React.Component {
   // static propTypes = {
 
   //   // TODO (jordan) Remove propType of width without losing documentation (moved to tableSize)
@@ -518,10 +518,10 @@ class FixedDataTable extends React.Component {
   static defaultProps = /*object*/ {
     elementHeights: {
       cellGroupWrapperHeight: undefined,
-      footerHeight: 40,
+      footerHeight: 45,
       groupHeaderHeight: 0,
-      headerHeight: 40,
-      addRowHeight: 35,
+      headerHeight: 32,
+      addRowHeight: 32,
       titleHeight: 0,
     },
     keyboardScrollEnabled: false,
@@ -535,6 +535,7 @@ class FixedDataTable extends React.Component {
     this._onKeyDown = this._onKeyDown.bind(this);
     this._onMouseMove = this._onMouseMove.bind(this);
     this._onMouseUp = this._onMouseUp.bind(this);
+    this._captureClick = this._captureClick.bind(this);
     this._wheelHandler = new ReactWheelHandler(
       this._onScroll,
       this._shouldHandleWheelX,
@@ -581,8 +582,12 @@ class FixedDataTable extends React.Component {
     this.props.touchScrollEnabled && this._shouldHandleWheelY(delta)
 
   _shouldHandleWheelX = (/*number*/ delta) /*boolean*/ => {
-    const { maxScrollX, scrollFlags, scrollX } = this.props;
+    const { maxScrollX, scrollFlags, scrollX, isCellEditing} = this.props;
     const { overflowX } = scrollFlags;
+
+    if (isCellEditing && this._focusCell) {
+      return false;
+    }
 
     if (overflowX === 'hidden') {
       return false;
@@ -600,8 +605,12 @@ class FixedDataTable extends React.Component {
   }
 
   _shouldHandleWheelY = (/*number*/ delta) /*boolean*/ => {
-    const { maxScrollY, scrollFlags, scrollY } = this.props;
+    const { maxScrollY, scrollFlags, scrollY, isCellEditing } = this.props;
     const { overflowY } = scrollFlags;
+
+    if (isCellEditing && this._focusCell) {
+      return false;
+    }
 
     if (overflowY === 'hidden' || delta === 0) {
       return false;
@@ -934,6 +943,7 @@ class FixedDataTable extends React.Component {
     return (
       <FixedDataTableBufferedRows
         title={props.title}
+        boardColor={props.boardColor}
         ariaRowIndexOffset={ariaRowIndexOffset}
         ariaGroupHeaderIndex={ariaGroupHeaderIndex}
         ariaHeaderIndex={ariaHeaderIndex}
@@ -967,6 +977,7 @@ class FixedDataTable extends React.Component {
         onColumnResize={this._onColumnResize}
         onCellEdit={this._onCellEdit}
         onCellEditEnd={this._onCellEditEnd}
+        onCellFocus={this._onCellFocus}
         onRowClick={props.onRowClick}
         onRowContextMenu={props.onRowContextMenu}
         onRowDoubleClick={props.onRowDoubleClick}
@@ -1151,7 +1162,18 @@ class FixedDataTable extends React.Component {
     };
   }
 
-  _onCellEdit = (rowIndex, columnKey) => {
+  _onCellEdit = (rowIndex, columnKey, popupHeight = 0) => {
+    //add additional height
+    if (popupHeight > 0) {
+      const lastRow = this.props.rowSettings.rowsCount - 1;      ;
+      const oldHeight = this.props.rowOffsets[lastRow] + 150;
+      const newHeight = this.props.rowOffsets[rowIndex] + 100 + popupHeight;
+      if (newHeight > oldHeight) {
+          this.props.displayActions.adjustHeight(newHeight - oldHeight);
+      } else {
+        this.props.scrollActions.scrollToY(newHeight);
+      }
+    }
     this.props.cellActions.startCellEdit({rowIndex, columnKey});
   }
 
@@ -1159,6 +1181,15 @@ class FixedDataTable extends React.Component {
     if (this.props.CellEditingData && this.props.CellEditingData.rowIndex === rowIndex 
       && this.props.CellEditingData.columnKey === columnKey) {
       this.props.cellActions.endCellEdit();
+      this.props.displayActions.adjustHeight(0);
+    }
+  }
+
+  _onCellFocus = (rowIndex, columnKey, focused) => {
+    if (this.props.CellEditingData && focused) {
+      this._focusCell = {rowIndex, columnKey};
+    } else {
+      this._focusCell = undefined;
     }
   }
 
@@ -1240,10 +1271,21 @@ class FixedDataTable extends React.Component {
  
   }
 
+  _captureClick(event) {
+    event.stopPropagation(); // Stop the click from being propagated.
+    window.removeEventListener('click', this._captureClick, true); // cleanup
+  }
+
   _onMouseUp(event) {
     this._draggingRowIndex = undefined;
     this._dragging = false;
     if (this.props.isRowReordering) {
+      window.addEventListener(
+        'click',
+        this._captureClick,
+        true // <-- This registeres this listener for the capture
+             //     phase instead of the bubbling phase!
+      ); 
       this.props.rowActions.stopRowReorder();
       if (this.props.rowReorderingData.oldRowIndex !== this.props.rowReorderingData.newRowIndex
          && this.props.onRowReorderEndCallback) {
@@ -1251,9 +1293,10 @@ class FixedDataTable extends React.Component {
           this.props.rowReorderingData.oldRowIndex, 
           this.props.rowReorderingData.newRowIndex);
       };
-      event.preventDefault();
-      event.stopPropagation();
+      // event.preventDefault();
+      // event.stopPropagation();
     }
+
   }
 
   _onScroll = (/*number*/ deltaX, /*number*/ deltaY) => {
@@ -1372,6 +1415,32 @@ class FixedDataTable extends React.Component {
       rowProps.attributes = props.rowSettings.rowAttributesGetter && props.rowSettings.rowAttributesGetter(rowIndex);
       let row;
       switch (type) {
+        case RowType.SECTIONGROUP:
+          row =
+            <MainTableSectionGroupBar
+              key={i}
+              index={indexString}
+              isScrolling={props.isScrolling}
+              isRowReordering={props.isRowReordering}
+              rowReorderingData={props.rowReorderingData}
+              height={rowHeight}
+              width={subwidth}
+              rowReorderingData={props.rowReorderingData}
+              offsetTop={offset}
+              scrollLeft={Math.round(props.scrollX)}
+              fixedColumns={fixedColumns.cell}
+              fixedRightColumns={fixedRightColumns.cell}
+              scrollableColumns={scrollableColumns.cell}
+              showScrollbarY={props.scrollEnabledY}
+              isRTL={props.isRTL}
+              container={this._divRef}
+              data={props.data}
+              visible={true}
+              onCellEdit={this._onCellEdit}
+              onCellEditEnd={this._onCellEditEnd}
+            >
+            </MainTableSectionGroupBar>
+            break;
         case RowType.SUBHEADER:
           row =
             <FixedDataTableRow
@@ -1403,7 +1472,10 @@ class FixedDataTable extends React.Component {
               showScrollbarY={props.scrollEnabledY}
               container={this._divRef}
               data={props.data}
-              isRTL={props.isRTL}>
+              isRTL={props.isRTL}
+              onCellEdit={this._onCellEdit}
+              onCellEditEnd={this._onCellEditEnd}
+            >
             </FixedDataTableRow>
           break;
         case RowType.SUBADDROW:
@@ -1432,6 +1504,7 @@ class FixedDataTable extends React.Component {
           break;
 
         case RowType.SUBFOOTER:
+          break;
           row =
             <FixedDataTableRow
               key={i}
@@ -1458,7 +1531,7 @@ class FixedDataTable extends React.Component {
               data={props.data}
               isRTL={props.isRTL}
             />;
-          break;
+          
 
         default:
           row =
@@ -1480,6 +1553,7 @@ class FixedDataTable extends React.Component {
               rowReorderingData={props.rowReorderingData}
               onCellEdit={this._onCellEdit}
               onCellEditEnd={this._onCellEditEnd}
+              onCellFocus={this._onCellFocus}
               onContextMenu={props.onRowContextMenu}
               onDoubleClick={props.onRowDoubleClick}
               onMouseDown={this._onRowReorderStart}
@@ -1610,6 +1684,7 @@ class HorizontalScrollbar extends React.PureComponent {
       height: Scrollbar.SIZE,
       width: size,
     };
+
     const innerContainerStyle = {
       height: Scrollbar.SIZE,
       overflow: 'hidden',

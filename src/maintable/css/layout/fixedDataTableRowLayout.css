@@ -10,11 +10,12 @@
  */
 
 .fixedDataTableRowLayout_main {
-  background: #ffffff;
+  background: #f2f3f3;
   box-sizing: border-box;
   overflow: hidden;
   position: absolute;
   top: 0;
+  padding-left: 22px;
 }
 
 .fixedDataTableRowLayout_body {
@@ -28,6 +29,8 @@
   box-sizing: border-box;
   left: 0;
   position: absolute;
+  padding:5px !important;
+  background: #f2f3f3 !important;
 }
 
 .fixedDataTableRowLayout_fixedColumnsDivider {

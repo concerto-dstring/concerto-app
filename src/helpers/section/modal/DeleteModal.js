@@ -1,38 +1,35 @@
-import React, { PureComponent } from 'react';
-import { Modal } from 'antd';
+import React, {PureComponent} from 'react';
+import {Modal} from 'antd';
 
-import { connect } from 'react-redux'
-import { dealRowDeleteModal } from '../../../maintable/actions/rowActions'
-import { dealSectionDeleteModal, dealSectionUndoDeleteMessage } from '../../../maintable/actions/SectionActions'
-import { mapRowActionStateToProps } from '../../../maintable/data/mapStateToProps'
+import {connect} from 'react-redux';
+import {dealRowDeleteModal} from '../../../maintable/actions/rowActions';
+import {dealSectionDeleteModal, dealSectionUndoDeleteMessage} from '../../../maintable/actions/SectionActions';
+import {mapRowActionStateToProps} from '../../../maintable/data/mapStateToProps';
 
-import '../../../maintable/css/style/SectionMenu.less'
+import '../../../maintable/css/style/SectionMenu.less';
 
-@connect(mapRowActionStateToProps, { dealRowDeleteModal, dealSectionDeleteModal, dealSectionUndoDeleteMessage })
+@connect(mapRowActionStateToProps, {dealRowDeleteModal, dealSectionDeleteModal, dealSectionUndoDeleteMessage})
 class DeleteModal extends PureComponent {
-
   handleCancelClick = (isSection) => {
     // 关闭弹窗
     if (isSection) {
       this.props.dealSectionDeleteModal({
         isShowDeleteModal: false,
-      })
-    }
-    else {
+      });
+    } else {
       this.props.dealRowDeleteModal({
         isShowDeleteModal: false,
-      })
+      });
     }
-  }
+  };
 
   handleOKClick = () => {
+    const {tableData, rowIndex, isSection, group} = this.props;
 
-    const { tableData, rowIndex, isSection, group } = this.props
-    
     if (isSection) {
       // 删除分区
-      let groupIndex = tableData.removeGroup(group.groupKey)
-      this.handleCancelClick(isSection)
+      let groupIndex = tableData.removeGroup(group.groupKey);
+      this.handleCancelClick(isSection);
 
       // 显示撤销窗口
       this.props.dealSectionUndoDeleteMessage({
@@ -40,32 +37,26 @@ class DeleteModal extends PureComponent {
         groupIndex,
         group,
         isSection,
-        data: tableData
-      }) 
-    }
-    else {
+        data: tableData,
+      });
+    } else {
       // 删除行
-      tableData.removeRow(rowIndex)
+      tableData.removeRow(rowIndex);
 
-      this.handleCancelClick(isSection)
+      this.handleCancelClick(isSection);
     }
-  }
+  };
 
   getModalTitle = (isSection, group) => {
     if (isSection) {
-      return '是否删除 ' + group.name + ' 分区?'
+      return '是否删除 ' + group.name + ' 分区?';
+    } else {
+      return '是否删除行?';
     }
-    else {
-      return '是否删除行?'
-    }
-  }
+  };
 
   render() {
-    const {
-      isShowDeleteModal,
-      isSection,
-      group
-    } = this.props
+    const {isShowDeleteModal, isSection, group} = this.props;
 
     return (
       <Modal

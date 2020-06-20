@@ -638,6 +638,7 @@ export const createUser = /* GraphQL */ `
           creatorID
           createdAt
           deleteFlag
+          color
         }
         nextToken
       }
@@ -722,6 +723,7 @@ export const updateUser = /* GraphQL */ `
           creatorID
           createdAt
           deleteFlag
+          color
         }
         nextToken
       }
@@ -806,6 +808,7 @@ export const deleteUser = /* GraphQL */ `
           creatorID
           createdAt
           deleteFlag
+          color
         }
         nextToken
       }
@@ -895,6 +898,7 @@ export const createBoardSubscribedUser = /* GraphQL */ `
         }
         createdAt
         deleteFlag
+        color
       }
       user {
         id
@@ -965,6 +969,7 @@ export const updateBoardSubscribedUser = /* GraphQL */ `
         }
         createdAt
         deleteFlag
+        color
       }
       user {
         id
@@ -1035,6 +1040,7 @@ export const deleteBoardSubscribedUser = /* GraphQL */ `
         }
         createdAt
         deleteFlag
+        color
       }
       user {
         id
@@ -1101,6 +1107,7 @@ export const createBoard = /* GraphQL */ `
           collpse
           deleteFlag
           rank
+          summaryRule
         }
         nextToken
       }
@@ -1145,6 +1152,7 @@ export const createBoard = /* GraphQL */ `
       }
       createdAt
       deleteFlag
+      color
     }
   }
 `;
@@ -1180,6 +1188,7 @@ export const updateBoard = /* GraphQL */ `
           collpse
           deleteFlag
           rank
+          summaryRule
         }
         nextToken
       }
@@ -1224,6 +1233,7 @@ export const updateBoard = /* GraphQL */ `
       }
       createdAt
       deleteFlag
+      color
     }
   }
 `;
@@ -1259,6 +1269,7 @@ export const deleteBoard = /* GraphQL */ `
           collpse
           deleteFlag
           rank
+          summaryRule
         }
         nextToken
       }
@@ -1303,6 +1314,7 @@ export const deleteBoard = /* GraphQL */ `
       }
       createdAt
       deleteFlag
+      color
     }
   }
 `;
@@ -1342,6 +1354,7 @@ export const createGroup = /* GraphQL */ `
         }
         createdAt
         deleteFlag
+        color
       }
       rows {
         items {
@@ -1430,6 +1443,7 @@ export const updateGroup = /* GraphQL */ `
         }
         createdAt
         deleteFlag
+        color
       }
       rows {
         items {
@@ -1518,6 +1532,7 @@ export const deleteGroup = /* GraphQL */ `
         }
         createdAt
         deleteFlag
+        color
       }
       rows {
         items {
@@ -1588,6 +1603,7 @@ export const createRow = /* GraphQL */ `
           creatorID
           createdAt
           deleteFlag
+          color
         }
         rows {
           nextToken
@@ -1704,6 +1720,7 @@ export const updateRow = /* GraphQL */ `
           creatorID
           createdAt
           deleteFlag
+          color
         }
         rows {
           nextToken
@@ -1820,6 +1837,7 @@ export const deleteRow = /* GraphQL */ `
           creatorID
           createdAt
           deleteFlag
+          color
         }
         rows {
           nextToken
@@ -1954,6 +1972,7 @@ export const createColumnBoard = /* GraphQL */ `
         }
         createdAt
         deleteFlag
+        color
       }
       column {
         id
@@ -1988,6 +2007,7 @@ export const createColumnBoard = /* GraphQL */ `
       collpse
       deleteFlag
       rank
+      summaryRule
     }
   }
 `;
@@ -2027,6 +2047,7 @@ export const updateColumnBoard = /* GraphQL */ `
         }
         createdAt
         deleteFlag
+        color
       }
       column {
         id
@@ -2061,6 +2082,7 @@ export const updateColumnBoard = /* GraphQL */ `
       collpse
       deleteFlag
       rank
+      summaryRule
     }
   }
 `;
@@ -2100,6 +2122,7 @@ export const deleteColumnBoard = /* GraphQL */ `
         }
         createdAt
         deleteFlag
+        color
       }
       column {
         id
@@ -2134,6 +2157,7 @@ export const deleteColumnBoard = /* GraphQL */ `
       collpse
       deleteFlag
       rank
+      summaryRule
     }
   }
 `;
@@ -2154,6 +2178,7 @@ export const createColumn = /* GraphQL */ `
           collpse
           deleteFlag
           rank
+          summaryRule
         }
         nextToken
       }
@@ -2223,6 +2248,7 @@ export const updateColumn = /* GraphQL */ `
           collpse
           deleteFlag
           rank
+          summaryRule
         }
         nextToken
       }
@@ -2292,6 +2318,7 @@ export const deleteColumn = /* GraphQL */ `
           collpse
           deleteFlag
           rank
+          summaryRule
         }
         nextToken
       }
@@ -3051,6 +3078,7 @@ export const createNotification = /* GraphQL */ `
         }
         createdAt
         deleteFlag
+        color
       }
       groupID
       group {
@@ -3063,6 +3091,7 @@ export const createNotification = /* GraphQL */ `
           creatorID
           createdAt
           deleteFlag
+          color
         }
         rows {
           nextToken
@@ -3266,6 +3295,7 @@ export const updateNotification = /* GraphQL */ `
         }
         createdAt
         deleteFlag
+        color
       }
       groupID
       group {
@@ -3278,6 +3308,7 @@ export const updateNotification = /* GraphQL */ `
           creatorID
           createdAt
           deleteFlag
+          color
         }
         rows {
           nextToken
@@ -3481,6 +3512,7 @@ export const deleteNotification = /* GraphQL */ `
         }
         createdAt
         deleteFlag
+        color
       }
       groupID
       group {
@@ -3493,6 +3525,7 @@ export const deleteNotification = /* GraphQL */ `
           creatorID
           createdAt
           deleteFlag
+          color
         }
         rows {
           nextToken

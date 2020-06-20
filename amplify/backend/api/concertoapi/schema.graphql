@@ -93,6 +93,7 @@ type Board @model
   subscribers: [BoardSubscribedUser]  @connection(keyName: "userByBoardSubscribed", fields: ["id"]) 
   createdAt: String!
   deleteFlag: Boolean
+  color: String!
 }
 
 ## basic element of board, a group belongs to one board
@@ -146,6 +147,7 @@ type ColumnBoard
   collpse: Boolean!
   deleteFlag: Boolean
   rank: String!
+  summaryRule: String
 }
 
 ## column library 
