@@ -458,11 +458,10 @@ class MainTable extends React.Component {
   };
 
   renderTable() {
-    var { data, filters, filterInputValue, filterType } = this.state;
-    if (!this.state.columns)
-        return
-    const fixedColumns = this.state.columns.filter(c => c.fixed); 
-    const scrollColumns = this.state.columns.filter(c => !c.fixed);
+    var { data, filters, filterInputValue, filterType, columns } = this.state;
+    let tableColumns = columns ? columns : []
+    const fixedColumns = tableColumns.filter(c => c.fixed); 
+    const scrollColumns = tableColumns.filter(c => !c.fixed);
     
     return (
         <TableContext.Provider value={this.state}>
