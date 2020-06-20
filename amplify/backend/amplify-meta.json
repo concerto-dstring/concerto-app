@@ -35,8 +35,8 @@
 				"s3TemplateURL": "https://s3.amazonaws.com/amplify-concerto-app-product-140556-deployment/amplify-cfn-templates/api/cloudformation-template.json",
 				"logicalId": "apiconcertoapi"
 			},
-			"lastPushTimeStamp": "2020-06-11T06:07:24.709Z",
-			"lastPushDirHash": "zJ/tBp8s3jlS/AqIdhtHrYcrukI="
+			"lastPushTimeStamp": "2020-06-20T03:04:15.100Z",
+			"lastPushDirHash": "LLUv1akCERXG25dOBrMW6IA8t5A="
 		}
 	},
 	"auth": {
@@ -49,7 +49,7 @@
 				"s3TemplateURL": "https://s3.amazonaws.com/amplify-concerto-app-product-140556-deployment/amplify-cfn-templates/auth/concertoapp2fea5048-cloudformation-template.yml",
 				"logicalId": "authconcertoapp2fea5048"
 			},
-			"lastPushTimeStamp": "2020-06-11T06:07:19.933Z",
+			"lastPushTimeStamp": "2020-06-20T03:04:08.336Z",
 			"output": {
 				"AppClientSecret": "4kmk63ee5r94pochr888jg7bic2drdvkkls8i0vgfrifo2k0k8n",
 				"UserPoolId": "ap-northeast-2_ijdyPKx2y",
