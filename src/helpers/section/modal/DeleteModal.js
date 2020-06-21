@@ -11,15 +11,18 @@ import TooltipMsg from '../../../TooltipMsg';
 
 @connect(mapRowActionStateToProps, {dealRowDeleteModal, dealSectionDeleteModal, dealSectionUndoDeleteMessage})
 class DeleteModal extends PureComponent {
-  handleCancelClick = (isSection) => {
+  handleCancelClick = (isSection, group) => {
     // 关闭弹窗
     if (isSection) {
       this.props.dealSectionDeleteModal({
         isShowDeleteModal: false,
+        isSection,
+        group
       });
     } else {
       this.props.dealRowDeleteModal({
         isShowDeleteModal: false,
+        isSection
       });
     }
   };
@@ -30,7 +33,7 @@ class DeleteModal extends PureComponent {
     if (isSection) {
       // 删除分区
       let groupIndex = tableData.removeGroup(group.groupKey);
-      this.handleCancelClick(isSection);
+      this.handleCancelClick(isSection, group);
 
       // 显示撤销窗口
       this.props.dealSectionUndoDeleteMessage({
@@ -64,7 +67,7 @@ class DeleteModal extends PureComponent {
       <Modal
         title={this.getModalTitle(isSection, group)}
         visible={isShowDeleteModal}
-        onCancel={this.handleCancelClick.bind(this, isSection)}
+        onCancel={this.handleCancelClick.bind(this, isSection, group)}
         onOk={this.handleOKClick}
       >
         <span>{TooltipMsg.delete_tip}</span>
