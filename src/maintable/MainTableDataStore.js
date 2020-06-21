@@ -1410,6 +1410,10 @@ createCellData(rowId, columnId, value, columnComponentType, specialValue) {
       return;
     }
 
+    let groupRows = this._groups[this._currentBoardId][groupIndex].rows;
+    let rowIndex = groupRows.findIndex((row) => row.id === rowKey);
+    let rowData = Object.assign({}, groupRows[rowIndex])
+
     this._apolloClient
       .mutate({
         mutation: gql(updateRow),
@@ -1421,14 +1425,57 @@ createCellData(rowId, columnId, value, columnComponentType, specialValue) {
         },
       })
       .then((result) => {
-        let groupRows = this._groups[this._currentBoardId][groupIndex].rows;
-        let rowIndex = groupRows.findIndex((row) => row.id === rowKey);
-        groupRows.splice(rowIndex, 1);
-        this.runCallbacks();
+        
       })
       .catch((error) => {
         console.log(error);
+        groupRows.splice(rowIndex, 0, rowData);
+        this.runCallbacks();
       });
+
+    groupRows.splice(rowIndex, 1);
+    this.runCallbacks();
+
+    return {
+      groupRowIndex: rowIndex,
+      rowKey,
+      groupKey,
+      rowData
+    }
+  }
+
+  undoRemoveRow(groupKey, rowKey, groupRowIndex, rowData) {
+    let groupIndex = this._groups[this._currentBoardId].findIndex((group) => group.groupKey === groupKey);
+    if (groupIndex < 0) {
+      return;
+    }
+    
+    let groupRows = this._groups[this._currentBoardId][groupIndex].rows;
+
+    this._apolloClient
+      .mutate({
+        mutation: gql(updateRow),
+        variables: {
+          input: {
+            id: rowKey,
+            deleteFlag: false,
+          },
+        },
+      })
+      .then((result) => {
+        
+      })
+      .catch((error) => {
+        console.log(error);
+        let rowIndex = groupRows.findIndex((row) => row.id === rowKey);
+        if (rowIndex >= 0) {
+          groupRows.splice(rowIndex, 1);
+        }
+        this.runCallbacks();
+      });
+
+    groupRows.splice(groupRowIndex, 0, rowData);
+    this.runCallbacks();
   }
 
   removeRows(rowKeys) {

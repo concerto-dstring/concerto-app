@@ -1,28 +1,33 @@
 'use strict';
 
-export const RowType = 
-{
-    TITLE: "TITLE",
-    HEADER: "HEADER",
-    ROW: "ROW",
-    ADDROW: "ADDROW",
-    FOOTER: "FOOTER",
-    SUBHEADER: "SUBHEADER",
-    SUBROW: "SUBROW",
-    SUBADDROW: "SUBADDROW",
-    SUBFOOTER: "SUBFOOTER",
-    SECTIONGROUP: "SECTIONGROUP",
-}
+export const RowType = {
+  TITLE: 'TITLE',
+  HEADER: 'HEADER',
+  ROW: 'ROW',
+  ADDROW: 'ADDROW',
+  FOOTER: 'FOOTER',
+  SUBHEADER: 'SUBHEADER',
+  SUBROW: 'SUBROW',
+  SUBADDROW: 'SUBADDROW',
+  SUBFOOTER: 'SUBFOOTER',
+  SECTIONGROUP: 'SECTIONGROUP',
+};
 
 export const ColumnType = {
-    LABEL: "LABEL",
-    EDITBOX: "EDITBOX",
-    DROPDOWN: 'DROPDOWN',
-    CHECKBOX: 'CHECKBOX',
-    ROWACTION: 'ROWACTION',
-    ROWSELECT: 'ROWSELECT',
-    GROUPTITLE: 'GROUPTITLE',
-}
+  LABEL: 'LABEL',
+  EDITBOX: 'EDITBOX',
+  DROPDOWN: 'DROPDOWN',
+  CHECKBOX: 'CHECKBOX',
+  ROWACTION: 'ROWACTION',
+  ROWSELECT: 'ROWSELECT',
+  GROUPTITLE: 'GROUPTITLE',
+};
+
+export const UndoType = {
+  ROW_UNDO_MOVE: 'ROW_UNDO_MOVE',
+  ROW_UNDO_DELETE: 'ROW_UNDO_DELETE',
+  SECTION_UNDO_DELETE: 'SECTION_UNDO_DELETE',
+};
 
 export function compareSubLevel(rowIndex1, rowIndex2) {
   let indexString1 = `${rowIndex1}`;
@@ -40,9 +45,8 @@ export function getSubLevel(rowIndex) {
 export function getUpRowIndex(rowIndex) {
   let indexString = `${rowIndex}`;
   let t = indexString.split(/\./) || [];
-  if (t.length <= 1)
-    return null;
-  return t.splice(-1,1).join('.');
+  if (t.length <= 1) return null;
+  return t.splice(-1, 1).join('.');
 }
 
 export function getRootRowIndex(rowIndex) {
@@ -63,7 +67,7 @@ export function compareSubRowIndex(rowIndex1, rowIndex2) {
   let t1 = indexString1.split(/\./) || [];
   let t2 = indexString2.split(/\./) || [];
   let i = 0;
-  for (i = 0; i < t1.length; i ++) {
+  for (i = 0; i < t1.length; i++) {
     let t1 = parseInt(t1[i]);
     if (i < t2.length) {
       if (t1 !== t2) {
