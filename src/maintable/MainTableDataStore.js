@@ -246,14 +246,10 @@ class MainTableDataStore {
                 }
               }
 
-              // 设置每个Board的通知
-              this.setBoardRowNotReadNotifications(this._boardMenus, currentUserId)
-
-              // for (let key in this._boardMenus) {
-              //   let board = this._boardMenus[key];
-              //   let notifinum = this.getNotificationsByBoardId(board.id, currentUserId);
-              //   console.log('bardid ' + board.id + ' has notification ' + notifinum);
-              // }
+              for (let key in this._boardMenus) {
+                let board = this._boardMenus[key];
+                let notifinum = this.getNotificationsByBoardId(board.id, currentUserId);
+              }
             } else {
               setMenus([], true, null);
             }
@@ -297,17 +293,52 @@ class MainTableDataStore {
   /**
    * 查询每个Board未读的通知条目数
    * @param {*} boardId
+   * @param {*} currentUserId
    */
-  getNotificationsByBoardId(boardId) {
-    if (!boardId || !this._boardNotifications.hasOwnProperty(boardId)) {
-      return 0
+  getNotificationsByBoardId(boardId, currentUserId){
+    if (!boardId)
+      return 0;
+    
+    let notifications; 
+    if (boardId in this._boardNotifications) {
+      notifications = this._boardNotifications[boardId];
+    } else {
+      this._apolloClient
+      .query({
+        query: gql(listNotifications),
+        variables: {
+          limit: 1000,
+          filter: {
+            boardID: {
+              eq: boardId
+            },
+            receiverID: {
+              eq: currentUserId
+            },
+            seenflag: {
+              eq: false
+            }
+          }
+        },
+        fetchPolicy: "no-cache"
+      })
+      .then(result => {
+        this._boardNotifications[boardId] = {}
+        notifications = result.data.listNotifications.items;
+        notifications.map((notification) => {
+            if (notification.rowID in this._boardNotifications[boardId])
+              this._boardNotifications[boardId][notification.rowID] += 1; 
+            else 
+              this._boardNotifications[boardId][notification.rowID] = 1;
+        })
+      })
     }
-    let notReadCount = 0
 
-    for (let key in this._boardNotifications[boardId]) {
-      notReadCount = notReadCount + this._boardNotifications[boardId][key]
+    let notReadCount = 0;
+    for (let key in notifications) {
+      if (notifications[key] && !notifications[key].seenflag)
+          notReadCount++;
     }
-
     return notReadCount
   }
 
@@ -339,8 +370,7 @@ class MainTableDataStore {
   fetchBackendBoardData(boardId, setMenus, setLoading, currentUserId) {
     this._currentBoardId = boardId;
     this.getAllUsers(boardId, setMenus, setLoading, currentUserId);
-    // this.fetchBoardData(boardId, setMenus, setLoading);
-    // return ret;
+    this.fetchBoardData(boardId, setMenus, setLoading);
   }
 
   fetchBoardData(boardId, setMenus, setLoading) {
@@ -564,7 +594,6 @@ class MainTableDataStore {
   getAllUsers(boardId, setMenus, setLoading, currentUserId) {
     // TODO: for user signup, we should use the subscribe@graphql
     if (this._teamUsers.length != 0) {
-      this.fetchBoardData(boardId, setMenus, setLoading);
       return
     };
     this._apolloClient
@@ -591,8 +620,6 @@ class MainTableDataStore {
           this._teamUsers.push(user);
           this._cacheUsers[user.id] = user;
         });
-
-        this.fetchBoardData(boardId, setMenus, setLoading);
       });
   }
 
@@ -897,46 +924,70 @@ class MainTableDataStore {
     let currentGroup;
     let rank;
     let index;
+    let groups;
+    let createdat;
+
+    groups = this._groups[this._currentBoardId]
     if (groupKey) {
-      index = this._groups[this._currentBoardId].findIndex((group) => group.groupKey === groupKey);
+      index = groups.findIndex((group) => group.groupKey === groupKey);
       if (index < 0) {
         return null;
       }
-      currentGroup = this._groups[this._currentBoardId][index];
+      currentGroup = groups[index];
       // 中间插入分区的rank计算暂时没有完美方案
       rank = this.getCreateGroupRank(groupKey, currentGroup, index);
     } else {
       rank = this.getCreateGroupRank(groupKey);
     }
+
+    createdat = new Date().toISOString();
+    let groupinput = {
+      name: groupName,
+      rank: rank,
+      createdAt: createdat, 
+      boardID: this._currentBoardId,
+      creatorID: this._currentUser.id,
+      isCollapsed: false,
+      deleteFlag: false,
+      color: getRandomColor(),
+    };
+    let cacheGroupinput = { ...groupinput };
+    let cacheid = createdat+rank;
+    cacheGroupinput['id'] = cacheid;
+    cacheGroupinput.rows = [];
+    if (groupKey) {
+      groups.splice(index, 1, cacheGroupinput);
+      groups.splice(index + 1, 0, currentGroup);
+    } else {
+      groups.push(cacheGroupinput);
+    }
+    this.runCallbacks();
+
     this._apolloClient
       .mutate({
         mutation: gql(createGroup),
         variables: {
-          input: {
-            name: groupName,
-            rank: rank,
-            createdAt: new Date().toISOString(),
-            boardID: this._currentBoardId,
-            creatorID: this._currentUser.id,
-            isCollapsed: false,
-            deleteFlag: false,
-            color: getRandomColor(),
-          },
+          input: groupinput
         },
       })
       .then((result) => {
         let group = result.data.createGroup;
         group.rows = [];
+        /* replace the cache group with the database record */
         if (groupKey) {
-          this._groups[this._currentBoardId].splice(index, 1, group);
-          this._groups[this._currentBoardId].splice(index + 1, 0, currentGroup);
-        } else {
-          this._groups[this._currentBoardId].push(group);
+          groups.splice(index, 1, group);
+         } else {
+          groups.pop()
+          groups.push(group);
         }
-        this.runCallbacks();
       })
       .catch((error) => {
         console.log(error);
+        if (groupKey) {
+          groups.splice(index, 1);
+         } else {
+          groups.pop()
+        }
       });
   }
 
@@ -963,17 +1014,22 @@ class MainTableDataStore {
   }
 
   removeGroup(groupKey) {
-    let index = this._groups[this._currentBoardId].findIndex((column) => column.groupKey === groupKey);
+    let groups = this._groups[this._currentBoardId];
+    let index = groups.findIndex((column) => column.groupKey === groupKey);
     if (index < 0) {
       return;
     }
-    let group = this._groups[this._currentBoardId][index];
+    let cacheGroup = { ...groups[index] };
+    groups.splice(index, 1);
+    //refresh
+    this.runCallbacks();
+
     this._apolloClient
       .mutate({
         mutation: gql(updateGroup),
         variables: {
           input: {
-            id: group.id,
+            id: cacheGroup.id,
             deleteFlag: true,
           },
         },
@@ -983,6 +1039,7 @@ class MainTableDataStore {
       })
       .catch((error) => {
         console.log(error);
+        groups.slice(index, 0, cacheGroup);
       });
 
     return index;
@@ -1010,21 +1067,52 @@ class MainTableDataStore {
     }
     let group = this._groups[this._currentBoardId][index];
     let rank = this.getCreateRowRank(null, groupKey);
+    let createdat =  new Date().toISOString();
+    let rowinput = {
+      rank: rank,
+      createdAt: createdat,
+      groupID: group.id,
+      creatorID: this._currentUser.id,
+      deleteFlag: false,
+    };
+    let cacheRowInput = { ...rowinput };
+    let cacheid = createdat+rank;
+    cacheRowInput['id'] = cacheid;
+    let rows = group.rows;
+    rows.push(cacheRowInput);
+
+    this._rowData[this._currentBoardId][cacheid] = {};
+    this._rowColumnData[this._currentBoardId][cacheid] = {};
+    let rowdata = this._rowData[this._currentBoardId][cacheid];
+    for (var i = 0; i < this._columns[this._currentBoardId].length; i++) {
+      const column = this._columns[this._currentBoardId][i];
+      if (column.level !== 0 || column.name === ColumnType.ROWACTION || column.name === ColumnType.ROWSELECT)
+        continue;
+      if (column.isTitle) {
+        rowdata[column.columnKey] = newItem;
+      } else {
+        rowdata[column.columnKey] = null;
+      }
+    }
+    
+    //refresh
+    this.runCallbacks();
+
     this._apolloClient
       .mutate({
         mutation: gql(createRow),
         variables: {
-          input: {
-            rank: rank,
-            createdAt: new Date().toISOString(),
-            groupID: group.id,
-            creatorID: this._currentUser.id,
-            deleteFlag: false,
-          },
+          input: rowinput,
         },
       })
       .then((result) => {
         let row = result.data.createRow;
+        /* udpate the cahced row if exists */
+        var index = rows.indexOf(cacheRowInput);
+        if (index !== -1) rows.splice(index, 1);
+        rows.push(row);
+        delete this._rowData[this._currentBoardId][cacheid];
+        delete this._rowColumnData[this._currentBoardId][cacheid];
         this._rowData[this._currentBoardId][row.id] = {};
         this._rowColumnData[this._currentBoardId][row.id] = {};
         for (var i = 0; i < this._columns[this._currentBoardId].length; i++) {
@@ -1033,17 +1121,16 @@ class MainTableDataStore {
             continue;
           if (column.isTitle) {
             this.createCellData(row.id, column.columnKey, newItem);
-          } else {
-            this.createCellData(row.id, column.columnKey, null);
-          }
+          } 
         }
-        let rows = this._groups[this._currentBoardId][index].rows;
-        rows.push(row);
-        //refresh
-        this.runCallbacks();
       })
       .catch((error) => {
         console.log(error);
+        /* remove the cahced row if exists */
+        var index = rows.indexOf(cacheRowInput);
+        if (index !== -1) rows.splice(index, 1);
+        delete this._rowData[this._currentBoardId][cacheid];
+        delete this._rowColumnData[this._currentBoardId][cacheid];
       });
   }
 
@@ -1214,7 +1301,7 @@ class MainTableDataStore {
       });
   }
 
-  createCellData(rowId, columnId, value, columnComponentType, specialValue) {
+createCellData(rowId, columnId, value, columnComponentType, specialValue) {
     this._apolloClient
       .mutate({
         mutation: gql(createData),
