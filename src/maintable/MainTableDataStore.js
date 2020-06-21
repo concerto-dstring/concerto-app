@@ -749,7 +749,7 @@ class MainTableDataStore {
   }
 
   getGroups() {
-    return this._groups[this._currentBoardId];
+    return this._groups[this._currentBoardId] ? this._groups[this._currentBoardId] : [];
   }
 
   getSubRows(rowKey, subRowKeys) {
@@ -779,7 +779,10 @@ class MainTableDataStore {
   }
 
   isSubRowExpanded(rowKey) {
-    if (this._subRows[this._currentBoardId][rowKey]) return this._subRows[this._currentBoardId][rowKey].isExpanded;
+    if (rowKey && this._subRows[this._currentBoardId][rowKey]) {
+      return this._subRows[this._currentBoardId][rowKey].isExpanded;
+    }
+    
     return false;
   }
 
