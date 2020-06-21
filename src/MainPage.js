@@ -443,7 +443,7 @@ class MainPage extends React.Component {
                     <img className="header_logo" src="../logo.png" />
                   </Col>
                   <Col span={4}>
-                    <h3 style={{fontWeight: 'bold', lineHeight: '60px'}}>{TooltipMsg.app_name}</h3>
+                    <h3 style={{fontWeight: 'bold', lineHeight: '63px'}}>{TooltipMsg.app_name}</h3>
                   </Col>
                   <Col span={15}>
                     {/* <div className="collpseBar">
