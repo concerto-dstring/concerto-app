@@ -326,7 +326,7 @@ class MainPage extends React.Component {
           <div className="body_left_sider_panel_header">
             <div style={{textAlign: 'left',fontSize:'13px',color:'#A0A4A8'}}>{name}</div>
             <div style={{textAlign: 'right'}} onClick={this.createBoard}>
-              <PlusOutlined style={{fontSize: '13px', marginRight: '13px'}} />
+              <PlusOutlined style={{fontSize: '13px'}} />
             </div>
           </div>
         }
@@ -440,10 +440,10 @@ class MainPage extends React.Component {
               <div style={{height: '60px'}}>
                 <Row>
                   <Col span={5}>
-                    <img className="header_logo" src="../pynbologo.png" />
+                    <img className="header_logo" src="../logo.png" />
                   </Col>
                   <Col span={4}>
-                    <h3 style={{fontWeight: 'bold', lineHeight: '55px'}}>{TooltipMsg.app_name}</h3>
+                    <h3 style={{fontWeight: 'bold', lineHeight: '60px'}}>{TooltipMsg.app_name}</h3>
                   </Col>
                   <Col span={15}>
                     {/* <div className="collpseBar">
