@@ -438,14 +438,16 @@ class MainTableDataStore {
         column.columnKey = column.column.id;
         column.columnComponentType = column.column.columnComponentType;
         column.isTitle = column.column.isTitle;
+        column.isEditing = false; // 列是否为编辑状态
+
         let name = column.column.name;
         column.name = name;
         if (name === ColumnType.ROWSELECT) {
-          column.width = 36;
+          column.width = getCellWidth(ColumnType.ROWSELECT);
         } else if (name === ColumnType.ROWACTION) {
-          column.width = 22;
+          column.width = getCellWidth(ColumnType.ROWACTION);
         } else if (column.isTitle) {
-          column.width = 360;
+          column.width = getCellWidth(ColumnType.GROUPTITLE);
         } else {
           column.width = getCellWidth(column.column.columnComponentType);
         }
@@ -1298,11 +1300,22 @@ class MainTableDataStore {
       })
       .then((result) => {
         let column = result.data.createColumnBoard;
-        column.width = isTitle ? 360 : fixed && !isTitle ? 36 : 200;
+        column.isTitle = isTitle;
         column.type = columnType;
         column.columnKey = columnId;
         column.name = columnName;
         column.columnComponentType = columnComponentType;
+
+        if (columnName === ColumnType.ROWSELECT) {
+          column.width = getCellWidth(ColumnType.ROWSELECT);
+        } else if (columnName === ColumnType.ROWACTION) {
+          column.width = getCellWidth(ColumnType.ROWACTION);
+        } else if (isTitle) {
+          column.width = getCellWidth(ColumnType.GROUPTITLE);
+        } else {
+          column.width = getCellWidth(columnComponentType);
+        }
+
         this._columns[this._currentBoardId].push(column);
         this._columns[this._currentBoardId] = this.sortDataByRank(this._columns[this._currentBoardId]);
 
@@ -1372,11 +1385,13 @@ class MainTableDataStore {
   }
 
   removeColumn(columnKey) {
-    let index = this._columns[this._currentBoardId].findIndex((column) => column.columnKey === columnKey);
+    let boardId = this._currentBoardId;
+    let index = this._columns[boardId].findIndex((column) => column.columnKey === columnKey);
     if (index < 0) {
       return;
     }
-    let column = this._columns[this._currentBoardId][index];
+    let column = this._columns[boardId][index];
+    let oldColumn = Object.assign({}, column);
     this._apolloClient
       .mutate({
         mutation: gql(updateColumn),
@@ -1388,16 +1403,28 @@ class MainTableDataStore {
         },
       })
       .then((result) => {
-        this.removeColumnBoard(column.id, index, column);
+        this.removeColumnBoard(column.id, index, column, boardId);
         // //refresh
         // this.runCallbacks();
       })
       .catch((error) => {
         console.log(error);
+        this._columns[boardId].splice(index, 0, column);
+        //refresh
+        this.runCallbacks();
       });
+
+    this._columns[boardId].splice(index, 1);
+    //refresh
+    this.runCallbacks();
+
+    return {
+      oldColumn,
+      columnIndex: index
+    }
   }
 
-  removeColumnBoard(id, index, column) {
+  removeColumnBoard(id, index, column, boardId) {
     this._apolloClient
       .mutate({
         mutation: gql(updateColumnBoard),
@@ -1411,15 +1438,59 @@ class MainTableDataStore {
       .then((result) => {})
       .catch((error) => {
         console.log(error);
-        this._columns[this._currentBoardId].splice(index, 0, column);
+        this._columns[boardId].splice(index, 0, column);
         //refresh
         this.runCallbacks();
       });
+  }
 
-    this._columns[this._currentBoardId].splice(index, 1);
-    //refresh
-    // this.runCallbacks();
-    this._mainPageCallBack();
+  undoRemoveColumn(columnIndex, column) {
+    let boardId = this._currentBoardId;
+    this._columns[boardId].splice(columnIndex, 0, column);
+
+    this._apolloClient
+      .mutate({
+        mutation: gql(updateColumn),
+        variables: {
+          input: {
+            id: column.columnKey,
+            deleteFlag: false,
+          },
+        },
+      })
+      .then((result) => {})
+      .catch((error) => {
+        console.log(error)
+        let index = this._columns[boardId].findIndex(c => c.columnKey === column.columnKey);
+
+        if (index >= 0) {
+          this._columns[boardId].splice(index, 1);
+          //refresh
+          this.runCallbacks();
+        }
+      });
+
+    this._apolloClient
+      .mutate({
+        mutation: gql(updateColumnBoard),
+        variables: {
+          input: {
+            id: column.id,
+            deleteFlag: false,
+          },
+        },
+      })
+      .then((result) => {})
+      .catch((error) => {
+        console.log(error);
+        let index = this._columns[boardId].findIndex(c => c.columnKey === column.columnKey);
+
+        if (index >= 0) {
+          this._columns[boardId].splice(index, 1);
+          //refresh
+          this.runCallbacks();
+        }
+      });
   }
 
   removeSubColumn(columnKey) {
@@ -1724,6 +1795,14 @@ class MainTableDataStore {
       for (let key in columnData) {
         column[key] = columnData[key];
       }
+      this.runCallbacks();
+    }
+  }
+
+  updateColumnEditing(columnKey, isEditing) {
+    let column = this._columns[this._currentBoardId].find((column) => column.columnKey === columnKey);
+    if (column) {
+      column.isEditing = isEditing;
       this.runCallbacks();
     }
   }

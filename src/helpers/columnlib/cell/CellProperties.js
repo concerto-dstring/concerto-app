@@ -22,8 +22,11 @@ export const getCellPopupHeight = () => {
 };
 
 const cellDisplayWidth = {
+  ROWSELECT: 36,
+  ROWACTION: 22,
+  GROUPTITLE: 360,
   SUBITEM: 80,
-  PEOPLE: 80,
+  PEOPLE: 120,
   STATUS: 140,
   TEXT: 140,
   DATE: 170,

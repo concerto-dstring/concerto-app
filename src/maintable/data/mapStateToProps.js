@@ -5,6 +5,8 @@ export const mapRowActionStateToProps = (state) => {
     isShowDeleteModal: state.isShowDeleteModal,
     isShowUndoModal: state.isShowUndoModal,
     columnKey: state.columnKey,
+    columnIndex: state.columnIndex,
+    column: state.column,
     rowIndex: state.rowIndex,
     rowData: state.rowData,
     rowKey: state.rowKey,
@@ -17,6 +19,8 @@ export const mapRowActionStateToProps = (state) => {
     tableData: state.data,
     oldSourceRow: state.oldSourceRow,
     undoType: state.undoType,
+    deleteType: state.deleteType,
+    mainTable: state.mainTable
   };
 };
 

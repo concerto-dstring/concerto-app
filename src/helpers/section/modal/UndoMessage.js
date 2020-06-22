@@ -6,6 +6,7 @@ import {VISIBILITY, COLOR, DISPLAY} from '../header/StyleValues';
 
 import {connect} from 'react-redux';
 import {dealRowMoveModal, dealRowUndoDeleteMessage} from '../../../maintable/actions/rowActions';
+import {dealColumnUndoDeleteMessage} from '../../../maintable/actions/columnActions';
 import {dealSectionUndoDeleteMessage} from '../../../maintable/actions/SectionActions';
 import {mapRowActionStateToProps} from '../../../maintable/data/mapStateToProps';
 import TooltipMsg from '../../../TooltipMsg';
@@ -13,7 +14,12 @@ import {UndoType} from '../../../maintable/data/MainTableType';
 
 let intervalTimer;
 
-@connect(mapRowActionStateToProps, {dealRowMoveModal, dealSectionUndoDeleteMessage, dealRowUndoDeleteMessage})
+@connect(mapRowActionStateToProps, {
+  dealRowMoveModal, 
+  dealSectionUndoDeleteMessage, 
+  dealRowUndoDeleteMessage,
+  dealColumnUndoDeleteMessage
+})
 class UndoMessage extends PureComponent {
   constructor() {
     super();
@@ -38,6 +44,10 @@ class UndoMessage extends PureComponent {
       });
     } else if (undoType === UndoType.ROW_UNDO_DELETE) {
       this.props.dealRowUndoDeleteMessage({
+        isShowUndoModal: false,
+      });
+    } else if (undoType === UndoType.COLUMN_UNDO_DELETE) {
+      this.props.dealColumnUndoDeleteMessage({
         isShowUndoModal: false,
       });
     }
@@ -71,6 +81,9 @@ class UndoMessage extends PureComponent {
       groupKey,
       groupRowIndex,
       rowData,
+      column,
+      columnIndex,
+      mainTable
     } = this.props;
 
     if (undoType === UndoType.SECTION_UNDO_DELETE) {
@@ -82,6 +95,9 @@ class UndoMessage extends PureComponent {
     } else if (undoType === UndoType.ROW_UNDO_DELETE) {
       // 撤销删除行
       tableData.undoRemoveRow(groupKey, rowKey, groupRowIndex, rowData);
+    } else if (undoType === UndoType.COLUMN_UNDO_DELETE) {
+      // 撤销删除列
+      mainTable.undoRemoveColumn(columnIndex, column)
     }
 
     this.handleCancelClick();
@@ -95,6 +111,8 @@ class UndoMessage extends PureComponent {
     } else if (undoType === UndoType.ROW_UNDO_MOVE) {
       return TooltipMsg.move_success;
     } else if (undoType === UndoType.ROW_UNDO_DELETE) {
+      return TooltipMsg.delete_success;
+    } else if (undoType === UndoType.COLUMN_UNDO_DELETE) {
       return TooltipMsg.delete_success;
     }
   };
