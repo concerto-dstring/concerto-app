@@ -9,7 +9,6 @@
  * @providesModule FixedDataTableBufferedRows
  */
 import FixedDataTableRow from './FixedDataTableRow';
-import PropTypes from 'prop-types';
 import React from 'react';
 import cx from './vendor_upstream/stubs/cx';
 import emptyFunction from './vendor_upstream/core/emptyFunction';
@@ -19,8 +18,6 @@ import MainTableSectionGroupBar from './MainTableSectionGroupBar';
 import MainTableAddRow from './MainTableAddRow';
 import MainTableTitleRow from './MainTableTitleRow';
 import { RowType, getSubLevel } from './data/MainTableType';
-
-//import FixedDataTableTranslateDOMPosition from './FixedDataTableTranslateDOMPosition';
 
 import './css/layout/fixedDataTableLayout.css';
 import './css/style/fixedDataTable.css';
@@ -48,6 +45,8 @@ class FixedDataTableBufferedRows extends React.Component {
 
   render() /*object*/ {
     let { scrollTop, isScrolling, rowsToRender, isRowReordering, rowReorderingData } = this.props;
+    const props = this.props;
+
     let baseOffsetTop =  - scrollTop;
     rowsToRender = rowsToRender || [];
 
@@ -102,7 +101,63 @@ class FixedDataTableBufferedRows extends React.Component {
       pointerEvents: 'none',
     };
     
-    return <div><div>{this._staticRowArray}</div><div className='popup_container' style={layerStyle} ref={this._onRef}/></div>;
+
+    let headerRow = 
+        <FixedDataTableRow
+          key={1}
+          index={1}
+          type={RowType.HEADER}
+          ariaRowIndex={props.ariaHeaderIndex}
+          isHeaderOrFooter={true}
+          isScrolling={props.isScrolling}
+          isRowReordering={props.isRowReordering}
+          rowReorderingData={props.rowReorderingData}
+          className={joinClasses(
+            cx('fixedDataTableLayout/header'),
+            cx('public/fixedDataTable/header'),
+          )}
+          width={props.width}
+          height={40}
+          offsetTop={0}
+          scrollLeft={Math.round(props.scrollLeft)}
+          visible={true}
+          fixedColumns={props.fixedColumns.header}
+          fixedRightColumns={props.fixedRightColumns.header}
+          scrollableColumns={props.scrollableColumns.header}
+          touchEnabled={props.touchScrollEnabled}
+          onColumnResize={props.onColumnResize}
+          onColumnReorder={props.onColumnReorder}
+          onColumnReorderMove={props.onColumnReorderMove}
+          onColumnReorderEnd={props.onColumnReorderEnd}
+          isColumnReordering={!!props.isColumnReordering}
+          columnReorderingData={props.columnReorderingData}
+          showScrollbarY={props.scrollEnabledY}
+          container={props.container}
+          data={props.data}
+          isRTL={props.isRTL}
+          siderWidth={props.siderWidth}
+          onCellEdit={props.onCellEdit}
+          onCellEditEnd={props.onCellEditEnd}
+        >
+        </FixedDataTableRow>
+    
+    return <div>
+            <div>{this._staticRowArray}</div>
+            <div className='popup_container' style={layerStyle} ref={this._onRef}/>
+            <div className='fixedDataTableLayout_AffixContainer' 
+               style={{visibility: props.scrollTop > (props.rowSettings.rowHeightGetter(0) + props.rowSettings.rowHeightGetter(1)) ? 'visible' : 'hidden' }}>
+              <div className='fixedDataTableLayout_AffixContent'>
+                {headerRow}
+              </div>
+              <div
+                className={joinClasses(
+                  cx('fixedDataTableLayout/bottomShadow'),
+                  cx('public/fixedDataTable/bottomShadow'),
+                )}
+                style={{top: 60}}
+              />
+            </div>
+           </div>;
   }
 
   _onRef = (div) => {
