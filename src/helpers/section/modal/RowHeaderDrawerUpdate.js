@@ -521,6 +521,7 @@ class RowHeaderDrawerUpdate extends PureComponent {
 
   getCardReplyData = () => {
     const {currentUser, isShowReplyInput, isShowReplyUserInput, editorState, editorControls} = this.state;
+    if (!currentUser.username) return
     return (
       <div className="reply_area" ref={this.replyArea}>
         <div className="reply_list_component">{this.getReplyList()}</div>
