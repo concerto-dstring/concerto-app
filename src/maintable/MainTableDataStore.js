@@ -49,7 +49,7 @@ import {
 } from '../graphql/mutations';
 import {notification} from 'antd';
 import {getRandomColor} from '../helpers/section/header/SectionColor';
-import { getCellWidth } from '../helpers/columnlib/cell/CellProperties';
+import {getCellWidth} from '../helpers/columnlib/cell/CellProperties';
 
 const rankBlock = 32768;
 const PEOPLE = 'PEOPLE';
@@ -295,51 +295,48 @@ class MainTableDataStore {
    * @param {*} boardId
    * @param {*} currentUserId
    */
-  getNotificationsByBoardId(boardId, currentUserId){
-    if (!boardId)
-      return 0;
-    
-    let notifications; 
+  getNotificationsByBoardId(boardId, currentUserId) {
+    if (!boardId) return 0;
+
+    let notifications;
     if (boardId in this._boardNotifications) {
       notifications = this._boardNotifications[boardId];
     } else {
       this._apolloClient
-      .query({
-        query: gql(listNotifications),
-        variables: {
-          limit: 1000,
-          filter: {
-            boardID: {
-              eq: boardId
+        .query({
+          query: gql(listNotifications),
+          variables: {
+            limit: 1000,
+            filter: {
+              boardID: {
+                eq: boardId,
+              },
+              receiverID: {
+                eq: currentUserId,
+              },
+              seenflag: {
+                eq: false,
+              },
             },
-            receiverID: {
-              eq: currentUserId
-            },
-            seenflag: {
-              eq: false
-            }
-          }
-        },
-        fetchPolicy: "no-cache"
-      })
-      .then(result => {
-        this._boardNotifications[boardId] = {}
-        notifications = result.data.listNotifications.items;
-        notifications.map((notification) => {
-            if (notification.rowID in this._boardNotifications[boardId])
-              this._boardNotifications[boardId][notification.rowID] += 1; 
-            else 
-              this._boardNotifications[boardId][notification.rowID] = 1;
+          },
+          fetchPolicy: 'no-cache',
         })
-      })
+        .then((result) => {
+          this._boardNotifications[boardId] = {};
+          notifications = result.data.listNotifications.items;
+          notifications.map((notification) => {
+            if (notification.rowID in this._boardNotifications[boardId])
+              this._boardNotifications[boardId][notification.rowID] += 1;
+            else this._boardNotifications[boardId][notification.rowID] = 1;
+          });
+        });
     }
 
     let notReadCount = 0;
     for (let key in notifications) {
-      if (notifications[key] && !notifications[key].seenflag)
-          notReadCount++;
+      if (notifications[key] && !notifications[key].seenflag) notReadCount++;
     }
-    return notReadCount
+    return notReadCount;
   }
 
   /**
@@ -445,7 +442,7 @@ class MainTableDataStore {
         column.name = name;
         if (name === ColumnType.ROWSELECT) {
           column.width = 36;
-        } else if(name === ColumnType.ROWACTION){
+        } else if (name === ColumnType.ROWACTION) {
           column.width = 22;
         } else if (column.isTitle) {
           column.width = 360;
@@ -499,7 +496,7 @@ class MainTableDataStore {
                     if (userId in this._cacheUsers) {
                       users.push(this._cacheUsers[userId]);
                     }
-                    this._searchUsers[boardId][userId] = this._cacheUsers[userId]
+                    this._searchUsers[boardId][userId] = this._cacheUsers[userId];
                   });
                   this._rowData[boardId][item.rowID][item.columnID] = users;
                 } else {
@@ -594,8 +591,8 @@ class MainTableDataStore {
   getAllUsers(boardId, setMenus, setLoading, currentUserId) {
     // TODO: for user signup, we should use the subscribe@graphql
     if (this._teamUsers.length != 0) {
-      return
-    };
+      return;
+    }
     this._apolloClient
       .query({
         query: gql(listUsers),
@@ -606,7 +603,7 @@ class MainTableDataStore {
       })
       .then((result) => {
         let teamUsers = result.data.listUsers.items;
-        this._teamUsers = []
+        this._teamUsers = [];
         teamUsers.map((user) => {
           if (user.avatar.startsWith('#')) {
             user.faceColor = user.avatar;
@@ -629,12 +626,12 @@ class MainTableDataStore {
 
   getSearchUserList() {
     let users = this._searchUsers[this._currentBoardId];
-    let searchList = []
+    let searchList = [];
     for (let key in users) {
-      searchList.push(users[key])
+      searchList.push(users[key]);
     }
 
-    return searchList
+    return searchList;
   }
 
   filterTeamUsers(filterValue) {
@@ -676,8 +673,8 @@ class MainTableDataStore {
     // skip the group row
     if (!rowKey || !columnKey) return;
 
-    let column = this._columns[this._currentBoardId].find((column) => column.columnKey === columnKey);
-
+    let boardId = this._currentBoardId;
+    let column = this._columns[boardId].find((column) => column.columnKey === columnKey);
     let newValue;
     if (column.columnComponentType === PEOPLE) {
       if (value && value.length > 0) {
@@ -691,6 +688,40 @@ class MainTableDataStore {
       } else {
         newValue = null;
       }
+
+      // 编辑人员列需要更新人员过滤列表
+      let rowColumnData = this._rowData[boardId];
+      let peopleColumns = this._columns[boardId].filter((column) => column.columnComponentType === PEOPLE);
+      let peopleColumnKeys = [];
+      peopleColumns.map((peopleColumn) => {
+        peopleColumnKeys.push(peopleColumn.columnKey);
+      });
+      this._searchUsers[boardId] = {};
+      for (let rKey in rowColumnData) {
+        let columnData = rowColumnData[rKey];
+        for (let cKey in columnData) {
+          if (peopleColumnKeys.indexOf(cKey) !== -1) {
+            if (cKey === columnKey && rKey === rowKey) {
+              if (newValue) {
+                let userIds = newValue.split(',');
+                userIds.map((userId) => {
+                  if (userId) {
+                    this._searchUsers[boardId][userId] = this._cacheUsers[userId];
+                  }
+                });
+              }
+            } else {
+              let users = columnData[cKey];
+              if (users && users.length > 0) {
+                users.map((user) => {
+                  this._searchUsers[boardId][user.id] = user;
+                });
+              }
+            }
+          }
+        }
+      }
+
     } else {
       if (value) {
         if (value instanceof String) newValue = value.trim() === '' ? null : value.trim();
@@ -782,16 +813,16 @@ class MainTableDataStore {
     if (rowKey && this._subRows[this._currentBoardId][rowKey]) {
       return this._subRows[this._currentBoardId][rowKey].isExpanded;
     }
-    
+
     return false;
   }
 
   addNewSubSection(groupKey, parentRowKey, newItem) {
     // 检查是否已有子项
     if (this._subRows[this._currentBoardId][parentRowKey]) {
-      this._subRows[this._currentBoardId][parentRowKey].isExpanded = true
-      this.runCallbacks()
-      return
+      this._subRows[this._currentBoardId][parentRowKey].isExpanded = true;
+      this.runCallbacks();
+      return;
     }
 
     let rank = this.getCreateRowRank(parentRowKey, groupKey);
@@ -911,7 +942,8 @@ class MainTableDataStore {
         rank = preRank + (currentRank - preRank) / 2;
       } else {
         // 插入最上面
-        rank = Number(this._groups[this._currentBoardId][this._groups[this._currentBoardId].length - 1].rank) + rankBlock;
+        rank =
+          Number(this._groups[this._currentBoardId][this._groups[this._currentBoardId].length - 1].rank) + rankBlock;
       }
     } else {
       rank = rankBlock;
@@ -927,7 +959,7 @@ class MainTableDataStore {
     let groups;
     let createdat;
 
-    groups = this._groups[this._currentBoardId]
+    groups = this._groups[this._currentBoardId];
     if (groupKey) {
       index = groups.findIndex((group) => group.groupKey === groupKey);
       if (index < 0) {
@@ -944,15 +976,15 @@ class MainTableDataStore {
     let groupinput = {
       name: groupName,
       rank: rank,
-      createdAt: createdat, 
+      createdAt: createdat,
       boardID: this._currentBoardId,
       creatorID: this._currentUser.id,
       isCollapsed: false,
       deleteFlag: false,
       color: getRandomColor(),
     };
-    let cacheGroupinput = { ...groupinput };
-    let cacheid = createdat+rank;
+    let cacheGroupinput = {...groupinput};
+    let cacheid = createdat + rank;
     cacheGroupinput['id'] = cacheid;
     cacheGroupinput.rows = [];
     if (groupKey) {
@@ -967,7 +999,7 @@ class MainTableDataStore {
       .mutate({
         mutation: gql(createGroup),
         variables: {
-          input: groupinput
+          input: groupinput,
         },
       })
       .then((result) => {
@@ -976,8 +1008,8 @@ class MainTableDataStore {
         /* replace the cache group with the database record */
         if (groupKey) {
           groups.splice(index, 1, group);
-         } else {
-          groups.pop()
+        } else {
+          groups.pop();
           groups.push(group);
         }
       })
@@ -985,8 +1017,8 @@ class MainTableDataStore {
         console.log(error);
         if (groupKey) {
           groups.splice(index, 1);
-         } else {
-          groups.pop()
+        } else {
+          groups.pop();
         }
       });
   }
@@ -1019,7 +1051,7 @@ class MainTableDataStore {
     if (index < 0) {
       return;
     }
-    let cacheGroup = { ...groups[index] };
+    let cacheGroup = {...groups[index]};
     groups.splice(index, 1);
     //refresh
     this.runCallbacks();
@@ -1034,9 +1066,7 @@ class MainTableDataStore {
           },
         },
       })
-      .then((result) => {
-        
-      })
+      .then((result) => {})
       .catch((error) => {
         console.log(error);
         groups.slice(index, 0, cacheGroup);
@@ -1055,7 +1085,7 @@ class MainTableDataStore {
 
   getColumns() {
     if (!this._columns[this._currentBoardId]) {
-      return null;
+      return [];
     }
     return this._columns[this._currentBoardId];
   }
@@ -1067,7 +1097,7 @@ class MainTableDataStore {
     }
     let group = this._groups[this._currentBoardId][index];
     let rank = this.getCreateRowRank(null, groupKey);
-    let createdat =  new Date().toISOString();
+    let createdat = new Date().toISOString();
     let rowinput = {
       rank: rank,
       createdAt: createdat,
@@ -1075,8 +1105,8 @@ class MainTableDataStore {
       creatorID: this._currentUser.id,
       deleteFlag: false,
     };
-    let cacheRowInput = { ...rowinput };
-    let cacheid = createdat+rank;
+    let cacheRowInput = {...rowinput};
+    let cacheid = createdat + rank;
     cacheRowInput['id'] = cacheid;
     let rows = group.rows;
     rows.push(cacheRowInput);
@@ -1086,15 +1116,14 @@ class MainTableDataStore {
     let rowdata = this._rowData[this._currentBoardId][cacheid];
     for (var i = 0; i < this._columns[this._currentBoardId].length; i++) {
       const column = this._columns[this._currentBoardId][i];
-      if (column.level !== 0 || column.name === ColumnType.ROWACTION || column.name === ColumnType.ROWSELECT)
-        continue;
+      if (column.level !== 0 || column.name === ColumnType.ROWACTION || column.name === ColumnType.ROWSELECT) continue;
       if (column.isTitle) {
         rowdata[column.columnKey] = newItem;
       } else {
         rowdata[column.columnKey] = null;
       }
     }
-    
+
     //refresh
     this.runCallbacks();
 
@@ -1121,7 +1150,7 @@ class MainTableDataStore {
             continue;
           if (column.isTitle) {
             this.createCellData(row.id, column.columnKey, newItem);
-          } 
+          }
         }
       })
       .catch((error) => {
@@ -1301,7 +1330,7 @@ class MainTableDataStore {
       });
   }
 
-createCellData(rowId, columnId, value, columnComponentType, specialValue) {
+  createCellData(rowId, columnId, value, columnComponentType, specialValue) {
     this._apolloClient
       .mutate({
         mutation: gql(createData),
@@ -1390,7 +1419,7 @@ createCellData(rowId, columnId, value, columnComponentType, specialValue) {
     this._columns[this._currentBoardId].splice(index, 1);
     //refresh
     // this.runCallbacks();
-    this._mainPageCallBack()
+    this._mainPageCallBack();
   }
 
   removeSubColumn(columnKey) {
@@ -1412,7 +1441,7 @@ createCellData(rowId, columnId, value, columnComponentType, specialValue) {
 
     let groupRows = this._groups[this._currentBoardId][groupIndex].rows;
     let rowIndex = groupRows.findIndex((row) => row.id === rowKey);
-    let rowData = Object.assign({}, groupRows[rowIndex])
+    let rowData = Object.assign({}, groupRows[rowIndex]);
 
     this._apolloClient
       .mutate({
@@ -1424,9 +1453,7 @@ createCellData(rowId, columnId, value, columnComponentType, specialValue) {
           },
         },
       })
-      .then((result) => {
-        
-      })
+      .then((result) => {})
       .catch((error) => {
         console.log(error);
         groupRows.splice(rowIndex, 0, rowData);
@@ -1440,8 +1467,8 @@ createCellData(rowId, columnId, value, columnComponentType, specialValue) {
       groupRowIndex: rowIndex,
       rowKey,
       groupKey,
-      rowData
-    }
+      rowData,
+    };
   }
 
   undoRemoveRow(groupKey, rowKey, groupRowIndex, rowData) {
@@ -1449,7 +1476,7 @@ createCellData(rowId, columnId, value, columnComponentType, specialValue) {
     if (groupIndex < 0) {
       return;
     }
-    
+
     let groupRows = this._groups[this._currentBoardId][groupIndex].rows;
 
     this._apolloClient
@@ -1462,9 +1489,7 @@ createCellData(rowId, columnId, value, columnComponentType, specialValue) {
           },
         },
       })
-      .then((result) => {
-        
-      })
+      .then((result) => {})
       .catch((error) => {
         console.log(error);
         let rowIndex = groupRows.findIndex((row) => row.id === rowKey);
@@ -1765,7 +1790,7 @@ createCellData(rowId, columnId, value, columnComponentType, specialValue) {
           threads = [];
           threads.push(threadData);
         }
-        this._rowThreadData[this._currentBoardId][createData.rowID] = threads
+        this._rowThreadData[this._currentBoardId][createData.rowID] = threads;
         this._rowThreadSize[boardId][createData.rowID] = size;
         setUpdateInfo(threads);
 
@@ -1978,9 +2003,9 @@ createCellData(rowId, columnId, value, columnComponentType, specialValue) {
   }
 
   updateColumnBoardData(columnKey, updateData) {
-    let column = this.getColumn(columnKey)
-    updateData.id = column.id
-    let oldColumn = Object.assign({}, column)
+    let column = this.getColumn(columnKey);
+    updateData.id = column.id;
+    let oldColumn = Object.assign({}, column);
     this._apolloClient
       .mutate({
         mutation: gql(updateColumnBoard),
@@ -1992,14 +2017,14 @@ createCellData(rowId, columnId, value, columnComponentType, specialValue) {
       .catch((error) => {
         console.log(error);
         for (let key in updateData) {
-          column[key] = oldColumn[key]
+          column[key] = oldColumn[key];
         }
       });
-    
+
     for (let key in updateData) {
-      column[key] = updateData[key]
+      column[key] = updateData[key];
     }
-    this.runCallbacks()
+    this.runCallbacks();
   }
 
   /**

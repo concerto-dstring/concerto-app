@@ -447,7 +447,7 @@ class MainTable extends React.Component {
   }
 
   _onGetListUsers = () => {
-    return this.state.data.getListUsers()
+    return this.state.data.getSearchUserList()
   }
   
   _onFilterChangeCallback = (value, type) => {
