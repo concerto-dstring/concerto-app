@@ -197,7 +197,7 @@ class MainTable extends React.Component {
     this.state = {
       data: this._dataset,
       filters: {rowKey: ''},
-      columns: this._dataset.getColumns(),
+      columns: this._dataset.getColumns()||[],
       version: 0,
       isShowAddSubRowModal: false,
       isShowReNameModal: false,

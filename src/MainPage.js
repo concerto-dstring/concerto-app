@@ -34,7 +34,7 @@ const {Panel} = Collapse;
 const {Header, Content, Sider} = Layout;
 
 // Sider默认宽度
-const defaultSiderWidth = 300;
+const defaultSiderWidth = 250;
 
 let intervalTimer;
 
@@ -349,15 +349,15 @@ class MainPage extends React.Component {
                   <span className="item_title">{item.name}</span>
                 </Link>
               </div>
-
+              <div style={{width: 24, paddingLeft: '5px'}}>
+                <Badge count={dataset.getNotificationsByBoardId(item.id)} style={{width: 20, height: 20, padding: 0}} />
+              </div>
               <div className="body_left_sider_panel_menu_item" style={style} onClick={this.handleBoardItemClick}>
                 <Dropdown overlay={this.getBoardItemMenus(item.id, item.name)} placement="bottomLeft" trigger="click">
                   <EllipsisOutlined className="more_menu"/>
                 </Dropdown>
               </div>
-              <div style={{width: 24, paddingLeft: '8px'}}>
-                <Badge count={dataset.getNotificationsByBoardId(item.id)} style={{width: 20, height: 20, padding: 0}} />
-              </div>
+              
             </div>
           );
         })}
@@ -437,20 +437,20 @@ class MainPage extends React.Component {
               className="body_left_sider"
               style={{}}
             >
-              <div style={{height: '60px'}}>
+              <div style={{height: '53.5px'}}>
                 <Row>
                   <Col span={5}>
                     <img className="header_logo" src="../logo.png" />
                   </Col>
                   <Col span={4}>
-                    <h3 style={{fontWeight: 'bold', lineHeight: '63px'}}>{TooltipMsg.app_name}</h3>
+                    <h3 style={{fontWeight: 'bold', lineHeight: '53.5px',marginLeft:'10px'}}>{TooltipMsg.app_name}</h3>
                   </Col>
                   <Col span={15}>
-                    {/* <div className="collpseBar">
+                    <div className="collpseBar">
                       {
                         collapsed ? <DoubleRightOutlined onClick={this.toggle}/> : <DoubleLeftOutlined onClick={this.toggle}/>
                       }
-                    </div>                    */}
+                    </div>                   
                   </Col>
                 </Row>
               </div>
@@ -480,7 +480,7 @@ class MainPage extends React.Component {
                         fontWeight:'bold'
                       }}
                     >
-                      {dataset._currentUser.fname ? dataset._currentUser.fname: dataset._currentUser.username}
+                      {dataset._currentUser.fname ? dataset._currentUser.fname: (dataset._currentUser.username?dataset._currentUser.username.split('')[0]:"")}
                     </Avatar>
                     {dataset._currentUser.fname ? (dataset._currentUser.lname+dataset._currentUser.fname): dataset._currentUser.username}
                   </span>
