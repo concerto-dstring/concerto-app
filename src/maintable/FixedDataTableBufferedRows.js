@@ -151,8 +151,8 @@ class FixedDataTableBufferedRows extends React.Component {
               </div>
               <div
                 className={joinClasses(
-                  cx('fixedDataTableLayout/bottomShadow'),
-                  cx('public/fixedDataTable/bottomShadow'),
+                  cx('fixedDataTableLayout/topShadow'),
+                  cx('public/fixedDataTable/topShadow'),
                 )}
                 style={{top: 60}}
               />
