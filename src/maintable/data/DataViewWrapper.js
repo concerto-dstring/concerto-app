@@ -85,6 +85,7 @@ class DataViewWrapper {
     this.getNotificationsByRowId = this.getNotificationsByRowId.bind(this);
     this.getCurrentBoardId = this.getCurrentBoardId.bind(this);
     this.updateColumnBoardData = this.updateColumnBoardData.bind(this);
+    this.undoRemoveRow = this.undoRemoveRow.bind(this);
   }
 
   /**
@@ -315,7 +316,7 @@ class DataViewWrapper {
     }
 
     // 删除行
-    this._dataset.removeRow(removeRow.groupKey, removeRow.rowKey);
+    return this._dataset.removeRow(removeRow.groupKey, removeRow.rowKey);
   }
 
   removeRows(indexArray) {
@@ -759,6 +760,10 @@ class DataViewWrapper {
 
   updateColumnBoardData(columnKey, updateData) {
     this._dataset.updateColumnBoardData(columnKey, updateData);
+  }
+
+  undoRemoveRow(groupKey, rowKey, groupRowIndex, rowData) {
+    this._dataset.undoRemoveRow(groupKey, rowKey, groupRowIndex, rowData);
   }
 }
 

@@ -264,6 +264,18 @@ function reducers(state = getInitialState(), action) {
         isSection: action.modalData.isSection,
       })
 
+    case ActionTypes.DEAL_ROW_UNDO_DELETE_MESSAGE:
+      return Object.assign({}, state, {
+        isShowUndoModal: action.modalData.isShowUndoModal,
+        data: action.modalData.data,
+        rowData: action.modalData.rowData,
+        rowKey: action.modalData.rowKey,
+        groupRowIndex: action.modalData.groupRowIndex,
+        groupKey: action.modalData.groupKey,
+        isSection: action.modalData.isSection,
+        undoType: action.modalData.undoType,
+      })
+
     case ActionTypes.DEAL_ROW_MOVE_MODAL:
       return Object.assign({}, state, {
         isShowUndoModal: action.modalData.isShowUndoModal,
@@ -273,6 +285,7 @@ function reducers(state = getInitialState(), action) {
         sourceGroupKey: action.modalData.sourceGroupKey,
         targetGroupKey: action.modalData.targetGroupKey,
         isSection: action.modalData.isSection,
+        undoType: action.modalData.undoType,
       })
 
     case ActionTypes.DEAL_SECTION_RENAME_MODAL:
@@ -299,6 +312,7 @@ function reducers(state = getInitialState(), action) {
         isSection: action.modalData.isSection,
         group: action.modalData.group,
         groupIndex: action.modalData.groupIndex,
+        undoType: action.modalData.undoType,
       })
 
     case ActionTypes.DEAL_SECTION_COLOR_MENU:

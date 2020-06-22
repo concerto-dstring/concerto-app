@@ -6,6 +6,7 @@ import '../../../maintable/css/style/MoveToSectionMenu.less';
 
 import {connect} from 'react-redux';
 import {dealRowMoveModal} from '../../../maintable/actions/rowActions';
+import {UndoType} from '../../../maintable/data/MainTableType';
 
 const {Search} = Input;
 
@@ -107,6 +108,7 @@ class MoveToSectionMenu extends Component {
       rowKey,
       sourceGroupKey: this.state.curGroupKey,
       targetGroupKey,
+      undoType: UndoType.ROW_UNDO_MOVE,
     });
   };
 

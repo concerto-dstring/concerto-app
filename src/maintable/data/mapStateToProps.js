@@ -6,13 +6,17 @@ export const mapRowActionStateToProps = (state) => {
     isShowUndoModal: state.isShowUndoModal,
     columnKey: state.columnKey,
     rowIndex: state.rowIndex,
+    rowData: state.rowData,
     rowKey: state.rowKey,
+    groupRowIndex: state.groupRowIndex,
+    groupKey: state.groupKey,
     group: state.group,
     groupIndex: state.groupIndex,
     sourceGroupKey: state.sourceGroupKey,
     targetGroupKey: state.targetGroupKey,
     tableData: state.data,
     oldSourceRow: state.oldSourceRow,
+    undoType: state.undoType,
   };
 };
 
