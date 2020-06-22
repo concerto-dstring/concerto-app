@@ -872,7 +872,7 @@ const DRAG_SCROLL_BUFFER = 40;
             cx('fixedDataTableLayout/bottomShadow'),
             cx('public/fixedDataTable/bottomShadow'),
           )}
-          style={{top: visibleRowsHeight}}
+          // style={{top: visibleRowsHeight}}
         />;
     }
     //var tabIndex = null;
