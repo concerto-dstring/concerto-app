@@ -16,6 +16,8 @@
   background-color: #fff;
   border-bottom-color: #f2f3f3 !important;
   border-right-color: #fafafa !important;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .public_fixedDataTableCell_main:hover  .sc-AxiKw{
   border:dashed rgb(168, 164, 164) 1px;

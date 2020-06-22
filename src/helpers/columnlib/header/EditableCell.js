@@ -16,6 +16,8 @@ const CellContainer = styled.div`
   align-items: center;
   height: 31px;
   overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 `;
 
 class EditableCell extends React.PureComponent {

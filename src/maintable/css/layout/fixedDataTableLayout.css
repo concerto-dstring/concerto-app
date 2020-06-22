@@ -23,11 +23,6 @@
   border-bottom-width: 1px;
 }
 
-.fixedDataTableLayout_footer .public_fixedDataTableCell_main {
-  /* border-top-style: solid;
-  border-top-width: 1px; */
-}
-
 .fixedDataTableLayout_topShadow,
 .fixedDataTableLayout_bottomShadow {
   height: 4px;
@@ -44,4 +39,19 @@
 .fixedDataTableLayout_rowsContainer {
   overflow: hidden;
   position: relative;
+}
+
+.fixedDataTableLayout_AffixContainer {
+  height: 60px;
+  position: sticky;
+  left: 0;
+  right: 0;
+  z-index: 3;
+  top: 0;
+  background-color: RGB(243, 242, 242);
+}
+
+.fixedDataTableLayout_AffixContent {
+  position: absolute;
+  top: 22px;
 }
