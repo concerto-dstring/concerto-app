@@ -322,9 +322,9 @@ class MainPage extends React.Component {
       <Panel
         header={
           <div className="body_left_sider_panel_header">
-            <div style={{textAlign: 'left'}}>{name}</div>
+            <div style={{textAlign: 'left',fontSize:'13px',color:'#A0A4A8'}}>{name}</div>
             <div style={{textAlign: 'right'}} onClick={this.createBoard}>
-              <PlusOutlined style={{fontSize: '14px', marginRight: '13px'}} />
+              <PlusOutlined style={{fontSize: '13px', marginRight: '13px'}} />
             </div>
           </div>
         }
@@ -474,7 +474,8 @@ class MainPage extends React.Component {
                       style={{
                         background: dataset._currentUser.avatar ? dataset._currentUser.avatar : '#0073bb',
                         cursor: 'pointer',
-                        fontSize:'15px'
+                        fontSize:'14px',
+                        fontWeight:'bold'
                       }}
                     >
                       {dataset._currentUser.fname ? dataset._currentUser.fname: dataset._currentUser.username}

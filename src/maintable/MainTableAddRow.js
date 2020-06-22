@@ -2,8 +2,7 @@
 
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Input } from 'semantic-ui-react';
-
+import { Input} from 'antd';
 import cx from './vendor_upstream/stubs/cx';
 import { sumPropWidths } from './helper/widthHelper';
 import Scrollbar from './Scrollbar';
@@ -157,6 +156,8 @@ class MainTableAddRow extends React.Component {
       height: this.props.height,
       zIndex: this.props.zIndex,
       borderRadius:'0px',
+      background:'#fafafa',
+      border:'none',
       borderLeft:'3px solid '+groupColor
     }
 
@@ -203,12 +204,12 @@ class MainTableAddRow extends React.Component {
     }
 
     return ( 
-          <div> 
+          <div style={{background:'#fafafa'}}> 
             {dropPlace}
             <div style={style} className={className} >
               <Input 
                 style={inputStyle} 
-                action= {{content:'添加', onClick:() => this._onNewrowButton(this.props) }} 
+                // action= {{content:'添加', onClick:() => this._onNewrowButton(this.props) }} 
                 placeholder='+' 
                 onKeyPress={this._onKeyPress} 
                 value={this.state.newItem} 

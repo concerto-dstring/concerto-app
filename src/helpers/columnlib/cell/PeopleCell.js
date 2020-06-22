@@ -52,7 +52,7 @@ class PeopleCell extends React.PureComponent {
     let value = this.searchInputRef.current.input.input.value;
     if (value) {
       const {userList} = this.state;
-      let valueLow = value.toLowerCase();
+      let valueLow = value.trim().toLowerCase();
       let filterUserList = userList
         .slice()
         .filter(
@@ -225,7 +225,7 @@ class PeopleCell extends React.PureComponent {
           onVisibleChange={this.handleChangeVisible}
           getPopupContainer={() => this.props.container}
           content={
-            <div style={{pointerEvents: 'visible'}}
+            <div style={{pointerEvents: 'visible', width: 240}}
             onMouseEnter={handleCellEnter}
             onMouseLeave={handleCellLeave}>
               <Divider className="dividerStyle">People</Divider>
@@ -246,7 +246,7 @@ class PeopleCell extends React.PureComponent {
             </div>
           }
           title={
-            <div style={{pointerEvents: 'visible'}}>
+            <div style={{pointerEvents: 'visible', width: 240}}>
               <div style={{paddingBottom: '10px', display: 'flex', flexWrap: 'wrap'}}>
                 {selectedUsers.map((v, i) => (
                   <Tag key={i} closable className="userTag" onClose={this.handleUserRemove.bind(this, v)}>

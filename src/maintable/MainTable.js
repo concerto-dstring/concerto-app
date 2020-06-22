@@ -45,8 +45,6 @@ import {connect} from 'react-redux';
 import {mapRowActionStateToProps} from './data/mapStateToProps';
 import SummaryCell from '../helpers/columnlib/cell/SummaryCell';
 
-import RowHeaderDrawer from '../helpers/RowHeaderDrawer';
-
 /**
  * A cell that is aware of its context
  *
@@ -380,6 +378,11 @@ class MainTable extends React.Component {
     const addColumnStyle = {
       boxShadow: 'none',
     };
+    const noBarStyle = {
+      background: '#f2f3f3',
+      height: '100%',
+      width: '100%'
+    };
     const menu = (
       <Menu onClick={this._onColumnAddCallback} style={{width: '100px'}}>
         <Menu.Item key={'DATE-' + level}>
@@ -420,6 +423,7 @@ class MainTable extends React.Component {
         <Button basic circular icon="plus circle" style={addColumnStyle} />
       </Dropdown>
     );
+    colTemplate.footer = <div style={noBarStyle}></div>
     colTemplate.width = width;
     return colTemplate;
   }
@@ -508,7 +512,6 @@ class MainTable extends React.Component {
             <UndoMessage 
                 isShowUndoModal={this.state.isShowUndoModal}
             />
-            <RowHeaderDrawer />
             </div>   
         </TableContext.Provider>   
         );

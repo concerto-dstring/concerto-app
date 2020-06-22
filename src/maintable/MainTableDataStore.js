@@ -976,9 +976,7 @@ class MainTableDataStore {
         },
       })
       .then((result) => {
-        this._groups[this._currentBoardId].splice(index, 1);
-
-        this.runCallbacks();
+        
       })
       .catch((error) => {
         console.log(error);
@@ -1361,7 +1359,7 @@ class MainTableDataStore {
     let rank;
     let insertIndex;
     if (columnAfter) {
-      let insertIndex = this._columns[this._currentBoardId].findIndex((column) => column.columnKey === columnAfter);
+      insertIndex = this._columns[this._currentBoardId].findIndex((column) => column.columnKey === columnAfter);
       if (insertIndex <= 0) {
         return;
       }
@@ -1630,7 +1628,7 @@ class MainTableDataStore {
           threads = [];
           threads.push(threadData);
         }
-
+        this._rowThreadData[this._currentBoardId][createData.rowID] = threads
         this._rowThreadSize[boardId][createData.rowID] = size;
         setUpdateInfo(threads);
 
@@ -1786,7 +1784,7 @@ class MainTableDataStore {
   dealNotReadNotifications(rowId, boardId, threads, setUpdateInfo) {
     let notifications = this._rowNotification[this._currentBoardId][rowId];
     let notificationsSlice = [];
-    let boardNotReadCount = this._boardNotifications[boardId][rowId];
+    let boardNotReadCount = this._boardNotifications[boardId][rowId] ? this._boardNotifications[boardId][rowId] : 0;
     if (notifications && notifications.length > 0) {
       for (let i = 0; i < notifications.length; i++) {
         let notification = notifications[i];
@@ -1840,6 +1838,31 @@ class MainTableDataStore {
       .catch((error) => {
         console.log(error);
       });
+  }
+
+  updateColumnBoardData(columnKey, updateData) {
+    let column = this.getColumn(columnKey)
+    updateData.id = column.id
+    let oldColumn = Object.assign({}, column)
+    this._apolloClient
+      .mutate({
+        mutation: gql(updateColumnBoard),
+        variables: {
+          input: updateData,
+        },
+      })
+      .then((result) => {})
+      .catch((error) => {
+        console.log(error);
+        for (let key in updateData) {
+          column[key] = oldColumn[key]
+        }
+      });
+    
+    for (let key in updateData) {
+      column[key] = updateData[key]
+    }
+    this.runCallbacks()
   }
 
   /**

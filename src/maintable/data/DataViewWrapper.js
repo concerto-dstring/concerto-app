@@ -84,6 +84,7 @@ class DataViewWrapper {
     this.updateRowReadMessageStatus = this.updateRowReadMessageStatus.bind(this);
     this.getNotificationsByRowId = this.getNotificationsByRowId.bind(this);
     this.getCurrentBoardId = this.getCurrentBoardId.bind(this);
+    this.updateColumnBoardData = this.updateColumnBoardData.bind(this);
   }
 
   /**
@@ -696,6 +697,7 @@ class DataViewWrapper {
       dateText2 = minDate;
     } else {
       // 显示最晚时间
+      summaryRule = DateCellSummaryRule.LATEST.key
       dateText1 = DateCellSummaryRule.LATEST.desc;
       dateText2 = maxDate;
     }
@@ -703,6 +705,7 @@ class DataViewWrapper {
     let dateSummary = {
       dateText1,
       dateText2,
+      summaryRule
     };
 
     return dateSummary;
@@ -752,6 +755,10 @@ class DataViewWrapper {
   getNotificationsByRowId(rowIndex) {
     let rowId = this.getRowKey(rowIndex);
     return this._dataset.getNotificationsByRowId(rowId);
+  }
+
+  updateColumnBoardData(columnKey, updateData) {
+    this._dataset.updateColumnBoardData(columnKey, updateData);
   }
 }
 
