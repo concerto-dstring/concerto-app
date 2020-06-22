@@ -18,7 +18,7 @@ const CellContainer = styled.div`
   align-items: center;
   height: 100%;
   overflow: hidden;
-  margin: 2px 5px;
+  margin: 0px 5px;
   padding: 5px;
 `;
 @connect(mapSectionHeaderStateToProps, {dealSectionColorMenu})
