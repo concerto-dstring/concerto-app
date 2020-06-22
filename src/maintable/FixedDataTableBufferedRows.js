@@ -132,7 +132,7 @@ class FixedDataTableBufferedRows extends React.Component {
           isColumnReordering={!!props.isColumnReordering}
           columnReorderingData={props.columnReorderingData}
           showScrollbarY={props.scrollEnabledY}
-          container={this._divRef}
+          container={props.container}
           data={props.data}
           isRTL={props.isRTL}
           siderWidth={props.siderWidth}
