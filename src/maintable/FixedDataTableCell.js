@@ -300,7 +300,7 @@ class FixedDataTableCell extends React.Component {
                   {isHeaderOrFooter&&
                   <Tooltip placement="top" title={<span>展开“{column.name}”列</span>}>
                     <ColumnWidthOutlined 
-                    style={{cursor:'pointer',lineHeight:'45px'}}  
+                    style={{cursor:'pointer',lineHeight:'35px'}}  
                     onClick={table._onCollpseColumnCallback.bind(this,columnKey,false)}/>
                   </Tooltip>}
                 </div>;
