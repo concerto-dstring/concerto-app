@@ -12,7 +12,7 @@ export const getCellRenderValues = () => {
 };
 
 const cellPopupHeight = {
-  DATE: 450,
+  DATE: 400,
   PEOPLE: 364,
   STATUS: 250,
 };
