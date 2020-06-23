@@ -400,7 +400,8 @@ class MainTable extends React.Component {
       lineHeight: '35px',
       textAlign: 'center',
       width: '100%',
-      fontSize:'12px'
+      fontSize:'12px',
+      cursor: 'pointer'
     }
     const menu = (
       <Menu onClick={this._onColumnAddCallback} style={{width: '100px'}}>
@@ -439,8 +440,7 @@ class MainTable extends React.Component {
     colTemplate.level = level;
     colTemplate.header = (
       <Dropdown overlay={menu} trigger={['click']}>
-        <PlusOutlined  style={addBarStyle} />
-        {/* <Button basic circular icon="plus circle" style={addColumnStyle} /> */}
+        <PlusOutlined style={addBarStyle} />
       </Dropdown>
     );
     colTemplate.footer = <div style={noBarStyle}></div>
