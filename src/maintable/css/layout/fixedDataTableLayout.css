@@ -25,7 +25,7 @@
 
 .fixedDataTableLayout_topShadow,
 .fixedDataTableLayout_bottomShadow {
-  height: 4px;
+  /* height: 4px; */
   left: 0;
   position: absolute;
   right: 0;
@@ -39,10 +39,11 @@
 .fixedDataTableLayout_rowsContainer {
   overflow: hidden;
   position: relative;
+  background: #f2f3f3;
 }
 
 .fixedDataTableLayout_AffixContainer {
-  height: 60px;
+  height: 32px;
   position: sticky;
   left: 0;
   right: 0;
@@ -53,5 +54,5 @@
 
 .fixedDataTableLayout_AffixContent {
   position: absolute;
-  top: 25px;
+  top: 5px;
 }

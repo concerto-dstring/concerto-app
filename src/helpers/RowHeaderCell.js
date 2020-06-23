@@ -243,7 +243,7 @@ class RowHeaderCell extends React.PureComponent {
     };
 
     if (editing) {
-      cellStyle.margin = '2px 5px';
+      cellStyle.margin = '0px 5px';
     }
 
     if (isOpenRowHeaderDrawer && drawerRowIndex === rowIndex) {

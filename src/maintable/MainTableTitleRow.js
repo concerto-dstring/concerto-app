@@ -111,8 +111,8 @@ class MainTableTitleRow extends React.Component {
         <div className="body_content_title_row">
           <div className="body_content_title">
             <h1>
-              {/* <DoubleRightOutlined style={{fontSize:'16px'}}/>&nbsp;&nbsp; */}
-              <div className="item_color" style={{background: this.props.boardColor}}></div>
+              {/* <DoubleRightOutlined className="collpse_style"/>&nbsp;&nbsp; */}
+              <div className="item_color" style={{background: this.props.boardColor,marginBottom:'3px'}}></div>
               {this.props.title}
             </h1>
           </div>

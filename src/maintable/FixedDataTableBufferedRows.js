@@ -117,7 +117,7 @@ class FixedDataTableBufferedRows extends React.Component {
             cx('public/fixedDataTable/header'),
           )}
           width={props.width}
-          height={40}
+          height={32}
           offsetTop={0}
           scrollLeft={Math.round(props.scrollLeft)}
           visible={true}
