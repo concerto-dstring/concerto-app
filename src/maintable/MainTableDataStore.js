@@ -988,6 +988,7 @@ class MainTableDataStore {
     let cacheGroupinput = {...groupinput};
     let cacheid = createdat + rank;
     cacheGroupinput['id'] = cacheid;
+    cacheGroupinput['groupKey'] = cacheid;
     cacheGroupinput.rows = [];
     if (groupKey) {
       groups.splice(index, 1, cacheGroupinput);
@@ -1006,6 +1007,8 @@ class MainTableDataStore {
       })
       .then((result) => {
         let group = result.data.createGroup;
+        /* used by the dataViewWrapper */
+        group['groupKey'] = group.id;
         group.rows = [];
         /* replace the cache group with the database record */
         if (groupKey) {
@@ -1049,7 +1052,7 @@ class MainTableDataStore {
 
   removeGroup(groupKey) {
     let groups = this._groups[this._currentBoardId];
-    let index = groups.findIndex((column) => column.groupKey === groupKey);
+    let index = groups.findIndex((group) => group.groupKey === groupKey);
     if (index < 0) {
       return;
     }
@@ -1078,7 +1081,7 @@ class MainTableDataStore {
   }
 
   getGroupAt(groupKey) {
-    let index = this._groups[this._currentBoardId].findIndex((column) => column.groupKey === groupKey);
+    let index = this._groups[this._currentBoardId].findIndex((group) => group.groupKey === groupKey);
     if (index < 0) {
       return null;
     }
@@ -1095,7 +1098,9 @@ class MainTableDataStore {
   addNewRow(groupKey, newItem) {
     let index = this._groups[this._currentBoardId].findIndex((group) => group.groupKey === groupKey);
     if (index < 0) {
-      return;
+      index = this._groups[this._currentBoardId].findIndex((group) => (group.createdAt + group.rank) === groupKey);
+      if (index < 0)
+        return;
     }
     let group = this._groups[this._currentBoardId][index];
     let rank = this.getCreateRowRank(null, groupKey);
