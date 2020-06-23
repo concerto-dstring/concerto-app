@@ -23,10 +23,17 @@ export const ColumnType = {
   GROUPTITLE: 'GROUPTITLE',
 };
 
+export const DeleteType = {
+  ROW_DELETE: 'ROW_DELETE',
+  SECTION_DELETE: 'SECTION_DELETE',
+  COLUMN_DELETE: 'COLUMN_DELETE',
+};
+
 export const UndoType = {
   ROW_UNDO_MOVE: 'ROW_UNDO_MOVE',
   ROW_UNDO_DELETE: 'ROW_UNDO_DELETE',
   SECTION_UNDO_DELETE: 'SECTION_UNDO_DELETE',
+  COLUMN_UNDO_DELETE: 'COLUMN_UNDO_DELETE',
 };
 
 export function compareSubLevel(rowIndex1, rowIndex2) {
