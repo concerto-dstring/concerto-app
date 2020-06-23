@@ -3,58 +3,65 @@ import {Modal} from 'antd';
 
 import {connect} from 'react-redux';
 import {dealRowDeleteModal, dealRowUndoDeleteMessage} from '../../../maintable/actions/rowActions';
+import {dealColumnDeleteModal, dealColumnUndoDeleteMessage} from '../../../maintable/actions/columnActions';
 import {dealSectionDeleteModal, dealSectionUndoDeleteMessage} from '../../../maintable/actions/SectionActions';
 import {mapRowActionStateToProps} from '../../../maintable/data/mapStateToProps';
 
 import '../../../maintable/css/style/SectionMenu.less';
 import TooltipMsg from '../../../TooltipMsg';
-import {UndoType} from '../../../maintable/data/MainTableType';
+import {UndoType, DeleteType} from '../../../maintable/data/MainTableType';
 
 @connect(mapRowActionStateToProps, {
   dealRowDeleteModal,
+  dealRowUndoDeleteMessage,
   dealSectionDeleteModal,
   dealSectionUndoDeleteMessage,
-  dealRowUndoDeleteMessage,
+  dealColumnDeleteModal,
+  dealColumnUndoDeleteMessage
 })
 class DeleteModal extends PureComponent {
-  handleCancelClick = (isSection, group) => {
+  handleCancelClick = (deleteType, group) => {
     // 关闭弹窗
-    if (isSection) {
+    if (deleteType === DeleteType.SECTION_DELETE) {
       this.props.dealSectionDeleteModal({
         isShowDeleteModal: false,
-        isSection,
+        deleteType,
         group,
       });
-    } else {
+    } else if (deleteType === DeleteType.ROW_DELETE) {
       this.props.dealRowDeleteModal({
         isShowDeleteModal: false,
-        isSection,
+        deleteType,
+      });
+    } else if (deleteType === DeleteType.COLUMN_DELETE) {
+      this.props.dealColumnDeleteModal({
+        isShowDeleteModal: false,
+        deleteType,
       });
     }
   };
 
   handleOKClick = () => {
-    const {tableData, rowIndex, isSection, group} = this.props;
+    const {tableData, rowIndex, deleteType, group, mainTable, columnKey} = this.props;
 
-    if (isSection) {
+    if (deleteType === DeleteType.SECTION_DELETE) {
       // 删除分区
       let groupIndex = tableData.removeGroup(group.groupKey);
-      this.handleCancelClick(isSection, group);
+      this.handleCancelClick(deleteType, group);
 
       // 显示撤销窗口
       this.props.dealSectionUndoDeleteMessage({
         isShowUndoModal: true,
         groupIndex,
         group,
-        isSection,
         data: tableData,
         undoType: UndoType.SECTION_UNDO_DELETE,
       });
-    } else {
+    } else if (deleteType === DeleteType.ROW_DELETE) {
       // 删除行
       let oldData = tableData.removeRow(rowIndex);
 
-      this.handleCancelClick(isSection);
+      this.handleCancelClick(deleteType);
 
       // 显示撤销窗口
       this.props.dealRowUndoDeleteMessage({
@@ -63,30 +70,44 @@ class DeleteModal extends PureComponent {
         groupRowIndex: oldData.groupRowIndex,
         groupKey: oldData.groupKey,
         rowData: oldData.rowData,
-        isSection,
         data: tableData,
         undoType: UndoType.ROW_UNDO_DELETE,
+      });
+    } else if (deleteType === DeleteType.COLUMN_DELETE) {
+      // 删除列
+      let columnData = mainTable.removeColumn(columnKey);
+      this.handleCancelClick(deleteType);
+
+      // 显示撤销窗口
+      this.props.dealColumnUndoDeleteMessage({
+        isShowUndoModal: true,
+        columnIndex: columnData.columnIndex,
+        column: columnData.oldColumn,
+        mainTable: mainTable,
+        undoType: UndoType.COLUMN_UNDO_DELETE,
       });
     }
   };
 
-  getModalTitle = (isSection, group) => {
-    if (isSection) {
-      let msg = TooltipMsg.is_delete_group.replace('@param', group.name);
+  getModalTitle = (deleteType, group) => {
+    if (deleteType === DeleteType.SECTION_DELETE) {
+      let msg = TooltipMsg.is_delete_group.replace('@param', group ? group.name : '');
       return msg;
-    } else {
+    } else if (deleteType === DeleteType.ROW_DELETE) {
       return TooltipMsg.is_delete_row;
+    } else if (deleteType === DeleteType.COLUMN_DELETE) {
+      return TooltipMsg.is_delete_column;
     }
   };
 
   render() {
-    const {isShowDeleteModal, isSection, group} = this.props;
+    const {isShowDeleteModal, deleteType, group} = this.props;
 
     return (
       <Modal
-        title={this.getModalTitle(isSection, group)}
+        title={this.getModalTitle(deleteType, group)}
         visible={isShowDeleteModal}
-        onCancel={this.handleCancelClick.bind(this, isSection, group)}
+        onCancel={this.handleCancelClick.bind(this, deleteType, group)}
         onOk={this.handleOKClick}
       >
         <span>{TooltipMsg.delete_tip}</span>

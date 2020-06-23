@@ -235,7 +235,7 @@ class PeopleCell extends React.PureComponent {
                     <div className="faceAvatar">
                       &nbsp;
                       <Avatar size={25} style={{background: v.faceColor}}>
-                        {v.fname}
+                        {v.username ? v.username.substring(0, 1) : '?'}
                       </Avatar>
                       &nbsp;
                       {!v.lname && !v.fname ? v.username : v.lname + v.fname}
@@ -251,7 +251,7 @@ class PeopleCell extends React.PureComponent {
                 {selectedUsers.map((v, i) => (
                   <Tag key={i} closable className="userTag" onClose={this.handleUserRemove.bind(this, v)}>
                     <Avatar size={22} style={{background: v.faceColor}}>
-                      {v.fname}
+                      {v.username ? v.username.substring(0, 1) : '?'}
                     </Avatar>
                     &nbsp;{!v.lname && !v.fname ? v.username : v.lname + v.fname}
                   </Tag>
@@ -272,13 +272,13 @@ class PeopleCell extends React.PureComponent {
               <div className="userAvatar">
                 {selectedUsers.length === 1 && (
                   <Avatar className="Avatar" size={25} style={{background: selectedUsers[0].faceColor}}>
-                    {selectedUsers[0].fname}
+                    {selectedUsers[0].username ? selectedUsers[0].username.substring(0, 1) : '?'}
                   </Avatar>
                 )}
                 {selectedUsers.length === 2 && (
                   <div>
                     <Avatar className="Avatar" size={25} style={{background: selectedUsers[0].faceColor}}>
-                      {selectedUsers[0].fname}
+                      {selectedUsers[0].username ? selectedUsers[0].username.substring(0, 1) : '?'}
                     </Avatar>
                     <Avatar
                       size={25}
@@ -288,14 +288,14 @@ class PeopleCell extends React.PureComponent {
                         background: selectedUsers[1].faceColor,
                       }}
                     >
-                      {selectedUsers[1].fname}
+                      {selectedUsers[1].username ? selectedUsers[1].username.substring(0, 1) : '?'}
                     </Avatar>
                   </div>
                 )}
                 {selectedUsers.length > 2 && (
                   <div>
                     <Avatar className="Avatar" size={25} style={{background: selectedUsers[0].faceColor}}>
-                      {selectedUsers[0].fname}
+                      {selectedUsers[0].username ? selectedUsers[0].username.substring(0, 1) : '?'}
                     </Avatar>
                     <Avatar size={25} className="Avatar moreUserAvatar">+{selectedUsers.length - 1}</Avatar>
                   </div>

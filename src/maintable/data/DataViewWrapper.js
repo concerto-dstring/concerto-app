@@ -86,6 +86,7 @@ class DataViewWrapper {
     this.getCurrentBoardId = this.getCurrentBoardId.bind(this);
     this.updateColumnBoardData = this.updateColumnBoardData.bind(this);
     this.undoRemoveRow = this.undoRemoveRow.bind(this);
+    this.updateColumnEditing = this.updateColumnEditing.bind(this);
   }
 
   /**
@@ -764,6 +765,10 @@ class DataViewWrapper {
 
   undoRemoveRow(groupKey, rowKey, groupRowIndex, rowData) {
     this._dataset.undoRemoveRow(groupKey, rowKey, groupRowIndex, rowData);
+  }
+
+  updateColumnEditing(columnKey, isEditing) {
+    this._dataset.updateColumnEditing(columnKey, isEditing);
   }
 }
 

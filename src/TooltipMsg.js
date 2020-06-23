@@ -14,6 +14,7 @@ export default {
   is_delete_board: '是否删除工作板 ',
   is_delete_group: '是否删除 @param 分区',
   is_delete_row: '是否删除行',
+  is_delete_column: '是否删除列',
   delete_success: '删除成功',
   move_success: '移动成功',
   search_board_placeholder: '搜索工作板...',
