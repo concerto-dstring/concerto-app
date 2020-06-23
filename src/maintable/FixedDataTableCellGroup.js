@@ -221,7 +221,8 @@ class FixedDataTableCellGroup extends React.Component {
 
     var style = {
       height: props.cellGroupWrapperHeight || props.height,
-      width: props.width
+      width: props.width,
+      marginLeft:'1px'
     };
 
     if (this.props.isRTL) {
@@ -229,7 +230,6 @@ class FixedDataTableCellGroup extends React.Component {
     } else {
       style.left = offsetLeft;
     }
-
     var onColumnResize = props.onColumnResize ? this._onColumnResize : null;
  
     let group = this.props.data.getGroupByRowIndex(this.props.rowIndex)

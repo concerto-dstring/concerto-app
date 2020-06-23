@@ -227,6 +227,7 @@ class FixedDataTableCell extends React.Component {
             )}
             style={columnResizerStyle}
           />
+          <div className="column_split_line"></div>
         </div>
       );
       // tableColumnSort = (
