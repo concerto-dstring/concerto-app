@@ -9,7 +9,7 @@
 'use strict';
 
 import $ from 'jquery';
-import {ColumnType} from './data/MainTableType';
+import {ColumnType, getDisplayName, getUserColor, getUserUrl} from './data/MainTableType';
 import {COLOR} from '../helpers/section/header/StyleValues';
 import {ListAllBoards, GetBoardbyId} from '../helpers/data/fetchBoards';
 import gql from 'graphql-tag';
@@ -595,7 +595,7 @@ class MainTableDataStore {
     if (this._teamUsers.length != 0) {
       return;
     }
-    let reg = new RegExp("[\\u4E00-\\u9FFF]+","g");
+    
     this._apolloClient
       .query({
         query: gql(listUsers),
@@ -608,26 +608,9 @@ class MainTableDataStore {
         let teamUsers = result.data.listUsers.items;
         this._teamUsers = [];
         teamUsers.map((user) => {
-          if (user.avatar.startsWith('#')) {
-            user.faceColor = user.avatar;
-          } else {
-            user.faceColor = '';
-          }
-
-          // 判断用户名是否包含中文
-          if (reg.test(user.username)) {
-            // 包含中文取最后两个字符
-            user.displayname = user.username.substring(user.username.length - 2, user.username.length);
-          }
-          else if (user.username.trim().indexOf(' ') !== -1) {
-            // 英文包含空格取根据空格分割前两段的首字母
-            let usernames = user.username.split(' ');
-            user.displayname = usernames[0].substring(0, 1) + usernames[1].substring(0, 1)
-          }
-          else {
-            // 英文取前两个字符
-            user.displayname = user.username.substring(0, 2)
-          }
+          user.faceColor = getUserColor(user.avatar);
+          user.displayname = getDisplayName(user.username);
+          user.userUrl = getUserUrl(user.id);
 
           if (currentUserId === user.id) {
             this._currentUser = user;

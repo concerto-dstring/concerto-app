@@ -19,7 +19,7 @@ import {getBase64, isImageFile} from './UploadFun';
 import {DISPLAY} from '../header/StyleValues';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
-import WebConstants from '../../../WebConstants';
+import { getUserUrl, getUserColor, getDisplayName } from '../../../maintable/data/MainTableType';
 
 class RowHeaderDrawerUpdate extends PureComponent {
   constructor(props) {
@@ -344,7 +344,7 @@ class RowHeaderDrawerUpdate extends PureComponent {
         let nfUsers = []; // 通知过的用户
         notificationUsers.map((userId) => {
           if (
-            replyHtml.indexOf(WebConstants.baseUrl + WebConstants.userUrl + userId) !== -1 &&
+            replyHtml.indexOf(getUserUrl(userId)) !== -1 &&
             nfUsers.indexOf(userId) === -1
           ) {
             let notificationData = {
@@ -367,7 +367,7 @@ class RowHeaderDrawerUpdate extends PureComponent {
 
         // 回复的回复
         for (let key in replyData) {
-          if (replyHtml.indexOf(WebConstants.baseUrl + WebConstants.userUrl + key) !== -1) {
+          if (replyHtml.indexOf(getUserUrl(key)) !== -1) {
             let notificationData = {
               subject: currentUserName + `回复了你的回复："${replyData[key].content}"`,
               content: null,
@@ -433,12 +433,9 @@ class RowHeaderDrawerUpdate extends PureComponent {
     if (data) {
       return replyList.map((reply) => {
         let user = reply.user;
-        if (user.avatar.startsWith('#')) {
-          user.faceColor = user.avatar;
-        } else {
-          user.faceColor = '';
-        }
-        user.userUrl = WebConstants.baseUrl + WebConstants.userUrl + user.id;
+        user.faceColor = getUserColor(user.avatar);
+        user.userUrl = getUserUrl(user.id);
+        user.displayname = getDisplayName(user.username);
         let likeUsers = reply.likedByUsersID ? reply.likedByUsersID.slice() : [];
         let isLiked = likeUsers.indexOf(currentUserId) !== -1;
 
@@ -659,7 +656,7 @@ class RowHeaderDrawerUpdate extends PureComponent {
   };
 
   insertPeople = (userName, userId) => {
-    const userUrl = WebConstants.baseUrl + WebConstants.userUrl + userId;
+    const userUrl = getUserUrl(userId);
     const userData = '@' + userName;
     let users = this.state.notificationUsers.slice();
     users.push(userId);
