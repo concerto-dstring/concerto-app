@@ -6,7 +6,6 @@ import except from 'except';
 import DataPropTypes from './DataPropTypes';
 import {DataViewWrapper} from './DataViewWrapper';
 import {RowType} from './MainTableType';
-import FixedDataTable from '../FixedDataTable';
 
 const TableContext = React.createContext();
 

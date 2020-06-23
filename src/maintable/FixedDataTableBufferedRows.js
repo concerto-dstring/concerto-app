@@ -154,7 +154,7 @@ class FixedDataTableBufferedRows extends React.Component {
                   cx('fixedDataTableLayout/topShadow'),
                   cx('public/fixedDataTable/topShadow'),
                 )}
-                style={{top: 60}}
+                style={{top: 32}}
               />
             </div>
            </div>;

@@ -42,7 +42,7 @@
 }
 
 .fixedDataTableLayout_AffixContainer {
-  height: 60px;
+  height: 34px;
   position: sticky;
   left: 0;
   right: 0;
@@ -53,5 +53,5 @@
 
 .fixedDataTableLayout_AffixContent {
   position: absolute;
-  top: 25px;
+  top: 0px;
 }

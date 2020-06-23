@@ -856,7 +856,7 @@ const DRAG_SCROLL_BUFFER = 40;
             cx('fixedDataTableLayout/topShadow'),
             cx('public/fixedDataTable/topShadow'),
           )}
-          style={{top: 0}}
+          style={{top: 32}}
         />;
     }
 
