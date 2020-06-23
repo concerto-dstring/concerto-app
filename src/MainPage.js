@@ -480,10 +480,10 @@ class MainPage extends React.Component {
                         fontWeight:'bold'
                       }}
                     >
-                      {dataset._currentUser.fname ? dataset._currentUser.fname: (dataset._currentUser.username?dataset._currentUser.username.split('')[0]:"")}
+                      {dataset._currentUser.displayname}
                     </Avatar>
                     <span>
-                      {dataset._currentUser.fname ? (dataset._currentUser.lname+dataset._currentUser.fname): dataset._currentUser.username}
+                      {dataset._currentUser.username}
                     </span>
                   </span>
                 </Dropdown>

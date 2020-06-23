@@ -265,10 +265,10 @@ class MainTableTitleRow extends React.Component {
                       return (
                         <Select.Option key={user.id} value={user.username}>
                           <Avatar size={20} style={{background: user.faceColor}}>
-                            {user.username ? user.username.substring(0, 1) : '?'}
+                            {user.displayname}
                           </Avatar>
                           &emsp;
-                          {!user.lname && !user.fname ? user.username : user.lname + user.fname}
+                          {user.username}
                         </Select.Option>
                       );
                     }

@@ -82,11 +82,11 @@ class RowHeaderDrawerUpdate extends PureComponent {
       <div className="row_drawer_card_header_between">
         <div>
           <Avatar size={40} style={{background: user.faceColor}}>
-            {!user.fname ? user.username.substring(0, 1) : user.fname}
+            {user.displayname}
           </Avatar>
           &nbsp;
           <a href={user.userUrl} target="_blank">
-            {!user.lname && !user.fname ? user.username : user.lname + user.fname}
+            {user.username}
           </a>
         </div>
         <div className="row_drawer_card_header_end">
@@ -324,7 +324,7 @@ class RowHeaderDrawerUpdate extends PureComponent {
         let boardId = data.getCurrentBoardId();
 
         // 通知
-        let currentUserName = currentUser.lname + currentUser.fname;
+        let currentUserName = currentUser.username;
         // 直接回复
         let createNfData = {
           subject: currentUserName + `回复了动态："${updateInfo.content}"`,
@@ -455,12 +455,12 @@ class RowHeaderDrawerUpdate extends PureComponent {
         return (
           <div key={reply.id} className="reply_body_component">
             <Avatar size={36} style={{background: user.faceColor, position: 'absolute'}}>
-              {!user.fname ? user.username.substring(0, 1) : user.fname}
+              {user.displayname}
             </Avatar>
             <div className="reply_body_data">
               <div className="reply_body_data_wrapper">
                 <a href={user.userUrl} target="_blank">
-                  {!user.lname && !user.fname ? user.username : user.lname + user.fname}:
+                  {user.username}:
                 </a>
                 &nbsp;
                 <span dangerouslySetInnerHTML={{__html: reply.content}} />
@@ -495,7 +495,7 @@ class RowHeaderDrawerUpdate extends PureComponent {
                     className="reply_body_data_tool_reply_btn"
                     onClick={this.replyMsg.bind(
                       this,
-                      !user.lname && !user.fname ? user.username : user.lname + user.fname,
+                      user.username,
                       user.userUrl,
                       user.id,
                       reply
@@ -532,7 +532,7 @@ class RowHeaderDrawerUpdate extends PureComponent {
         >
           <div className="reply_new_reply_component_open">
             <Avatar size={36} style={{background: currentUser.faceColor, position: 'absolute'}}>
-              {!currentUser.fname ? currentUser.username.substring(0, 1) : currentUser.fname}
+              {currentUser.displayname}
             </Avatar>
             <div className="reply_new_reply_component_all">
               <div className="reply_new_reply_component_wrapper">

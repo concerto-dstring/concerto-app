@@ -308,7 +308,7 @@ class RowHeaderDrawer extends PureComponent {
         let notifications = [];
         // 通知
         let nfUsers = []; // 通知过的用户
-        let currentUserName = this.state.currentUser.lname + this.state.currentUser.fname;
+        let currentUserName = this.state.currentUser.username;
         this.state.notificationUsers.map((userId) => {
           if (
             infoHtml.indexOf(WebConstants.baseUrl + WebConstants.userUrl + userId) !== -1 &&

@@ -3,7 +3,7 @@
  * @param {*} str
  */
 export function checkStrWithUserName(str) {
-  let match = /^[\u4e00-\u9fa5a-zA-Z0-9_]{1}([a-zA-Z0-9]|[_]){1,19}$/;
+  let match = /^[\u4e00-\u9fa5a-zA-Z0-9_]{1}([\u4e00-\u9fa5a-zA-Z0-9]|[_]){1,19}$/;
   if (match.test(str)) {
     return true;
   } else {
