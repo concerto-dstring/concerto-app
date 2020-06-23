@@ -37,3 +37,8 @@
 .public_fixedDataTableRow_columnsRightShadow {
   transform: rotate(180deg);
 }
+
+#addRow .ant-input:placeholder-shown {
+  text-overflow: ellipsis !important;
+  font-size: 18px !important;
+}
