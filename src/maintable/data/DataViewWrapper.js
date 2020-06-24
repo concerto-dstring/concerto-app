@@ -450,9 +450,9 @@ class DataViewWrapper {
     return null;
   }
 
-  getRowNameColumn() {
+  getRowNameColumn(level) {
     let columns = this._dataset.getColumns();
-    let column = columns.find((column) => column.name === ColumnType.GROUPTITLE);
+    let column = columns.find((column) => column.isTitle && column.level === level);
     return column.columnKey;
   }
 

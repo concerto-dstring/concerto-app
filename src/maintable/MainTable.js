@@ -172,7 +172,10 @@ const DataSummaryCell = function (props) {
 
 const FilterableDataTable = AddFilter(DataContext(Table));
 
-@connect(mapRowActionStateToProps, null, null, {forwardRef: true})
+@connect((state) => ({
+  isShowReNameModal: state.isShowReNameModal, 
+  isShowDeleteModal: state.isShowDeleteModal}), 
+  null, null, {forwardRef: true})
 class MainTable extends React.Component {
   static propTypes = {
     title: PropTypes.string.isRequired,
