@@ -2,8 +2,7 @@
 
 import PropTypes from 'prop-types';
 import React from 'react';
-import {Layout, Input, Avatar, Space, Select} from 'antd';
-import {Button} from 'semantic-ui-react';
+import {Layout, Input, Avatar, Space, Select, Button} from 'antd';
 import filterIcon from './helper/filterIcon.svg';
 
 import FixedDataTableTranslateDOMPosition from './FixedDataTableTranslateDOMPosition';
@@ -107,11 +106,11 @@ class MainTableTitleRow extends React.Component {
       <>
         <div className="body_content_title_row">
           <div className="body_content_title">
-            <h1>
+            <span>
               {/* <DoubleRightOutlined className="collpse_style"/>&nbsp;&nbsp; */}
               <div className="item_color" style={{background: this.props.boardColor,marginBottom:'3px'}}></div>
               {this.props.title}
-            </h1>
+            </span>
           </div>
           {/* <div className="body_content_title_right">
               <div className="body_content_title_right_item">
@@ -231,15 +230,15 @@ class MainTableTitleRow extends React.Component {
           <div className="main_table_add_btn_row">
             <Space size="middle">
               <div id="addGroupBtn">
-                <Button onClick={this._onAddNewGroup} className="main_table_add_btn">
+                <div onClick={this._onAddNewGroup} className="main_table_add_btn">
                   <div className="main_table_btn_layout">
-                    <span style={{}}>+ &nbsp;工作项</span>
+                    + &nbsp;工作项
                     <div className="main_table_add_btn_separator" />
-                    <div>
+                    {/* <div> */}
                       <CaretDownOutlined />
-                    </div>
+                    {/* </div> */}
                   </div>
-                </Button>
+                </div>
               </div>
               <div style={{display: 'flex'}}>
                 <div className="main_table_select_user_icon">
