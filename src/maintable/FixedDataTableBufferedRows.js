@@ -43,6 +43,210 @@ class FixedDataTableBufferedRows extends React.Component {
     this._staticRowArray.length = 0;
   }
 
+  _rowExpanded = ({ rowIndex, height, width }) => {
+    let props = this.props;
+    let subRows = props.subRowsGetter(rowIndex);
+    const onColumnReorder = props.onColumnReorderEndCallback ? this._onColumnReorder : null;
+    if (subRows.length == 0) {
+      return null;
+    }
+    const style = {
+      paddingTop: '3px',
+      height: height,
+      width: width,
+      overflow: 'hidden', 
+    }
+  
+    //sum up width of all columns
+    let subwidth = 0;
+    props.subFixedColumns.cell.forEach(c=> subwidth += c.props.width);
+    props.subFixedRightColumns.cell.forEach(c=> subwidth += c.props.width);
+    props.subScrollableColumns.cell.forEach(c=> subwidth += c.props.width);
+    let rows = [];
+    let offset = 0;
+    let subRowIndex = 0;
+    for (let i = 0; i < subRows.length; i++) {
+      let type = subRows[i].rowType;
+      let rowHeight = props.subRowHeightGetter(type);
+      let indexString = `${rowIndex}.${subRowIndex}`;
+      let rowProps = {};
+      rowProps.height = rowHeight;
+      rowProps.offsetTop = offset;
+  
+      rowProps.rowKey = props.rowKeyGetter ? props.rowKeyGetter(indexString) : i;
+  
+      rowProps.attributes = props.rowSettings.rowAttributesGetter && props.rowSettings.rowAttributesGetter(rowIndex);
+      let row;
+      switch (type) {
+        case RowType.SECTIONGROUP:
+          row =
+            <MainTableSectionGroupBar
+              key={i}
+              index={indexString}
+              isScrolling={props.isScrolling}
+              isRowReordering={props.isRowReordering}
+              rowReorderingData={props.rowReorderingData}
+              height={rowHeight}
+              width={subwidth}
+              rowReorderingData={props.rowReorderingData}
+              offsetTop={offset}
+              scrollLeft={props.scrollLeft}
+              fixedColumns={props.fixedColumns.cell}
+              fixedRightColumns={props.fixedRightColumns.cell}
+              scrollableColumns={props.scrollableColumns.cell}
+              showScrollbarY={props.scrollEnabledY}
+              isRTL={props.isRTL}
+              container={this._divRef}
+              data={props.data}
+              visible={true}
+              onCellEdit={props.onCellEdit}
+              onCellEditEnd={props.onCellEditEnd}
+            >
+            </MainTableSectionGroupBar>
+            break;
+        case RowType.SUBHEADER:
+          row =
+            <FixedDataTableRow
+              key={i}
+              index={indexString}
+              isHeaderOrFooter={true}
+              isScrolling={props.isScrolling}
+              isRowReordering={props.isRowReordering}
+              rowReorderingData={props.rowReorderingData}
+              className={joinClasses(
+                cx('fixedDataTableLayout/header'),
+                cx('public/fixedDataTable/header'),
+              )}
+              width={subwidth}
+              height={rowHeight}
+              offsetTop={offset}
+              scrollLeft={props.scrollLeft}
+              visible={true}
+              fixedColumns={props.fixedColumns.header}
+              fixedRightColumns={props.fixedRightColumns.header}
+              scrollableColumns={props.scrollableColumns.header}
+              touchEnabled={props.touchScrollEnabled}
+              onColumnResize={props.onColumnResize}
+              onColumnReorderMove={props.onColumnReorderMove}
+              onColumnReorderEnd={props.onColumnReorderEnd}
+              onColumnReorder={onColumnReorder}
+              isColumnReordering={!!props.isColumnReordering}
+              columnReorderingData={props.columnReorderingData}
+              showScrollbarY={props.scrollEnabledY}
+              container={this._divRef}
+              data={props.data}
+              isRTL={props.isRTL}
+              onCellEdit={props.onCellEdit}
+              onCellEditEnd={props.onCellEditEnd}
+            >
+            </FixedDataTableRow>
+          break;
+  
+        case RowType.SUBADDROW:
+          row =
+            <MainTableAddRow
+              key={i}
+              index={indexString}
+              isScrolling={props.isScrolling}
+              isRowReordering={props.isRowReordering}
+              rowReorderingData={props.rowReorderingData}
+              height={rowHeight}
+              width={subwidth}
+              rowReorderingData={props.rowReorderingData}
+              offsetTop={offset}
+              scrollLeft={props.scrollLeft}
+              fixedColumns={props.fixedColumns.cell}
+              fixedRightColumns={props.fixedRightColumns.cell}
+              scrollableColumns={props.scrollableColumns.cell}
+              showScrollbarY={props.scrollEnabledY}
+              isRTL={props.isRTL}
+              container={this._divRef}
+              data={props.data}
+              visible={true}
+              onNewRowAdd={props.onNewRowAddCallback}
+            />;
+          break;
+  
+        case RowType.SUBFOOTER:
+          break;
+          row =
+            <FixedDataTableRow
+              key={i}
+              index={indexString}
+              isHeaderOrFooter={true}
+              isTableFooter={true}
+              isScrolling={props.isScrolling}
+              isRowReordering={props.isRowReordering}
+              rowReorderingData={props.rowReorderingData}
+              className={joinClasses(
+                cx('fixedDataTableLayout/footer'),
+                cx('public/fixedDataTable/footer'),
+              )}
+              width={subwidth}
+              height={rowHeight}
+              offsetTop={offset}
+              visible={true}
+              fixedColumns={props.fixedColumns.footer}
+              fixedRightColumns={props.fixedRightColumns.footer}
+              scrollableColumns={props.scrollableColumns.footer}
+              scrollLeft={Math.round(props.scrollX)}
+              showScrollbarY={props.scrollEnabledY}
+              container={this._divRef}
+              data={props.data}
+              isRTL={props.isRTL}
+              onCellEdit={this._onCellEdit}
+              onCellEditEnd={this._onCellEditEnd}
+            />;
+          
+        default:
+          row =
+            <FixedDataTableRow
+              index={indexString}
+              key={i}
+              isHeaderOrFooter={false}
+              zIndex={2}
+              isScrolling={props.isScrolling}
+              width={subwidth}
+              height={rowHeight}
+              scrollLeft={props.scrollLeft}
+              scrollTop={props.scrollTop}
+              fixedColumns={props.fixedColumns.cell}
+              fixedRightColumns={props.fixedRightColumns.cell}
+              scrollableColumns={props.scrollableColumns.cell}
+              onClick={props.onRowClick}
+              isRowReordering={props.isRowReordering}
+              rowReorderingData={props.rowReorderingData}
+              onCellEdit={props.onCellEdit}
+              onCellEditEnd={props.onCellEditEnd}
+              onCellFocus={props.onCellFocus}
+              onContextMenu={props.onRowContextMenu}
+              onDoubleClick={props.onRowDoubleClick}
+              onMouseDown={props.onRowReorderStart}
+              onMouseUp={props.onRowMouseUp}
+              onMouseEnter={props.onRowMouseEnter}
+              onMouseLeave={props.onRowMouseLeave}
+              onTouchStart={props.onRowTouchStart}
+              onTouchEnd={props.onRowTouchEnd}
+              onTouchMove={props.onRowTouchMove}
+              showScrollbarY={props.showScrollbarY}
+              isRTL={props.isRTL}
+              visible={true}
+              container={this._divRef}
+              data={props.data}
+              {...rowProps}
+            />
+      }
+      rows.push(row);
+      offset += rowHeight;
+      subRowIndex ++;
+    }
+    return (
+      <div style={style}>
+        {rows}
+      </div>
+    );
+  }
+
   render() /*object*/ {
     let { scrollTop, isScrolling, rowsToRender, isRowReordering, rowReorderingData } = this.props;
     const props = this.props;
@@ -410,7 +614,6 @@ class FixedDataTableBufferedRows extends React.Component {
                 ariaRowIndex={rowIndex + props.ariaRowIndexOffset}
                 isScrolling={props.isScrolling}
                 width={props.width}
-                rowExpanded={props.rowExpanded}
                 scrollLeft={Math.round(props.scrollLeft)}
                 scrollTop={Math.round(props.scrollTop)}
                 fixedColumns={props.fixedColumns.cell}
@@ -422,6 +625,7 @@ class FixedDataTableBufferedRows extends React.Component {
                 onCellEdit={onCellEdit}
                 onCellEditEnd={onCellEditEnd}
                 onCellFocus={onCellFocus}
+                rowExpanded={this._rowExpanded}
                 onContextMenu={props.onRowContextMenu}
                 onDoubleClick={props.onRowDoubleClick}
                 onMouseDown={props.onRowMouseDown}
@@ -447,4 +651,7 @@ class FixedDataTableBufferedRows extends React.Component {
     );
   }
 }
+
+
+
 export default FixedDataTableBufferedRows;

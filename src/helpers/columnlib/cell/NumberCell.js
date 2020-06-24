@@ -53,6 +53,7 @@ class NumberCell extends React.Component {
           value={inputValue === null ? value : inputValue}
           onChange={this.handleInputChange}
           onPressEnter={handleKey}
+          autoFocus={true}
         />
       </Cell>
     );

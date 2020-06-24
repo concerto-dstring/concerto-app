@@ -299,8 +299,10 @@ class DropDownMenuHeader extends React.PureComponent {
   };
   handleVisibleChange = (visible) => {
     if (visible) {
+      this.props.handleMenuVisibleChange({display:'block', float:'left'})
       this.props.onCellEdit(this.props.rowIndex, this.props.columnKey, 272);
     } else {
+      this.props.handleMenuVisibleChange(null)
       this.props.onCellEditEnd(this.props.rowIndex, this.props.columnKey);
     }
   };

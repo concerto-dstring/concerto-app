@@ -9,7 +9,7 @@
 'use strict';
 
 import $ from 'jquery';
-import {ColumnType} from './data/MainTableType';
+import {ColumnType, getDisplayName, getUserColor, getUserUrl} from './data/MainTableType';
 import {COLOR} from '../helpers/section/header/StyleValues';
 import {ListAllBoards, GetBoardbyId} from '../helpers/data/fetchBoards';
 import gql from 'graphql-tag';
@@ -595,6 +595,7 @@ class MainTableDataStore {
     if (this._teamUsers.length != 0) {
       return;
     }
+    
     this._apolloClient
       .query({
         query: gql(listUsers),
@@ -607,11 +608,9 @@ class MainTableDataStore {
         let teamUsers = result.data.listUsers.items;
         this._teamUsers = [];
         teamUsers.map((user) => {
-          if (user.avatar.startsWith('#')) {
-            user.faceColor = user.avatar;
-          } else {
-            user.faceColor = '';
-          }
+          user.faceColor = getUserColor(user.avatar);
+          user.displayname = getDisplayName(user.username);
+          user.userUrl = getUserUrl(user.id);
 
           if (currentUserId === user.id) {
             this._currentUser = user;

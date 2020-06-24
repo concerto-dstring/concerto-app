@@ -200,7 +200,7 @@ class DataViewWrapper {
     }
     let rows = this._dataset.getSubRows(rowKey);
     if (rows.length == 0) return 0;
-    return (rows.length + 3) * 40;
+    return (rows.length + 3) * 32;
   }
 
   getSubRowCount(rowIndex) {

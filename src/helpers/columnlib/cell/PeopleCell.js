@@ -56,9 +56,7 @@ class PeopleCell extends React.PureComponent {
       let filterUserList = userList
         .slice()
         .filter(
-          (user) =>
-            (!user.lname && !user.fname ? user.username : user.lname + user.fname).toLowerCase().indexOf(valueLow) !==
-            -1
+          (user) => user.username.toLowerCase().indexOf(valueLow) !== -1
         );
       this.setState({
         filterUserList,
@@ -139,7 +137,7 @@ class PeopleCell extends React.PureComponent {
 
     if (this.state.filterUserList) {
       let filterUserList = this.state.filterUserList.slice();
-      let name = (!removeUser.lname && !removeUser.fname ? removeUser.username : removeUser.lname + removeUser.fname).toLowerCase();
+      let name = removeUser.username.toLowerCase();
       if (name.indexOf(this.state.filterValue) !== -1) {
         filterUserList.push(removeUser);
 
@@ -235,10 +233,10 @@ class PeopleCell extends React.PureComponent {
                     <div className="faceAvatar">
                       &nbsp;
                       <Avatar size={25} style={{background: v.faceColor}}>
-                        {v.username ? v.username.substring(0, 1) : '?'}
+                        {v.displayname}
                       </Avatar>
                       &nbsp;
-                      {!v.lname && !v.fname ? v.username : v.lname + v.fname}
+                      {v.username}
                     </div>
                   </div>
                 ))}
@@ -251,9 +249,9 @@ class PeopleCell extends React.PureComponent {
                 {selectedUsers.map((v, i) => (
                   <Tag key={i} closable className="userTag" onClose={this.handleUserRemove.bind(this, v)}>
                     <Avatar size={22} style={{background: v.faceColor}}>
-                      {v.username ? v.username.substring(0, 1) : '?'}
+                      {v.displayname}
                     </Avatar>
-                    &nbsp;{!v.lname && !v.fname ? v.username : v.lname + v.fname}
+                    &nbsp;{v.username}
                   </Tag>
                 ))}
               </div>
@@ -272,13 +270,13 @@ class PeopleCell extends React.PureComponent {
               <div className="userAvatar">
                 {selectedUsers.length === 1 && (
                   <Avatar className="Avatar" size={25} style={{background: selectedUsers[0].faceColor}}>
-                    {selectedUsers[0].username ? selectedUsers[0].username.substring(0, 1) : '?'}
+                    {selectedUsers[0].displayname}
                   </Avatar>
                 )}
                 {selectedUsers.length === 2 && (
                   <div>
                     <Avatar className="Avatar" size={25} style={{background: selectedUsers[0].faceColor}}>
-                      {selectedUsers[0].username ? selectedUsers[0].username.substring(0, 1) : '?'}
+                      {selectedUsers[0].displayname}
                     </Avatar>
                     <Avatar
                       size={25}
@@ -288,14 +286,14 @@ class PeopleCell extends React.PureComponent {
                         background: selectedUsers[1].faceColor,
                       }}
                     >
-                      {selectedUsers[1].username ? selectedUsers[1].username.substring(0, 1) : '?'}
+                      {selectedUsers[1].displayname}
                     </Avatar>
                   </div>
                 )}
                 {selectedUsers.length > 2 && (
                   <div>
                     <Avatar className="Avatar" size={25} style={{background: selectedUsers[0].faceColor}}>
-                      {selectedUsers[0].username ? selectedUsers[0].username.substring(0, 1) : '?'}
+                      {selectedUsers[0].displayname}
                     </Avatar>
                     <Avatar size={25} className="Avatar moreUserAvatar">+{selectedUsers.length - 1}</Avatar>
                   </div>
