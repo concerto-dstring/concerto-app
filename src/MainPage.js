@@ -439,12 +439,12 @@ class MainPage extends React.Component {
             >
               <div style={{height: '53.5px'}}>
                 <Row>
-                  <Col span={5}>
-                    <img className="header_logo" src="../logo.png" />
+                  <Col span={9}>
+                    <img className="header_logo" src="../logo_letter.png" />
                   </Col>
-                  <Col span={4}>
+                  {/* <Col span={4}>
                     <span className="logo_title">{TooltipMsg.app_name}</span>
-                  </Col>
+                  </Col> */}
                   <Col span={15}>
                     <div className="collpseBar">
                       {
