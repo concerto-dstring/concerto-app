@@ -467,7 +467,28 @@ class MainPage extends React.Component {
                 } */}
               </Collapse>
               <div className="leftSiderFooter">
-                <Dropdown overlay={this.getUserMenus()} placement="bottomCenter">
+              <Row>
+                  <Col span={6}>
+                    <Avatar
+                        size={35}
+                        className="loginuser"
+                        // src="../defluatusericon.jpg"
+                        style={{
+                          background: dataset._currentUser.avatar ? dataset._currentUser.avatar : '#0073bb',
+                          cursor: 'pointer',
+                          fontSize:'14px',
+                          fontWeight:'bold'
+                        }}
+                      >
+                        {dataset._currentUser.displayname}
+                      </Avatar>
+                  </Col>
+                   
+                  <Col span={18} style={{lineHeight:'60px'}}>
+                     {dataset._currentUser.username}           
+                  </Col>
+                </Row>
+                {/* <Dropdown overlay={this.getUserMenus()} placement="bottomCenter">
                   <span>
                     <Avatar
                       size={35}
@@ -486,7 +507,7 @@ class MainPage extends React.Component {
                       {dataset._currentUser.username}
                     </span>
                   </span>
-                </Dropdown>
+                </Dropdown> */}
               </div>
             </Sider>
             <Layout style={this.state.mainPanelPaddingLeft}>{this.getBodyContent()}</Layout>
