@@ -1,0 +1,45 @@
+/**
+ * Copyright Schrodinger, LLC
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @providesModule fixedDataTableCell
+ */
+
+/**
+ * Table cell.
+ */
+.public_fixedDataTableCell_main {
+  background-color: #fff;
+  border-bottom-color: #f2f3f3 !important;
+  border-right-color: #fafafa !important;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.public_fixedDataTableCell_main:hover  .sc-AxiKw{
+  border:dashed rgb(168, 164, 164) 1px;
+}
+.public_fixedDataTableCell_highlighted {
+  background-color: #d3d3d3;
+}
+
+.public_fixedDataTableCell_cellContent {
+  padding: 0px;
+}
+
+.public_fixedDataTableCell_columnResizerKnob {
+  background-color: #0284ff;
+}
+.public_fixedDataTableCell_hasReorderHandle .public_fixedDataTableCell_cellContent {
+  margin-left: 12px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.fixedDataTable_isRTL .public_fixedDataTableCell_hasReorderHandle .public_fixedDataTableCell_cellContent {
+  margin-left: auto;
+  margin-right: 12px;
+}
