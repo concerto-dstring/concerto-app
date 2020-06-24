@@ -33,6 +33,8 @@
   /* background-image: linear-gradient(#fff, #efefef); */
   background: #fafafa;
   font-size: 14px;
+  color:#16191F;
+  /* font-weight: bold; */
 }
 
 .public_fixedDataTable_scrollbarSpacer {
