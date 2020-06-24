@@ -685,7 +685,7 @@ class DataViewWrapper {
         // let dateValue = this._dataset._rowData[rowKey] ? this._dataset._rowData[rowKey][columnKey] : null
         if (dateValue) {
           // 只要日期不要时间
-          dateValue = dateValue.substring(0, 10);
+          dateValue = dateValue.substring(0, 11);
 
           minDate = minDate ? (minDate > dateValue ? dateValue : minDate) : dateValue;
           maxDate = maxDate ? (maxDate > dateValue ? maxDate : dateValue) : dateValue;

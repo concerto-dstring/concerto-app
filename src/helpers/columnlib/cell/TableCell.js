@@ -51,6 +51,7 @@ class TableCell extends React.Component {
           container={table.container}
           handleCellEdit={table.handleCellEdit}
           handleCellEditEnd={table.handleCellEditEnd}
+          mouseIn={table.mouseIn}
         />
       ),
       STATUS: (
