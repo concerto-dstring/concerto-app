@@ -271,7 +271,7 @@ class DateCell extends React.PureComponent {
           onOpenChange={this.handelOpenChange}
           open={open}
           getPopupContainer={() => this.props.container}
-          suffixIcon={<div style={{lineHeight: '33px', color: '#8b8c8d'}}>{timeDisplayValue}</div>}
+          suffixIcon={<div style={{lineHeight: '33px'}}>{timeDisplayValue}</div>}
           size="small"
           renderExtraFooter={this.renderDatePicker.bind(this, dateDisplayValue, timeDisplayValue)} //antd官网提供的加入额外页脚的方法
           value={dateDisplayValue}

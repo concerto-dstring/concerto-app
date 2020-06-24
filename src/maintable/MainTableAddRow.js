@@ -208,6 +208,7 @@ class MainTableAddRow extends React.Component {
             {dropPlace}
             <div style={style} className={className} >
               <Input 
+                id="addRow"
                 style={inputStyle} 
                 // action= {{content:'添加', onClick:() => this._onNewrowButton(this.props) }} 
                 placeholder='+' 
