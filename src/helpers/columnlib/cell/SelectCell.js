@@ -33,6 +33,7 @@ class SelectCell extends React.Component {
           optionFilterProp="children"
           filterOption={(input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
           onSelect={returnValue}
+          defaultOpen={true}
         >
           <Option value="jack">Jack</Option>
           <Option value="lucy">Lucy</Option>
