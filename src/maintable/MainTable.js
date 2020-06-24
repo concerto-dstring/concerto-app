@@ -481,6 +481,7 @@ class MainTable extends React.Component {
             <FilterableDataTable
                 ref={this.handleRef}
                 title={this.props.title}
+                stopScrollDefaultHandling={true}
                 onAddNewGroupCallback={this._onAddNewGroupCallback}
                 onColumnReorderEndCallback={this._onColumnReorderEndCallback}
                 onColumnResizeEndCallback={this._onColumnResizeEndCallback}
