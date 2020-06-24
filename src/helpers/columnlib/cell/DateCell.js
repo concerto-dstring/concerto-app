@@ -7,7 +7,8 @@ import 'moment/locale/zh-cn';
 import {Cell} from '../../../maintable/FixedDataTableRoot';
 import './DateCell.less';
 import {DISPLAY} from '../../section/header/StyleValues';
-class DateCell extends React.Component {
+
+class DateCell extends React.PureComponent {
   #date_time_delimit = '  ';
 
   constructor(props) {
@@ -21,7 +22,7 @@ class DateCell extends React.Component {
       addTimeStyle: {
         display: DISPLAY.NONE,
       },
-      mouseIn: true,
+      mouseIn: false,
       dateTimeStr: props.value,
       dateValue,
       timeValue,
@@ -52,14 +53,18 @@ class DateCell extends React.Component {
     }
   }
 
-  componentDidMount() {
-    // 添加点击的监听事件
-    window.addEventListener('click', this.handleClick);
-  }
+  handleAddEvent = () => {
+    // 增加点击事件
+    document.addEventListener('click', this.handleClick);
+  };
+
+  handleRemoveEvent = () => {
+    // 移除点击的监听事件
+    document.removeEventListener('click', this.handleClick);
+  };
 
   componentWillUnmount() {
-    // 移除点击的监听事件
-    window.removeEventListener('click', this.handleClick);
+    this.handleRemoveEvent();
   }
 
   handleClick = (e) => {
@@ -87,12 +92,20 @@ class DateCell extends React.Component {
     this.setState({
       open: false,
     });
+
+    this.handleRemoveEvent();
+    this.props.handleCellEditEnd();
   };
 
-  showDatePicker = () => {
+  showDatePicker = (e) => {
     this.setState({
       open: true,
     });
+
+    setTimeout(() => {
+      // 增加点击事件
+      document.addEventListener('click', this.handleClick);
+    }, 500);
   };
 
   switchAddTime = (checked) => {
@@ -149,6 +162,7 @@ class DateCell extends React.Component {
       selectDateValue: '',
       selectTimeValue: '',
     });
+    this.handleRemoveEvent();
     this.props.handleChange(moment(dateValue).format('YYYY-MM-DD') + this.#date_time_delimit + timeValue, true);
   };
 
@@ -160,6 +174,7 @@ class DateCell extends React.Component {
       selectTimeValue: '',
       switchChecked: false,
     });
+    this.handleRemoveEvent();
     this.props.handleChange('', true);
   };
 
@@ -218,22 +233,25 @@ class DateCell extends React.Component {
     this.setState({
       selectDateValue: moment(v, 'YYYY-MM-DD'),
     });
-    this.props.handleChange(moment(this.state.dateValue).format('YYYY-MM-DD') + this.#date_time_delimit + this.state.timeValue, false);
   };
 
-  setMouseIn = (mouseIn) => {
+  handleMouseEnter = () => {
     this.setState({
-      mouseIn: mouseIn,
+      mouseIn: true,
+    });
+  };
+
+  handleMouseLeave = () => {
+    this.setState({
+      mouseIn: false,
     });
   };
 
   handelOpenChange = (open) => {
     if (open) {
-      this.props.handleCellEdit('DATE')
-    } else {
-      this.props.handleChange(moment(this.state.dateValue).format('YYYY-MM-DD') + this.#date_time_delimit + this.state.timeValue, false);
+      this.props.handleCellEdit('DATE');
     }
-  }
+  };
 
   render() {
     const {dateValue, timeValue, selectDateValue, selectTimeValue, open} = this.state;
@@ -241,23 +259,17 @@ class DateCell extends React.Component {
     let dateDisplayValue = selectDateValue ? selectDateValue : dateValue;
     let timeDisplayValue = selectTimeValue ? selectTimeValue : timeValue;
 
-    // const OpenOrDismiss = (open) => {
-    //   if (!open) {
-    //     this.props.handleChange('', false)
-    //   }
-    // }
     return (
+      <div style={{width: '100%'}} onMouseDown={this.showDatePicker} onMouseEnter={this.handleMouseEnter} onMouseLeave={this.handleMouseLeave}>
         <DatePicker
-          //ref={this.datePickerRef}
-          onMouseEnter={this.setMouseIn.bind(this, true)}
-          onMouseLeave={this.setMouseIn.bind(this, false)}
+          // ref={this.datePickerRef}
           className="DateCell"
           popupStyle={{pointerEvents: 'visible'}}
           allowClear={false}
           bordered={false}
           placeholder=""
           onOpenChange={this.handelOpenChange}
-          //open={open}
+          open={open}
           getPopupContainer={() => this.props.container}
           suffixIcon={<div style={{lineHeight: '33px'}}>{timeDisplayValue}</div>}
           size="small"
@@ -266,6 +278,7 @@ class DateCell extends React.Component {
           onChange={this.handleDateChange}
           inputReadOnly={true}
         />
+      </div>
     );
   }
 }

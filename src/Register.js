@@ -51,10 +51,17 @@ class Register extends PureComponent {
 
   registerUser = async () => {
     // const { userName, password, confirmPassword, email, phone } = this.state
-    const {userName, password, confirmPassword, email} = this.state;
+    const {userName, password, confirmPassword, email,
+      userNameErrorMsg, passwordErrorMsg, confirmPasswordErrorMsg, emailErrorMsg} = this.state;
+
+    let isError = false;
+    // 检查是否已有错误
+    if (userNameErrorMsg || passwordErrorMsg || confirmPasswordErrorMsg || emailErrorMsg) {
+      isError = true
+    }
 
     // if (!userName || !password || !confirmPassword || !email || !phone) {
-    if (!userName || !password || !confirmPassword || !email) {
+    if (!userName || !password || !confirmPassword || !email || isError) {
       if (!userName) {
         this.setState({
           userNameBorderColor: errorColor,
