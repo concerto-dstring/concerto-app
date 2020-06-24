@@ -87,9 +87,6 @@ class MainTableTitleRow extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = {
-      users: this.props.onGetListUsers(),
-    };
   }
 
   componentWillMount() {
@@ -111,8 +108,8 @@ class MainTableTitleRow extends React.Component {
         <div className="body_content_title_row">
           <div className="body_content_title">
             <h1>
-              {/* <DoubleRightOutlined style={{fontSize:'16px'}}/>&nbsp;&nbsp; */}
-              <div className="item_color" style={{background: this.props.boardColor}}></div>
+              {/* <DoubleRightOutlined className="collpse_style"/>&nbsp;&nbsp; */}
+              <div className="item_color" style={{background: this.props.boardColor,marginBottom:'3px'}}></div>
               {this.props.title}
             </h1>
           </div>
@@ -244,30 +241,37 @@ class MainTableTitleRow extends React.Component {
                   </div>
                 </Button>
               </div>
-              <div>
+              <div style={{display: 'flex'}}>
+                <div className="main_table_select_user_icon">
+                  <img src="../svg/user.svg" style={{marginTop: 5}} />
+                </div>
                 <Select
+                  style={{backgroundColor: '#FAFAFA'}}
                   className="main_table_select_user"
                   placeholder="按人名筛选"
-                  showSearch
                   dropdownStyle={{pointerEvents: 'visible'}}
                   onDropdownVisibleChange={this.handleVisibleChange}
                   allowClear
+                  showArrow={false}
                   filterOption={this.handleSearchUser}
                   getPopupContainer={() => this.props.container}
                   onChange={this._onFilterByPeople}
                   onMouseEnter={handleCellEnter}
                   onMouseLeave={handleCellLeave}
+                  bordered={false}
                 >
-                  {this.state.users.map((user) => {
-                    return (
-                      <Select.Option key={user.id} value={user.username}>
-                        <Avatar size={20} style={{background: user.faceColor}}>
-                          {user.fname}
-                        </Avatar>
-                        &emsp;
-                        {!user.lname && !user.fname ? user.username : user.lname + user.fname}
-                      </Select.Option>
-                    );
+                  {this.props.onGetListUsers().map((user) => {
+                    if (user) {
+                      return (
+                        <Select.Option key={user.id} value={user.username}>
+                          <Avatar size={20} style={{background: user.faceColor}}>
+                            {user.username ? user.username.substring(0, 1) : '?'}
+                          </Avatar>
+                          &emsp;
+                          {!user.lname && !user.fname ? user.username : user.lname + user.fname}
+                        </Select.Option>
+                      );
+                    }
                   })}
                 </Select>
               </div>

@@ -45,6 +45,7 @@ import {
 } from '../maintable/actions/SectionActions';
 
 import getHighlightText from '../maintable/getHighlightText';
+import { DeleteType } from '../maintable/data/MainTableType';
 
 const {SubMenu} = Menu;
 
@@ -206,7 +207,7 @@ class DropDownMenuHeader extends React.PureComponent {
       data.changeGroupCollapseState(null, false);
     } else if (key === DELETE_SECTION.key) {
       // 删除分区
-      this.props.dealSectionDeleteModal({isShowDeleteModal: true, data, isSection: true, group: this.state.group});
+      this.props.dealSectionDeleteModal({isShowDeleteModal: true, data, group: this.state.group, deleteType: DeleteType.SECTION_DELETE});
     }
   };
 
@@ -380,7 +381,7 @@ class DropDownMenuCell extends React.PureComponent {
       // 移动至其他分区
     } else if (key === DELETE_ROW.key) {
       // 删除行
-      this.props.dealRowDeleteModal({isShowDeleteModal: true, data, rowIndex});
+      this.props.dealRowDeleteModal({isShowDeleteModal: true, data, rowIndex, deleteType: DeleteType.ROW_DELETE});
     }
   };
 

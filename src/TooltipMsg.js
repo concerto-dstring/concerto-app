@@ -1,4 +1,6 @@
 export default {
+  app_name: 'Pynbo',
+  board_name: '工作板',
   welcome_to_use_app: '欢迎使用 Pynbo 拼板',
   username_label: '用户名：',
   username_placeholder: '请输入用户名',
@@ -8,4 +10,15 @@ export default {
   link_register: '注册新用户',
   link_forget_password: '忘记密码?',
   update_info_input_placeholder: '在此发表动态与更新...',
+  delete_tip: '删除后将无法恢复',
+  is_delete_board: '是否删除工作板 ',
+  is_delete_group: '是否删除 @param 分区',
+  is_delete_row: '是否删除行',
+  is_delete_column: '是否删除列',
+  delete_success: '删除成功',
+  move_success: '移动成功',
+  search_board_placeholder: '搜索工作板...',
+  undo_text: '撤 销',
+  add_board_modal_title: '添加工作板',
+  rename_board_modal_title: '工作板重命名',
 };

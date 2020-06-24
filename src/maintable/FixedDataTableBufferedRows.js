@@ -321,7 +321,11 @@ class FixedDataTableBufferedRows extends React.Component {
             cx('public/fixedDataTable/header'),
           )}
           width={props.width}
+<<<<<<< HEAD
           height={40}
+=======
+          height={32}
+>>>>>>> master
           offsetTop={0}
           scrollLeft={Math.round(props.scrollLeft)}
           visible={true}
@@ -358,7 +362,11 @@ class FixedDataTableBufferedRows extends React.Component {
                   cx('fixedDataTableLayout/topShadow'),
                   cx('public/fixedDataTable/topShadow'),
                 )}
+<<<<<<< HEAD
                 style={{top: 32}}
+=======
+                style={{top: 60}}
+>>>>>>> master
               />
             </div>
            </div>;

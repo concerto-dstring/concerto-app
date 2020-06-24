@@ -14,7 +14,8 @@ import {
   DEAL_ROW_RENAME_MODAL,
   DEAL_ROW_DELETE_MODAL,
   DEAL_ROW_MOVE_MODAL,
-  DEAL_ROW_HEADER_DRAWER
+  DEAL_ROW_HEADER_DRAWER,
+  DEAL_ROW_UNDO_DELETE_MESSAGE
 } from './ActionTypes';
 
 /**
@@ -59,6 +60,15 @@ export const dealRowRenameModal = (modalData) => ({
  */
 export const dealRowDeleteModal = (modalData) => ({
   type: DEAL_ROW_DELETE_MODAL,
+  modalData
+});
+
+/**
+ * 处理删除行后撤销操作
+ * @param {*} modalData 
+ */
+export const dealRowUndoDeleteMessage = (modalData) => ({
+  type: DEAL_ROW_UNDO_DELETE_MESSAGE,
   modalData
 });
 

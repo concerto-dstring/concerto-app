@@ -872,7 +872,7 @@ const DRAG_SCROLL_BUFFER = 40;
             cx('fixedDataTableLayout/bottomShadow'),
             cx('public/fixedDataTable/bottomShadow'),
           )}
-          style={{top: visibleRowsHeight}}
+          // style={{top: visibleRowsHeight}}
         />;
     }
     //var tabIndex = null;
@@ -1174,6 +1174,7 @@ const DRAG_SCROLL_BUFFER = 40;
 
   _onCellEdit = (rowIndex, columnKey, popupHeight = 0) => {
     //add additional height
+<<<<<<< HEAD
 <<<<<<< Updated upstream
     if (popupHeight > 0) {
       const lastRow = this.props.rowSettings.rowsCount - 1;      ;
@@ -1206,6 +1207,15 @@ const DRAG_SCROLL_BUFFER = 40;
           this.props.scrollActions.scrollToY(newHeight - this.props.height);
         }
 >>>>>>> Stashed changes
+=======
+    if (popupHeight > 0) {   ;
+      const oldHeight = this.props.scrollContentHeight;
+      const newHeight = this.props.rowOffsets[rowIndex] + 32 + popupHeight;
+      if (newHeight > oldHeight) {
+        this.props.displayActions.adjustHeight(newHeight - oldHeight);
+      } else if (newHeight > (this.props.scrollY + this.props.height)) {
+        this.props.scrollActions.scrollToY(newHeight - this.props.height);
+>>>>>>> master
       }
     }
     this.props.cellActions.startCellEdit({rowIndex, columnKey});

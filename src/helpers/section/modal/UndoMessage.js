@@ -5,13 +5,21 @@ import '../../../maintable/css/style/MoveToSectionMenu.less';
 import {VISIBILITY, COLOR, DISPLAY} from '../header/StyleValues';
 
 import {connect} from 'react-redux';
-import {dealRowMoveModal} from '../../../maintable/actions/rowActions';
+import {dealRowMoveModal, dealRowUndoDeleteMessage} from '../../../maintable/actions/rowActions';
+import {dealColumnUndoDeleteMessage} from '../../../maintable/actions/columnActions';
 import {dealSectionUndoDeleteMessage} from '../../../maintable/actions/SectionActions';
 import {mapRowActionStateToProps} from '../../../maintable/data/mapStateToProps';
+import TooltipMsg from '../../../TooltipMsg';
+import {UndoType} from '../../../maintable/data/MainTableType';
 
 let intervalTimer;
 
-@connect(mapRowActionStateToProps, {dealRowMoveModal, dealSectionUndoDeleteMessage})
+@connect(mapRowActionStateToProps, {
+  dealRowMoveModal, 
+  dealSectionUndoDeleteMessage, 
+  dealRowUndoDeleteMessage,
+  dealColumnUndoDeleteMessage
+})
 class UndoMessage extends PureComponent {
   constructor() {
     super();
@@ -24,14 +32,22 @@ class UndoMessage extends PureComponent {
 
   handleCancelClick = () => {
     clearInterval(intervalTimer);
-    const {isSection} = this.props;
+    const {undoType} = this.props;
 
-    if (isSection) {
+    if (undoType === UndoType.SECTION_UNDO_DELETE) {
       this.props.dealSectionUndoDeleteMessage({
         isShowUndoModal: false,
       });
-    } else {
+    } else if (undoType === UndoType.ROW_UNDO_MOVE) {
       this.props.dealRowMoveModal({
+        isShowUndoModal: false,
+      });
+    } else if (undoType === UndoType.ROW_UNDO_DELETE) {
+      this.props.dealRowUndoDeleteMessage({
+        isShowUndoModal: false,
+      });
+    } else if (undoType === UndoType.COLUMN_UNDO_DELETE) {
+      this.props.dealColumnUndoDeleteMessage({
         isShowUndoModal: false,
       });
     }
@@ -53,17 +69,52 @@ class UndoMessage extends PureComponent {
 
   // 撤销相关操作
   cancelAction = () => {
-    const {tableData, sourceGroupKey, targetGroupKey, rowKey, oldSourceRow, isSection, group, groupIndex} = this.props;
+    const {
+      tableData,
+      sourceGroupKey,
+      targetGroupKey,
+      rowKey,
+      oldSourceRow,
+      undoType,
+      group,
+      groupIndex,
+      groupKey,
+      groupRowIndex,
+      rowData,
+      column,
+      columnIndex,
+      mainTable
+    } = this.props;
 
-    if (isSection) {
+    if (undoType === UndoType.SECTION_UNDO_DELETE) {
       // 撤销删除分区
       tableData.undoRemoveGroup(groupIndex, group);
-    } else {
+    } else if (undoType === UndoType.ROW_UNDO_MOVE) {
       // 撤销移动行
       tableData.moveRow(targetGroupKey, sourceGroupKey, rowKey, oldSourceRow);
+    } else if (undoType === UndoType.ROW_UNDO_DELETE) {
+      // 撤销删除行
+      tableData.undoRemoveRow(groupKey, rowKey, groupRowIndex, rowData);
+    } else if (undoType === UndoType.COLUMN_UNDO_DELETE) {
+      // 撤销删除列
+      mainTable.undoRemoveColumn(columnIndex, column)
     }
 
     this.handleCancelClick();
+  };
+
+  getSuccessMsg = () => {
+    const {undoType} = this.props;
+
+    if (undoType === UndoType.SECTION_UNDO_DELETE) {
+      return TooltipMsg.delete_success;
+    } else if (undoType === UndoType.ROW_UNDO_MOVE) {
+      return TooltipMsg.move_success;
+    } else if (undoType === UndoType.ROW_UNDO_DELETE) {
+      return TooltipMsg.delete_success;
+    } else if (undoType === UndoType.COLUMN_UNDO_DELETE) {
+      return TooltipMsg.delete_success;
+    }
   };
 
   componentWillReceiveProps(props) {
@@ -99,14 +150,14 @@ class UndoMessage extends PureComponent {
     return (
       <div className="undo_message" style={{display: this.state.isShowUndoModal ? DISPLAY.BLOCK : DISPLAY.NONE}}>
         <div className="undo_message_content">
-          <span style={{margin: '10px 0px'}}>&emsp;&emsp;{this.props.isSection ? '删除成功' : '移动成功'}</span>
+          <span style={{margin: '10px 0px'}}>&emsp;&emsp;{this.getSuccessMsg()}</span>
           <Button
             shape="round"
             type="primary"
             style={{margin: '10px 10px 10px 110px', width: 92, backgroundColor: COLOR.UNDO, borderColor: COLOR.WHITE}}
             onClick={this.cancelAction}
           >
-            <span>撤 销&emsp;</span>
+            <span>{TooltipMsg.undo_text}&emsp;</span>
             <span style={{width: 12}}>{this.state.countdown}</span>
           </Button>
           <Button

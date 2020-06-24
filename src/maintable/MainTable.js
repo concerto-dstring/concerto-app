@@ -188,7 +188,9 @@ class MainTable extends React.Component {
     this._onColumnAddCallback = this._onColumnAddCallback.bind(this);
     this._onColumnReorderEndCallback = this._onColumnReorderEndCallback.bind(this);
     this._onRemoveColumnCallback = this._onRemoveColumnCallback.bind(this);
+    this._onUndoRemoveColumnCallback = this._onUndoRemoveColumnCallback.bind(this);
     this._onCollpseColumnCallback = this._onCollpseColumnCallback.bind(this);
+    this._onUpdateColumnEditingCallback = this._onUpdateColumnEditingCallback.bind(this);
     this._onGetListUsers = this._onGetListUsers.bind(this);
     this._getColumnName = this._getColumnName.bind(this);
     this.refresh = this.refresh.bind(this);
@@ -197,7 +199,7 @@ class MainTable extends React.Component {
     this.state = {
       data: this._dataset,
       filters: {rowKey: ''},
-      columns: this._dataset.getColumns(),
+      columns: this._dataset.getColumns()||[],
       version: 0,
       isShowAddSubRowModal: false,
       isShowReNameModal: false,
@@ -206,7 +208,9 @@ class MainTable extends React.Component {
       rowIndex: null,
       columnKey: null,
       _onRemoveColumnCallback: this._onRemoveColumnCallback,
+      _onUndoRemoveColumnCallback: this._onUndoRemoveColumnCallback,
       _onCollpseColumnCallback: this._onCollpseColumnCallback,
+      _onUpdateColumnEditingCallback: this._onUpdateColumnEditingCallback
     };
   }
 
@@ -221,7 +225,15 @@ class MainTable extends React.Component {
   }
 
   _onRemoveColumnCallback(columnKey) {
-    this._dataset.removeColumn(columnKey);
+    return this._dataset.removeColumn(columnKey);
+  }
+
+  _onUndoRemoveColumnCallback(columnIndex, column) {
+    this._dataset.undoRemoveColumn(columnIndex, column);
+  }
+
+  _onUpdateColumnEditingCallback(columnKey, isEditing) {
+    this._dataset.updateColumnEditing(columnKey, isEditing);
   }
 
   /**
@@ -447,7 +459,7 @@ class MainTable extends React.Component {
   }
 
   _onGetListUsers = () => {
-    return this.state.data.getListUsers()
+    return this.state.data.getSearchUserList()
   }
   
   _onFilterChangeCallback = (value, type) => {
@@ -458,11 +470,10 @@ class MainTable extends React.Component {
   };
 
   renderTable() {
-    var { data, filters, filterInputValue, filterType } = this.state;
-    if (!this.state.columns)
-        return
-    const fixedColumns = this.state.columns.filter(c => c.fixed); 
-    const scrollColumns = this.state.columns.filter(c => !c.fixed);
+    var { data, filters, filterInputValue, filterType, columns } = this.state;
+    let tableColumns = columns ? columns : []
+    const fixedColumns = tableColumns.filter(c => c.fixed); 
+    const scrollColumns = tableColumns.filter(c => !c.fixed);
     
     return (
         <TableContext.Provider value={this.state}>
