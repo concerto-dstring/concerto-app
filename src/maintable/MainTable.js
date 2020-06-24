@@ -487,6 +487,7 @@ class MainTable extends React.Component {
                 onFilterChangeCallback={this._onFilterChangeCallback}
                 onGetListUsers = {this._onGetListUsers}
                 columnNameGetter={this._getColumnName}
+                stopScrollDefaultHandling={true}
                 data={data}
                 titleHeight={0} 
                 // set to zero

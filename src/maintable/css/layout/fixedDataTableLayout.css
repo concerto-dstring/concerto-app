@@ -52,23 +52,7 @@
   background-color: RGB(243, 242, 242);
 }
 
-<<<<<<< HEAD
-.fixedDataTableLayout_AffixContainer {
-  height: 34px;
-  position: sticky;
-  left: 0;
-  right: 0;
-  z-index: 2;
-  top: 0;
-  background-color: RGB(243, 242, 242);
-}
-
-.fixedDataTableLayout_AffixContent {
-  position: absolute;
-  top: 0px;
-=======
 .fixedDataTableLayout_AffixContent {
   position: absolute;
   top: 5px;
->>>>>>> master
 }
