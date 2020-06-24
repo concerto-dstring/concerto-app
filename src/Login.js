@@ -7,7 +7,7 @@ import './Login.less';
 import {withRouter, Link} from 'react-router-dom';
 import TooltipMsg from './TooltipMsg';
 
-const defaultColor = '#1890ff';
+const defaultColor = '#009AFF';
 const errorColor = '#f5222d';
 
 @withRouter
@@ -147,7 +147,9 @@ class Login extends PureComponent {
       <div className="login_layout">
         <Spin spinning={isLoading}>
           <div className="login_header_component">
-            <span className="login_header">{TooltipMsg.welcome_to_use_app}</span>
+            <span className="login_header_title">{TooltipMsg.welcome_to_use_app}</span>
+            <img  className="login_header_small" src="../logo.png" />
+            <span className="login_header_last">{TooltipMsg.welcome_to_use_app_last}</span>
           </div>
           <div className="login_body_component">
             <div className="login_item">
@@ -177,7 +179,7 @@ class Login extends PureComponent {
             </div>
             <br />
             <div className="login_item">
-              <Button style={{width: 360, borderRadius: 12}} type="primary" onClick={this.loginApp}>
+              <Button className="login_btn" type="primary" onClick={this.loginApp}>
                 {TooltipMsg.login_btn}
               </Button>
             </div>
