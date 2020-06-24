@@ -15,6 +15,7 @@ const cellPopupHeight = {
   DATE: 450,
   PEOPLE: 364,
   STATUS: 250,
+  SELECT: 200,
 };
 
 export const getCellPopupHeight = () => {
