@@ -469,19 +469,21 @@ class MainPage extends React.Component {
               <div className="leftSiderFooter">
               <Row>
                   <Col span={6}>
-                    <Avatar
-                        size={35}
-                        className="loginuser"
-                        // src="../defluatusericon.jpg"
-                        style={{
-                          background: dataset._currentUser.avatar ? dataset._currentUser.avatar : '#0073bb',
-                          cursor: 'pointer',
-                          fontSize:'14px',
-                          fontWeight:'bold'
-                        }}
-                      >
-                        {dataset._currentUser.displayname}
-                      </Avatar>
+                    <Dropdown overlay={this.getUserMenus()} placement="bottomCenter">
+                      <Avatar
+                          size={35}
+                          className="loginuser"
+                          // src="../defluatusericon.jpg"
+                          style={{
+                            background: dataset._currentUser.avatar ? dataset._currentUser.avatar : '#0073bb',
+                            cursor: 'pointer',
+                            fontSize:'14px',
+                            fontWeight:'bold'
+                          }}
+                        >
+                          {dataset._currentUser.displayname}
+                       </Avatar>
+                    </Dropdown>
                   </Col>
                    
                   <Col span={18} style={{lineHeight:'60px'}}>
