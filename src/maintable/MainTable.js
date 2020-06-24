@@ -193,6 +193,7 @@ class MainTable extends React.Component {
     this._onCollpseColumnCallback = this._onCollpseColumnCallback.bind(this);
     this._onUpdateColumnEditingCallback = this._onUpdateColumnEditingCallback.bind(this);
     this._onGetListUsers = this._onGetListUsers.bind(this);
+    this._onAddNewFirstRow = this._onAddNewFirstRow.bind(this);
     this._getColumnName = this._getColumnName.bind(this);
     this.refresh = this.refresh.bind(this);
     this._dataset.setCallback(this.refresh, 'main');
@@ -477,6 +478,10 @@ class MainTable extends React.Component {
     });
   };
 
+  _onAddNewFirstRow = (newItem) => {
+    this.state.data.addNewFirstRow(newItem);
+  }
+
   renderTable() {
     var { data, filters, filterInputValue, filterType, columns } = this.state;
     let tableColumns = columns ? columns : []
@@ -494,6 +499,7 @@ class MainTable extends React.Component {
                 onColumnResizeEndCallback={this._onColumnResizeEndCallback}
                 onFilterChangeCallback={this._onFilterChangeCallback}
                 onGetListUsers = {this._onGetListUsers}
+                onAddNewFirstRow={this._onAddNewFirstRow}
                 columnNameGetter={this._getColumnName}
                 data={data}
                 titleHeight={0} 

@@ -87,6 +87,7 @@ class DataViewWrapper {
     this.updateColumnBoardData = this.updateColumnBoardData.bind(this);
     this.undoRemoveRow = this.undoRemoveRow.bind(this);
     this.updateColumnEditing = this.updateColumnEditing.bind(this);
+    this.updateRowEditing = this.updateRowEditing.bind(this);
   }
 
   /**
@@ -769,6 +770,11 @@ class DataViewWrapper {
 
   updateColumnEditing(columnKey, isEditing) {
     this._dataset.updateColumnEditing(columnKey, isEditing);
+  }
+
+  updateRowEditing(rowIndex, isEditing) {
+    let rowId = this.getRowKey(rowIndex);
+    this._dataset.updateRowEditing(rowId, isEditing);
   }
 }
 
