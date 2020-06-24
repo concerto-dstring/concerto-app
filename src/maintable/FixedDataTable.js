@@ -1174,26 +1174,6 @@ const DRAG_SCROLL_BUFFER = 40;
 
   _onCellEdit = (rowIndex, columnKey, popupHeight = 0) => {
     //add additional height
-<<<<<<< HEAD
-    if (popupHeight > 0) {   ;
-      const oldHeight = this.props.scrollContentHeight;
-      const newHeight = this.props.rowOffsets[rowIndex] + 32 + popupHeight;
-      if (newHeight > oldHeight) {
-        this.props.displayActions.adjustHeight(newHeight - oldHeight);
-      } else if (newHeight > (this.props.scrollY + this.props.height)) {
-        this.props.scrollActions.scrollToY(newHeight - this.props.height);
-=======
-<<<<<<< Updated upstream
-    if (popupHeight > 0) {
-      const lastRow = this.props.rowSettings.rowsCount - 1;      ;
-      const oldHeight = this.props.rowOffsets[lastRow] + 150;
-      const newHeight = this.props.rowOffsets[rowIndex] + 100 + popupHeight;
-      if (newHeight > oldHeight) {
-          this.props.displayActions.adjustHeight(newHeight - oldHeight);
-      } else {
-        this.props.scrollActions.scrollToY(newHeight);
-=======
-
     if (popupHeight > 0) {
       if (getSubLevel(rowIndex) === 0) {
         const oldHeight = this.props.scrollContentHeight;
@@ -1214,8 +1194,6 @@ const DRAG_SCROLL_BUFFER = 40;
         } else if (newHeight > (this.props.scrollY + this.props.height)) {
           this.props.scrollActions.scrollToY(newHeight - this.props.height);
         }
->>>>>>> Stashed changes
->>>>>>> 99fa887... Fixed subitem calculation.
       }
     }
     this.props.cellActions.startCellEdit({rowIndex, columnKey});
