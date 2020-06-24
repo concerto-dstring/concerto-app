@@ -1,4 +1,4 @@
-@font-face {
+/* @font-face {
   font-family: 'PingFang SC';
   src: url('pingfang/PingFang Medium.otf') format('truetype');
        font-size: 13px;
@@ -10,10 +10,10 @@
   src: url('pingfang/PingFangSC.ttf') format('truetype');
         font-size: 13px;
         color:#111111;
-  }
+  } */
 body {
   margin: 0;
-  font-family: "PingFang SC" ;
+  font-family: PingFangSC-Regular, Microsoft YaHei;
   /* font-weight:  300; */
   /* letter-spacing: 1.2px; */
   color:#111111;
