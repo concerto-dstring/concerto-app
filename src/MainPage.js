@@ -443,7 +443,7 @@ class MainPage extends React.Component {
                     <img className="header_logo" src="../logo.png" />
                   </Col>
                   <Col span={4}>
-                    <h3 style={{fontWeight: 'bold', lineHeight: '53.5px',marginLeft:'10px'}}>{TooltipMsg.app_name}</h3>
+                    <span className="logo_title">{TooltipMsg.app_name}</span>
                   </Col>
                   <Col span={15}>
                     <div className="collpseBar">
@@ -480,10 +480,10 @@ class MainPage extends React.Component {
                         fontWeight:'bold'
                       }}
                     >
-                      {dataset._currentUser.fname ? dataset._currentUser.fname: (dataset._currentUser.username?dataset._currentUser.username.split('')[0]:"")}
+                      {dataset._currentUser.displayname}
                     </Avatar>
                     <span>
-                      {dataset._currentUser.fname ? (dataset._currentUser.lname+dataset._currentUser.fname): dataset._currentUser.username}
+                      {dataset._currentUser.username}
                     </span>
                   </span>
                 </Dropdown>

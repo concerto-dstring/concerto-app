@@ -1,12 +1,12 @@
 @font-face {
-  font-family: 'Roboto';
-  src: url('roboto/Roboto-Regular.ttf') format('truetype');
+  font-family: 'PingFang SC';
+  src: url('pingfang/PingFangSC.ttf') format('truetype');
        /* font-weight: bold; */
        font-size: 13px !important;
   }
 body {
   margin: 0;
-  font-family: "Roboto" !important;
+  font-family: "PingFang SC" !important;
   /* font-weight:  300; */
   /* letter-spacing: 1.2px; */
   color:#16191F;

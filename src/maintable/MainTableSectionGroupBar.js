@@ -130,6 +130,12 @@ class MainTableSectionGroupBar extends React.Component {
     data.changeGroupCollapseState(group.groupKey);
   }
 
+  handleMenuVisibleChange = (style) => {
+    this.setState({
+      menuStyle: style
+    })
+  }
+
   render() {
     const { offsetTop, zIndex, visible,data,rowIndex, ...rowProps } = this.props;
     let isCollapsed;
@@ -209,7 +215,8 @@ class MainTableSectionGroupBar extends React.Component {
     let titleStyle = {
       padding:'0 15px 0 15px',
       color:groupColor,
-      cursor:'pointer'
+      cursor:'pointer',
+      fontWeight:'bold'
     }
     let collpseBarStyle = {
       paddingLeft:'12px',
@@ -236,6 +243,9 @@ class MainTableSectionGroupBar extends React.Component {
    if(!group||group.isCollapsed){
      return '';
    }
+
+   const {menuStyle} = this.state
+
     return ( 
             <div style={style} className={className} onMouseEnter={showMoreBar} onMouseLeave={hideMoreBar} >
               <div style={contextStyle}>
@@ -247,10 +257,11 @@ class MainTableSectionGroupBar extends React.Component {
                 }
                 <span style={titleStyle}>{group.name}</span>
               </div>
-              <div style={this.state.style}>
+              <div style={menuStyle ? menuStyle : this.state.style}>
                 <DropDownMenuHeader
                   data={data}
                   rowIndex = {this.props.index}
+                  handleMenuVisibleChange={this.handleMenuVisibleChange}
                   {...this.props}
                 />
               </div>

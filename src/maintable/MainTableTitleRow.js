@@ -265,10 +265,10 @@ class MainTableTitleRow extends React.Component {
                       return (
                         <Select.Option key={user.id} value={user.username}>
                           <Avatar size={20} style={{background: user.faceColor}}>
-                            {user.username ? user.username.substring(0, 1) : '?'}
+                            {user.displayname}
                           </Avatar>
                           &emsp;
-                          {!user.lname && !user.fname ? user.username : user.lname + user.fname}
+                          {user.username}
                         </Select.Option>
                       );
                     }
@@ -291,7 +291,7 @@ class MainTableTitleRow extends React.Component {
                 prefix={<SearchOutlined />}
                 placeholder="搜索/过滤"
                 onChange={this._onFilterTableData}
-                style={{borderRadius: '5px', width: 240,border:'1px solid #f2f3f3',background:'#fafafa'}}
+                style={{borderRadius: '5px', width: 160,border:'1px solid #f2f3f3',background:'#fafafa'}}
               />
             </div>
           </div>

@@ -38,6 +38,7 @@ import {
   DownOutlined,
   EyeInvisibleOutlined,
   SearchOutlined,
+  PlusOutlined
 } from '@ant-design/icons';
 import {DataContext, AddFilter} from './data/DataContext';
 import {DataVersionContext, TableContext} from './data/DataContext';
@@ -395,6 +396,13 @@ class MainTable extends React.Component {
       height: '100%',
       width: '100%'
     };
+    const addBarStyle = {
+      lineHeight: '35px',
+      textAlign: 'center',
+      width: '100%',
+      fontSize:'12px',
+      cursor: 'pointer'
+    }
     const menu = (
       <Menu onClick={this._onColumnAddCallback} style={{width: '100px'}}>
         <Menu.Item key={'DATE-' + level}>
@@ -432,7 +440,7 @@ class MainTable extends React.Component {
     colTemplate.level = level;
     colTemplate.header = (
       <Dropdown overlay={menu} trigger={['click']}>
-        <Button basic circular icon="plus circle" style={addColumnStyle} />
+        <PlusOutlined style={addBarStyle} />
       </Dropdown>
     );
     colTemplate.footer = <div style={noBarStyle}></div>

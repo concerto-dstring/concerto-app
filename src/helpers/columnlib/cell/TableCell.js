@@ -50,6 +50,7 @@ class TableCell extends React.Component {
           handleKey={table.handleKey}
           container={table.container}
           handleCellEdit={table.handleCellEdit}
+          handleCellEditEnd={table.handleCellEditEnd}
         />
       ),
       STATUS: (
