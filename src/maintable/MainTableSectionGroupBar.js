@@ -216,7 +216,7 @@ class MainTableSectionGroupBar extends React.Component {
       padding:'0 15px 0 15px',
       color:groupColor,
       cursor:'pointer',
-      fontWeight:'bold'
+      fontWeight:500
     }
     let collpseBarStyle = {
       paddingLeft:'12px',

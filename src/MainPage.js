@@ -490,26 +490,6 @@ class MainPage extends React.Component {
                      {dataset._currentUser.username}           
                   </Col>
                 </Row>
-                {/* <Dropdown overlay={this.getUserMenus()} placement="bottomCenter">
-                  <span>
-                    <Avatar
-                      size={35}
-                      className="loginuser"
-                      // src="../defluatusericon.jpg"
-                      style={{
-                        background: dataset._currentUser.avatar ? dataset._currentUser.avatar : '#0073bb',
-                        cursor: 'pointer',
-                        fontSize:'14px',
-                        fontWeight:'bold'
-                      }}
-                    >
-                      {dataset._currentUser.displayname}
-                    </Avatar>
-                    <span>
-                      {dataset._currentUser.username}
-                    </span>
-                  </span>
-                </Dropdown> */}
               </div>
             </Sider>
             <Layout style={this.state.mainPanelPaddingLeft}>{this.getBodyContent()}</Layout>
