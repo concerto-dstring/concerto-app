@@ -28,6 +28,7 @@ import {
   VISIBILITY,
   DISPLAY
 } from '../helpers/section/header/StyleValues'
+import { getSubLevel } from './data/MainTableType';
 
 class FixedDataTableCell extends React.Component {
   /**
@@ -333,6 +334,7 @@ class FixedDataTableCell extends React.Component {
       this.props.minWidth,
       this.props.maxWidth,
       this.props.columnKey,
+      getSubLevel(this.props.rowIndex),
       event
     );
 

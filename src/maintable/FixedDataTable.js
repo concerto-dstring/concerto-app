@@ -14,9 +14,6 @@
 /*eslint no-bitwise:1*/
 import React from 'react';
 import PropTypes from 'prop-types';
-import FixedDataTableRow from './FixedDataTableRow';
-import MainTableAddRow from './MainTableAddRow';
-import MainTableSectionGroupBar from './MainTableSectionGroupBar';
 import { events, getPosition } from './helper/utils'
 import FixedDataTableBufferedRows from './FixedDataTableBufferedRows';
 import FixedDataTableEventHelper from './FixedDataTableEventHelper';
@@ -31,7 +28,7 @@ import isNaN from 'lodash/isNaN';
 import joinClasses from './vendor_upstream/core/joinClasses';
 import scrollbarsVisible from './selectors/scrollbarsVisible';
 import tableHeightsSelector from './selectors/tableHeights';
-import { RowType, getSubLevel, getRootRowIndex, getLeafRowIndex } from './data/MainTableType';
+import { RowType, getSubLevel, getRootRowIndex, getLeafRowIndex, SubRowOffsetX } from './data/MainTableType';
 import ColumnResizerLine from './ColumnResizerLine';
 
 import './css/layout/fixedDataTableLayout.css';
@@ -839,7 +836,7 @@ const DRAG_SCROLL_BUFFER = 40;
         minWidth={columnResizingData.minWidth || 0}
         maxWidth={columnResizingData.maxWidth || Number.MAX_VALUE}
         visible={!!isColumnResizing}
-        leftOffset={columnResizingData.left || 0}
+        leftOffset={columnResizingData.left + (columnResizingData.level === 1? SubRowOffsetX: 0) || 0}
         knobHeight={headerHeight}
         initialEvent={columnResizingData.initialEvent}
         onColumnResizeEnd={onColumnResizeEndCallback}
@@ -1043,6 +1040,7 @@ const DRAG_SCROLL_BUFFER = 40;
     /*?number*/ cellMinWidth,
     /*?number*/ cellMaxWidth,
     /*number|string*/ columnKey,
+    /*number|string*/ level,
     /*object*/ event
   ) => {
     const coordinates = FixedDataTableEventHelper.getCoordinatesFromEvent(event);
@@ -1053,6 +1051,7 @@ const DRAG_SCROLL_BUFFER = 40;
       cellMaxWidth,
       cellWidth,
       columnKey,
+      level,
       combinedWidth,
       clientX,
       clientY,

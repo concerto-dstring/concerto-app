@@ -14,13 +14,14 @@
 
 import FixedDataTableCell from './FixedDataTableCell';
 import FixedDataTableTranslateDOMPosition from './FixedDataTableTranslateDOMPosition';
-import PropTypes from 'prop-types';
+//import PropTypes from 'prop-types';
 import React from 'react';
 import cx from './vendor_upstream/stubs/cx';
 import { sumPropWidths } from './helper/widthHelper';
 
 import './css/layout/fixedDataTableCellGroupLayout.css';
-import { ColumnType } from './data/MainTableType'
+import { getSubLevel, SubRowOffsetX } from './data/MainTableType';
+//import { ColumnType } from './data/MainTableType'
 
 class FixedDataTableCellGroupImpl extends React.Component {
   /**
@@ -110,13 +111,16 @@ class FixedDataTableCellGroupImpl extends React.Component {
       }
       currentPosition += columnProps.width;
     }
+
+    let left =  getSubLevel(props.rowIndex) == 1? SubRowOffsetX : 0;
+
     var style = {
       height: props.height,
       position: 'absolute',
       width: contentWidth,
       zIndex: props.zIndex,
     };
-    FixedDataTableTranslateDOMPosition(style, -1 * props.left, 0, this._initialRender, this.props.isRTL);
+    FixedDataTableTranslateDOMPosition(style, -1 * props.left + left, 0, this._initialRender, this.props.isRTL);
 
     return (
       <div
@@ -232,8 +236,8 @@ class FixedDataTableCellGroup extends React.Component {
     }
     var onColumnResize = props.onColumnResize ? this._onColumnResize : null;
  
-    let group = this.props.data.getGroupByRowIndex(this.props.rowIndex)
-    let columns = this.props.columns
+    // let group = this.props.data.getGroupByRowIndex(this.props.rowIndex)
+    // let columns = this.props.columns
     return (
       <div
         style={style}
@@ -252,6 +256,7 @@ class FixedDataTableCellGroup extends React.Component {
     /*?number*/ minWidth,
     /*?number*/ maxWidth,
     /*string|number*/ columnKey,
+    /*string|number*/ level,
     /*object*/ event
   ) => {
     this.props.onColumnResize && this.props.onColumnResize(
@@ -261,6 +266,7 @@ class FixedDataTableCellGroup extends React.Component {
       minWidth,
       maxWidth,
       columnKey,
+      level,
       event
     );
   }

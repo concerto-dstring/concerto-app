@@ -2,6 +2,8 @@
 
 import WebConstants from "../../WebConstants";
 
+export const SubRowOffsetX = 30;
+
 export const RowType = {
   TITLE: 'TITLE',
   HEADER: 'HEADER',

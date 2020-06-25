@@ -7,6 +7,7 @@ import cx from './vendor_upstream/stubs/cx';
 import { sumPropWidths } from './helper/widthHelper';
 import Scrollbar from './Scrollbar';
 import FixedDataTableTranslateDOMPosition from './FixedDataTableTranslateDOMPosition';
+import { getSubLevel, SubRowOffsetX } from './data/MainTableType';
 
 import './css/layout/fixedDataTableRowLayout.css';
 import './css/style/fixedDataTableRow.css';
@@ -138,15 +139,15 @@ class MainTableAddRow extends React.Component {
     }  
 
     const fixedColumnsWidth = sumPropWidths(this.props.fixedColumns);
-    var scrollableColumnsWidth = sumPropWidths(this.props.scrollableColumns);
+    const scrollableColumnsWidth = sumPropWidths(this.props.scrollableColumns);
     const fixedRightColumnsWidth = sumPropWidths(this.props.fixedRightColumns);
 
-    const len = this.props.scrollableColumns.length;
+    // const len = this.props.scrollableColumns.length;
 
-    if (len > 0 
-      && !this.props.scrollableColumns[len - 1].template) {
-        scrollableColumnsWidth = scrollableColumnsWidth - this.props.scrollableColumns[len - 1].props.width;
-    }
+    // if (len > 0 
+    //   && !this.props.scrollableColumns[len - 1].template) {
+    //     scrollableColumnsWidth = scrollableColumnsWidth - this.props.scrollableColumns[len - 1].props.width;
+    // }
 
     const width = fixedColumnsWidth + scrollableColumnsWidth + fixedRightColumnsWidth - this.props.scrollLeft;
     let group = data.getGroupByRowIndex(this.props.index);
@@ -164,8 +165,7 @@ class MainTableAddRow extends React.Component {
     var style = {
       height: this.props.height,
       zIndex: (this.props.zIndex ? this.props.zIndex : 0),
-      display: (this.props.visible ? 'block' : 'none'),
-     
+      display: (this.props.visible ? 'block' : 'none')
     };
 
     let offset = this.props.offsetTop;
@@ -183,7 +183,7 @@ class MainTableAddRow extends React.Component {
       }
     }
 
-    FixedDataTableTranslateDOMPosition(style, 0, offset, this._initialRender, this.props.isRTL);
+    FixedDataTableTranslateDOMPosition(style, getSubLevel(this.props.index) == 1? SubRowOffsetX : 0, offset, this._initialRender, this.props.isRTL);
 
     var scrollbarOffset = this.props.showScrollbarY ? Scrollbar.SIZE : 0;
     
@@ -194,7 +194,7 @@ class MainTableAddRow extends React.Component {
         height: this.props.height,
         // Since the box-sizing = border-box the border on the table is included in the width
         // so we need to account for the left and right border
-        left: this.props.width - scrollbarOffset - 2,
+        left: this.props.width - scrollbarOffset,
       };
       scrollbarSpacer =
         <div 
