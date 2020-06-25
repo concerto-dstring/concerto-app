@@ -1016,6 +1016,8 @@ class MainTableDataStore {
           groups.pop();
           groups.push(group);
         }
+
+        this.runCallbacks();
       })
       .catch((error) => {
         console.log(error);
@@ -1156,6 +1158,85 @@ class MainTableDataStore {
             continue;
           if (column.isTitle) {
             this.createCellData(row.id, column.columnKey, newItem);
+          }
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        /* remove the cahced row if exists */
+        var index = rows.indexOf(cacheRowInput);
+        if (index !== -1) rows.splice(index, 1);
+        delete this._rowData[this._currentBoardId][cacheid];
+        delete this._rowColumnData[this._currentBoardId][cacheid];
+      });
+  }
+
+  addNewFirstRow(newItem) {
+    if (!this._groups[this._currentBoardId] || this._groups[this._currentBoardId].length === 0) {
+      return
+    }
+    let group = this._groups[this._currentBoardId][this._groups[this._currentBoardId].length - 1];
+    let rows = group.rows;
+    
+    let rank;
+    if (rows && rows.length > 0) {
+      rank = String(Number(rows[0].rank) / 2);
+    }
+    else {
+      rank = rankBlock;
+    }
+    let createdat = new Date().toISOString();
+    let rowinput = {
+      rank: rank,
+      createdAt: createdat,
+      groupID: group.id,
+      creatorID: this._currentUser.id,
+      deleteFlag: false,
+    };
+    let cacheRowInput = {...rowinput};
+    let cacheid = createdat + rank;
+    cacheRowInput['id'] = cacheid;
+    rows.unshift(cacheRowInput);
+
+    this._rowData[this._currentBoardId][cacheid] = {};
+    this._rowColumnData[this._currentBoardId][cacheid] = {};
+    let rowdata = this._rowData[this._currentBoardId][cacheid];
+    for (var i = 0; i < this._columns[this._currentBoardId].length; i++) {
+      const column = this._columns[this._currentBoardId][i];
+      if (column.level !== 0 || column.name === ColumnType.ROWACTION || column.name === ColumnType.ROWSELECT) continue;
+      if (column.isTitle) {
+        rowdata[column.columnKey] = newItem;
+      } else {
+        rowdata[column.columnKey] = null;
+      }
+    }
+
+    //refresh
+    this.runCallbacks();
+
+    this._apolloClient
+      .mutate({
+        mutation: gql(createRow),
+        variables: {
+          input: rowinput,
+        },
+      })
+      .then((result) => {
+        let row = result.data.createRow;
+        /* udpate the cahced row if exists */
+        var index = rows.indexOf(cacheRowInput);
+        if (index !== -1) rows.splice(index, 1);
+        rows.unshift(row);
+        delete this._rowData[this._currentBoardId][cacheid];
+        delete this._rowColumnData[this._currentBoardId][cacheid];
+        this._rowData[this._currentBoardId][row.id] = {};
+        this._rowColumnData[this._currentBoardId][row.id] = {};
+        for (var i = 0; i < this._columns[this._currentBoardId].length; i++) {
+          const column = this._columns[this._currentBoardId][i];
+          if (column.level !== 0 || column.name === ColumnType.ROWACTION || column.name === ColumnType.ROWSELECT)
+            continue;
+          if (column.isTitle) {
+            this.createCellData(row.id, column.columnKey, newItem, null, null, true);
           }
         }
       })
@@ -1347,7 +1428,7 @@ class MainTableDataStore {
       });
   }
 
-  createCellData(rowId, columnId, value, columnComponentType, specialValue) {
+  createCellData(rowId, columnId, value, columnComponentType, specialValue, isFirst) {
     this._apolloClient
       .mutate({
         mutation: gql(createData),
@@ -1385,7 +1466,17 @@ class MainTableDataStore {
     } else {
       row[columnId] = value;
     }
+
+    if (isFirst) {
+      row.isEditing = true;
+    }
+
     this.runCallbacks();
+  }
+
+  updateRowEditing(rowKey, isEditing) {
+    let rowData = this._rowData[this._currentBoardId][rowKey];
+    rowData.isEditing = isEditing;
   }
 
   removeColumn(columnKey) {
