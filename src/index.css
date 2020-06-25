@@ -1,15 +1,22 @@
-@font-face {
+/* @font-face {
   font-family: 'PingFang SC';
-  src: url('pingfang/PingFangSC.ttf') format('truetype');
-       /* font-weight: bold; */
-       font-size: 13px !important;
+  src: url('pingfang/PingFang Medium.otf') format('truetype');
+       font-size: 13px;
+       color:#111111;
   }
+
+@font-face {
+  font-family: 'PingFang SC Bold';
+  src: url('pingfang/PingFangSC.ttf') format('truetype');
+        font-size: 13px;
+        color:#111111;
+  } */
 body {
   margin: 0;
-  font-family: "PingFang SC" !important;
+  /* font-family: PingFangSC-Regular, Microsoft YaHei; */
   /* font-weight:  300; */
   /* letter-spacing: 1.2px; */
-  color:#16191F;
+  color:#111111;
   font-size: 13px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
