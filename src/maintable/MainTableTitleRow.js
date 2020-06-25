@@ -121,7 +121,7 @@ class MainTableTitleRow extends React.Component {
                   (mainPage) => mainPage.collapsed&&<DoubleRightOutlined className="collpse_style" onClick={mainPage.toggle}/>
                 }
               </MainPageContext.Consumer>
-              <div className="item_color" style={{background: this.props.boardColor, marginBottom: '2px'}}></div>
+              <div className="item_color" style={{background: this.props.boardColor, marginBottom: '1px'}}></div>
               {this.props.title}
             </span>
           </div>

@@ -250,12 +250,16 @@ class MainTableSectionGroupBar extends React.Component {
             <div style={style} className={className} onMouseEnter={showMoreBar} onMouseLeave={hideMoreBar} >
               <div style={contextStyle}>
                 {
-                  isCollapsed&&<UpOutlined style={collpseBarStyle} onClick={this.changeGroupCollapseState}/>
+                  isCollapsed&&
+                  // <img src="../collapse.svg" />
+                  <UpOutlined style={collpseBarStyle} onClick={this.changeGroupCollapseState}/>
                 }
                 {
-                  !isCollapsed&&<DownOutlined style={collpseBarStyle} onClick={this.changeGroupCollapseState}/>
+                  !isCollapsed&&
+                  // <img src="../collapse.svg" style={collpseBarStyle}/>
+                  <DownOutlined style={collpseBarStyle} onClick={this.changeGroupCollapseState}/>
                 }
-                <span style={titleStyle}>{group.name}</span>
+                <span style={titleStyle}>{group.name}</span> 
               </div>
               <div style={menuStyle ? menuStyle : this.state.style}>
                 <DropDownMenuHeader
