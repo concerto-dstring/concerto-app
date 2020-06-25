@@ -58,10 +58,7 @@ class MainPage extends React.Component {
       isLoading: false,
       isDataChanged: false,
       boardColor: '',
-      toggle:this.toggle,
-      mainPanelPaddingLeft: {
-        // paddingLeft:'18px'
-      },
+      toggle:this.toggle
     };
 
     this.createBoardRef = createRef();
@@ -153,17 +150,9 @@ class MainPage extends React.Component {
   };
 
   toggle = () => {
-    debugger;
     this.setState({
       siderWidth: !this.state.collapsed ? 0 : defaultSiderWidth,
-      collapsed: !this.state.collapsed,
-      mainPanelPaddingLeft: !this.state.collapsed
-        ? {
-            paddingLeft: '0px',
-          }
-        : {
-            paddingLeft: '18px',
-          },
+      collapsed: !this.state.collapsed
     });
   };
 
