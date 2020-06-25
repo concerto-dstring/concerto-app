@@ -29,6 +29,7 @@ import {connect} from 'react-redux';
 import {dealRowHeaderDrawer} from './maintable/actions/rowActions';
 import TooltipMsg from './TooltipMsg';
 import ErrorMsg from './ErrorMsg';
+import {MainPageContext} from './maintable/data/DataContext';
 
 const {Panel} = Collapse;
 const {Header, Content, Sider} = Layout;
@@ -57,6 +58,7 @@ class MainPage extends React.Component {
       isLoading: false,
       isDataChanged: false,
       boardColor: '',
+      toggle:this.toggle,
       mainPanelPaddingLeft: {
         // paddingLeft:'18px'
       },
@@ -151,6 +153,7 @@ class MainPage extends React.Component {
   };
 
   toggle = () => {
+    debugger;
     this.setState({
       siderWidth: !this.state.collapsed ? 0 : defaultSiderWidth,
       collapsed: !this.state.collapsed,
@@ -308,7 +311,11 @@ class MainPage extends React.Component {
     // if (!contentTitle) return null
     return (
       <Content style={{marginLeft: 24}}>
-        <Route exact component={() => <MainTable title={contentTitle} data={dataset} siderWidth={siderWidth} boardColor={boardColor} />} />
+        <Route exact component={() => 
+          <MainPageContext.Provider value={this.state}>
+             <MainTable title={contentTitle} data={dataset} siderWidth={siderWidth} boardColor={boardColor} />
+          </MainPageContext.Provider>
+        } />
       </Content>
     );
   };
@@ -492,7 +499,7 @@ class MainPage extends React.Component {
                 </Row>
               </div>
             </Sider>
-            <Layout style={this.state.mainPanelPaddingLeft}>{this.getBodyContent()}</Layout>
+            <Layout>{this.getBodyContent()}</Layout>
           </Layout>
         </Layout>
         <Modal

@@ -20,6 +20,7 @@ import {
   DoubleRightOutlined,
 } from '@ant-design/icons';
 import {ADD_SECTION} from './MainTableRowKeyAndDesc';
+import {MainPageContext} from '../maintable/data/DataContext';
 
 /**
  * Component that renders the row for <FixedDataTable />.
@@ -108,15 +109,19 @@ class MainTableTitleRow extends React.Component {
   componentDidMount() {
     this._initialRender = false;
   }
-
+ 
   getBodyContent = () => {
     return (
       <>
         <div className="body_content_title_row">
           <div className="body_content_title">
             <span>
-              {/* <DoubleRightOutlined className="collpse_style"/>&nbsp;&nbsp; */}
-              <div className="item_color" style={{background: this.props.boardColor, marginBottom: '3px'}}></div>
+              <MainPageContext.Consumer>
+                {
+                  (mainPage) => mainPage.collapsed&&<DoubleRightOutlined className="collpse_style" onClick={mainPage.toggle}/>
+                }
+              </MainPageContext.Consumer>
+              <div className="item_color" style={{background: this.props.boardColor, marginBottom: '2px'}}></div>
               {this.props.title}
             </span>
           </div>
