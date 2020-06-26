@@ -166,12 +166,16 @@ class FixedDataTableCell extends React.Component {
   }
 
   render() /*object*/ {
-    var { height, width, columnKey, isHeaderOrFooter, onCellEdit, onCellEditEnd, onCellFocus, ...props } = this.props;
+    const { height, width, columnKey, isHeaderOrFooter, onCellEdit, onCellEditEnd, onCellFocus, ...props } = this.props;
 
-    var style = {
+    let style = {
       height,
-      width
+      width,
     };
+
+    if (!props.cell) {
+      style.opacity=1;
+    }
     
     if (this.props.isRTL) {
       style.right = props.left;
@@ -184,6 +188,7 @@ class FixedDataTableCell extends React.Component {
     //   style.borderRightStyle = 'none'
     //   style.backgroundColor = '#FFFFFF'
     // }
+    
 
     let replacingColumn = false;
     if (props.isColumnReordering && isHeaderOrFooter 
@@ -191,9 +196,10 @@ class FixedDataTableCell extends React.Component {
       replacingColumn = true;
     } 
 
-    var className = joinClasses(
+    let className = joinClasses(
       cx({
-        'fixedDataTableCellLayout/main': true,
+        'fixedDataTableCellLayout/main': !isHeaderOrFooter,
+        'fixedDataTableCellLayout/footer': isHeaderOrFooter,
         'fixedDataTableCellLayout/lastChild': props.lastChild,
         'fixedDataTableCellLayout/alignRight': props.align === 'right',
         'fixedDataTableCellLayout/alignCenter': props.align === 'center',
@@ -293,7 +299,6 @@ class FixedDataTableCell extends React.Component {
     } 
 
     const role = isHeaderOrFooter ? 'columnheader' : 'gridcell';
-    style['borderRight'] = role!='gridcell'?'1px solid #DDE1E3 important':'1px solid #FAFAFA';
     const setTableColumn = (table)=>{
       const column = this.getColumnCollpseByColumnInfo(table.columns,columnKey);
       if(column&&column.collpse){
