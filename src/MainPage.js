@@ -29,6 +29,7 @@ import {connect} from 'react-redux';
 import {dealRowHeaderDrawer} from './maintable/actions/rowActions';
 import TooltipMsg from './TooltipMsg';
 import ErrorMsg from './ErrorMsg';
+import {MainPageContext} from './maintable/data/DataContext';
 
 const {Panel} = Collapse;
 const {Header, Content, Sider} = Layout;
@@ -57,9 +58,7 @@ class MainPage extends React.Component {
       isLoading: false,
       isDataChanged: false,
       boardColor: '',
-      mainPanelPaddingLeft: {
-        // paddingLeft:'18px'
-      },
+      toggle:this.toggle
     };
 
     this.createBoardRef = createRef();
@@ -153,14 +152,7 @@ class MainPage extends React.Component {
   toggle = () => {
     this.setState({
       siderWidth: !this.state.collapsed ? 0 : defaultSiderWidth,
-      collapsed: !this.state.collapsed,
-      mainPanelPaddingLeft: !this.state.collapsed
-        ? {
-            paddingLeft: '0px',
-          }
-        : {
-            paddingLeft: '18px',
-          },
+      collapsed: !this.state.collapsed
     });
   };
 
@@ -308,7 +300,11 @@ class MainPage extends React.Component {
     // if (!contentTitle) return null
     return (
       <Content style={{marginLeft: 24}}>
-        <Route exact component={() => <MainTable title={contentTitle} data={dataset} siderWidth={siderWidth} boardColor={boardColor} />} />
+        <Route exact component={() => 
+          <MainPageContext.Provider value={this.state}>
+             <MainTable title={contentTitle} data={dataset} siderWidth={siderWidth} boardColor={boardColor} />
+          </MainPageContext.Provider>
+        } />
       </Content>
     );
   };
@@ -334,7 +330,7 @@ class MainPage extends React.Component {
         key={key}
       >
         {menus.map((item) => {
-          let style = item.id === selectedKey ? {background: '#f2f3f3', fontWeight: 'bold'} : {};
+          let style = item.id === selectedKey ? {background: '#f2f3f3', fontWeight: '400'} : {};
           let path = isBoard ? `/board/${item.id}` : '/dashboard';
           return (
             <div
@@ -492,7 +488,7 @@ class MainPage extends React.Component {
                 </Row>
               </div>
             </Sider>
-            <Layout style={this.state.mainPanelPaddingLeft}>{this.getBodyContent()}</Layout>
+            <Layout>{this.getBodyContent()}</Layout>
           </Layout>
         </Layout>
         <Modal

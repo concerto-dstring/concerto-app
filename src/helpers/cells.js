@@ -343,6 +343,9 @@ class DropDownMenuHeader extends React.PureComponent {
               margin: '8px 6px',
               float: 'right',
               cursor: 'pointer',
+              fontSize: '20px',
+              lineHeight: '20px',
+              marginTop: '7px'
               // backgroundColor: headerBtnColor,
               // borderColor: headerBtnBorderColor,
               // visibility: isCollapsed ? VISIBILITY.HIDDEN : VISIBILITY.VISIBLE
