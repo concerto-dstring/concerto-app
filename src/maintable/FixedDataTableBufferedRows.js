@@ -122,9 +122,9 @@ class FixedDataTableBufferedRows extends React.Component {
               offsetTop={offset}
               scrollLeft={props.scrollLeft}
               visible={true}
-              fixedColumns={props.subFixedColumns.cell}
-              fixedRightColumns={props.subFixedRightColumns.cell}
-              scrollableColumns={props.subScrollableColumns.cell}
+              fixedColumns={props.subFixedColumns.header}
+              fixedRightColumns={props.subFixedRightColumns.header}
+              scrollableColumns={props.subScrollableColumns.header}
               touchEnabled={props.touchScrollEnabled}
               onColumnResize={props.onColumnResize}
               onColumnReorderMove={props.onColumnReorderMove}
