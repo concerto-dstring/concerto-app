@@ -27,7 +27,7 @@
 
 .fixedDataTableRowLayout_rowExpanded {
   box-sizing: border-box;
-  left: 0;
+  left: 30px;
   position: absolute;
   background: #f2f3f3 !important;
 }
