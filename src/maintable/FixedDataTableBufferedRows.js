@@ -46,7 +46,7 @@ class FixedDataTableBufferedRows extends React.Component {
   _rowExpanded = ({ rowIndex, height, width }) => {
     let props = this.props;
     let subRows = props.subRowsGetter(rowIndex);
-    const onColumnReorder = props.onColumnReorderEndCallback ? this._onColumnReorder : null;
+    //const onColumnReorder = props.onColumnReorderEndCallback ? this.props.onColumnReorder : null;
     if (subRows.length == 0) {
       return null;
     }
@@ -129,7 +129,7 @@ class FixedDataTableBufferedRows extends React.Component {
               onColumnResize={props.onColumnResize}
               onColumnReorderMove={props.onColumnReorderMove}
               onColumnReorderEnd={props.onColumnReorderEnd}
-              onColumnReorder={onColumnReorder}
+              onColumnReorder={props.onColumnReorder}
               isColumnReordering={!!props.isColumnReordering}
               columnReorderingData={props.columnReorderingData}
               showScrollbarY={props.scrollEnabledY}

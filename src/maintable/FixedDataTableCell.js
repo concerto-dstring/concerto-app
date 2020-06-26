@@ -179,11 +179,11 @@ class FixedDataTableCell extends React.Component {
       style.left = props.left;
     }
 
-    if (this.props.isTableFooter) {
-      // 统计行去除边框,背景白色
-      style.borderRightStyle = 'none'
-      style.backgroundColor = '#FFFFFF'
-    }
+    // if (this.props.isTableFooter) {
+    //   // 统计行去除边框,背景白色
+    //   style.borderRightStyle = 'none'
+    //   style.backgroundColor = '#FFFFFF'
+    // }
 
     let replacingColumn = false;
     if (props.isColumnReordering && isHeaderOrFooter 
