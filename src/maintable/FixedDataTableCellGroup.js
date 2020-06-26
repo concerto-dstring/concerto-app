@@ -20,10 +20,6 @@ import cx from './vendor_upstream/stubs/cx';
 import { sumPropWidths } from './helper/widthHelper';
 
 import './css/layout/fixedDataTableCellGroupLayout.css';
-<<<<<<< HEAD
-=======
-import { getSubLevel, SubRowOffsetX } from './data/MainTableType';
->>>>>>> master
 //import { ColumnType } from './data/MainTableType'
 
 class FixedDataTableCellGroupImpl extends React.Component {
@@ -114,20 +110,14 @@ class FixedDataTableCellGroupImpl extends React.Component {
       }
       currentPosition += columnProps.width;
     }
-<<<<<<< HEAD
     
-=======
-
-    let left =  getSubLevel(props.rowIndex) == 1? SubRowOffsetX : 0;
-
->>>>>>> master
     var style = {
       height: props.height,
       position: 'absolute',
       width: contentWidth,
       zIndex: props.zIndex,
     };
-    FixedDataTableTranslateDOMPosition(style, -1 * props.left + left, 0, this._initialRender, this.props.isRTL);
+    FixedDataTableTranslateDOMPosition(style, -1 * props.left, 0, this._initialRender, this.props.isRTL);
 
     return (
       <div

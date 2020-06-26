@@ -7,7 +7,6 @@ import cx from './vendor_upstream/stubs/cx';
 import { sumPropWidths } from './helper/widthHelper';
 import Scrollbar from './Scrollbar';
 import FixedDataTableTranslateDOMPosition from './FixedDataTableTranslateDOMPosition';
-import { getSubLevel, SubRowOffsetX } from './data/MainTableType';
 
 import './css/layout/fixedDataTableRowLayout.css';
 import './css/style/fixedDataTableRow.css';
@@ -183,7 +182,7 @@ class MainTableAddRow extends React.Component {
       }
     }
 
-    FixedDataTableTranslateDOMPosition(style, getSubLevel(this.props.index) == 1? SubRowOffsetX : 0, offset, this._initialRender, this.props.isRTL);
+    FixedDataTableTranslateDOMPosition(style, 0, offset, this._initialRender, this.props.isRTL);
 
     var scrollbarOffset = this.props.showScrollbarY ? Scrollbar.SIZE : 0;
     
