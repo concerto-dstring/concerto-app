@@ -9,7 +9,7 @@ import {RowType} from './MainTableType';
 import FixedDataTable from '../FixedDataTable';
 
 const TableContext = React.createContext();
-
+const MainPageContext = React.createContext();
 const DataVersionContext = React.createContext({
   data: null,
   version: 0,
@@ -340,4 +340,4 @@ function AddFilter(TableComponent) {
 }
 
 // Export both HOC and the PropType for the data if required
-export {DataVersionContext, DataContext, AddFilter, TableContext};
+export {DataVersionContext, DataContext, AddFilter, TableContext, MainPageContext};

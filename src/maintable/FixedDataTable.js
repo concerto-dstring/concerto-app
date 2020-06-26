@@ -977,6 +977,7 @@ const DRAG_SCROLL_BUFFER = 40;
         onNewRowAdd={props.onNewRowAddCallback}
         onFilterChange={props.onFilterChangeCallback}
         onGetListUsers={props.onGetListUsers}
+        onAddNewFirstRow={props.onAddNewFirstRow}
         onAddNewGroup={props.onAddNewGroupCallback} 
         onColumnReorder={onColumnReorder}
         onColumnReorderMove={this._onColumnReorderMove}

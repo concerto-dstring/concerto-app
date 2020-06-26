@@ -183,7 +183,7 @@ class MainTableAddRow extends React.Component {
       }
     }
 
-    FixedDataTableTranslateDOMPosition(style, 0, offset, this._initialRender, this.props.isRTL);
+    FixedDataTableTranslateDOMPosition(style, getSubLevel(this.props.index) == 1? SubRowOffsetX : 0, offset, this._initialRender, this.props.isRTL);
 
     var scrollbarOffset = this.props.showScrollbarY ? Scrollbar.SIZE : 0;
     

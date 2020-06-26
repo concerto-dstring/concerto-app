@@ -494,6 +494,7 @@ class FixedDataTableBufferedRows extends React.Component {
               visible={visible} 
               onFilter={props.onFilterChange}
               onGetListUsers={props.onGetListUsers}
+              onAddNewFirstRow={props.onAddNewFirstRow}
               boardColor={props.boardColor}
               onAddNewGroup={props.onAddNewGroup}
               onCellEdit={props.onCellEdit}

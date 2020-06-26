@@ -2,8 +2,9 @@
 
 import PropTypes from 'prop-types';
 import React from 'react';
-import {Layout, Input, Avatar, Space, Select} from 'antd';
-import {Button} from 'semantic-ui-react';
+
+import {Layout, Input, Avatar, Space, Select, Dropdown, Menu} from 'antd';
+
 import filterIcon from './helper/filterIcon.svg';
 
 import FixedDataTableTranslateDOMPosition from './FixedDataTableTranslateDOMPosition';
@@ -18,6 +19,8 @@ import {
   EyeInvisibleOutlined,
   DoubleRightOutlined,
 } from '@ant-design/icons';
+import {ADD_SECTION} from './MainTableRowKeyAndDesc';
+import {MainPageContext} from '../maintable/data/DataContext';
 
 /**
  * Component that renders the row for <FixedDataTable />.
@@ -70,6 +73,11 @@ class MainTableTitleRow extends React.Component {
     onGetListUsers: PropTypes.func,
 
     /**
+     * 增加工作项
+     */
+    onAddNewFirstRow: PropTypes.func,
+
+    /**
      * Whether the grid should be in RTL mode
      */
     isRTL: PropTypes.bool,
@@ -101,17 +109,21 @@ class MainTableTitleRow extends React.Component {
   componentDidMount() {
     this._initialRender = false;
   }
-
+ 
   getBodyContent = () => {
     return (
       <>
         <div className="body_content_title_row">
           <div className="body_content_title">
-            <h1>
-              {/* <DoubleRightOutlined className="collpse_style"/>&nbsp;&nbsp; */}
-              <div className="item_color" style={{background: this.props.boardColor,marginBottom:'3px'}}></div>
+            <span>
+              <MainPageContext.Consumer>
+                {
+                  (mainPage) => mainPage.collapsed&&<DoubleRightOutlined className="collpse_style" onClick={mainPage.toggle}/>
+                }
+              </MainPageContext.Consumer>
+              <div className="item_color" style={{background: this.props.boardColor, marginBottom: '1px'}}></div>
               {this.props.title}
-            </h1>
+            </span>
           </div>
           {/* <div className="body_content_title_right">
               <div className="body_content_title_right_item">
@@ -189,17 +201,36 @@ class MainTableTitleRow extends React.Component {
   }
 
   handleSearchUser = (input, option) => {
-    return option.children[2].toLowerCase().indexOf(input.toLowerCase()) >= 0
+    return option.children[2].toLowerCase().indexOf(input.toLowerCase()) >= 0;
   };
 
   handleVisibleChange = (visible) => {
     if (visible) {
-      this.props.onCellEdit(-1, "");
+      this.props.onCellEdit(-1, '');
     } else {
-      this.props.onCellEditEnd(-1, "");
+      this.props.onCellEditEnd(-1, '');
     }
   };
-  
+
+  handleMenuClick = ({item, key, keyPath, selectedKeys, domEvent}) => {
+    if (key === ADD_SECTION.key) {
+      this._onAddNewGroup();
+    }
+  };
+
+  getDropMenu = () => {
+    return (
+      <Menu onClick={this.handleMenuClick} style={{width: 100, borderRadius: '8px', padding: '5px, 0px, 5px, 5px', pointerEvents: 'visible'}}>
+        <Menu.Item key={ADD_SECTION.key}>
+          <span>{ADD_SECTION.desc}</span>
+        </Menu.Item>
+      </Menu>
+    );
+  };
+
+  onAddNewFirstRow = () => {
+    this.props.onAddNewFirstRow('新工作项');
+  };
 
   render() /*object*/ {
     const {offsetTop, zIndex, visible, height} = this.props;
@@ -212,13 +243,13 @@ class MainTableTitleRow extends React.Component {
 
     const handleCellEnter = () => {
       if (this.props.onCellFocus) {
-        this.props.onCellFocus(-1, "", true);
+        this.props.onCellFocus(-1, '', true);
       }
     };
-  
+
     const handleCellLeave = () => {
       if (this.props.onCellFocus) {
-        this.props.onCellFocus(-1, "", false);
+        this.props.onCellFocus(-1, '', false);
       }
     };
 
@@ -231,15 +262,22 @@ class MainTableTitleRow extends React.Component {
           <div className="main_table_add_btn_row">
             <Space size="middle">
               <div id="addGroupBtn">
-                <Button onClick={this._onAddNewGroup} className="main_table_add_btn">
+                <div onClick={this._onAddNewGroup} className="main_table_add_btn">
                   <div className="main_table_btn_layout">
-                    <span style={{}}>+ &nbsp;工作项</span>
+                 
+                    <span onClick={this.onAddNewFirstRow} style={{lineHeight: '20px'}}>+ &nbsp;工作项</span>
+
                     <div className="main_table_add_btn_separator" />
-                    <div>
+                    <Dropdown 
+                      overlay={this.getDropMenu()} 
+                      trigger="click"
+                      getPopupContainer={() => this.props.container}
+                      onVisibleChange={this.handleVisibleChange}
+                    >
                       <CaretDownOutlined />
-                    </div>
+                    </Dropdown>
                   </div>
-                </Button>
+                </div>
               </div>
               <div style={{display: 'flex'}}>
                 <div className="main_table_select_user_icon">
@@ -291,7 +329,7 @@ class MainTableTitleRow extends React.Component {
                 prefix={<SearchOutlined />}
                 placeholder="搜索/过滤"
                 onChange={this._onFilterTableData}
-                style={{borderRadius: '5px', width: 160,border:'1px solid #f2f3f3',background:'#fafafa'}}
+                style={{borderRadius: '5px', width: 160, border: '1px solid #f2f3f3', background: '#fafafa'}}
               />
             </div>
           </div>
