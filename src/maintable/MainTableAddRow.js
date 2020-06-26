@@ -209,7 +209,7 @@ class MainTableAddRow extends React.Component {
                 id="addRow"
                 style={inputStyle} 
                 // action= {{content:'添加', onClick:() => this._onNewrowButton(this.props) }} 
-                placeholder='+' 
+                placeholder='➕' 
                 onKeyPress={this._onKeyPress} 
                 value={this.state.newItem} 
                 onChange={this.handleChange} 
