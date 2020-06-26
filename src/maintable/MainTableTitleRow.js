@@ -29,69 +29,69 @@ import {MainPageContext} from '../maintable/data/DataContext';
  */
 
 class MainTableTitleRow extends React.Component {
-  static propTypes = {
-    className: PropTypes.string,
+  // static propTypes = {
+  //   className: PropTypes.string,
 
-    /**
-     * Title of the content
-     */
-    title: PropTypes.string,
+  //   /**
+  //    * Title of the content
+  //    */
+  //   title: PropTypes.string,
 
-    /**
-     * Height of the row.
-     */
-    height: PropTypes.number.isRequired,
+  //   /**
+  //    * Height of the row.
+  //    */
+  //   height: PropTypes.number.isRequired,
 
-    /**
-     * The vertical position where the row should render itself
-     */
-    offsetTop: PropTypes.number.isRequired,
+  //   /**
+  //    * The vertical position where the row should render itself
+  //    */
+  //   offsetTop: PropTypes.number.isRequired,
 
-    /**
-     * Height of fixedDataTableCellGroupLayout/cellGroupWrapper.
-     */
-    cellGroupWrapperHeight: PropTypes.number,
+  //   /**
+  //    * Height of fixedDataTableCellGroupLayout/cellGroupWrapper.
+  //    */
+  //   cellGroupWrapperHeight: PropTypes.number,
 
-    /**
-     * Width of the row.
-     */
-    width: PropTypes.number.isRequired,
+  //   /**
+  //    * Width of the row.
+  //    */
+  //   width: PropTypes.number.isRequired,
 
-    /**
-     * The value of the aria-rowindex attribute.
-     */
-    ariaRowIndex: PropTypes.number,
+  //   /**
+  //    * The value of the aria-rowindex attribute.
+  //    */
+  //   ariaRowIndex: PropTypes.number,
 
-    /**
-     * The value of the aria-rowindex attribute.
-     */
-    onFilter: PropTypes.func,
+  //   /**
+  //    * The value of the aria-rowindex attribute.
+  //    */
+  //   onFilter: PropTypes.func,
 
-    /**
-     * user list
-     */
-    onGetListUsers: PropTypes.func,
+  //   /**
+  //    * user list
+  //    */
+  //   onGetListUsers: PropTypes.func,
 
-    /**
-     * 增加工作项
-     */
-    onAddNewFirstRow: PropTypes.func,
+  //   /**
+  //    * 增加工作项
+  //    */
+  //   onAddNewFirstRow: PropTypes.func,
 
-    /**
-     * Whether the grid should be in RTL mode
-     */
-    isRTL: PropTypes.bool,
+  //   /**
+  //    * Whether the grid should be in RTL mode
+  //    */
+  //   isRTL: PropTypes.bool,
 
-    /**
-     * DOM attributes to be applied to the row.
-     */
-    attributes: PropTypes.object,
+  //   /**
+  //    * DOM attributes to be applied to the row.
+  //    */
+  //   attributes: PropTypes.object,
 
-    /**
-     * boardColor
-     */
-    boardColor: PropTypes.string,
-  };
+  //   /**
+  //    * boardColor
+  //    */
+  //   boardColor: PropTypes.string,
+  // };
 
   constructor(props) {
     super(props);
