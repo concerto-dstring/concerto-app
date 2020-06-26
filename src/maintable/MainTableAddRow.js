@@ -147,12 +147,12 @@ class MainTableAddRow extends React.Component {
     //   && !this.props.scrollableColumns[len - 1].template) {
     //     scrollableColumnsWidth = scrollableColumnsWidth - this.props.scrollableColumns[len - 1].props.width;
     // }
-
+   debugger;
     const width = fixedColumnsWidth + scrollableColumnsWidth + fixedRightColumnsWidth - this.props.scrollLeft;
     let group = data.getGroupByRowIndex(this.props.index);
     let groupColor = group ? group.color : "rgba(0, 0, 0, 0.65)";
     var inputStyle = {
-      width: width+10,
+      width: width-22,//需减去最左边行菜单单元格宽度，因为新增行是从数字序号列开始的
       height: this.props.height,
       zIndex: this.props.zIndex,
       borderRadius:'0px',
