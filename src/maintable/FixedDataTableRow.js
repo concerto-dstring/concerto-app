@@ -246,7 +246,6 @@ class FixedDataTableRowImpl extends React.Component {
         rowHeight={this.props.height}
         rowIndex={this.props.index}
         isHeaderOrFooter={this.props.isHeaderOrFooter}
-        isTableFooter={this.props.isTableFooter}
         container={this.props.container}
         data={this.props.data}
         isRTL={this.props.isRTL}
@@ -276,7 +275,6 @@ class FixedDataTableRowImpl extends React.Component {
         rowHeight={this.props.height}
         rowIndex={this.props.index}
         isHeaderOrFooter={this.props.isHeaderOrFooter}
-        isTableFooter={this.props.isTableFooter}
         container={this.props.container}
         data={this.props.data}
         isRTL={this.props.isRTL}
@@ -308,7 +306,6 @@ class FixedDataTableRowImpl extends React.Component {
         rowHeight={this.props.height}
         rowIndex={this.props.index}
         isHeaderOrFooter={this.props.isHeaderOrFooter}
-        isTableFooter={this.props.isTableFooter}
         container={this.props.container}
         data={this.props.data}
         isRTL={this.props.isRTL}
