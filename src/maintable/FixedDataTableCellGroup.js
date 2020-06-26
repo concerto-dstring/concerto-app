@@ -14,13 +14,13 @@
 
 import FixedDataTableCell from './FixedDataTableCell';
 import FixedDataTableTranslateDOMPosition from './FixedDataTableTranslateDOMPosition';
-import PropTypes from 'prop-types';
+//import PropTypes from 'prop-types';
 import React from 'react';
 import cx from './vendor_upstream/stubs/cx';
 import { sumPropWidths } from './helper/widthHelper';
 
 import './css/layout/fixedDataTableCellGroupLayout.css';
-import { ColumnType } from './data/MainTableType'
+//import { ColumnType } from './data/MainTableType'
 
 class FixedDataTableCellGroupImpl extends React.Component {
   /**
@@ -110,6 +110,7 @@ class FixedDataTableCellGroupImpl extends React.Component {
       }
       currentPosition += columnProps.width;
     }
+    
     var style = {
       height: props.height,
       position: 'absolute',
@@ -221,7 +222,8 @@ class FixedDataTableCellGroup extends React.Component {
 
     var style = {
       height: props.cellGroupWrapperHeight || props.height,
-      width: props.width
+      width: props.width,
+      marginLeft:'1px'
     };
 
     if (this.props.isRTL) {
@@ -229,11 +231,10 @@ class FixedDataTableCellGroup extends React.Component {
     } else {
       style.left = offsetLeft;
     }
-
     var onColumnResize = props.onColumnResize ? this._onColumnResize : null;
  
-    let group = this.props.data.getGroupByRowIndex(this.props.rowIndex)
-    let columns = this.props.columns
+    // let group = this.props.data.getGroupByRowIndex(this.props.rowIndex)
+    // let columns = this.props.columns
     return (
       <div
         style={style}
@@ -252,6 +253,7 @@ class FixedDataTableCellGroup extends React.Component {
     /*?number*/ minWidth,
     /*?number*/ maxWidth,
     /*string|number*/ columnKey,
+    /*string|number*/ level,
     /*object*/ event
   ) => {
     this.props.onColumnResize && this.props.onColumnResize(
@@ -261,6 +263,7 @@ class FixedDataTableCellGroup extends React.Component {
       minWidth,
       maxWidth,
       columnKey,
+      level,
       event
     );
   }

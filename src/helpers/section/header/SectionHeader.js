@@ -18,7 +18,7 @@ const CellContainer = styled.div`
   align-items: center;
   height: 100%;
   overflow: hidden;
-  margin: 2px 5px;
+  margin: 0px 5px;
   padding: 5px;
 `;
 @connect(mapSectionHeaderStateToProps, {dealSectionColorMenu})
@@ -38,17 +38,19 @@ class SectionHeader extends PureComponent {
   componentWillReceiveProps(props) {
     const {data, rowIndex, curGroup, columnKey} = props;
     let group = data.getGroupByRowIndex(rowIndex);
-    let isSubSection = String(rowIndex).indexOf('.') !== -1;
-    let subItemName = data.getColumn(columnKey).name;
-    this.setState({
-      group: data.getGroupByRowIndex(rowIndex),
-      oldNameValue: isSubSection ? subItemName : group.name,
-      version: props.dataVersion,
-      editing: curGroup && group && curGroup.groupKey === group.groupKey,
-      isShowSectionColorMenu: curGroup && group && curGroup.groupKey === group.groupKey,
-      isSubSection: isSubSection,
-      subItemName: subItemName,
-    });
+    if (group) {
+      let isSubSection = String(rowIndex).indexOf('.') !== -1;
+      let subItemName = data.getColumn(columnKey).name;
+      this.setState({
+        group: data.getGroupByRowIndex(rowIndex),
+        oldNameValue: isSubSection ? subItemName : group.name,
+        version: props.dataVersion,
+        editing: curGroup && group && curGroup.groupKey === group.groupKey,
+        isShowSectionColorMenu: curGroup && group && curGroup.groupKey === group.groupKey,
+        isSubSection: isSubSection,
+        subItemName: subItemName,
+      });
+    }
   }
 
   setTargetRef = (ref) => (this.targetRef = ref);

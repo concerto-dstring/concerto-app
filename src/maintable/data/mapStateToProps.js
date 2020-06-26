@@ -5,14 +5,22 @@ export const mapRowActionStateToProps = (state) => {
     isShowDeleteModal: state.isShowDeleteModal,
     isShowUndoModal: state.isShowUndoModal,
     columnKey: state.columnKey,
+    columnIndex: state.columnIndex,
+    column: state.column,
     rowIndex: state.rowIndex,
+    rowData: state.rowData,
     rowKey: state.rowKey,
+    groupRowIndex: state.groupRowIndex,
+    groupKey: state.groupKey,
     group: state.group,
     groupIndex: state.groupIndex,
     sourceGroupKey: state.sourceGroupKey,
     targetGroupKey: state.targetGroupKey,
     tableData: state.data,
     oldSourceRow: state.oldSourceRow,
+    undoType: state.undoType,
+    deleteType: state.deleteType,
+    mainTable: state.mainTable
   };
 };
 

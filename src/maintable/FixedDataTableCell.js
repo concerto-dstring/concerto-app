@@ -28,6 +28,7 @@ import {
   VISIBILITY,
   DISPLAY
 } from '../helpers/section/header/StyleValues'
+import { getSubLevel } from './data/MainTableType';
 
 class FixedDataTableCell extends React.Component {
   /**
@@ -178,11 +179,11 @@ class FixedDataTableCell extends React.Component {
       style.left = props.left;
     }
 
-    if (this.props.isTableFooter) {
-      // 统计行去除边框,背景白色
-      style.borderRightStyle = 'none'
-      style.backgroundColor = '#FFFFFF'
-    }
+    // if (this.props.isTableFooter) {
+    //   // 统计行去除边框,背景白色
+    //   style.borderRightStyle = 'none'
+    //   style.backgroundColor = '#FFFFFF'
+    // }
 
     let replacingColumn = false;
     if (props.isColumnReordering && isHeaderOrFooter 
@@ -227,6 +228,7 @@ class FixedDataTableCell extends React.Component {
             )}
             style={columnResizerStyle}
           />
+          <div className="column_split_line"></div>
         </div>
       );
       // tableColumnSort = (
@@ -291,7 +293,7 @@ class FixedDataTableCell extends React.Component {
     } 
 
     const role = isHeaderOrFooter ? 'columnheader' : 'gridcell';
-
+    style['borderRight'] = role!='gridcell'?'1px solid #DDE1E3 important':'1px solid #FAFAFA';
     const setTableColumn = (table)=>{
       const column = this.getColumnCollpseByColumnInfo(table.columns,columnKey);
       if(column&&column.collpse){
@@ -299,7 +301,7 @@ class FixedDataTableCell extends React.Component {
                   {isHeaderOrFooter&&
                   <Tooltip placement="top" title={<span>展开“{column.name}”列</span>}>
                     <ColumnWidthOutlined 
-                    style={{cursor:'pointer',lineHeight:'45px'}}  
+                    style={{cursor:'pointer',lineHeight:'35px'}}  
                     onClick={table._onCollpseColumnCallback.bind(this,columnKey,false)}/>
                   </Tooltip>}
                 </div>;
@@ -332,6 +334,7 @@ class FixedDataTableCell extends React.Component {
       this.props.minWidth,
       this.props.maxWidth,
       this.props.columnKey,
+      getSubLevel(this.props.rowIndex),
       event
     );
 

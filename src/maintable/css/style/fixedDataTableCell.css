@@ -16,6 +16,8 @@
   background-color: #fff;
   border-bottom-color: #f2f3f3 !important;
   border-right-color: #fafafa !important;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .public_fixedDataTableCell_main:hover  .sc-AxiKw{
   border:dashed rgb(168, 164, 164) 1px;
@@ -40,4 +42,12 @@
 .fixedDataTable_isRTL .public_fixedDataTableCell_hasReorderHandle .public_fixedDataTableCell_cellContent {
   margin-left: auto;
   margin-right: 12px;
+}
+
+.column_split_line{
+  height:16px;
+  width:1px;
+  background: #DDE1E3;
+  float: right;
+  margin:8px 0;
 }

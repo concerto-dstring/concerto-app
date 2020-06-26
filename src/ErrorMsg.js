@@ -7,7 +7,7 @@ export default {
   user_not_exist: '用户不存在',
   user_exist: '用户名已存在',
   password_error: '密码错误',
-  userName_rule: '用户名以字母开头, 包含字母、数字、_, 长度为5~30',
+  userName_rule: '用户名可以包含字母、数字、中文和_, 长度为2~20',
   password_rule: '密码长度最小为8',
   confirm_password_error: '两次输入的密码不一致',
   email_error: '请输入正确的邮箱地址',
@@ -18,4 +18,5 @@ export default {
   user_not_validate: '该用户还未验证,请在下面输入邮箱中的验证码',
   validate_code_send: '验证码已发送至您的邮箱',
   validate_code_resend: '验证码已重新发送至您的邮箱',
+  board_name_is_empty: '工作板名称不能为空',
 };

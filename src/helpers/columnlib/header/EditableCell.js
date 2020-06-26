@@ -1,4 +1,5 @@
 import React from 'react';
+import {Tooltip} from 'antd';
 import {Overlay} from 'react-overlays';
 import styled from 'styled-components';
 import Keys from '../../../maintable/vendor_upstream/core/Keys';
@@ -8,6 +9,7 @@ import {TableCell} from '../cell/TableCell';
 import {TableContext} from '../../../maintable/data/DataContext';
 import './EditableCell.less';
 import getHighlightText from '../../../maintable/getHighlightText';
+import { getCellRenderValues, getCellPopupHeight } from '../cell/CellProperties';
 
 const CellContainer = styled.div`
   display: flex;
@@ -15,6 +17,8 @@ const CellContainer = styled.div`
   align-items: center;
   height: 31px;
   overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 `;
 
 class EditableCell extends React.PureComponent {
@@ -36,21 +40,15 @@ class EditableCell extends React.PureComponent {
       handleKey: this.handleKey,
       handleHide: this.handleHide,
       handleCellEdit: this.handleCellEdit,
+<<<<<<< HEAD
+=======
+      handleCellEditEnd: this.handleCellEditEnd,
+>>>>>>> master
       handleCellFocus: this.handleCellFocus,
     };
-    this.cellRenderValues = {
-      TEXT: true,
-      NUMBER: true,
-      SELECT: true,
-      DATE: false,
-      PEOPLE: false,
-      STATUS: false,
-    };
+    this.cellRenderValues = getCellRenderValues();
 
-    this.popupHeights = {
-      DATE: 400,
-      PEOPLE: 364,
-    };
+    this.popupHeights = getCellPopupHeight();
   }
 
   /**
@@ -72,9 +70,13 @@ class EditableCell extends React.PureComponent {
       type = props.data.getColumn(props.columnKey).columnComponentType;
       if (type !== 'PEOPLE' && type !== 'DATE') {
         displayValue = getHighlightText(value, props.filterInputValue);
-        // 检查单元格的值是否发生变化
+      }
+
+      // 除了人员与初始比较单元格的值是否发生变化
+      if (type != 'PEOPLE') {
         isDataChanged = oldValue === null ? true : ((value ? value : '') !== oldValue)
       }
+
     } else {
       if (isCollapsed) {
         value = '';
@@ -191,6 +193,15 @@ class EditableCell extends React.PureComponent {
       this.setState({
         value: value,
       });
+      if (this.props.onCellEditEnd) {
+        this.props.onCellEditEnd(this.props.rowIndex, this.props.columnKey);
+      }
+    }
+  };
+
+  handleCellFocus = (focused) => {
+    if (this.props.onCellFocus) {
+      this.props.onCellFocus(this.props.rowIndex, this.props.columnKey, focused);
     }
   };
 
@@ -211,6 +222,12 @@ class EditableCell extends React.PureComponent {
       this.props.onCellEdit(this.props.rowIndex, this.props.columnKey, popupHeight);
     }
   };
+
+  handleCellEditEnd = () => {
+    if (this.props.onCellEditEnd) {
+      this.props.onCellEditEnd(this.props.rowIndex, this.props.columnKey);
+    }
+  }
 
   handleKey = (e) => {
     if (e.keyCode === Keys.RETURN) {
@@ -266,7 +283,7 @@ class EditableCell extends React.PureComponent {
   render() {
     const {container, data, rowIndex, columnKey, dataVersion, width, height, ...props} = this.props;
     const {value, editing, displayValue, type} = this.state;
-
+    let textclassName = type!='NUMBER'?'longtext_over':'text_number';
     return (
       <CellContainer
         ref={this.setTargetRef}
@@ -276,7 +293,11 @@ class EditableCell extends React.PureComponent {
         //className={classNameStr}  // disable for timebeing
         style={this.getFilterStyle(type, editing, value)}
       >
-        {!editing && this.cellRenderValues[type] && displayValue}
+        {!editing && this.cellRenderValues[type] && 
+         
+         <Tooltip placement="top" title={displayValue} arrowPointAtCenter>
+           <span className={textclassName}>{displayValue}</span>
+         </Tooltip>}
         {!editing && !this.cellRenderValues[type] && (
           <TableContext.Provider value={this.state}>
             <TableCell></TableCell>

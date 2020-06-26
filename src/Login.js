@@ -5,8 +5,9 @@ import ErrorMsg from './ErrorMsg';
 import './Login.less';
 
 import {withRouter, Link} from 'react-router-dom';
+import TooltipMsg from './TooltipMsg';
 
-const defaultColor = '#1890ff';
+const defaultColor = '#009AFF';
 const errorColor = '#f5222d';
 
 @withRouter
@@ -146,15 +147,17 @@ class Login extends PureComponent {
       <div className="login_layout">
         <Spin spinning={isLoading}>
           <div className="login_header_component">
-            <span className="login_header">欢迎使用 Pynbo 拼板</span>
+            <span className="login_header_title">{TooltipMsg.welcome_to_use_app}</span>
+            <img  className="login_header_small" src="../logo.png" />
+            <span className="login_header_last">{TooltipMsg.welcome_to_use_app_last}</span>
           </div>
           <div className="login_body_component">
             <div className="login_item">
-              <span className="login_label">用户名：</span>
+              <span className="login_label">{TooltipMsg.username_label}</span>
               <Input
                 ref={this.userNameRef}
                 style={{borderColor: userNameBorderColor}}
-                placeholder="请输入用户名"
+                placeholder={TooltipMsg.username_placeholder}
                 onChange={this.handleUserNameChange}
                 defaultValue={defaultUserName}
               />
@@ -163,11 +166,11 @@ class Login extends PureComponent {
               <span className="login_error_message">{userNameErrorMsg}</span>
             </div>
             <div className="login_item">
-              <span className="login_label">密 码：</span>
+              <span className="login_label">{TooltipMsg.password_label}</span>
               <Input.Password
                 ref={this.passwordRef}
                 style={{borderColor: passwordBorderColor}}
-                placeholder="请输入密码"
+                placeholder={TooltipMsg.password_placeholder}
                 onChange={this.handlePasswordChange}
               />
             </div>
@@ -176,17 +179,17 @@ class Login extends PureComponent {
             </div>
             <br />
             <div className="login_item">
-              <Button style={{width: 360, borderRadius: 12}} type="primary" onClick={this.loginApp}>
-                登录
+              <Button className="login_btn" type="primary" onClick={this.loginApp}>
+                {TooltipMsg.login_btn}
               </Button>
             </div>
             <br />
             <div className="login_register_item">
               <div className="login_link_left">
-                <Link to="/register">注册新用户</Link>
+                <Link to="/register">{TooltipMsg.link_register}</Link>
               </div>
               <div className="login_link_right">
-                <Link to="/forget">忘记密码?</Link>
+                <Link to="/forget">{TooltipMsg.link_forget_password}</Link>
               </div>
             </div>
           </div>

@@ -14,9 +14,6 @@
 /*eslint no-bitwise:1*/
 import React from 'react';
 import PropTypes from 'prop-types';
-import FixedDataTableRow from './FixedDataTableRow';
-import MainTableAddRow from './MainTableAddRow';
-import MainTableSectionGroupBar from './MainTableSectionGroupBar';
 import { events, getPosition } from './helper/utils'
 import FixedDataTableBufferedRows from './FixedDataTableBufferedRows';
 import FixedDataTableEventHelper from './FixedDataTableEventHelper';
@@ -31,7 +28,7 @@ import isNaN from 'lodash/isNaN';
 import joinClasses from './vendor_upstream/core/joinClasses';
 import scrollbarsVisible from './selectors/scrollbarsVisible';
 import tableHeightsSelector from './selectors/tableHeights';
-import { RowType, getSubLevel, getRootRowIndex } from './data/MainTableType';
+import { RowType, getSubLevel, getRootRowIndex, getLeafRowIndex, SubRowOffsetX } from './data/MainTableType';
 import ColumnResizerLine from './ColumnResizerLine';
 
 import './css/layout/fixedDataTableLayout.css';
@@ -518,7 +515,7 @@ const DRAG_SCROLL_BUFFER = 40;
   static defaultProps = /*object*/ {
     elementHeights: {
       cellGroupWrapperHeight: undefined,
-      footerHeight: 32,
+      footerHeight: 45,
       groupHeaderHeight: 0,
       headerHeight: 32,
       addRowHeight: 32,
@@ -839,7 +836,7 @@ const DRAG_SCROLL_BUFFER = 40;
         minWidth={columnResizingData.minWidth || 0}
         maxWidth={columnResizingData.maxWidth || Number.MAX_VALUE}
         visible={!!isColumnResizing}
-        leftOffset={columnResizingData.left || 0}
+        leftOffset={columnResizingData.left + (columnResizingData.level === 1? SubRowOffsetX: 0) || 0}
         knobHeight={headerHeight}
         initialEvent={columnResizingData.initialEvent}
         onColumnResizeEnd={onColumnResizeEndCallback}
@@ -872,7 +869,7 @@ const DRAG_SCROLL_BUFFER = 40;
             cx('fixedDataTableLayout/bottomShadow'),
             cx('public/fixedDataTable/bottomShadow'),
           )}
-          style={{top: visibleRowsHeight}}
+          // style={{top: visibleRowsHeight}}
         />;
     }
     //var tabIndex = null;
@@ -938,6 +935,12 @@ const DRAG_SCROLL_BUFFER = 40;
       scrollableColumns,
     } = columnTemplatesSelector({props:props, level:0});
 
+    const {
+      fixedColumns:subFixedColumns,
+      fixedRightColumns:subFixedRightColumns,
+      scrollableColumns:subScrollableColumns,
+    } = columnTemplatesSelector({props:props, level:1});
+
     const onColumnReorder = props.onColumnReorderEndCallback ? this._onColumnReorder : null;
     
     return (
@@ -950,17 +953,21 @@ const DRAG_SCROLL_BUFFER = 40;
         ariaFooterIndex={ariaFooterIndex}
         isScrolling={props.scrolling}
         isCellEditing={props.isCellEditing}
-        fixedColumnGroups={fixedColumnGroups}
-        fixedColumns={fixedColumns}        
+        fixedColumnGroups={fixedColumnGroups}        
+        fixedColumns={fixedColumns}
+        subFixedColumns={subFixedColumns}
         fixedRightColumnGroups={fixedRightColumnGroups}
         fixedRightColumns={fixedRightColumns}
+        subFixedRightColumns={subFixedRightColumns}
         firstViewportRowIndex={props.firstRowIndex}
         endViewportRowIndex={props.endRowIndex}
         elementHeights={props.elementHeights}
         contentHeight={props.scrollContentHeight}
         contentWidth={props.width + props.maxScrollX}
+        subRowsGetter={props.subRowsGetter}
         height={bodyHeight}
         componentHeight={componentHeight}
+        subRowHeightGetter={props.subRowHeightGetter}
         columnReorderingData={props.columnReorderingData}
         columnResizingData={props.columnResizingData}
         rowReorderingData={props.rowReorderingData}
@@ -970,6 +977,7 @@ const DRAG_SCROLL_BUFFER = 40;
         onNewRowAdd={props.onNewRowAddCallback}
         onFilterChange={props.onFilterChangeCallback}
         onGetListUsers={props.onGetListUsers}
+        onAddNewFirstRow={props.onAddNewFirstRow}
         onAddNewGroup={props.onAddNewGroupCallback} 
         onColumnReorder={onColumnReorder}
         onColumnReorderMove={this._onColumnReorderMove}
@@ -989,13 +997,13 @@ const DRAG_SCROLL_BUFFER = 40;
         onRowTouchEnd={props.touchScrollEnabled ? props.onRowTouchEnd : null}
         onRowTouchMove={props.touchScrollEnabled ? props.onRowTouchMove : null}
         rowClassNameGetter={props.rowClassNameGetter}
-        rowExpanded={this._rowExpanded}
         rowKeyGetter={props.rowKeyGetter}
         rowSettings={props.rowSettings}
         scrollLeft={props.scrollX}
         scrollTop={props.scrollY}
         scrollableColumnGroups={scrollableColumnGroups}
         scrollableColumns={scrollableColumns}
+        subScrollableColumns={subScrollableColumns}
         showLastRowBorder={true}
         width={props.tableSize.width}
         rowsToRender={props.rows}
@@ -1032,6 +1040,7 @@ const DRAG_SCROLL_BUFFER = 40;
     /*?number*/ cellMinWidth,
     /*?number*/ cellMaxWidth,
     /*number|string*/ columnKey,
+    /*number|string*/ level,
     /*object*/ event
   ) => {
     const coordinates = FixedDataTableEventHelper.getCoordinatesFromEvent(event);
@@ -1042,6 +1051,7 @@ const DRAG_SCROLL_BUFFER = 40;
       cellMaxWidth,
       cellWidth,
       columnKey,
+      level,
       combinedWidth,
       clientX,
       clientY,
@@ -1165,11 +1175,25 @@ const DRAG_SCROLL_BUFFER = 40;
   _onCellEdit = (rowIndex, columnKey, popupHeight = 0) => {
     //add additional height
     if (popupHeight > 0) {
-      const lastRow = this.props.rowSettings.rowsCount - 1;      ;
-      const oldHeight = this.props.rowOffsets[lastRow] + 150;
-      const newHeight = this.props.rowOffsets[rowIndex] + 100 + popupHeight;
-      if (newHeight > oldHeight) {
+      if (getSubLevel(rowIndex) === 0) {
+        const oldHeight = this.props.scrollContentHeight;
+        const newHeight = this.props.rowOffsets[rowIndex] + 32 + popupHeight;
+        if (newHeight > oldHeight) {
           this.props.displayActions.adjustHeight(newHeight - oldHeight);
+        } else if (newHeight > (this.props.scrollY + this.props.height)) {
+          this.props.scrollActions.scrollToY(newHeight - this.props.height);
+        }
+      } else {
+        const oldHeight = this.props.scrollContentHeight;
+        const row = parseInt(getRootRowIndex(rowIndex));
+        const subrow = parseInt(getLeafRowIndex(rowIndex));
+        const newHeight = this.props.rowOffsets[row] + 32 + (subrow + 2) * 32 + popupHeight;
+
+        if (newHeight > oldHeight) {
+          this.props.displayActions.adjustHeight(newHeight - oldHeight);
+        } else if (newHeight > (this.props.scrollY + this.props.height)) {
+          this.props.scrollActions.scrollToY(newHeight - this.props.height);
+        }
       }
     }
     this.props.cellActions.startCellEdit({rowIndex, columnKey});
@@ -1373,134 +1397,8 @@ const DRAG_SCROLL_BUFFER = 40;
     }
   }
 
-  _rowExpanded = ({ rowIndex, height, width }) => {
-    let props = this.props;
-    let subRows = props.subRowsGetter(rowIndex);
-    const onColumnReorder = props.onColumnReorderEndCallback ? this._onColumnReorder : null;
-    if (subRows.length == 0) {
-      return null;
-    }
-    const style = {
-      paddingTop: '3px',
-      height: height,
-      width: width,
-      overflow: 'hidden', 
-    }
-    const {
-      fixedColumns,
-      fixedRightColumns,
-      scrollableColumns,
-    } = columnTemplatesSelector({props:props, level:1});
 
-    //sum up width of all columns
-    let subwidth = 0;
-    fixedColumns.cell.forEach(c=> subwidth += c.props.width);
-    fixedRightColumns.cell.forEach(c=> subwidth += c.props.width);
-    scrollableColumns.cell.forEach(c=> subwidth += c.props.width);
-    let rows = [];
-    let offset = 0;
-    let subRowIndex = 0;
-    for (let i = 0; i < subRows.length; i++) {
-      let type = subRows[i].rowType;
-      let rowHeight = props.subRowHeightGetter(type);
-      let indexString = `${rowIndex}.${subRowIndex}`;
-      let rowProps = {};
-      rowProps.height = rowHeight;
-      rowProps.offsetTop = offset;
-
-      rowProps.rowKey = props.rowKeyGetter ? props.rowKeyGetter(indexString) : i;
-
-      rowProps.attributes = props.rowSettings.rowAttributesGetter && props.rowSettings.rowAttributesGetter(rowIndex);
-      let row;
-      switch (type) {
-        case RowType.SECTIONGROUP:
-          row =
-            <MainTableSectionGroupBar
-              key={i}
-              index={indexString}
-              isScrolling={props.isScrolling}
-              isRowReordering={props.isRowReordering}
-              rowReorderingData={props.rowReorderingData}
-              height={rowHeight}
-              width={subwidth}
-              rowReorderingData={props.rowReorderingData}
-              offsetTop={offset}
-              scrollLeft={Math.round(props.scrollX)}
-              fixedColumns={fixedColumns.cell}
-              fixedRightColumns={fixedRightColumns.cell}
-              scrollableColumns={scrollableColumns.cell}
-              showScrollbarY={props.scrollEnabledY}
-              isRTL={props.isRTL}
-              container={this._divRef}
-              data={props.data}
-              visible={true}
-              onCellEdit={this._onCellEdit}
-              onCellEditEnd={this._onCellEditEnd}
-            >
-            </MainTableSectionGroupBar>
-            break;
-        case RowType.SUBHEADER:
-          row =
-            <FixedDataTableRow
-              key={i}
-              index={indexString}
-              isHeaderOrFooter={true}
-              isScrolling={props.isScrolling}
-              isRowReordering={props.isRowReordering}
-              rowReorderingData={props.rowReorderingData}
-              className={joinClasses(
-                cx('fixedDataTableLayout/header'),
-                cx('public/fixedDataTable/header'),
-              )}
-              width={subwidth}
-              height={rowHeight}
-              offsetTop={offset}
-              scrollLeft={Math.round(props.scrollX)}
-              visible={true}
-              fixedColumns={fixedColumns.header}
-              fixedRightColumns={fixedRightColumns.header}
-              scrollableColumns={scrollableColumns.header}
-              touchEnabled={props.touchScrollEnabled}
-              onColumnResize={this._onColumnResize}
-              onColumnReorderMove={this._onColumnReorderMove}
-              onColumnReorderEnd={this._onColumnReorderEnd}
-              onColumnReorder={onColumnReorder}
-              isColumnReordering={!!props.isColumnReordering}
-              columnReorderingData={props.columnReorderingData}
-              showScrollbarY={props.scrollEnabledY}
-              container={this._divRef}
-              data={props.data}
-              isRTL={props.isRTL}
-              onCellEdit={this._onCellEdit}
-              onCellEditEnd={this._onCellEditEnd}
-            >
-            </FixedDataTableRow>
-          break;
-        case RowType.SUBADDROW:
-          row =
-            <MainTableAddRow
-              key={i}
-              index={indexString}
-              isScrolling={props.isScrolling}
-              isRowReordering={props.isRowReordering}
-              rowReorderingData={props.rowReorderingData}
-              height={rowHeight}
-              width={subwidth}
-              rowReorderingData={props.rowReorderingData}
-              offsetTop={offset}
-              scrollLeft={Math.round(props.scrollX)}
-              fixedColumns={fixedColumns.cell}
-              fixedRightColumns={fixedRightColumns.cell}
-              scrollableColumns={scrollableColumns.cell}
-              showScrollbarY={props.scrollEnabledY}
-              isRTL={props.isRTL}
-              container={this._divRef}
-              data={props.data}
-              visible={true}
-              onNewRowAdd={props.onNewRowAddCallback}
-            />;
-          break;
-
+<<<<<<< HEAD
         case RowType.SUBFOOTER:
           break;
           row =
@@ -1579,6 +1477,8 @@ const DRAG_SCROLL_BUFFER = 40;
       </div>
     );
   }
+=======
+>>>>>>> master
 
   /**
    * Calls the user specified scroll callbacks -- onScrollStart, onScrollEnd, onHorizontalScroll, and onVerticalScroll.

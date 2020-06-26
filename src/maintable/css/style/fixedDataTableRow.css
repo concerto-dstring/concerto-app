@@ -13,7 +13,7 @@
  * Table row.
  */
 .public_fixedDataTableRow_main {
-  background-color: #fff;
+  background-color: #f2f3f3 !important;
 }
 
 .public_fixedDataTableRow_highlighted,
@@ -36,4 +36,9 @@
 
 .public_fixedDataTableRow_columnsRightShadow {
   transform: rotate(180deg);
+}
+
+#addRow .ant-input:placeholder-shown {
+  text-overflow: ellipsis !important;
+  font-size: 18px !important;
 }

@@ -27,6 +27,7 @@ class TextCell extends React.Component {
     return (
       <Cell className="textCell">
         <Input
+          autoFocus={true}
           value={inputValue === null ? value : inputValue}
           size="small"
           onChange={this.handleInputChange}

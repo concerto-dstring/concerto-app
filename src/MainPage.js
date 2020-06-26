@@ -27,12 +27,15 @@ import {Auth} from 'aws-amplify';
 import {DISPLAY, COLOR} from './helpers/section/header/StyleValues';
 import {connect} from 'react-redux';
 import {dealRowHeaderDrawer} from './maintable/actions/rowActions';
+import TooltipMsg from './TooltipMsg';
+import ErrorMsg from './ErrorMsg';
+import {MainPageContext} from './maintable/data/DataContext';
 
 const {Panel} = Collapse;
 const {Header, Content, Sider} = Layout;
 
 // Sider默认宽度
-const defaultSiderWidth = 300;
+const defaultSiderWidth = 250;
 
 let intervalTimer;
 
@@ -55,9 +58,7 @@ class MainPage extends React.Component {
       isLoading: false,
       isDataChanged: false,
       boardColor: '',
-      mainPanelPaddingLeft: {
-        // paddingLeft:'18px'
-      },
+      toggle:this.toggle
     };
 
     this.createBoardRef = createRef();
@@ -151,14 +152,7 @@ class MainPage extends React.Component {
   toggle = () => {
     this.setState({
       siderWidth: !this.state.collapsed ? 0 : defaultSiderWidth,
-      collapsed: !this.state.collapsed,
-      mainPanelPaddingLeft: !this.state.collapsed
-        ? {
-            paddingLeft: '0px',
-          }
-        : {
-            paddingLeft: '18px',
-          },
+      collapsed: !this.state.collapsed
     });
   };
 
@@ -227,7 +221,7 @@ class MainPage extends React.Component {
     this.setLoading(true);
     let boardName = this.createBoardRef.current.input.value;
     if (!boardName) {
-      message.warning('工作板名称不能为空');
+      message.warning(ErrorMsg.board_name_is_empty);
       return;
     }
 
@@ -260,7 +254,7 @@ class MainPage extends React.Component {
     let boardNewName = this.reNameBoardRef.current.input.value;
 
     if (!boardNewName) {
-      message.warning('工作板名称不能为空');
+      message.warning(ErrorMsg.board_name_is_empty);
       return;
     }
 
@@ -306,7 +300,11 @@ class MainPage extends React.Component {
     // if (!contentTitle) return null
     return (
       <Content style={{marginLeft: 24}}>
-        <Route exact component={() => <MainTable title={contentTitle} data={dataset} siderWidth={siderWidth} boardColor={boardColor} />} />
+        <Route exact component={() => 
+          <MainPageContext.Provider value={this.state}>
+             <MainTable title={contentTitle} data={dataset} siderWidth={siderWidth} boardColor={boardColor} />
+          </MainPageContext.Provider>
+        } />
       </Content>
     );
   };
@@ -322,9 +320,9 @@ class MainPage extends React.Component {
       <Panel
         header={
           <div className="body_left_sider_panel_header">
-            <div style={{textAlign: 'left'}}>{name}</div>
+            <div style={{textAlign: 'left',fontSize:'13px',color:'#A0A4A8'}}>{name}</div>
             <div style={{textAlign: 'right'}} onClick={this.createBoard}>
-              <PlusOutlined style={{fontSize: '14px', marginRight: '13px'}} />
+              <PlusOutlined style={{fontSize: '13px'}} />
             </div>
           </div>
         }
@@ -332,7 +330,7 @@ class MainPage extends React.Component {
         key={key}
       >
         {menus.map((item) => {
-          let style = item.id === selectedKey ? {background: '#f2f3f3', fontWeight: 500} : {};
+          let style = item.id === selectedKey ? {background: '#f2f3f3', fontWeight: '400'} : {};
           let path = isBoard ? `/board/${item.id}` : '/dashboard';
           return (
             <div
@@ -347,15 +345,15 @@ class MainPage extends React.Component {
                   <span className="item_title">{item.name}</span>
                 </Link>
               </div>
-
+              <div style={{width: 24, paddingLeft: '5px'}}>
+                <Badge count={dataset.getNotificationsByBoardId(item.id)} style={{width: 20, height: 20, padding: 0}} />
+              </div>
               <div className="body_left_sider_panel_menu_item" style={style} onClick={this.handleBoardItemClick}>
                 <Dropdown overlay={this.getBoardItemMenus(item.id, item.name)} placement="bottomLeft" trigger="click">
                   <EllipsisOutlined className="more_menu"/>
                 </Dropdown>
               </div>
-              <div style={{width: 24, paddingLeft: '8px'}}>
-                <Badge count={dataset.getNotificationsByBoardId(item.id)} style={{width: 20, height: 20, padding: 0}} />
-              </div>
+              
             </div>
           );
         })}
@@ -435,59 +433,66 @@ class MainPage extends React.Component {
               className="body_left_sider"
               style={{}}
             >
-              <div style={{height: '60px'}}>
+              <div style={{height: '53.5px'}}>
                 <Row>
-                  <Col span={5}>
-                    <img className="header_logo" src="../pynbologo.png" />
+                  <Col span={9}>
+                    <img className="header_logo" src="../logo_letter.png" />
                   </Col>
-                  <Col span={4}>
-                    <h3 style={{fontWeight: 'bold', lineHeight: '55px'}}>Pynbo</h3>
-                  </Col>
+                  {/* <Col span={4}>
+                    <span className="logo_title">{TooltipMsg.app_name}</span>
+                  </Col> */}
                   <Col span={15}>
-                    {/* <div className="collpseBar">
+                    <div className="collpseBar">
                       {
                         collapsed ? <DoubleRightOutlined onClick={this.toggle}/> : <DoubleLeftOutlined onClick={this.toggle}/>
                       }
-                    </div>                    */}
+                    </div>                   
                   </Col>
                 </Row>
               </div>
               <Input
                 prefix={<SearchOutlined />}
-                placeholder="搜索工作板..."
+                placeholder={TooltipMsg.search_board_placeholder}
                 className="search_input"
                 onChange={this.filterMenu.bind(this, true)}
               />
               <Collapse accordion defaultActiveKey={['1']} bordered={false}>
-                {this.getPanel(boardMenus, true, '工作板', '1')}
+                {this.getPanel(boardMenus, true, TooltipMsg.board_name, '1')}
                 {/* {
                   this.getPanel(dashboardMenus, false, '仪表板', '2')
                 } */}
               </Collapse>
               <div className="leftSiderFooter">
-                <Dropdown overlay={this.getUserMenus()} placement="bottomCenter">
-                  <span>
-                    <Avatar
-                      size={35}
-                      className="loginuser"
-                      src=""
-                      style={{
-                        background: dataset._currentUser.faceColor ? dataset._currentUser.faceColor : '#000',
-                        cursor: 'pointer',
-                      }}
-                    >
-                      {dataset._currentUser.username ? dataset._currentUser.username.split('')[0] : ''}
-                    </Avatar>
-                    {dataset._currentUser.username}
-                  </span>
-                </Dropdown>
+              <Row>
+                  <Col span={6}>
+                    <Dropdown overlay={this.getUserMenus()} placement="bottomCenter">
+                      <Avatar
+                          size={35}
+                          className="loginuser"
+                          // src="../defluatusericon.jpg"
+                          style={{
+                            background: dataset._currentUser.avatar ? dataset._currentUser.avatar : '#0073bb',
+                            cursor: 'pointer',
+                            fontSize:'14px',
+                            fontWeight:'bold'
+                          }}
+                        >
+                          {dataset._currentUser.displayname}
+                       </Avatar>
+                    </Dropdown>
+                  </Col>
+                   
+                  <Col span={18} style={{lineHeight:'60px'}}>
+                     {dataset._currentUser.username}           
+                  </Col>
+                </Row>
               </div>
             </Sider>
-            <Layout style={this.state.mainPanelPaddingLeft}>{this.getBodyContent()}</Layout>
+            <Layout>{this.getBodyContent()}</Layout>
           </Layout>
         </Layout>
         <Modal
-          title="添加工作板"
+          title={TooltipMsg.add_board_modal_title}
           visible={isShowCreateBoard}
           onCancel={this.handleCancelClick}
           onOk={this.handleCreateBoard}
@@ -496,18 +501,25 @@ class MainPage extends React.Component {
           <Input size="middle" allowClear={true} onPressEnter={this.handleCreateBoard} ref={this.createBoardRef} />
         </Modal>
         <Modal
-          title="工作板重命名"
+          title={TooltipMsg.rename_board_modal_title}
           visible={isShowReNameBoard}
           onCancel={this.handleCancelClick}
           onOk={this.handleReNameBoard}
           destroyOnClose={true}
         >
-          <Input size="middle" allowClear={true} onPressEnter={this.handleReNameBoard} ref={this.reNameBoardRef} />
+          <Input 
+            size="middle"
+            ref={this.reNameBoardRef}  
+            allowClear={true} 
+            onPressEnter={this.handleReNameBoard}
+            defaultValue={boardName}
+            autoFocus={true}
+          />
         </Modal>
         <Modal
           title={
             <span>
-              <strong>是否删除工作板 </strong>
+              <strong>{TooltipMsg.is_delete_board}</strong>
               {boardName} ?
             </span>
           }
@@ -515,18 +527,18 @@ class MainPage extends React.Component {
           onCancel={this.handleCancelClick}
           onOk={this.handleDeleteBoard}
         >
-          <span>删除后可以从回收站恢复</span>
+          <span>{TooltipMsg.delete_tip}</span>
         </Modal>
         <div className="undo_message" style={{display: isShowUndoModal ? DISPLAY.BLOCK : DISPLAY.NONE}}>
           <div className="undo_message_content">
-            <span style={{margin: '10px 0px'}}>&emsp;&emsp;{'删除成功'}</span>
+            <span style={{margin: '10px 0px'}}>&emsp;&emsp;{TooltipMsg.delete_success}</span>
             <Button
               shape="round"
               type="primary"
               style={{margin: '10px 10px 10px 110px', width: 92, backgroundColor: COLOR.UNDO, borderColor: COLOR.WHITE}}
               onClick={this.undoDeleteBoard}
             >
-              <span>撤 销&emsp;</span>
+              <span>{TooltipMsg.undo_text}&emsp;</span>
               <span style={{width: 12}}>{countdown}</span>
             </Button>
             <Button

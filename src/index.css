@@ -1,15 +1,36 @@
+/* @font-face {
+  font-family: 'PingFang SC';
+  src: url('pingfang/PingFang Medium.otf') format('truetype');
+       font-size: 13px;
+       color:#111111;
+  }
+
+@font-face {
+  font-family: 'PingFang SC Bold';
+  src: url('pingfang/PingFangSC.ttf') format('truetype');
+        font-size: 13px;
+        color:#111111;
+  } */
 body {
   margin: 0;
-  font-family: "Microsoft YaHei" !important;
+  /* font-family: PingFangSC-Regular, Microsoft YaHei; */
   font-weight:  300;
+  /* letter-spacing: 1.2px; */
+  color:#111111;
+  font-size: 13px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow: hidden;
   height: 100%;
   width: 100%;
+  user-select: none; /* supported by Chrome and Opera */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
 }
 
-code {
+/* code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
-}
+} */

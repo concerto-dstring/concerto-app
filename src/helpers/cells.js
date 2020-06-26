@@ -26,6 +26,7 @@ import {
   COLLAPSE_SECTION,
   EXPAND_SECTION,
   EXPAND_ALL_SECTION,
+  DELETE_SUB_ROW,
 } from '../maintable/MainTableRowKeyAndDesc';
 
 import {VISIBILITY, DISPLAY, COLOR, ANTD_BTN_TYPE} from './section/header/StyleValues';
@@ -45,6 +46,7 @@ import {
 } from '../maintable/actions/SectionActions';
 
 import getHighlightText from '../maintable/getHighlightText';
+import { DeleteType } from '../maintable/data/MainTableType';
 
 const {SubMenu} = Menu;
 
@@ -206,7 +208,7 @@ class DropDownMenuHeader extends React.PureComponent {
       data.changeGroupCollapseState(null, false);
     } else if (key === DELETE_SECTION.key) {
       // 删除分区
-      this.props.dealSectionDeleteModal({isShowDeleteModal: true, data, isSection: true, group: this.state.group});
+      this.props.dealSectionDeleteModal({isShowDeleteModal: true, data, group: this.state.group, deleteType: DeleteType.SECTION_DELETE});
     }
   };
 
@@ -298,8 +300,10 @@ class DropDownMenuHeader extends React.PureComponent {
   };
   handleVisibleChange = (visible) => {
     if (visible) {
-      this.props.onCellEdit(this.props.rowIndex, this.props.columnKey);
+      this.props.handleMenuVisibleChange({display:'block', float:'left'})
+      this.props.onCellEdit(this.props.rowIndex, this.props.columnKey, 272);
     } else {
+      this.props.handleMenuVisibleChange(null)
       this.props.onCellEditEnd(this.props.rowIndex, this.props.columnKey);
     }
   };
@@ -339,6 +343,9 @@ class DropDownMenuHeader extends React.PureComponent {
               margin: '8px 6px',
               float: 'right',
               cursor: 'pointer',
+              fontSize: '20px',
+              lineHeight: '20px',
+              marginTop: '7px'
               // backgroundColor: headerBtnColor,
               // borderColor: headerBtnBorderColor,
               // visibility: isCollapsed ? VISIBILITY.HIDDEN : VISIBILITY.VISIBLE
@@ -365,22 +372,36 @@ class DropDownMenuCell extends React.PureComponent {
   }
 
   // 行菜单
-  handleRowCellMenuClick = ({item, key, keyPath, selectedKeys, domEvent}) => {
+  handleRowCellMenuClick = (isSub, {item, key, keyPath, selectedKeys, domEvent}) => {
     this.hiddenRowActionBtn();
     this.hiddenSubMenu();
     const {rowIndex, data} = this.props;
-    if (key === ADD_SUB_TABLE.key) {
-      // 添加子项
-      data.addNewSubSection(rowIndex, null);
-    } else if (key === RENAME_ROW.key) {
-      // 重命名行
-      let columnKey = data.getRowNameColumn();
-      this.props.dealRowRenameModal({rowIndex, columnKey, isShowReNameModal: true, data});
-    } else if (key === MOVE_TO_SECTION.key) {
-      // 移动至其他分区
-    } else if (key === DELETE_ROW.key) {
-      // 删除行
-      this.props.dealRowDeleteModal({isShowDeleteModal: true, data, rowIndex});
+    if (isSub) {
+      // 子项行菜单
+      if (key === RENAME_ROW.key) {
+        // 重命名行
+        let columnKey = data.getRowNameColumn(1);
+        this.props.dealRowRenameModal({rowIndex, columnKey, isShowReNameModal: true, data});
+      } else if (key === DELETE_SUB_ROW.key) {
+        // 删除行
+        // this.props.dealRowDeleteModal({isShowDeleteModal: true, data, rowIndex, deleteType: DeleteType.ROW_DELETE});
+      }
+    }
+    else {
+      // 行菜单
+      if (key === ADD_SUB_TABLE.key) {
+        // 添加子项
+        data.addNewSubSection(rowIndex, null);
+      } else if (key === RENAME_ROW.key) {
+        // 重命名行
+        let columnKey = data.getRowNameColumn(0);
+        this.props.dealRowRenameModal({rowIndex, columnKey, isShowReNameModal: true, data});
+      } else if (key === MOVE_TO_SECTION.key) {
+        // 移动至其他分区
+      } else if (key === DELETE_ROW.key) {
+        // 删除行
+        this.props.dealRowDeleteModal({isShowDeleteModal: true, data, rowIndex, deleteType: DeleteType.ROW_DELETE});
+      }
     }
   };
 
@@ -425,16 +446,33 @@ class DropDownMenuCell extends React.PureComponent {
       isShowDropDown: visible
     })
     if (visible) {
-      this.props.onCellEdit(this.props.rowIndex, this.props.columnKey);
+      this.props.onCellEdit(this.props.rowIndex, this.props.columnKey, 204);
     } else {
       this.props.onCellEditEnd(this.props.rowIndex, this.props.columnKey);
     }
   };
 
-  getRowMenu = (data, rowIndex) => {
+  getRowMenu = (data, rowIndex, isSub) => {
     return (
+      isSub
+      ?
       <Menu
-        onClick={this.handleRowCellMenuClick}
+        onClick={this.handleRowCellMenuClick.bind(this, isSub)}
+        style={{width: 160, borderRadius: '8px', padding: '5px, 0px, 5px, 5px', pointerEvents: 'visible'}}
+      >
+        <Menu.Item key={RENAME_ROW.key}>
+          <span>{RENAME_ROW.desc}</span>
+        </Menu.Item>
+
+        <Menu.Divider />
+
+        <Menu.Item key={DELETE_SUB_ROW.key}>
+          <span>{DELETE_SUB_ROW.desc}</span>
+        </Menu.Item>
+      </Menu>
+      :
+      <Menu
+        onClick={this.handleRowCellMenuClick.bind(this, isSub)}
         style={{width: 180, borderRadius: '8px', padding: '5px, 0px, 5px, 5px', pointerEvents: 'visible'}}
       >
         <Menu.Item key={ADD_SUB_TABLE.key}>
@@ -471,9 +509,12 @@ class DropDownMenuCell extends React.PureComponent {
 
     const {isBtnClicked, isShowRowActionBtn, isShowDropDown } = this.state;
 
-    // 子阶菜单暂时不返回
-    let rowIndexStr = String(rowIndex);
-    if (rowIndexStr.indexOf('.') !== -1) return null;
+    // 判断是否为子阶
+    let isSub = String(rowIndex).indexOf('.') !== -1;
+    // if (rowIndexStr.indexOf('.') !== -1){
+    //   return <div style={{background:'#f2f3f3',height:'32px',textAlign:'center'}}>{rowIndex.split('.')[1]}</div>;
+    // }
+    
 
     return (
       <div
@@ -483,14 +524,18 @@ class DropDownMenuCell extends React.PureComponent {
         style={{background:'#f2f3f3',height:'32px'}}
       >
         <Dropdown
-          overlay={this.getRowMenu(data, rowIndex)}
+          overlay={this.getRowMenu(data, rowIndex, isSub)}
           overlayClassName='menu_item_bgcolor'
           // visible={isBtnClicked ? (isShowRowActionBtn === VISIBILITY.HIDDEN ? false : true) : false}
           trigger='click'
           getPopupContainer={() => this.props.container}
           onVisibleChange={this.handleVisibleChange}
         >
-          <MenuOutlined className="table_row_menu_cell" />
+          <img src="../svg/drag.svg" 
+            className="table_row_menu_cell" 
+            style={{height:'20px',width:'20px',margin:'5px 0 0 0'}}>
+          </img>
+          {/* <MenuOutlined className="table_row_menu_cell" /> */}
           {/* <AntdButton
             icon={<MenuOutlined />}
             shape="circle"
@@ -533,7 +578,14 @@ class CheckBoxCell extends React.PureComponent {
   render() {
     const {data, rowIndex, columnKey, ...props} = this.props;
     let group   = data.getGroupByRowIndex(rowIndex);
-    let index = data.getGroupTableRowIndexAt(group.groupKey,rowIndex);
+    let index = 0;
+    //子项
+    if(rowIndex.toString().indexOf('.')>-1){
+      index = rowIndex.split('.')[1];
+    }else{
+      index = data.getGroupTableRowIndexAt(group.groupKey,rowIndex);
+    }
+    
     let groupColor = group ? group.color : '#f1f3f5';
     let css_style = {
       width: '100%',
@@ -595,7 +647,8 @@ class SettingBarHeader extends React.PureComponent {
     const style = {
       width: '35px',
       lineHeight: '35px',
-      textalign: 'center'
+      textalign: 'center',
+      color:'#545B64'
     }
     return <SettingFilled style={style} />;
   }
