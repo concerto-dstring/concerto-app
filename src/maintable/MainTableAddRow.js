@@ -5,7 +5,6 @@ import React from 'react';
 import { Input} from 'antd';
 import cx from './vendor_upstream/stubs/cx';
 import { sumPropWidths } from './helper/widthHelper';
-import Scrollbar from './Scrollbar';
 import FixedDataTableTranslateDOMPosition from './FixedDataTableTranslateDOMPosition';
 
 import './css/layout/fixedDataTableRowLayout.css';
