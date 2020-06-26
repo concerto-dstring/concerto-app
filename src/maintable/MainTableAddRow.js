@@ -147,7 +147,6 @@ class MainTableAddRow extends React.Component {
     //   && !this.props.scrollableColumns[len - 1].template) {
     //     scrollableColumnsWidth = scrollableColumnsWidth - this.props.scrollableColumns[len - 1].props.width;
     // }
-   debugger;
     const width = fixedColumnsWidth + scrollableColumnsWidth + fixedRightColumnsWidth - this.props.scrollLeft;
     let group = data.getGroupByRowIndex(this.props.index);
     let groupColor = group ? group.color : "rgba(0, 0, 0, 0.65)";
