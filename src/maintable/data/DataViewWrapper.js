@@ -87,6 +87,7 @@ class DataViewWrapper {
     this.updateColumnBoardData = this.updateColumnBoardData.bind(this);
     this.undoRemoveRow = this.undoRemoveRow.bind(this);
     this.updateColumnEditing = this.updateColumnEditing.bind(this);
+    this.updateRowEditing = this.updateRowEditing.bind(this);
   }
 
   /**
@@ -200,7 +201,11 @@ class DataViewWrapper {
     }
     let rows = this._dataset.getSubRows(rowKey);
     if (rows.length == 0) return 0;
+<<<<<<< HEAD
     return (rows.length + 3) * 32;
+=======
+    return (rows.length + 2) * 32 + 40;
+>>>>>>> master
   }
 
   getSubRowCount(rowIndex) {
@@ -449,9 +454,9 @@ class DataViewWrapper {
     return null;
   }
 
-  getRowNameColumn() {
+  getRowNameColumn(level) {
     let columns = this._dataset.getColumns();
-    let column = columns.find((column) => column.name === ColumnType.GROUPTITLE);
+    let column = columns.find((column) => column.isTitle && column.level === level);
     return column.columnKey;
   }
 
@@ -684,7 +689,7 @@ class DataViewWrapper {
         // let dateValue = this._dataset._rowData[rowKey] ? this._dataset._rowData[rowKey][columnKey] : null
         if (dateValue) {
           // 只要日期不要时间
-          dateValue = dateValue.substring(0, 10);
+          dateValue = dateValue.substring(0, 11);
 
           minDate = minDate ? (minDate > dateValue ? dateValue : minDate) : dateValue;
           maxDate = maxDate ? (maxDate > dateValue ? maxDate : dateValue) : dateValue;
@@ -769,6 +774,11 @@ class DataViewWrapper {
 
   updateColumnEditing(columnKey, isEditing) {
     this._dataset.updateColumnEditing(columnKey, isEditing);
+  }
+
+  updateRowEditing(rowIndex, isEditing) {
+    let rowId = this.getRowKey(rowIndex);
+    this._dataset.updateRowEditing(rowId, isEditing);
   }
 }
 

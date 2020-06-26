@@ -81,7 +81,7 @@ class SummaryCell extends PureComponent {
     };
     const count_style = {
       color: '#cccccc',
-      fontSize: '13px',
+      fontSize: '12px',
     };
     const summary_cell_background = {
       background: group.isCollapsed ? 'white' : '',
@@ -178,7 +178,7 @@ class SummaryCell extends PureComponent {
       summaryCell = (
         <div className="summary_cell" style={expand_style}>
           <div className="summary_cell_status_container">
-            <span style={{marginLeft: '-7px', width: '200px'}}>{group.name}</span>
+            <span style={{marginLeft: '-7px', width: '200px',fontWeight:'400'}}>{group.name}</span>
             <div style={toatal_style}>
               <span style={title_style}>小计：</span>
               <span style={count_style}>共{group.rows.length}条</span>

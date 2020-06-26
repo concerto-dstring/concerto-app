@@ -5,7 +5,6 @@ import React from 'react';
 import { Input} from 'antd';
 import cx from './vendor_upstream/stubs/cx';
 import { sumPropWidths } from './helper/widthHelper';
-import Scrollbar from './Scrollbar';
 import FixedDataTableTranslateDOMPosition from './FixedDataTableTranslateDOMPosition';
 
 import './css/layout/fixedDataTableRowLayout.css';
@@ -138,21 +137,20 @@ class MainTableAddRow extends React.Component {
     }  
 
     const fixedColumnsWidth = sumPropWidths(this.props.fixedColumns);
-    var scrollableColumnsWidth = sumPropWidths(this.props.scrollableColumns);
+    const scrollableColumnsWidth = sumPropWidths(this.props.scrollableColumns);
     const fixedRightColumnsWidth = sumPropWidths(this.props.fixedRightColumns);
 
-    const len = this.props.scrollableColumns.length;
+    // const len = this.props.scrollableColumns.length;
 
-    if (len > 0 
-      && !this.props.scrollableColumns[len - 1].template) {
-        scrollableColumnsWidth = scrollableColumnsWidth - this.props.scrollableColumns[len - 1].props.width;
-    }
+    // if (len > 0 
+    //   && !this.props.scrollableColumns[len - 1].template) {
+    //     scrollableColumnsWidth = scrollableColumnsWidth - this.props.scrollableColumns[len - 1].props.width;
+    // }
 
     const width = fixedColumnsWidth + scrollableColumnsWidth + fixedRightColumnsWidth - this.props.scrollLeft;
     let group = data.getGroupByRowIndex(this.props.index);
     let groupColor = group ? group.color : "rgba(0, 0, 0, 0.65)";
     var inputStyle = {
-      width: width+10,
       height: this.props.height,
       zIndex: this.props.zIndex,
       borderRadius:'0px',
@@ -162,10 +160,10 @@ class MainTableAddRow extends React.Component {
     }
 
     var style = {
+      width: width,
       height: this.props.height,
       zIndex: (this.props.zIndex ? this.props.zIndex : 0),
-      display: (this.props.visible ? 'block' : 'none'),
-     
+      display: (this.props.visible ? 'block' : 'none')
     };
 
     let offset = this.props.offsetTop;
@@ -185,29 +183,12 @@ class MainTableAddRow extends React.Component {
 
     FixedDataTableTranslateDOMPosition(style, 0, offset, this._initialRender, this.props.isRTL);
 
-    var scrollbarOffset = this.props.showScrollbarY ? Scrollbar.SIZE : 0;
-    
-    let scrollbarSpacer = null;
-    if (this.props.showScrollbarY) {
-      var spacerStyles = {
-        width: scrollbarOffset,
-        height: this.props.height,
-        // Since the box-sizing = border-box the border on the table is included in the width
-        // so we need to account for the left and right border
-        left: this.props.width - scrollbarOffset - 2,
-      };
-      scrollbarSpacer =
-        <div 
-          style={spacerStyles} 
-          className={cx('public/fixedDataTable/scrollbarSpacer')}
-        />;
-    }
-
     return ( 
           <div style={{background:'#fafafa'}}> 
             {dropPlace}
             <div style={style} className={className} >
               <Input 
+                id="addRow"
                 style={inputStyle} 
                 // action= {{content:'添加', onClick:() => this._onNewrowButton(this.props) }} 
                 placeholder='+' 
@@ -215,7 +196,6 @@ class MainTableAddRow extends React.Component {
                 value={this.state.newItem} 
                 onChange={this.handleChange} 
               />
-              {scrollbarSpacer}
             </div>
           </div>
           );

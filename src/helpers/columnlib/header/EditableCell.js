@@ -40,6 +40,7 @@ class EditableCell extends React.PureComponent {
       handleKey: this.handleKey,
       handleHide: this.handleHide,
       handleCellEdit: this.handleCellEdit,
+      handleCellEditEnd: this.handleCellEditEnd,
       handleCellFocus: this.handleCellFocus,
     };
     this.cellRenderValues = getCellRenderValues();
@@ -212,6 +213,12 @@ class EditableCell extends React.PureComponent {
       this.props.onCellEdit(this.props.rowIndex, this.props.columnKey, popupHeight);
     }
   };
+
+  handleCellEditEnd = () => {
+    if (this.props.onCellEditEnd) {
+      this.props.onCellEditEnd(this.props.rowIndex, this.props.columnKey);
+    }
+  }
 
   handleKey = (e) => {
     if (e.keyCode === Keys.RETURN) {

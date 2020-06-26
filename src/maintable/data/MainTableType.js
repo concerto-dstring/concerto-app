@@ -1,5 +1,9 @@
 'use strict';
 
+import WebConstants from "../../WebConstants";
+
+export const SubRowOffsetX = 30;
+
 export const RowType = {
   TITLE: 'TITLE',
   HEADER: 'HEADER',
@@ -89,4 +93,39 @@ export function compareSubRowIndex(rowIndex1, rowIndex2) {
     return -1;
   }
   return 0;
+}
+
+export const getDisplayName = (username) => {
+  let reg = new RegExp('[\\u4E00-\\u9FFF]+', 'g');
+  let displayname;
+  // 判断用户名是否包含中文
+  if (reg.test(username)) {
+    // 包含中文取最后两个字符
+    displayname = username.substring(username.length - 2, username.length);
+  } else if (username.trim().indexOf(' ') !== -1) {
+    // 英文包含空格取根据空格分割前两段的首字母
+    let usernames = username.split(' ');
+    displayname = usernames[0].substring(0, 1) + usernames[1].substring(0, 1);
+  } else {
+    // 英文取前两个字符
+    displayname = username.substring(0, 2);
+  }
+
+  return displayname;
+};
+
+export const getUserColor = (avatar) => {
+  let faceColor;
+
+  if (avatar.startsWith('#')) {
+    faceColor = avatar;
+  } else {
+    faceColor = '';
+  }
+
+  return faceColor;
+};
+
+export const getUserUrl = (id) => {
+  return WebConstants.baseUrl + WebConstants.userUrl + id
 }

@@ -96,7 +96,7 @@ class TableColumnMenu extends React.Component {
               getPopupContainer={() => this.props.container}
               onVisibleChange={this.handleVisibleChange}
             >
-             <CaretDownOutlined />
+             <CaretDownOutlined className="icon_style" style={{fontSize:'12px'}} />
             </Dropdown>
           </div>
         )}

@@ -43,3 +43,11 @@
   margin-left: auto;
   margin-right: 12px;
 }
+
+.column_split_line{
+  height:16px;
+  width:1px;
+  background: #DDE1E3;
+  float: right;
+  margin:8px 0;
+}

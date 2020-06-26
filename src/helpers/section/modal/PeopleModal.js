@@ -26,9 +26,7 @@ class PeopleModal extends PureComponent {
       let filterUsers = this.props.data
         .getTeamUsers()
         .filter(
-          (user) =>
-            (!user.lname && !user.fname ? user.username : user.lname + user.fname).toLowerCase().indexOf(valueLow) !==
-            -1
+          (user) => user.username.toLowerCase().indexOf(valueLow) !== -1
         );
       this.setState({
         people: filterUsers,
@@ -45,7 +43,7 @@ class PeopleModal extends PureComponent {
     this.handleVisibleChange(false);
 
     // 编辑器赋值
-    this.props.insertPeople(!user.lname && !user.fname ? user.username : user.lname + user.fname, user.id);
+    this.props.insertPeople(user.username, user.id);
   };
 
   render() {
@@ -68,10 +66,10 @@ class PeopleModal extends PureComponent {
                     <div className="faceAvatar">
                       &nbsp;
                       <Avatar size={25} style={{background: v.faceColor}}>
-                        {!v.fname ? v.username.substring(0, 1) : v.fname}
+                        {v.displayname}
                       </Avatar>
                       &nbsp;
-                      {!v.lname && !v.fname ? v.username : v.lname + v.fname}
+                      {v.username}
                     </div>
                   </div>
                 ))}

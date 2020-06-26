@@ -46,7 +46,11 @@ class FixedDataTableBufferedRows extends React.Component {
   _rowExpanded = ({ rowIndex, height, width }) => {
     let props = this.props;
     let subRows = props.subRowsGetter(rowIndex);
+<<<<<<< HEAD
     const onColumnReorder = props.onColumnReorderEndCallback ? this._onColumnReorder : null;
+=======
+    //const onColumnReorder = props.onColumnReorderEndCallback ? this.props.onColumnReorder : null;
+>>>>>>> master
     if (subRows.length == 0) {
       return null;
     }
@@ -91,9 +95,15 @@ class FixedDataTableBufferedRows extends React.Component {
               rowReorderingData={props.rowReorderingData}
               offsetTop={offset}
               scrollLeft={props.scrollLeft}
+<<<<<<< HEAD
               fixedColumns={props.fixedColumns.cell}
               fixedRightColumns={props.fixedRightColumns.cell}
               scrollableColumns={props.scrollableColumns.cell}
+=======
+              fixedColumns={props.subFixedColumns.cell}
+              fixedRightColumns={props.subFixedRightColumns.cell}
+              scrollableColumns={props.subScrollableColumns.cell}
+>>>>>>> master
               showScrollbarY={props.scrollEnabledY}
               isRTL={props.isRTL}
               container={this._divRef}
@@ -122,14 +132,24 @@ class FixedDataTableBufferedRows extends React.Component {
               offsetTop={offset}
               scrollLeft={props.scrollLeft}
               visible={true}
+<<<<<<< HEAD
               fixedColumns={props.fixedColumns.header}
               fixedRightColumns={props.fixedRightColumns.header}
               scrollableColumns={props.scrollableColumns.header}
+=======
+              fixedColumns={props.subFixedColumns.header}
+              fixedRightColumns={props.subFixedRightColumns.header}
+              scrollableColumns={props.subScrollableColumns.header}
+>>>>>>> master
               touchEnabled={props.touchScrollEnabled}
               onColumnResize={props.onColumnResize}
               onColumnReorderMove={props.onColumnReorderMove}
               onColumnReorderEnd={props.onColumnReorderEnd}
+<<<<<<< HEAD
               onColumnReorder={onColumnReorder}
+=======
+              onColumnReorder={props.onColumnReorder}
+>>>>>>> master
               isColumnReordering={!!props.isColumnReordering}
               columnReorderingData={props.columnReorderingData}
               showScrollbarY={props.scrollEnabledY}
@@ -155,9 +175,15 @@ class FixedDataTableBufferedRows extends React.Component {
               rowReorderingData={props.rowReorderingData}
               offsetTop={offset}
               scrollLeft={props.scrollLeft}
+<<<<<<< HEAD
               fixedColumns={props.fixedColumns.cell}
               fixedRightColumns={props.fixedRightColumns.cell}
               scrollableColumns={props.scrollableColumns.cell}
+=======
+              fixedColumns={props.subFixedColumns.cell}
+              fixedRightColumns={props.subFixedRightColumns.cell}
+              scrollableColumns={props.subScrollableColumns.cell}
+>>>>>>> master
               showScrollbarY={props.scrollEnabledY}
               isRTL={props.isRTL}
               container={this._divRef}
@@ -210,9 +236,15 @@ class FixedDataTableBufferedRows extends React.Component {
               height={rowHeight}
               scrollLeft={props.scrollLeft}
               scrollTop={props.scrollTop}
+<<<<<<< HEAD
               fixedColumns={props.fixedColumns.cell}
               fixedRightColumns={props.fixedRightColumns.cell}
               scrollableColumns={props.scrollableColumns.cell}
+=======
+              fixedColumns={props.subFixedColumns.cell}
+              fixedRightColumns={props.subFixedRightColumns.cell}
+              scrollableColumns={props.subScrollableColumns.cell}
+>>>>>>> master
               onClick={props.onRowClick}
               isRowReordering={props.isRowReordering}
               rowReorderingData={props.rowReorderingData}
@@ -494,6 +526,7 @@ class FixedDataTableBufferedRows extends React.Component {
               visible={visible} 
               onFilter={props.onFilterChange}
               onGetListUsers={props.onGetListUsers}
+              onAddNewFirstRow={props.onAddNewFirstRow}
               boardColor={props.boardColor}
               onAddNewGroup={props.onAddNewGroup}
               onCellEdit={props.onCellEdit}

@@ -19,7 +19,7 @@ import {getBase64, isImageFile} from './UploadFun';
 import {DISPLAY} from '../header/StyleValues';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
-import WebConstants from '../../../WebConstants';
+import { getUserUrl, getUserColor, getDisplayName } from '../../../maintable/data/MainTableType';
 
 class RowHeaderDrawerUpdate extends PureComponent {
   constructor(props) {
@@ -82,11 +82,11 @@ class RowHeaderDrawerUpdate extends PureComponent {
       <div className="row_drawer_card_header_between">
         <div>
           <Avatar size={40} style={{background: user.faceColor}}>
-            {!user.fname ? user.username.substring(0, 1) : user.fname}
+            {user.displayname}
           </Avatar>
           &nbsp;
           <a href={user.userUrl} target="_blank">
-            {!user.lname && !user.fname ? user.username : user.lname + user.fname}
+            {user.username}
           </a>
         </div>
         <div className="row_drawer_card_header_end">
@@ -324,7 +324,7 @@ class RowHeaderDrawerUpdate extends PureComponent {
         let boardId = data.getCurrentBoardId();
 
         // 通知
-        let currentUserName = currentUser.lname + currentUser.fname;
+        let currentUserName = currentUser.username;
         // 直接回复
         let createNfData = {
           subject: currentUserName + `回复了动态："${updateInfo.content}"`,
@@ -344,7 +344,7 @@ class RowHeaderDrawerUpdate extends PureComponent {
         let nfUsers = []; // 通知过的用户
         notificationUsers.map((userId) => {
           if (
-            replyHtml.indexOf(WebConstants.baseUrl + WebConstants.userUrl + userId) !== -1 &&
+            replyHtml.indexOf(getUserUrl(userId)) !== -1 &&
             nfUsers.indexOf(userId) === -1
           ) {
             let notificationData = {
@@ -367,7 +367,7 @@ class RowHeaderDrawerUpdate extends PureComponent {
 
         // 回复的回复
         for (let key in replyData) {
-          if (replyHtml.indexOf(WebConstants.baseUrl + WebConstants.userUrl + key) !== -1) {
+          if (replyHtml.indexOf(getUserUrl(key)) !== -1) {
             let notificationData = {
               subject: currentUserName + `回复了你的回复："${replyData[key].content}"`,
               content: null,
@@ -433,12 +433,9 @@ class RowHeaderDrawerUpdate extends PureComponent {
     if (data) {
       return replyList.map((reply) => {
         let user = reply.user;
-        if (user.avatar.startsWith('#')) {
-          user.faceColor = user.avatar;
-        } else {
-          user.faceColor = '';
-        }
-        user.userUrl = WebConstants.baseUrl + WebConstants.userUrl + user.id;
+        user.faceColor = getUserColor(user.avatar);
+        user.userUrl = getUserUrl(user.id);
+        user.displayname = getDisplayName(user.username);
         let likeUsers = reply.likedByUsersID ? reply.likedByUsersID.slice() : [];
         let isLiked = likeUsers.indexOf(currentUserId) !== -1;
 
@@ -455,12 +452,12 @@ class RowHeaderDrawerUpdate extends PureComponent {
         return (
           <div key={reply.id} className="reply_body_component">
             <Avatar size={36} style={{background: user.faceColor, position: 'absolute'}}>
-              {!user.fname ? user.username.substring(0, 1) : user.fname}
+              {user.displayname}
             </Avatar>
             <div className="reply_body_data">
               <div className="reply_body_data_wrapper">
                 <a href={user.userUrl} target="_blank">
-                  {!user.lname && !user.fname ? user.username : user.lname + user.fname}:
+                  {user.username}:
                 </a>
                 &nbsp;
                 <span dangerouslySetInnerHTML={{__html: reply.content}} />
@@ -495,7 +492,7 @@ class RowHeaderDrawerUpdate extends PureComponent {
                     className="reply_body_data_tool_reply_btn"
                     onClick={this.replyMsg.bind(
                       this,
-                      !user.lname && !user.fname ? user.username : user.lname + user.fname,
+                      user.username,
                       user.userUrl,
                       user.id,
                       reply
@@ -532,7 +529,7 @@ class RowHeaderDrawerUpdate extends PureComponent {
         >
           <div className="reply_new_reply_component_open">
             <Avatar size={36} style={{background: currentUser.faceColor, position: 'absolute'}}>
-              {!currentUser.fname ? currentUser.username.substring(0, 1) : currentUser.fname}
+              {currentUser.displayname}
             </Avatar>
             <div className="reply_new_reply_component_all">
               <div className="reply_new_reply_component_wrapper">
@@ -659,7 +656,7 @@ class RowHeaderDrawerUpdate extends PureComponent {
   };
 
   insertPeople = (userName, userId) => {
-    const userUrl = WebConstants.baseUrl + WebConstants.userUrl + userId;
+    const userUrl = getUserUrl(userId);
     const userData = '@' + userName;
     let users = this.state.notificationUsers.slice();
     users.push(userId);

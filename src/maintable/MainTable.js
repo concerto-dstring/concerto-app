@@ -38,6 +38,7 @@ import {
   DownOutlined,
   EyeInvisibleOutlined,
   SearchOutlined,
+  PlusOutlined
 } from '@ant-design/icons';
 import {DataContext, AddFilter} from './data/DataContext';
 import {DataVersionContext, TableContext} from './data/DataContext';
@@ -171,7 +172,10 @@ const DataSummaryCell = function (props) {
 
 const FilterableDataTable = AddFilter(DataContext(Table));
 
-@connect(mapRowActionStateToProps, null, null, {forwardRef: true})
+@connect((state) => ({
+  isShowReNameModal: state.isShowReNameModal, 
+  isShowDeleteModal: state.isShowDeleteModal}), 
+  null, null, {forwardRef: true})
 class MainTable extends React.Component {
   static propTypes = {
     title: PropTypes.string.isRequired,
@@ -192,6 +196,7 @@ class MainTable extends React.Component {
     this._onCollpseColumnCallback = this._onCollpseColumnCallback.bind(this);
     this._onUpdateColumnEditingCallback = this._onUpdateColumnEditingCallback.bind(this);
     this._onGetListUsers = this._onGetListUsers.bind(this);
+    this._onAddNewFirstRow = this._onAddNewFirstRow.bind(this);
     this._getColumnName = this._getColumnName.bind(this);
     this.refresh = this.refresh.bind(this);
     this._dataset.setCallback(this.refresh, 'main');
@@ -395,6 +400,13 @@ class MainTable extends React.Component {
       height: '100%',
       width: '100%'
     };
+    const addBarStyle = {
+      lineHeight: '35px',
+      textAlign: 'center',
+      width: '100%',
+      fontSize:'12px',
+      cursor: 'pointer'
+    }
     const menu = (
       <Menu onClick={this._onColumnAddCallback} style={{width: '100px'}}>
         <Menu.Item key={'DATE-' + level}>
@@ -432,7 +444,7 @@ class MainTable extends React.Component {
     colTemplate.level = level;
     colTemplate.header = (
       <Dropdown overlay={menu} trigger={['click']}>
-        <Button basic circular icon="plus circle" style={addColumnStyle} />
+        <PlusOutlined style={addBarStyle} />
       </Dropdown>
     );
     colTemplate.footer = <div style={noBarStyle}></div>
@@ -469,6 +481,10 @@ class MainTable extends React.Component {
     });
   };
 
+  _onAddNewFirstRow = (newItem) => {
+    this.state.data.addNewFirstRow(newItem);
+  }
+
   renderTable() {
     var { data, filters, filterInputValue, filterType, columns } = this.state;
     let tableColumns = columns ? columns : []
@@ -481,11 +497,13 @@ class MainTable extends React.Component {
             <FilterableDataTable
                 ref={this.handleRef}
                 title={this.props.title}
+                stopScrollDefaultHandling={true}
                 onAddNewGroupCallback={this._onAddNewGroupCallback}
                 onColumnReorderEndCallback={this._onColumnReorderEndCallback}
                 onColumnResizeEndCallback={this._onColumnResizeEndCallback}
                 onFilterChangeCallback={this._onFilterChangeCallback}
                 onGetListUsers = {this._onGetListUsers}
+                onAddNewFirstRow={this._onAddNewFirstRow}
                 columnNameGetter={this._getColumnName}
                 stopScrollDefaultHandling={true}
                 data={data}

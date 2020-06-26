@@ -15,7 +15,7 @@
   overflow: hidden;
   position: absolute;
   top: 0;
-  padding-left: 22px;
+  padding-left: 23px;
 }
 
 .fixedDataTableRowLayout_body {
@@ -27,9 +27,8 @@
 
 .fixedDataTableRowLayout_rowExpanded {
   box-sizing: border-box;
-  left: 0;
+  left: 30px;
   position: absolute;
-  padding:5px !important;
   background: #f2f3f3 !important;
 }
 

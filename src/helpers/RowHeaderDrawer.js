@@ -19,11 +19,11 @@ import 'moment/locale/zh-cn';
 import SlideDrawer from './section/Drawer/SlideDrawer';
 import {connect} from 'react-redux';
 import {mapRowHeaderDrawerStateToProps} from '../maintable/data/mapStateToProps';
-import WebConstants from '../WebConstants';
 import {Route} from 'react-router-dom';
 import MainTableDataRowEditor from '../maintable/editor/MainTableDataRowEditor';
 import TooltipMsg from '../TooltipMsg';
 import {DISPLAY} from './section/header/StyleValues';
+import { getDisplayName, getUserUrl, getUserColor } from '../maintable/data/MainTableType';
 
 @connect(mapRowHeaderDrawerStateToProps)
 class RowHeaderDrawer extends PureComponent {
@@ -253,7 +253,7 @@ class RowHeaderDrawer extends PureComponent {
   };
 
   insertPeople = (userName, userId) => {
-    const userUrl = WebConstants.baseUrl + WebConstants.userUrl + userId;
+    const userUrl = getUserUrl(userId);
     let users = this.state.notificationUsers.slice();
     users.push(userId);
     const userData = '@' + userName;
@@ -308,10 +308,10 @@ class RowHeaderDrawer extends PureComponent {
         let notifications = [];
         // 通知
         let nfUsers = []; // 通知过的用户
-        let currentUserName = this.state.currentUser.lname + this.state.currentUser.fname;
+        let currentUserName = this.state.currentUser.username;
         this.state.notificationUsers.map((userId) => {
           if (
-            infoHtml.indexOf(WebConstants.baseUrl + WebConstants.userUrl + userId) !== -1 &&
+            infoHtml.indexOf(getUserUrl(userId)) !== -1 &&
             nfUsers.indexOf(userId) === -1
           ) {
             let notificationData = {
@@ -347,12 +347,10 @@ class RowHeaderDrawer extends PureComponent {
     if (updateInfo && updateInfo.length > 0) {
       let updateComponent = updateInfo.map((info) => {
         let user = info.user;
-        if (user.avatar.startsWith('#')) {
-          user.faceColor = user.avatar;
-        } else {
-          user.faceColor = '';
-        }
-        user.userUrl = WebConstants.baseUrl + WebConstants.userUrl + user.id;
+        user.faceColor = getUserColor(user.avatar);
+        user.userUrl = getUserUrl(user.id);
+        user.displayname = getDisplayName(user.username);
+
         return (
           <RowHeaderDrawerUpdate
             key={info.id}

@@ -22,10 +22,6 @@
   border-color: #f1f3f5;
 }
 
-.public_fixedDataTable_header .public_fixedDataTableCell_main {
-  /* font-weight: bold; */
-}
-
 .public_fixedDataTable_header,
 .public_fixedDataTable_scrollbarSpacer,
 .public_fixedDataTable_header .public_fixedDataTableCell_main {
@@ -33,6 +29,8 @@
   /* background-image: linear-gradient(#fff, #efefef); */
   background: #fafafa;
   font-size: 14px;
+  color:#16191F;
+  /* font-weight: bold; */
 }
 
 .public_fixedDataTable_scrollbarSpacer {
