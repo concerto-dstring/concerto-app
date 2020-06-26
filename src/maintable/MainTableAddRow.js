@@ -152,7 +152,6 @@ class MainTableAddRow extends React.Component {
     let group = data.getGroupByRowIndex(this.props.index);
     let groupColor = group ? group.color : "rgba(0, 0, 0, 0.65)";
     var inputStyle = {
-      width: width+10,
       height: this.props.height,
       zIndex: this.props.zIndex,
       borderRadius:'0px',
@@ -162,6 +161,7 @@ class MainTableAddRow extends React.Component {
     }
 
     var style = {
+      width: width,
       height: this.props.height,
       zIndex: (this.props.zIndex ? this.props.zIndex : 0),
       display: (this.props.visible ? 'block' : 'none')
@@ -184,24 +184,6 @@ class MainTableAddRow extends React.Component {
 
     FixedDataTableTranslateDOMPosition(style, 0, offset, this._initialRender, this.props.isRTL);
 
-    var scrollbarOffset = this.props.showScrollbarY ? Scrollbar.SIZE : 0;
-    
-    let scrollbarSpacer = null;
-    if (this.props.showScrollbarY) {
-      var spacerStyles = {
-        width: scrollbarOffset,
-        height: this.props.height,
-        // Since the box-sizing = border-box the border on the table is included in the width
-        // so we need to account for the left and right border
-        left: this.props.width - scrollbarOffset,
-      };
-      scrollbarSpacer =
-        <div 
-          style={spacerStyles} 
-          className={cx('public/fixedDataTable/scrollbarSpacer')}
-        />;
-    }
-
     return ( 
           <div style={{background:'#fafafa'}}> 
             {dropPlace}
@@ -215,7 +197,6 @@ class MainTableAddRow extends React.Component {
                 value={this.state.newItem} 
                 onChange={this.handleChange} 
               />
-              {scrollbarSpacer}
             </div>
           </div>
           );

@@ -318,25 +318,9 @@ class FixedDataTableRowImpl extends React.Component {
     var rowExpanded = this._getRowExpanded(subRowHeight);
     var rowExpandedStyle = {
       height: subRowHeight,
-      top: this.props.height+25,
+      top: this.props.height+20,
       width: this.props.width,
     };
-
-    let scrollbarSpacer = null;
-    if (this.props.showScrollbarY) {
-      var spacerStyles = {
-        width: scrollbarOffset,
-        height: this.props.height,
-        // Since the box-sizing = border-box the border on the table is included in the width
-        // so we need to account for the left and right border
-        left: this.props.isRTL ? 2 : this.props.width - scrollbarOffset - 2,
-      };
-      scrollbarSpacer =
-        <div 
-          style={spacerStyles} 
-          className={cx('public/fixedDataTable/scrollbarSpacer')}
-        />;
-    }
     
     return (
       <div
@@ -362,7 +346,6 @@ class FixedDataTableRowImpl extends React.Component {
           { columnsLeftShadow }
           { fixedRightColumns }
           { fixedRightColumnsShadow }
-          { scrollbarSpacer }
         </div>
         {rowExpanded && <div
           className={cx('fixedDataTableRowLayout/rowExpanded')}
