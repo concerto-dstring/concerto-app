@@ -150,7 +150,6 @@ class FixedDataTableCellGroupImpl extends React.Component {
       <FixedDataTableCell
         isScrolling={this.props.isScrolling}
         isHeaderOrFooter={this.props.isHeaderOrFooter}
-        isTableFooter={this.props.isTableFooter}
         align={columnProps.align}
         className={className}
         height={height}

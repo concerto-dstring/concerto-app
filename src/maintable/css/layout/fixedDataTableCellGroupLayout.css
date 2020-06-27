@@ -16,6 +16,7 @@
   position: absolute;
   top: 0;
   white-space: nowrap;
+  opacity: 0.8;
 }
 
 .fixedDataTable_isRTL .fixedDataTableCellGroupLayout_cellGroup {
