@@ -30,7 +30,7 @@ const cellDisplayWidth = {
   PEOPLE: 120,
   STATUS: 140,
   TEXT: 140,
-  DATE: 170,
+  DATE: 180,
   LINK: 140,
   NUMBER: 140,
   SELECT: 170,

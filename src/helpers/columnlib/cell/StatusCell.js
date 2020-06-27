@@ -63,6 +63,7 @@ class StatusCell extends React.Component {
     };
     const item_lineheight_style = {
       lineHeight: '32px',
+      fontWeight: 400
     };
 
     let cellStatusTextStyle = this.state.styleClassName + ' statusWidth longText';
