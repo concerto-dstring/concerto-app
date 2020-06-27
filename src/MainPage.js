@@ -58,13 +58,15 @@ class MainPage extends React.Component {
       isLoading: false,
       isDataChanged: false,
       boardColor: '',
-      toggle:this.toggle
+      toggle:this.toggle,
+      currentUser: {}
     };
 
     this.createBoardRef = createRef();
     this.reNameBoardRef = createRef();
 
     this.setMenus = this.setMenus.bind(this);
+    this.setUser = this.setUser.bind(this);
     this.setLoading = this.setLoading.bind(this);
     this.updateMenus = this.updateMenus.bind(this);
     this.dealErrorBoardId = this.dealErrorBoardId.bind(this);
@@ -84,6 +86,7 @@ class MainPage extends React.Component {
       this.dealErrorBoardId,
       this.mainPageCallBack
     );
+    dataset.getAllUsers(localStorage.getItem('CurrentUserId'), this.setUser);
     // dataset.fetchSideMenus(this.props.client, 'dashboard', this.handleBusy)
   }
 
@@ -132,7 +135,7 @@ class MainPage extends React.Component {
     } else {
       this.setState({
         dashboardMenus: menus,
-        isLoading: false,
+        isLoading: false, 
       });
     }
   };
@@ -148,6 +151,12 @@ class MainPage extends React.Component {
       contentTitle: boardName,
     });
   };
+
+  setUser = (currentUser) => {
+    this.setState({
+      currentUser: currentUser
+    });
+  }
 
   toggle = () => {
     this.setState({
@@ -168,7 +177,7 @@ class MainPage extends React.Component {
     this.setLoading(true);
     this.props.history.push(path);
     if (isBoard) {
-      dataset.fetchBackendBoardData(id, null, this.setLoading, localStorage.getItem('CurrentUserId'));
+      dataset.fetchBoardData(id, null, this.setLoading);
       this.setState({
         selectedKey: id,
         contentTitle: name,
@@ -471,13 +480,13 @@ class MainPage extends React.Component {
                           className="loginuser"
                           // src="../defluatusericon.jpg"
                           style={{
-                            background: dataset._currentUser.avatar ? dataset._currentUser.avatar : '#0073bb',
+                            background:this.state.currentUser.avatar ? this.state.currentUser.avatar : '#0073bb',
                             cursor: 'pointer',
                             fontSize:'14px',
                             fontWeight:'bold'
                           }}
                         >
-                          {dataset._currentUser.displayname}
+                          {this.state.currentUser.displayname}
                        </Avatar>
                     </Dropdown>
                   </Col>

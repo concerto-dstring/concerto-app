@@ -235,14 +235,14 @@ class MainTableDataStore {
             if (this._boardMenus.length > 0) {
               if (!defaultBoardId) {
                 defaultBoardId = this._boardMenus[0].id;
-                this.fetchBackendBoardData(defaultBoardId, setMenus, null, currentUserId);
+                this.fetchBoardData(defaultBoardId, setMenus, null);
               } else {
                 // 防止Id有问题
                 let boardIndex = this._boardMenus.findIndex((board) => board.id === defaultBoardId);
                 if (boardIndex < 0) {
                   dealErrorBoardId();
                 } else {
-                  this.fetchBackendBoardData(defaultBoardId, setMenus, null, currentUserId);
+                  this.fetchBoardData(defaultBoardId, setMenus, null);
                 }
               }
 
@@ -284,7 +284,6 @@ class MainTableDataStore {
           } else {
             defaultBoard = this._boardMenus[0];
           }
-          this._currentBoardId = defaultBoard.id;
           this.fetchBoardData(defaultBoard.id, setMenus);
         }
       });
@@ -361,17 +360,11 @@ class MainTableDataStore {
     });
   }
 
-  /**
-   * replaces the createFakeObjectData() with backend data
-   */
-  fetchBackendBoardData(boardId, setMenus, setLoading, currentUserId) {
-    this._currentBoardId = boardId;
-    this.getAllUsers(boardId, setMenus, setLoading, currentUserId);
-    this.fetchBoardData(boardId, setMenus, setLoading);
-  }
-
   fetchBoardData(boardId, setMenus, setLoading) {
     var board;
+
+    this._currentBoardId = boardId;
+
     if (boardId in this._boards) {
       if (setMenus) {
         setMenus(this._boardMenus, true, this._boards[boardId]);
@@ -590,7 +583,7 @@ class MainTableDataStore {
       });
   }
 
-  getAllUsers(boardId, setMenus, setLoading, currentUserId) {
+  getAllUsers(currentUserId, setUser) {
     // TODO: for user signup, we should use the subscribe@graphql
     if (this._teamUsers.length != 0) {
       return;
@@ -618,6 +611,8 @@ class MainTableDataStore {
           this._teamUsers.push(user);
           this._cacheUsers[user.id] = user;
         });
+        /* setup the UI state on current user information */
+        setUser(this._currentUser);
       });
   }
 
