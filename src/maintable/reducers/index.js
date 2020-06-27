@@ -261,7 +261,36 @@ function reducers(state = getInitialState(), action) {
         isShowDeleteModal: action.modalData.isShowDeleteModal,
         data: action.modalData.data,
         rowIndex: action.modalData.rowIndex,
+        deleteType: action.modalData.deleteType,
+      })
+
+    case ActionTypes.DEAL_ROW_UNDO_DELETE_MESSAGE:
+      return Object.assign({}, state, {
+        isShowUndoModal: action.modalData.isShowUndoModal,
+        data: action.modalData.data,
+        rowData: action.modalData.rowData,
+        rowKey: action.modalData.rowKey,
+        groupRowIndex: action.modalData.groupRowIndex,
+        groupKey: action.modalData.groupKey,
         isSection: action.modalData.isSection,
+        undoType: action.modalData.undoType,
+      })
+
+    case ActionTypes.DEAL_COLUMN_DELETE_MODAL:
+      return Object.assign({}, state, {
+        isShowDeleteModal: action.modalData.isShowDeleteModal,
+        mainTable: action.modalData.mainTable,
+        columnKey: action.modalData.columnKey,
+        deleteType: action.modalData.deleteType,
+      })
+
+    case ActionTypes.DEAL_COLUMN_UNDO_DELETE_MESSAGE:
+      return Object.assign({}, state, {
+        isShowUndoModal: action.modalData.isShowUndoModal,
+        mainTable: action.modalData.mainTable,
+        columnIndex: action.modalData.columnIndex,
+        column: action.modalData.column,
+        undoType: action.modalData.undoType,
       })
 
     case ActionTypes.DEAL_ROW_MOVE_MODAL:
@@ -273,6 +302,7 @@ function reducers(state = getInitialState(), action) {
         sourceGroupKey: action.modalData.sourceGroupKey,
         targetGroupKey: action.modalData.targetGroupKey,
         isSection: action.modalData.isSection,
+        undoType: action.modalData.undoType,
       })
 
     case ActionTypes.DEAL_SECTION_RENAME_MODAL:
@@ -287,9 +317,9 @@ function reducers(state = getInitialState(), action) {
       return Object.assign({}, state, {
         isShowDeleteModal: action.modalData.isShowDeleteModal,
         data: action.modalData.data,
-        isSection: action.modalData.isSection,
         group: action.modalData.group,
         groupIndex: action.modalData.groupIndex,
+        deleteType: action.modalData.deleteType,
       })
 
     case ActionTypes.DEAL_SECTION_UNDO_DELETE_MESSAGE:
@@ -299,6 +329,7 @@ function reducers(state = getInitialState(), action) {
         isSection: action.modalData.isSection,
         group: action.modalData.group,
         groupIndex: action.modalData.groupIndex,
+        undoType: action.modalData.undoType,
       })
 
     case ActionTypes.DEAL_SECTION_COLOR_MENU:

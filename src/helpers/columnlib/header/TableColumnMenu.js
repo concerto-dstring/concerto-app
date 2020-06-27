@@ -7,6 +7,13 @@ import FixedDataTableTranslateDOMPosition from '../../../maintable/FixedDataTabl
 import './TableColumnMenu.less';
 import {DISPLAY} from '../../section/header/StyleValues';
 
+import {connect} from 'react-redux';
+import {dealColumnDeleteModal} from '../../../maintable/actions/columnActions'
+import { DeleteType } from '../../../maintable/data/MainTableType';
+
+@connect(null, {
+  dealColumnDeleteModal,
+})
 class TableColumnMenu extends React.Component {
   static propTypes = {
     sortByColumn: PropTypes.func,
@@ -29,6 +36,17 @@ class TableColumnMenu extends React.Component {
       this.props.onCellEditEnd(this.props.rowIndex, this.props.columnKey);
     }
   };
+
+  handleDeleteColumn = (table) => {
+    const {columnKey} = this.props;
+    
+    let mainTable = {
+      removeColumn: table._onRemoveColumnCallback,
+      undoRemoveColumn: table._onUndoRemoveColumnCallback
+    }
+
+    this.props.dealColumnDeleteModal({isShowDeleteModal: true, mainTable, columnKey, deleteType: DeleteType.COLUMN_DELETE});
+  }
 
   render() {
     const {SubMenu} = Menu;
@@ -56,15 +74,20 @@ class TableColumnMenu extends React.Component {
               overlayClassName="menu_item_bgcolor"
               overlay={
                 <Menu style={menuStyle}>
-                  <Menu.Item key="reName">重命名</Menu.Item>
-                  <SubMenu title="排序" popupClassName="menu_item_bgcolor">
+                  <Menu.Item 
+                    key="reName"
+                    onClick={table._onUpdateColumnEditingCallback.bind(this, columnKey, true)}
+                  >
+                    重命名
+                  </Menu.Item>
+                  {/* <SubMenu title="排序" popupClassName="menu_item_bgcolor">
                     <Menu.Item>升序</Menu.Item>
                     <Menu.Item>降序</Menu.Item>
-                  </SubMenu>
+                  </SubMenu> */}
                   <Menu.Item key="collpse" onClick={table._onCollpseColumnCallback.bind(this, columnKey, true)}>
                     折叠
                   </Menu.Item>
-                  <Menu.Item key="delete" onClick={table._onRemoveColumnCallback.bind(this, columnKey)}>
+                  <Menu.Item key="delete" onClick={this.handleDeleteColumn.bind(this, table)}>
                     删除
                   </Menu.Item>
                 </Menu>
@@ -73,7 +96,7 @@ class TableColumnMenu extends React.Component {
               getPopupContainer={() => this.props.container}
               onVisibleChange={this.handleVisibleChange}
             >
-             <CaretDownOutlined />
+             <CaretDownOutlined className="icon_style" style={{fontSize:'12px'}} />
             </Dropdown>
           </div>
         )}

@@ -84,6 +84,10 @@ class DataViewWrapper {
     this.updateRowReadMessageStatus = this.updateRowReadMessageStatus.bind(this);
     this.getNotificationsByRowId = this.getNotificationsByRowId.bind(this);
     this.getCurrentBoardId = this.getCurrentBoardId.bind(this);
+    this.updateColumnBoardData = this.updateColumnBoardData.bind(this);
+    this.undoRemoveRow = this.undoRemoveRow.bind(this);
+    this.updateColumnEditing = this.updateColumnEditing.bind(this);
+    this.updateRowEditing = this.updateRowEditing.bind(this);
   }
 
   /**
@@ -197,7 +201,7 @@ class DataViewWrapper {
     }
     let rows = this._dataset.getSubRows(rowKey);
     if (rows.length == 0) return 0;
-    return (rows.length + 3) * 40;
+    return (rows.length + 2) * 32 + 40;
   }
 
   getSubRowCount(rowIndex) {
@@ -314,7 +318,7 @@ class DataViewWrapper {
     }
 
     // 删除行
-    this._dataset.removeRow(removeRow.groupKey, removeRow.rowKey);
+    return this._dataset.removeRow(removeRow.groupKey, removeRow.rowKey);
   }
 
   removeRows(indexArray) {
@@ -446,9 +450,9 @@ class DataViewWrapper {
     return null;
   }
 
-  getRowNameColumn() {
+  getRowNameColumn(level) {
     let columns = this._dataset.getColumns();
-    let column = columns.find((column) => column.name === ColumnType.GROUPTITLE);
+    let column = columns.find((column) => column.isTitle && column.level === level);
     return column.columnKey;
   }
 
@@ -681,7 +685,7 @@ class DataViewWrapper {
         // let dateValue = this._dataset._rowData[rowKey] ? this._dataset._rowData[rowKey][columnKey] : null
         if (dateValue) {
           // 只要日期不要时间
-          dateValue = dateValue.substring(0, 10);
+          dateValue = dateValue.substring(0, 11);
 
           minDate = minDate ? (minDate > dateValue ? dateValue : minDate) : dateValue;
           maxDate = maxDate ? (maxDate > dateValue ? maxDate : dateValue) : dateValue;
@@ -696,6 +700,7 @@ class DataViewWrapper {
       dateText2 = minDate;
     } else {
       // 显示最晚时间
+      summaryRule = DateCellSummaryRule.LATEST.key
       dateText1 = DateCellSummaryRule.LATEST.desc;
       dateText2 = maxDate;
     }
@@ -703,6 +708,7 @@ class DataViewWrapper {
     let dateSummary = {
       dateText1,
       dateText2,
+      summaryRule
     };
 
     return dateSummary;
@@ -752,6 +758,23 @@ class DataViewWrapper {
   getNotificationsByRowId(rowIndex) {
     let rowId = this.getRowKey(rowIndex);
     return this._dataset.getNotificationsByRowId(rowId);
+  }
+
+  updateColumnBoardData(columnKey, updateData) {
+    this._dataset.updateColumnBoardData(columnKey, updateData);
+  }
+
+  undoRemoveRow(groupKey, rowKey, groupRowIndex, rowData) {
+    this._dataset.undoRemoveRow(groupKey, rowKey, groupRowIndex, rowData);
+  }
+
+  updateColumnEditing(columnKey, isEditing) {
+    this._dataset.updateColumnEditing(columnKey, isEditing);
+  }
+
+  updateRowEditing(rowIndex, isEditing) {
+    let rowId = this.getRowKey(rowIndex);
+    this._dataset.updateRowEditing(rowId, isEditing);
   }
 }
 

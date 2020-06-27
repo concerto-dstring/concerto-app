@@ -479,35 +479,6 @@ export const listBoards = /* GraphQL */ `
       items {
         id
         name
-        groups(limit: 1000) {
-          items {
-            deleteFlag
-            rows(limit: 10000) {
-              items {
-                id
-                deleteFlag
-                notification(limit: 1000000) {
-                  items {
-                    id
-                    subject
-                    content
-                    senderID
-                    receiverID
-                    seenflag
-                    createdAt
-                    boardID
-                    groupID
-                    rowID
-                    threadOnRowID
-                  }
-                  nextToken
-                }
-              }
-              nextToken
-            }
-          }
-          nextToken
-        }
         columns {
           nextToken
         }

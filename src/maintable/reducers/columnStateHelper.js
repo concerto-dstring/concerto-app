@@ -134,6 +134,7 @@ function resizeColumn(state, resizeData) {
     cellMaxWidth,
     cellWidth,
     columnKey,
+    level,
     combinedWidth,
     clientX,
     clientY,
@@ -151,7 +152,8 @@ function resizeColumn(state, resizeData) {
         clientY: clientY,
         preventDefault: emptyFunction
       },
-      key: columnKey
+      key: columnKey,
+      level: level
     }
   });
 }

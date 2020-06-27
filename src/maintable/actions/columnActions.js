@@ -12,6 +12,8 @@ import {
   COLUMN_REORDER_END,
   COLUMN_REORDER_MOVE,
   COLUMN_RESIZE,
+  DEAL_COLUMN_DELETE_MODAL,
+  DEAL_COLUMN_UNDO_DELETE_MESSAGE,
 } from './ActionTypes';
 
 /**
@@ -50,4 +52,22 @@ export const moveColumnReorder = (deltaX, deltaY) => ({
 export const resizeColumn = (resizeData) => ({
   type: COLUMN_RESIZE,
   resizeData,
+});
+
+/**
+ * 处理删除列弹窗
+ * @param {*} modalData 
+ */
+export const dealColumnDeleteModal = (modalData) => ({
+  type: DEAL_COLUMN_DELETE_MODAL,
+  modalData
+});
+
+/**
+ * 处理删除列后撤销操作
+ * @param {*} modalData 
+ */
+export const dealColumnUndoDeleteMessage = (modalData) => ({
+  type: DEAL_COLUMN_UNDO_DELETE_MESSAGE,
+  modalData
 });

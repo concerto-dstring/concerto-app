@@ -15,7 +15,7 @@ const CellContainer = styled.div`
   align-items: center;
   height: 100%;
   overflow: hidden;
-  margin: 2px 5px;
+  margin: 0px 5px;
   padding: 5px;
 `;
 
@@ -25,14 +25,12 @@ class ColumnHeaderCell extends React.PureComponent {
     let cellData = this.getCellData(props);
     this.state = {
       value: cellData.value,
-      displayValue: cellData.displayValue,
       oldValue: cellData.value, // 保留原值
       isCollapsed: cellData.isCollapsed,
       editing: false,
       mouseIn: false,
       type: 'TEXT',
       isHeaderOrFooter: true,
-      filterInputValue: props.filterInputValue,
       handleChange: this.handleChange,
       handleKey: this.handleKey,
       handleHide: this.handleHide,
@@ -57,29 +55,24 @@ class ColumnHeaderCell extends React.PureComponent {
     } else {
       isCollapsed = props.data._indexMap[props.rowIndex].isCollapsed;
     }
-    let type = 'TEXT';
+
     let value = '';
-    let displayValue = '';
+    let editing = false;
     if (props.data.getObjectAt(props.rowIndex)) {
       value = props.data.getObjectAt(props.rowIndex)[props.columnKey];
-      type = props.data.getColumn(props.columnKey).columnComponentType;
-      if (type !== 'PEOPLE' && type !== 'DATE') {
-        displayValue = getHighlightText(value, props.filterInputValue);
-      }
     } else {
       if (isCollapsed) {
         value = '';
-        displayValue = '';
       } else {
-        value = props.data.getColumn(props.columnKey).name;
-        displayValue = value;
+        let column = props.data.getColumn(props.columnKey);
+        value = column.name;
+        editing = column.isEditing;
       }
     }
     let cellData = {
       isCollapsed,
       value,
-      displayValue,
-      type,
+      editing
     };
 
     return cellData;
@@ -87,13 +80,20 @@ class ColumnHeaderCell extends React.PureComponent {
 
   componentWillReceiveProps(props) {
     let cellData = this.getCellData(props);
-    this.setState({
-      value: cellData.value,
-      displayValue: cellData.displayValue,
-      isCollapsed: cellData.isCollapsed,
-      type: cellData.type,
-      filterInputValue: props.filterInputValue,
-    });
+    if (cellData.editing) {
+      this.setState({
+        editing: cellData.editing,
+        value: cellData.value,
+        isCollapsed: cellData.isCollapsed,
+      });
+    }
+    else {
+      this.setState({
+        value: cellData.value,
+        isCollapsed: cellData.isCollapsed,
+      });
+    }
+    
     this.setState({version: props.dataVersion});
   }
 
@@ -134,6 +134,7 @@ class ColumnHeaderCell extends React.PureComponent {
 
   handleHide = () => {
     this.updateValue();
+    this.props.data.updateColumnEditing(this.props.columnKey, false);
     this.setState({editing: false});
   };
 
@@ -169,31 +170,16 @@ class ColumnHeaderCell extends React.PureComponent {
     });
   }
 
-  getPeopleFilterStyle = (type, editing, value) => {
-    let style = {};
-    if (type === 'PEOPLE' && !editing && value && this.props.filterInputValue) {
-      let filterInputValue = this.props.filterInputValue.toLowerCase();
-      value.map((user) => {
-        if (user.username && user.username.toLowerCase().indexOf(filterInputValue) !== -1) {
-          style = {backgroundColor: '#CCE9FF'};
-          return;
-        }
-      });
-    }
-
-    return style;
-  };
-
   render() {
     const {container, width, height} = this.props;
-    const {value, editing, displayValue, type} = this.state;
+    const {value, editing, type} = this.state;
 
     const inputStyle = {
       width: width - 10,
       height: height - 5,
       borderRadius: '0px',
     };
-
+ 
     // let classNameStr;
     // if (!isHeaderOrFooter) {
     //     classNameStr =  'editableCell ' + (this.state.mouseIn ? 'mouseIn':'mouseOut');
@@ -207,7 +193,7 @@ class ColumnHeaderCell extends React.PureComponent {
         //className={classNameStr}
         // style={this.getPeopleFilterStyle(type, editing, value)}
       >
-        {!editing && this.cellRenderValues[type] && displayValue}
+        {!editing && this.cellRenderValues[type] && value}
         {!editing && !this.cellRenderValues[type] && (
           <TableContext.Provider value={this.state}>
             <TableCell></TableCell>
@@ -227,7 +213,7 @@ class ColumnHeaderCell extends React.PureComponent {
               <div
                 {...props}
                 style={{
-                  width: '100%',
+                  width: (width - 36),
                   top: placement === 'top' ? this.targetRef.offsetHeight : -this.targetRef.offsetHeight,
                 }}
               >

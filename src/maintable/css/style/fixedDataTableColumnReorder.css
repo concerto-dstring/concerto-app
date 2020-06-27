@@ -22,10 +22,11 @@
 }
 
 .public_fixedDataTableCell_main:hover .fixedDataTableCellLayout_columnReorderContainer:after {
-	content: '::';
+	content: '⋮⋮';
 	position: absolute;
-	top: 50%;
-	left: 1px;
+  left: 1px;
+  top: 49%;
+  font-size: 15px;
 	transform: translateY(-50%);
 }
 

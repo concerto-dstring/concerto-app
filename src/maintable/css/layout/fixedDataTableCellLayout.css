@@ -24,6 +24,16 @@
   border-bottom-width: 1px;
 }
 
+.fixedDataTableCellLayout_footer {
+  box-sizing: border-box;
+  border-width: 0;
+  display: block;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+  text-overflow: ellipsis; 
+}
+
 .fixedDataTable_isRTL .fixedDataTableCellLayout_main {
   border-right-width: 0;
   border-left-style: solid;

@@ -2,8 +2,9 @@
 
 import PropTypes from 'prop-types';
 import React from 'react';
-import {Layout, Input, Avatar, Space, Select} from 'antd';
-import {Button} from 'semantic-ui-react';
+
+import {Layout, Input, Avatar, Space, Select, Dropdown, Menu} from 'antd';
+
 import filterIcon from './helper/filterIcon.svg';
 
 import FixedDataTableTranslateDOMPosition from './FixedDataTableTranslateDOMPosition';
@@ -18,6 +19,8 @@ import {
   EyeInvisibleOutlined,
   DoubleRightOutlined,
 } from '@ant-design/icons';
+import {ADD_SECTION} from './MainTableRowKeyAndDesc';
+import {MainPageContext} from '../maintable/data/DataContext';
 
 /**
  * Component that renders the row for <FixedDataTable />.
@@ -26,70 +29,72 @@ import {
  */
 
 class MainTableTitleRow extends React.Component {
-  static propTypes = {
-    className: PropTypes.string,
+  // static propTypes = {
+  //   className: PropTypes.string,
 
-    /**
-     * Title of the content
-     */
-    title: PropTypes.string,
+  //   /**
+  //    * Title of the content
+  //    */
+  //   title: PropTypes.string,
 
-    /**
-     * Height of the row.
-     */
-    height: PropTypes.number.isRequired,
+  //   /**
+  //    * Height of the row.
+  //    */
+  //   height: PropTypes.number.isRequired,
 
-    /**
-     * The vertical position where the row should render itself
-     */
-    offsetTop: PropTypes.number.isRequired,
+  //   /**
+  //    * The vertical position where the row should render itself
+  //    */
+  //   offsetTop: PropTypes.number.isRequired,
 
-    /**
-     * Height of fixedDataTableCellGroupLayout/cellGroupWrapper.
-     */
-    cellGroupWrapperHeight: PropTypes.number,
+  //   /**
+  //    * Height of fixedDataTableCellGroupLayout/cellGroupWrapper.
+  //    */
+  //   cellGroupWrapperHeight: PropTypes.number,
 
-    /**
-     * Width of the row.
-     */
-    width: PropTypes.number.isRequired,
+  //   /**
+  //    * Width of the row.
+  //    */
+  //   width: PropTypes.number.isRequired,
 
-    /**
-     * The value of the aria-rowindex attribute.
-     */
-    ariaRowIndex: PropTypes.number,
+  //   /**
+  //    * The value of the aria-rowindex attribute.
+  //    */
+  //   ariaRowIndex: PropTypes.number,
 
-    /**
-     * The value of the aria-rowindex attribute.
-     */
-    onFilter: PropTypes.func,
+  //   /**
+  //    * The value of the aria-rowindex attribute.
+  //    */
+  //   onFilter: PropTypes.func,
 
-    /**
-     * user list
-     */
-    onGetListUsers: PropTypes.func,
+  //   /**
+  //    * user list
+  //    */
+  //   onGetListUsers: PropTypes.func,
 
-    /**
-     * Whether the grid should be in RTL mode
-     */
-    isRTL: PropTypes.bool,
+  //   /**
+  //    * 增加工作项
+  //    */
+  //   onAddNewFirstRow: PropTypes.func,
 
-    /**
-     * DOM attributes to be applied to the row.
-     */
-    attributes: PropTypes.object,
+  //   /**
+  //    * Whether the grid should be in RTL mode
+  //    */
+  //   isRTL: PropTypes.bool,
 
-    /**
-     * boardColor
-     */
-    boardColor: PropTypes.string,
-  };
+  //   /**
+  //    * DOM attributes to be applied to the row.
+  //    */
+  //   attributes: PropTypes.object,
+
+  //   /**
+  //    * boardColor
+  //    */
+  //   boardColor: PropTypes.string,
+  // };
 
   constructor(props) {
     super(props);
-    this.state = {
-      users: this.props.onGetListUsers(),
-    };
   }
 
   componentWillMount() {
@@ -104,17 +109,21 @@ class MainTableTitleRow extends React.Component {
   componentDidMount() {
     this._initialRender = false;
   }
-
+ 
   getBodyContent = () => {
     return (
       <>
         <div className="body_content_title_row">
           <div className="body_content_title">
-            <h1>
-              {/* <DoubleRightOutlined style={{fontSize:'16px'}}/>&nbsp;&nbsp; */}
-              <div className="item_color" style={{background: this.props.boardColor}}></div>
+            <span>
+              <MainPageContext.Consumer>
+                {
+                  (mainPage) => mainPage.collapsed&&<DoubleRightOutlined className="collpse_style" onClick={mainPage.toggle}/>
+                }
+              </MainPageContext.Consumer>
+              <div className="item_color" style={{background: this.props.boardColor, marginBottom: '1px'}}></div>
               {this.props.title}
-            </h1>
+            </span>
           </div>
           {/* <div className="body_content_title_right">
               <div className="body_content_title_right_item">
@@ -192,17 +201,36 @@ class MainTableTitleRow extends React.Component {
   }
 
   handleSearchUser = (input, option) => {
-    return option.children[2].toLowerCase().indexOf(input.toLowerCase()) >= 0
+    return option.children[2].toLowerCase().indexOf(input.toLowerCase()) >= 0;
   };
 
   handleVisibleChange = (visible) => {
     if (visible) {
-      this.props.onCellEdit(-1, "");
+      this.props.onCellEdit(-1, '');
     } else {
-      this.props.onCellEditEnd(-1, "");
+      this.props.onCellEditEnd(-1, '');
     }
   };
-  
+
+  handleMenuClick = ({item, key, keyPath, selectedKeys, domEvent}) => {
+    if (key === ADD_SECTION.key) {
+      this._onAddNewGroup();
+    }
+  };
+
+  getDropMenu = () => {
+    return (
+      <Menu onClick={this.handleMenuClick} style={{width: 100, borderRadius: '8px', padding: '5px, 0px, 5px, 5px', pointerEvents: 'visible'}}>
+        <Menu.Item key={ADD_SECTION.key}>
+          <span>{ADD_SECTION.desc}</span>
+        </Menu.Item>
+      </Menu>
+    );
+  };
+
+  onAddNewFirstRow = () => {
+    this.props.onAddNewFirstRow('新工作项');
+  };
 
   render() /*object*/ {
     const {offsetTop, zIndex, visible, height} = this.props;
@@ -215,13 +243,13 @@ class MainTableTitleRow extends React.Component {
 
     const handleCellEnter = () => {
       if (this.props.onCellFocus) {
-        this.props.onCellFocus(-1, "", true);
+        this.props.onCellFocus(-1, '', true);
       }
     };
-  
+
     const handleCellLeave = () => {
       if (this.props.onCellFocus) {
-        this.props.onCellFocus(-1, "", false);
+        this.props.onCellFocus(-1, '', false);
       }
     };
 
@@ -234,40 +262,54 @@ class MainTableTitleRow extends React.Component {
           <div className="main_table_add_btn_row">
             <Space size="middle">
               <div id="addGroupBtn">
-                <Button onClick={this._onAddNewGroup} className="main_table_add_btn">
+                <div onClick={this._onAddNewGroup} className="main_table_add_btn">
                   <div className="main_table_btn_layout">
-                    <span style={{}}>+ &nbsp;工作项</span>
+                 
+                    <span onClick={this.onAddNewFirstRow} style={{lineHeight: '20px'}}>+ &nbsp;工作项</span>
+
                     <div className="main_table_add_btn_separator" />
-                    <div>
+                    <Dropdown 
+                      overlay={this.getDropMenu()} 
+                      trigger="click"
+                      getPopupContainer={() => this.props.container}
+                      onVisibleChange={this.handleVisibleChange}
+                    >
                       <CaretDownOutlined />
-                    </div>
+                    </Dropdown>
                   </div>
-                </Button>
+                </div>
               </div>
-              <div>
+              <div style={{display: 'flex'}}>
+                <div className="main_table_select_user_icon">
+                  <img src="../svg/user.svg" style={{marginTop: 5}} />
+                </div>
                 <Select
+                  style={{backgroundColor: '#FAFAFA'}}
                   className="main_table_select_user"
                   placeholder="按人名筛选"
-                  showSearch
                   dropdownStyle={{pointerEvents: 'visible'}}
                   onDropdownVisibleChange={this.handleVisibleChange}
                   allowClear
+                  showArrow={false}
                   filterOption={this.handleSearchUser}
                   getPopupContainer={() => this.props.container}
                   onChange={this._onFilterByPeople}
                   onMouseEnter={handleCellEnter}
                   onMouseLeave={handleCellLeave}
+                  bordered={false}
                 >
-                  {this.state.users.map((user) => {
-                    return (
-                      <Select.Option key={user.id} value={user.username}>
-                        <Avatar size={20} style={{background: user.faceColor}}>
-                          {user.fname}
-                        </Avatar>
-                        &emsp;
-                        {!user.lname && !user.fname ? user.username : user.lname + user.fname}
-                      </Select.Option>
-                    );
+                  {this.props.onGetListUsers().map((user) => {
+                    if (user) {
+                      return (
+                        <Select.Option key={user.id} value={user.username}>
+                          <Avatar size={20} style={{background: user.faceColor}}>
+                            {user.displayname}
+                          </Avatar>
+                          &emsp;
+                          {user.username}
+                        </Select.Option>
+                      );
+                    }
                   })}
                 </Select>
               </div>
@@ -287,7 +329,7 @@ class MainTableTitleRow extends React.Component {
                 prefix={<SearchOutlined />}
                 placeholder="搜索/过滤"
                 onChange={this._onFilterTableData}
-                style={{borderRadius: '5px', width: 240,border:'1px solid #f2f3f3'}}
+                style={{borderRadius: '5px', width: 160, border: '1px solid #f2f3f3', background: '#fafafa'}}
               />
             </div>
           </div>

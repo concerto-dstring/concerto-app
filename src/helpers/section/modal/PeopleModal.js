@@ -1,4 +1,4 @@
-import React, {PureComponent} from 'react';
+import React, {PureComponent, createRef} from 'react';
 import {Popover, Divider, Input, Avatar} from 'antd';
 
 class PeopleModal extends PureComponent {
@@ -20,9 +20,22 @@ class PeopleModal extends PureComponent {
   };
 
   filterPeople = (e) => {
-    this.setState({
-      people: this.props.data.filterTeamUsers(e.target.value),
-    });
+    let value = e.target.value;
+    if (value) {
+      let valueLow = value.trim().toLowerCase()
+      let filterUsers = this.props.data
+        .getTeamUsers()
+        .filter(
+          (user) => user.username.toLowerCase().indexOf(valueLow) !== -1
+        );
+      this.setState({
+        people: filterUsers,
+      });
+    } else {
+      this.setState({
+        people: this.props.data.getTeamUsers(),
+      });
+    }
   };
 
   handleClickPeople = (user) => {
@@ -30,7 +43,7 @@ class PeopleModal extends PureComponent {
     this.handleVisibleChange(false);
 
     // 编辑器赋值
-    this.props.insertPeople(!user.lname && !user.fname ? user.username : user.lname + user.fname, user.id);
+    this.props.insertPeople(user.username, user.id);
   };
 
   render() {
@@ -38,24 +51,25 @@ class PeopleModal extends PureComponent {
       <div className="people_modal">
         <Popover
           placement={this.props.placement ? this.props.placement : 'bottom'}
-          trigger="click"
+          trigger={[]}
           autoAdjustOverflow={false}
           visible={this.props.visible}
           onVisibleChange={this.handleVisibleChange}
           overlayStyle={{width: 240, height: 300}}
+          getPopupContainer={() => this.props.container}
           content={
             <div>
               <Divider className="dividerStyle">People</Divider>
-              <div className='user_scroll' style={this.state.people.length === 5 ? {overflowY: 'hidden'} : {}} >
+              <div className="user_scroll" style={this.state.people.length === 5 ? {overflowY: 'hidden'} : {}}>
                 {this.state.people.map((v, i) => (
                   <div key={i} className="user" onClick={this.handleClickPeople.bind(this, v)}>
                     <div className="faceAvatar">
                       &nbsp;
                       <Avatar size={25} style={{background: v.faceColor}}>
-                        {v.fname}
+                        {v.displayname}
                       </Avatar>
                       &nbsp;
-                      {v.lname + v.fname}
+                      {v.username}
                     </div>
                   </div>
                 ))}

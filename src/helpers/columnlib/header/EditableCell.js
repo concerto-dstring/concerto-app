@@ -1,4 +1,5 @@
 import React from 'react';
+import {Tooltip} from 'antd';
 import {Overlay} from 'react-overlays';
 import styled from 'styled-components';
 import Keys from '../../../maintable/vendor_upstream/core/Keys';
@@ -16,6 +17,8 @@ const CellContainer = styled.div`
   align-items: center;
   height: 31px;
   overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 `;
 
 class EditableCell extends React.PureComponent {
@@ -37,6 +40,7 @@ class EditableCell extends React.PureComponent {
       handleKey: this.handleKey,
       handleHide: this.handleHide,
       handleCellEdit: this.handleCellEdit,
+      handleCellEditEnd: this.handleCellEditEnd,
       handleCellFocus: this.handleCellFocus,
     };
     this.cellRenderValues = getCellRenderValues();
@@ -210,6 +214,12 @@ class EditableCell extends React.PureComponent {
     }
   };
 
+  handleCellEditEnd = () => {
+    if (this.props.onCellEditEnd) {
+      this.props.onCellEditEnd(this.props.rowIndex, this.props.columnKey);
+    }
+  }
+
   handleKey = (e) => {
     if (e.keyCode === Keys.RETURN) {
       this.handleHide();
@@ -264,7 +274,7 @@ class EditableCell extends React.PureComponent {
   render() {
     const {container, data, rowIndex, columnKey, dataVersion, width, height, ...props} = this.props;
     const {value, editing, displayValue, type} = this.state;
-
+    let textclassName = type!='NUMBER'?'longtext_over':'text_number';
     return (
       <CellContainer
         ref={this.setTargetRef}
@@ -274,7 +284,11 @@ class EditableCell extends React.PureComponent {
         //className={classNameStr}  // disable for timebeing
         style={this.getFilterStyle(type, editing, value)}
       >
-        {!editing && this.cellRenderValues[type] && displayValue}
+        {!editing && this.cellRenderValues[type] && 
+         
+         <Tooltip placement="top" title={displayValue} arrowPointAtCenter>
+           <span className={textclassName}>{displayValue}</span>
+         </Tooltip>}
         {!editing && !this.cellRenderValues[type] && (
           <TableContext.Provider value={this.state}>
             <TableCell></TableCell>

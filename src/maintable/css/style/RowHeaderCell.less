@@ -19,9 +19,8 @@
   height: 100%;
   line-height: 100%;
   text-decoration: none;
-  color: #333333;
-  font-weight: 400;
-  font-size: 13px;
+  // color: #333333;
+  
 }
 
 .row_header_cell_edit_icon {
@@ -50,7 +49,13 @@
   border: 1px solid transparent;
   padding: 0 2px;
   width: auto;
-}
+  overflow: hidden;
+  word-break: keep-all;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-weight:400  ;
+  // font-family: 'PingFang SC Bold';
+ }
 
 .row_header_cell_update {
   min-width: 24px;
@@ -70,6 +75,18 @@
   max-height: 280px;
   overflow-x: hidden !important;
   overflow-y: visible !important;
+}
+
+.row_header_drawer_input {
+  margin-top: 24px;
+}
+
+.row_header_drawer_input_not_editing_content {
+  height: 34px;
+  background: #F2F3F3;
+  border: 1px solid #0073BB;
+  box-sizing: border-box;
+  border-radius: 5px;
 }
 
 .row_header_drawer_editor_bottom {

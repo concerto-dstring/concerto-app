@@ -52,13 +52,11 @@ class PeopleCell extends React.PureComponent {
     let value = this.searchInputRef.current.input.input.value;
     if (value) {
       const {userList} = this.state;
-      let valueLow = value.toLowerCase();
+      let valueLow = value.trim().toLowerCase();
       let filterUserList = userList
         .slice()
         .filter(
-          (user) =>
-            (!user.lname && !user.fname ? user.username : user.lname + user.fname).toLowerCase().indexOf(valueLow) !==
-            -1
+          (user) => user.username.toLowerCase().indexOf(valueLow) !== -1
         );
       this.setState({
         filterUserList,
@@ -139,7 +137,7 @@ class PeopleCell extends React.PureComponent {
 
     if (this.state.filterUserList) {
       let filterUserList = this.state.filterUserList.slice();
-      let name = (!removeUser.lname && !removeUser.fname ? removeUser.username : removeUser.lname + removeUser.fname).toLowerCase();
+      let name = removeUser.username.toLowerCase();
       if (name.indexOf(this.state.filterValue) !== -1) {
         filterUserList.push(removeUser);
 
@@ -225,7 +223,7 @@ class PeopleCell extends React.PureComponent {
           onVisibleChange={this.handleChangeVisible}
           getPopupContainer={() => this.props.container}
           content={
-            <div style={{pointerEvents: 'visible'}}
+            <div style={{pointerEvents: 'visible', width: 240}}
             onMouseEnter={handleCellEnter}
             onMouseLeave={handleCellLeave}>
               <Divider className="dividerStyle">People</Divider>
@@ -235,10 +233,10 @@ class PeopleCell extends React.PureComponent {
                     <div className="faceAvatar">
                       &nbsp;
                       <Avatar size={25} style={{background: v.faceColor}}>
-                        {v.fname}
+                        {v.displayname}
                       </Avatar>
                       &nbsp;
-                      {!v.lname && !v.fname ? v.username : v.lname + v.fname}
+                      {v.username}
                     </div>
                   </div>
                 ))}
@@ -246,14 +244,14 @@ class PeopleCell extends React.PureComponent {
             </div>
           }
           title={
-            <div style={{pointerEvents: 'visible'}}>
+            <div style={{pointerEvents: 'visible', width: 240}}>
               <div style={{paddingBottom: '10px', display: 'flex', flexWrap: 'wrap'}}>
                 {selectedUsers.map((v, i) => (
                   <Tag key={i} closable className="userTag" onClose={this.handleUserRemove.bind(this, v)}>
                     <Avatar size={22} style={{background: v.faceColor}}>
-                      {v.fname}
+                      {v.displayname}
                     </Avatar>
-                    &nbsp;{!v.lname && !v.fname ? v.username : v.lname + v.fname}
+                    &nbsp;{v.username}
                   </Tag>
                 ))}
               </div>
@@ -272,13 +270,13 @@ class PeopleCell extends React.PureComponent {
               <div className="userAvatar">
                 {selectedUsers.length === 1 && (
                   <Avatar className="Avatar" size={25} style={{background: selectedUsers[0].faceColor}}>
-                    {selectedUsers[0].fname}
+                    {selectedUsers[0].displayname}
                   </Avatar>
                 )}
                 {selectedUsers.length === 2 && (
                   <div>
                     <Avatar className="Avatar" size={25} style={{background: selectedUsers[0].faceColor}}>
-                      {selectedUsers[0].fname}
+                      {selectedUsers[0].displayname}
                     </Avatar>
                     <Avatar
                       size={25}
@@ -288,14 +286,14 @@ class PeopleCell extends React.PureComponent {
                         background: selectedUsers[1].faceColor,
                       }}
                     >
-                      {selectedUsers[1].fname}
+                      {selectedUsers[1].displayname}
                     </Avatar>
                   </div>
                 )}
                 {selectedUsers.length > 2 && (
                   <div>
                     <Avatar className="Avatar" size={25} style={{background: selectedUsers[0].faceColor}}>
-                      {selectedUsers[0].fname}
+                      {selectedUsers[0].displayname}
                     </Avatar>
                     <Avatar size={25} className="Avatar moreUserAvatar">+{selectedUsers.length - 1}</Avatar>
                   </div>

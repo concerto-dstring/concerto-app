@@ -1,5 +1,5 @@
 import React from 'react';
-import {InputNumber, message} from 'antd';
+import {InputNumber, message, Input} from 'antd';
 import 'moment/locale/zh-cn';
 import {Cell} from '../../../maintable/FixedDataTableRoot';
 import './NumberCell.less';
@@ -14,17 +14,30 @@ class NumberCell extends React.Component {
     };
   }
 
-  handleInputChange = (inputValue) => {
-    if (!isNaN(inputValue)) {
+  handleInputChange = (e) => {
+    let inputValue = e.target.value ? e.target.value.trim() : '';
+    let reg = /^[0-9-.]*$/g;
+
+    if ((!Number.isNaN(inputValue) && reg.test(inputValue)) || inputValue === '') {
+
+      // 如果包含-必须在开头，包含.则不能在开头且只能有一个
+      if (inputValue.indexOf('-') !== -1) {
+        if (!inputValue.startsWith('-') || (inputValue.split('-').length > 2) || inputValue.startsWith('-.')) {
+          return
+        }
+      }
+
+      if (inputValue.indexOf('.') !== -1) {
+        if (inputValue.startsWith('.') || (inputValue.split('.').length > 2)) {
+          return
+        }
+      }
+
       this.setState({
-        inputValue: inputValue ? inputValue : '',
+        inputValue: inputValue,
       });
 
       this.props.handleChange(inputValue, false);
-    } else {
-      message.warning(ErrorMsg.number_error);
-      const {inputValue, value} = this.state
-      this.props.handleChange(inputValue === null ? value : inputValue, false);
     }
   };
 
@@ -34,12 +47,13 @@ class NumberCell extends React.Component {
 
     return (
       <Cell className="NumberCell">
-        <InputNumber
+        <Input
           className="NumberCell"
           size="small"
           value={inputValue === null ? value : inputValue}
           onChange={this.handleInputChange}
           onPressEnter={handleKey}
+          autoFocus={true}
         />
       </Cell>
     );

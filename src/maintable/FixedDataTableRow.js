@@ -14,7 +14,7 @@
 
 import FixedDataTableCellGroup from './FixedDataTableCellGroup';
 import FixedDataTableTranslateDOMPosition from './FixedDataTableTranslateDOMPosition';
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 import React from 'react';
 import Scrollbar from './Scrollbar';
 import cx from './vendor_upstream/stubs/cx';
@@ -222,7 +222,7 @@ class FixedDataTableRowImpl extends React.Component {
     });
     var fixedColumnsWidth = sumPropWidths(this.props.fixedColumns);
     var fixedRightColumnsWidth = sumPropWidths(this.props.fixedRightColumns);
-    const groupCollapsed = this.props.data.getGroupByRowIndex(this.props.index).isCollapsed
+    // const groupCollapsed = this.props.data.getGroupByRowIndex(this.props.index).isCollapsed
     let extraWidth = 60;
     var fixedColumns =
       <FixedDataTableCellGroup
@@ -246,7 +246,6 @@ class FixedDataTableRowImpl extends React.Component {
         rowHeight={this.props.height}
         rowIndex={this.props.index}
         isHeaderOrFooter={this.props.isHeaderOrFooter}
-        isTableFooter={this.props.isTableFooter}
         container={this.props.container}
         data={this.props.data}
         isRTL={this.props.isRTL}
@@ -276,7 +275,6 @@ class FixedDataTableRowImpl extends React.Component {
         rowHeight={this.props.height}
         rowIndex={this.props.index}
         isHeaderOrFooter={this.props.isHeaderOrFooter}
-        isTableFooter={this.props.isTableFooter}
         container={this.props.container}
         data={this.props.data}
         isRTL={this.props.isRTL}
@@ -308,7 +306,6 @@ class FixedDataTableRowImpl extends React.Component {
         rowHeight={this.props.height}
         rowIndex={this.props.index}
         isHeaderOrFooter={this.props.isHeaderOrFooter}
-        isTableFooter={this.props.isTableFooter}
         container={this.props.container}
         data={this.props.data}
         isRTL={this.props.isRTL}
@@ -318,26 +315,9 @@ class FixedDataTableRowImpl extends React.Component {
     var rowExpanded = this._getRowExpanded(subRowHeight);
     var rowExpandedStyle = {
       height: subRowHeight,
-      top: this.props.height+25,
-      left:30,
+      top: this.props.height+20,
       width: this.props.width,
     };
-
-    let scrollbarSpacer = null;
-    if (this.props.showScrollbarY) {
-      var spacerStyles = {
-        width: scrollbarOffset,
-        height: this.props.height,
-        // Since the box-sizing = border-box the border on the table is included in the width
-        // so we need to account for the left and right border
-        left: this.props.isRTL ? 2 : this.props.width - scrollbarOffset - 2,
-      };
-      scrollbarSpacer =
-        <div 
-          style={spacerStyles} 
-          className={cx('public/fixedDataTable/scrollbarSpacer')}
-        />;
-    }
     
     return (
       <div
@@ -363,7 +343,6 @@ class FixedDataTableRowImpl extends React.Component {
           { columnsLeftShadow }
           { fixedRightColumns }
           { fixedRightColumnsShadow }
-          { scrollbarSpacer }
         </div>
         {rowExpanded && <div
           className={cx('fixedDataTableRowLayout/rowExpanded')}
@@ -513,38 +492,38 @@ class FixedDataTableRowImpl extends React.Component {
 }
 
 class FixedDataTableRow extends React.Component {
-  static propTypes = {
+  // static propTypes = {
 
-    type:PropTypes.string,
+  //   type:PropTypes.string,
 
-    isScrolling: PropTypes.bool,
+  //   isScrolling: PropTypes.bool,
 
-    /**
-     * Height of the row.
-     */
-    height: PropTypes.number.isRequired,
+  //   /**
+  //    * Height of the row.
+  //    */
+  //   height: PropTypes.number.isRequired,
 
-    /**
-     * Z-index on which the row will be displayed. Used e.g. for keeping
-     * header and footer in front of other rows.
-     */
-    zIndex: PropTypes.number,
+  //   /**
+  //    * Z-index on which the row will be displayed. Used e.g. for keeping
+  //    * header and footer in front of other rows.
+  //    */
+  //   zIndex: PropTypes.number,
 
-    /**
-     * The vertical position where the row should render itself
-     */
-    offsetTop: PropTypes.number.isRequired,
+  //   /**
+  //    * The vertical position where the row should render itself
+  //    */
+  //   offsetTop: PropTypes.number.isRequired,
 
-    /**
-     * Pass false to hide the row via CSS
-     */
-    visible: PropTypes.bool.isRequired,
+  //   /**
+  //    * Pass false to hide the row via CSS
+  //    */
+  //   visible: PropTypes.bool.isRequired,
 
-    /**
-     * Width of the row.
-     */
-    width: PropTypes.number.isRequired,
-  };
+  //   /**
+  //    * Width of the row.
+  //    */
+  //   width: PropTypes.number.isRequired,
+  // };
 
   componentWillMount() {
     this._initialRender = true;
@@ -558,6 +537,7 @@ class FixedDataTableRow extends React.Component {
     const { offsetTop, scrollTop, zIndex, visible, type, ...rowProps } = this.props;
     const isMovingRow = this.props.isRowReordering && this.props.rowReorderingData 
                         && this.props.rowReorderingData.oldRowIndex === rowProps.index;
+                        
     var style = {
       width: this.props.width,
       height: this.props.height,
