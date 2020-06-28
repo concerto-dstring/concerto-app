@@ -327,6 +327,7 @@ class MainPage extends React.Component {
     const {dataset, selectedKey} = this.state;
     return (
       <Panel
+        className="body_left_sider_panel"
         header={
           <div className="body_left_sider_panel_header">
             <div style={{textAlign: 'left',fontSize:'13px',color:'#A0A4A8'}}>{name}</div>
