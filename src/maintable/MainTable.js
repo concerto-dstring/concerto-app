@@ -467,7 +467,7 @@ class MainTable extends React.Component {
   }
 
   render() {
-    return <div className="autoScrollContainer">{this.renderTable()}</div>;
+    return <div>{this.renderTable()}</div>;
   }
 
   _onGetListUsers = () => {

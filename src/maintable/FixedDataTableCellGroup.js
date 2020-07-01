@@ -110,6 +110,11 @@ class FixedDataTableCellGroupImpl extends React.Component {
       }
       currentPosition += columnProps.width;
     }
+
+    const className = cx({
+      'fixedDataTableCellGroupLayout/fixedCellGroup': this.props.isFixed,
+      'fixedDataTableCellGroupLayout/cellGroup': !this.props.isFixed,
+    });
     
     var style = {
       height: props.height,
@@ -121,7 +126,7 @@ class FixedDataTableCellGroupImpl extends React.Component {
 
     return (
       <div
-        className={cx('fixedDataTableCellGroupLayout/cellGroup')}
+        className={className}
         style={style}>
         {cells}
       </div>
@@ -222,7 +227,6 @@ class FixedDataTableCellGroup extends React.Component {
     var style = {
       height: props.cellGroupWrapperHeight || props.height,
       width: props.width,
-      marginLeft:'1px'
     };
 
     if (this.props.isRTL) {

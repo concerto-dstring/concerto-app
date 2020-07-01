@@ -16,8 +16,19 @@
   position: absolute;
   top: 0;
   white-space: nowrap;
+  margin: 1px;
+}
+
+.fixedDataTableCellGroupLayout_fixedCellGroup {
+  backface-visibility: hidden;
+  left: 0;
+  overflow: hidden;
+  position: absolute;
+  top: 0;
+  white-space: nowrap;
   opacity: 0.95;
 }
+
 
 .fixedDataTable_isRTL .fixedDataTableCellGroupLayout_cellGroup {
   right: 0;
@@ -32,6 +43,7 @@
 .fixedDataTableCellGroupLayout_cellGroupWrapper {
   position: absolute;
   top: 0;
+  margin-right: 1px;
 }
 
 .fixedDataTableCellGroupLayout_cellGroup:hover .table_row_menu_cell{
